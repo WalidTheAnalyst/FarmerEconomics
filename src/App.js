@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import {
-  BarChart, Bar, LineChart, Line, ScatterChart, Scatter,
+  BarChart, Bar, LineChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   ReferenceLine, Area, AreaChart, Cell
 } from "recharts";
@@ -30,13 +30,7 @@ const SAMPLE_DATA = [
 const REGIONS = [...new Set(SAMPLE_DATA.map(d => d.region))];
 const CROPS = [...new Set(SAMPLE_DATA.map(d => d.crop))];
 
-const REGION_META = {
-  Spain: { lat: 40, lng: -3, label: "Spain", highlight: true },
-  France: { lat: 46, lng: 2, label: "France", highlight: false },
-  Brazil: { lat: -15, lng: -48, label: "Brazil", highlight: true },
-  Australia: { lat: -25, lng: 133, label: "Australia", highlight: false },
-  Morocco: { lat: 32, lng: -5, label: "Morocco", highlight: true },
-};
+
 
 const STRATEGY_COLORS = {
   "Blended (MAP)": "#64748b",
