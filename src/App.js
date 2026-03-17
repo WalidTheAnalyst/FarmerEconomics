@@ -1094,6 +1094,24 @@ function OverviewPage({ data, region }) {
         <KPICard label="Avg. Fert. Cost Share"   value={pct(avgF)}        sub="of production cost" accent="#f59e0b" />
         <KPICard label="Crops modelled"          value={regionCrops.length} sub={`in ${region}`} accent="#a78bfa" />
       </div>
+      {/* Product mix histogram from Excel */}
+      <div className="card">
+        <h3 className="card-title">Product Mix Evolution — France (kt P2O5)</h3>
+        <p style={{color:"#475569",fontSize:11,marginBottom:10}}>Season-by-season · Source: Agreste / French Ministry of Agriculture</p>
+        <ResponsiveContainer width="100%" height={230}>
+          <BarChart data={PRODUCT_MIX_DATA} margin={{left:8,right:10,bottom:4}}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false}/>
+            <XAxis dataKey="season" tick={{fill:"#64748b",fontSize:9}}/>
+            <YAxis tick={{fill:"#64748b",fontSize:9}} label={{value:"kt P2O5",angle:-90,position:"insideLeft",fill:"#475569",fontSize:9,offset:8}}/>
+            <Tooltip content={<CustomTooltip/>}/>
+            <Legend wrapperStyle={{fontSize:10}}/>
+            {Object.entries(PM_COLORS).map(([k,c])=>(
+              <Bar key={k} dataKey={k} fill={c} stackId="a" radius={k==="Organomineral"?[3,3,0,0]:undefined}/>
+            ))}
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
       <div className="chart-grid-2">
         <div className="card">
           <h3 className="card-title">Gross Margin by Crop & Strategy — {region}</h3>
@@ -1327,6 +1345,22 @@ function AgronomyPage({ data, region, crop }) {
   const omData=Array.from({length:8},(_,i)=>{const om=0.5+i*0.5;return{om:om.toFixed(1),"P Eff. MAP":Math.min(85,40+om*18),"P Eff. TSP":Math.min(92,45+om*20)};});
   return (
     <div style={{ display:"flex",flexDirection:"column",gap:18 }}>
+      <div className="card">
+        <h3 className="card-title">Annual Nutrient Consumption — France (t nutrient)</h3>
+        <p style={{color:"#475569",fontSize:11,marginBottom:10}}>2017–2023 · Source: Agreste / French Ministry of Agriculture</p>
+        <ResponsiveContainer width="100%" height={195}>
+          <LineChart data={CONSUMPTION_DATA} margin={{left:10,right:20}}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b"/>
+            <XAxis dataKey="year" tick={{fill:"#64748b",fontSize:9}}/>
+            <YAxis tick={{fill:"#64748b",fontSize:9}} tickFormatter={v=>(v/1000).toFixed(0)+"k"} label={{value:"t nutrient",angle:-90,position:"insideLeft",fill:"#64748b",fontSize:9,offset:6}}/>
+            <Tooltip content={<CustomTooltip/>} formatter={v=>[v.toLocaleString()+" t",""]}/>
+            <Legend wrapperStyle={{fontSize:10}}/>
+            <Line type="monotone" dataKey="N"    name="N (t)"    stroke="#0ea5e9" strokeWidth={2} dot={{r:3}}/>
+            <Line type="monotone" dataKey="P2O5" name="P2O5 (t)" stroke="#10b981" strokeWidth={2} dot={{r:3}}/>
+            <Line type="monotone" dataKey="K2O"  name="K2O (t)"  stroke="#f59e0b" strokeWidth={2} dot={{r:3}}/>
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
       {base&&(
         <div style={{ display:"flex",gap:12,flexWrap:"wrap" }}>
           {[{label:"Crop",val:crop,color:"#0ea5e9"},{label:"Region",val:region,color:"#a78bfa"},{label:"Soil pH",val:ph,color:"#f59e0b"},{label:"Org. Matter",val:base.om+"%",color:"#10b981"}].map((item,i)=>(
@@ -1644,6 +1678,7 @@ function MIOwnershipPage({ region }) {
 
 // ─── MAIN APP ─────────────────────────────────────────────────────────────────
 export default function App() {
+  const [hasEntered, setHasEntered] = useState(false);
   const [section,    setSection]    = useState("quant");
   const [quantPage,  setQuantPage]  = useState("overview");
   const [intelPage,  setIntelPage]  = useState("dynamics");
@@ -1669,6 +1704,7 @@ export default function App() {
     {key:"strategy",  label:"Strategic Outlook", short:"Strategy" },
     {key:"agronomy",  label:"Agronomic Insights",short:"Agronomy" },
     {key:"ownership", label:"Farm Ownership",    short:"Ownership"},
+    {key:"regions",   label:"Regional Analysis", short:"Regions"  },
   ];
 
   const subPages   = section==="quant"?quantPages:intelPages;
@@ -1683,6 +1719,8 @@ export default function App() {
     setSavedScenarios(s=>[...s,{name:scenarioName,region,crop}]);
     setScenarioName("");
   };
+
+  if (!hasEntered) return <LandingPage onEnter={() => setHasEntered(true)} />;
 
   return (
     <div style={{ minHeight:"100vh",background:"#060d1a",color:"#e2e8f0",fontFamily:"'DM Sans','Segoe UI',sans-serif" }}>
@@ -1793,6 +1831,7 @@ export default function App() {
               {section==="intel"&&intelPage==="strategy"  &&<MIStrategyPage       region={region} />}
               {section==="intel"&&intelPage==="agronomy"  &&<MIAgronomyPage       region={region} />}
               {section==="intel"&&intelPage==="ownership" &&<MIOwnershipPage      region={region} />}
+              {section==="intel"&&intelPage==="regions"   &&<RegionalPage />}
             </div>
 
             <div className={`sidebar-overlay ${sidebarOpen?"open":""}`} onClick={()=>setSidebarOpen(false)} />
