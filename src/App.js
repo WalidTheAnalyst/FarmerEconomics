@@ -1517,6 +1517,283 @@ function MIPlaceholder({ region }) {
   return <div style={{ display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:300,gap:12 }}><p style={{ fontSize:40 }}>🌍</p><p style={{ fontSize:15,color:"#64748b" }}>No market intelligence data for {region}.</p><p style={{ fontSize:12,color:"#334155" }}>Available: {Object.keys(MARKET_INTEL).join(", ")}</p></div>;
 }
 
+// ─── FARMER P&L PAGE ──────────────────────────────────────────────────────────
+// Data source: FADN / Réseau d'Information Comptable Agricole (RICA) France
+// Average per farm, SOP above 25k€, values in €/ha
+const FARMER_PL_DATA = {
+  "Cereals & Oilseeds": {
+    color:"#0ea5e9", emoji:"🌾",
+    farms:48140, area_ha:134.81,
+    revenue:1412, sales:1367, cropSales:1279, miscOutput:45,
+    subsidies:264, decoupledPayments:210, coupledPayments:13, ruralDev:32,
+    otherOutput:40,
+    totalCosts:1581, cropSpecific:732, fertilisers:357, seeds:94, cropProtection:163,
+    livestock:16, otherOp:811, landRent:137, labour:26, depreciation:239, energy:102, financial:21,
+  },
+  "General Crops": {
+    color:"#10b981", emoji:"🥕",
+    farms:24745, area_ha:111.88,
+    revenue:3226, sales:3120, cropSales:2421, miscOutput:105,
+    subsidies:312, decoupledPayments:213, coupledPayments:16, ruralDev:33,
+    otherOutput:56,
+    totalCosts:2888, cropSpecific:1212, fertilisers:488, seeds:248, cropProtection:247,
+    livestock:50, otherOp:1587, landRent:226, labour:170, depreciation:400, energy:173, financial:39,
+  },
+  "Market Gardening": {
+    color:"#f59e0b", emoji:"🥦",
+    farms:7629, area_ha:16.26,
+    revenue:24320, sales:23957, cropSales:334, miscOutput:363,
+    subsidies:1094, decoupledPayments:190, coupledPayments:28, ruralDev:62,
+    otherOutput:280,
+    totalCosts:22061, cropSpecific:4269, fertilisers:1122, seeds:2207, cropProtection:451,
+    livestock:55, otherOp:17539, landRent:337, labour:5666, depreciation:2480, energy:2628, financial:197,
+  },
+  "Viticulture": {
+    color:"#a78bfa", emoji:"🍇",
+    farms:44240, area_ha:26.87,
+    revenue:9901, sales:9727, cropSales:2026, miscOutput:174,
+    subsidies:383, decoupledPayments:128, coupledPayments:5, ruralDev:116,
+    otherOutput:146,
+    totalCosts:8715, cropSpecific:1520, fertilisers:291, seeds:62, cropProtection:408,
+    livestock:11, otherOp:7048, landRent:1050, labour:1503, depreciation:1187, energy:316, financial:135,
+  },
+};
+
+function MIFarmerPLPage() {
+  const [farmType, setFarmType] = useState("Cereals & Oilseeds");
+  const [expanded, setExpanded] = useState({});
+  const d = FARMER_PL_DATA[farmType];
+  const toggle = key => setExpanded(e => ({...e, [key]: !e[key]}));
+
+  const netResult = d.revenue - d.totalCosts;
+  const grossMargin = d.revenue - d.cropSpecific;
+  const fertPct = ((d.fertilisers / d.totalCosts) * 100).toFixed(1);
+  const fertRevPct = ((d.fertilisers / d.revenue) * 100).toFixed(1);
+
+  // Waterfall data
+  const waterfallData = [
+    { name:"Revenue",    value:d.revenue,     fill:d.color,    cum:d.revenue },
+    { name:"− Crop costs",value:-d.cropSpecific,fill:"#f43f5e", cum:d.revenue-d.cropSpecific },
+    { name:"Gross margin",value:grossMargin,   fill:d.color+"99",cum:grossMargin },
+    { name:"+ Subsidies", value:d.subsidies,   fill:"#818cf8",  cum:grossMargin+d.subsidies },
+    { name:"− Other costs",value:-d.otherOp,   fill:"#f59e0b",  cum:grossMargin+d.subsidies-d.otherOp },
+    { name:"Net result",  value:netResult,     fill:netResult>=0?"#10b981":"#f43f5e", cum:netResult },
+  ];
+
+  // Cost breakdown pie
+  const costPie = [
+    { name:"Fertilisers",   value:d.fertilisers,   color:"#0ea5e9" },
+    { name:"Seeds",         value:d.seeds,          color:"#818cf8" },
+    { name:"Crop protection",value:d.cropProtection,color:"#f43f5e" },
+    { name:"Land rent",     value:d.landRent,       color:"#f59e0b" },
+    { name:"Labour",        value:d.labour,         color:"#10b981" },
+    { name:"Depreciation",  value:d.depreciation,   color:"#64748b" },
+    { name:"Energy",        value:d.energy,         color:"#a78bfa" },
+    { name:"Other",         value:Math.max(0,d.totalCosts-d.fertilisers-d.seeds-d.cropProtection-d.landRent-d.labour-d.depreciation-d.energy), color:"#334155" },
+  ].filter(x=>x.value>0);
+
+  const fmt = v => v >= 1000 ? (v/1000).toFixed(1)+"k" : v.toFixed(0);
+  const fmtE = v => "€"+Number(v).toLocaleString();
+
+  // P&L line row component
+  const PLRow = ({ label, value, color="#94a3b8", indent=0, bold=false, expandKey=null, children=null, subColor="#475569" }) => {
+    const isOpen = expanded[expandKey];
+    return (
+      <>
+        <div onClick={expandKey?()=>toggle(expandKey):undefined}
+          style={{ display:"flex", alignItems:"center", padding:`${bold?"10px":"7px"} 14px`, background:bold?"#0a1020":"transparent",
+            borderBottom:"1px solid #0f1929", cursor:expandKey?"pointer":"default",
+            paddingLeft: 14 + indent*18,
+            transition:"background 0.1s",
+          }}
+          onMouseEnter={e=>{if(!bold)e.currentTarget.style.background="#0f1929";}}
+          onMouseLeave={e=>{if(!bold)e.currentTarget.style.background="transparent";}}>
+          {expandKey && <span style={{color:"#475569",fontSize:10,marginRight:8,width:10}}>{isOpen?"▼":"▶"}</span>}
+          {!expandKey && indent>0 && <span style={{color:"#1e293b",fontSize:10,marginRight:8,width:10}}>·</span>}
+          <span style={{ flex:1, fontSize: bold?13:12, fontWeight:bold?700:400, color:bold?"#f1f5f9":"#94a3b8" }}>{label}</span>
+          <span style={{ fontSize:bold?13:12, fontWeight:bold?700:600, fontFamily:"'DM Mono',monospace", color:color }}>{fmtE(value)}</span>
+          <span style={{ fontSize:10, color:subColor, marginLeft:16, width:52, textAlign:"right", fontFamily:"'DM Mono',monospace" }}>
+            {value!==0?(((value/d.revenue)*100).toFixed(1)+"%"):"—"}
+          </span>
+        </div>
+        {expandKey && isOpen && children}
+      </>
+    );
+  };
+
+  return (
+    <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
+
+      {/* Header — farm type selector */}
+      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", flexWrap:"wrap", gap:16 }}>
+        <div>
+          <h2 style={{ color:"#f1f5f9", fontSize:18, fontWeight:800, marginBottom:4 }}>Farmer P&L — Average per farm</h2>
+          <p style={{ color:"#475569", fontSize:12 }}>Source: FADN / RICA France · SOP above 25k€ · Values in €/Ha</p>
+        </div>
+        {/* Excel download */}
+        <a href="https://agriculture.ec.europa.eu/data-and-analysis/farm-structures-and-economics/fadn_en"
+          target="_blank" rel="noopener noreferrer"
+          style={{ display:"flex", alignItems:"center", gap:8, background:"#103a1f", border:"1px solid #10b98140", borderRadius:8, padding:"8px 14px", textDecoration:"none", transition:"all 0.15s" }}
+          onMouseEnter={e=>e.currentTarget.style.background="#1a4d2a"}
+          onMouseLeave={e=>e.currentTarget.style.background="#103a1f"}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <rect width="24" height="24" rx="4" fill="#217346"/>
+            <text x="4" y="17" fontSize="11" fontWeight="800" fill="white" fontFamily="Arial">XLS</text>
+          </svg>
+          <span style={{ color:"#10b981", fontSize:11, fontWeight:600 }}>Download FADN data</span>
+        </a>
+      </div>
+
+      {/* Farm type tabs */}
+      <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
+        {Object.entries(FARMER_PL_DATA).map(([key, val]) => (
+          <button key={key} onClick={()=>setFarmType(key)}
+            style={{ display:"flex", alignItems:"center", gap:8, padding:"10px 18px", borderRadius:12, border:`2px solid ${farmType===key?val.color:val.color+"30"}`,
+              background:farmType===key?val.color+"18":"transparent", color:farmType===key?val.color:"#64748b",
+              fontSize:13, fontWeight:farmType===key?700:400, cursor:"pointer", transition:"all 0.15s" }}>
+            <span>{val.emoji}</span> {key}
+          </button>
+        ))}
+      </div>
+
+      {/* KPI strip */}
+      <div className="kpi-row">
+        <KPICard label="Revenue"      value={fmtE(d.revenue)+"/ha"}    sub={`${d.farms.toLocaleString()} farms, avg ${d.area_ha} ha`} accent={d.color}/>
+        <KPICard label="Total Costs"  value={fmtE(d.totalCosts)+"/ha"} sub={((d.totalCosts/d.revenue)*100).toFixed(0)+"% of revenue"} accent="#f43f5e"/>
+        <KPICard label="Net Result"   value={(netResult>=0?"+":"")+fmtE(netResult)+"/ha"} sub="after all costs" accent={netResult>=0?"#10b981":"#f43f5e"}/>
+        <KPICard label="Gross Margin" value={fmtE(grossMargin)+"/ha"}  sub="revenue − crop-specific costs" accent="#818cf8"/>
+        <KPICard label="Fertiliser/ha" value={fmtE(d.fertilisers)+"/ha"} sub={fertPct+"% of costs · "+fertRevPct+"% of revenue"} accent="#0ea5e9"/>
+      </div>
+
+      <div className="chart-grid-2">
+        {/* Waterfall */}
+        <div className="card">
+          <h3 className="card-title">P&L Bridge (€/ha)</h3>
+          <p style={{ color:"#475569", fontSize:11, marginBottom:12 }}>From gross revenue to net result</p>
+          <ResponsiveContainer width="100%" height={230}>
+            <BarChart data={waterfallData} margin={{ left:0, right:10, bottom:10 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false}/>
+              <XAxis dataKey="name" tick={{ fill:"#64748b", fontSize:9 }} angle={-15} textAnchor="end" height={40}/>
+              <YAxis tick={{ fill:"#64748b", fontSize:9 }} tickFormatter={v=>v>=0?"€"+fmt(v):"−€"+fmt(-v)}/>
+              <Tooltip content={<CustomTooltip/>} formatter={v=>["€"+Math.abs(v).toLocaleString(),""]}/>
+              <ReferenceLine y={0} stroke="#334155" strokeWidth={1}/>
+              <Bar dataKey="value" radius={[4,4,0,0]}>
+                {waterfallData.map((d2,i)=><Cell key={i} fill={d2.fill}/>)}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Cost breakdown donut */}
+        <div className="card">
+          <h3 className="card-title">Cost Structure Breakdown</h3>
+          <p style={{ color:"#475569", fontSize:11, marginBottom:8 }}>Share of total costs (€{d.totalCosts.toLocaleString()}/ha)</p>
+          <ResponsiveContainer width="100%" height={180}>
+            <PieChart>
+              <Pie data={costPie} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" paddingAngle={2}>
+                {costPie.map((e,i)=><Cell key={i} fill={e.color}/>)}
+              </Pie>
+              <Tooltip formatter={(v,n)=>["€"+v+" /ha · "+((v/d.totalCosts)*100).toFixed(1)+"%",n]}/>
+            </PieChart>
+          </ResponsiveContainer>
+          <div style={{ display:"flex", flexWrap:"wrap", gap:"4px 14px", marginTop:4 }}>
+            {costPie.map((e,i)=>(
+              <div key={i} style={{ display:"flex", alignItems:"center", gap:5 }}>
+                <div style={{ width:8,height:8,borderRadius:2,background:e.color }}/>
+                <span style={{ color:"#64748b", fontSize:10 }}>{e.name} <span style={{ color:e.color, fontFamily:"'DM Mono',monospace" }}>{((e.value/d.totalCosts)*100).toFixed(0)}%</span></span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Interactive P&L table */}
+      <div className="card" style={{ padding:0, overflow:"hidden" }}>
+        <div style={{ padding:"14px 14px 12px", borderBottom:"1px solid #1e293b", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+          <h3 className="card-title" style={{ marginBottom:0 }}>Detailed P&L — {farmType} {d.emoji}</h3>
+          <div style={{ display:"flex", gap:20 }}>
+            {[["€/ha","unit"],["% revenue","pct"]].map(([l])=>(
+              <span key={l} style={{ color:"#475569", fontSize:10, textTransform:"uppercase", letterSpacing:"0.06em" }}>{l}</span>
+            ))}
+          </div>
+        </div>
+
+        {/* Column headers */}
+        <div style={{ display:"flex", padding:"6px 14px", background:"#080e1a", borderBottom:"1px solid #1e293b" }}>
+          <span style={{ flex:1, color:"#475569", fontSize:10, textTransform:"uppercase", letterSpacing:"0.06em" }}>Line item</span>
+          <span style={{ color:"#475569", fontSize:10, textTransform:"uppercase", letterSpacing:"0.06em", width:90, textAlign:"right" }}>€ / ha</span>
+          <span style={{ color:"#475569", fontSize:10, textTransform:"uppercase", letterSpacing:"0.06em", width:52, textAlign:"right" }}>% rev.</span>
+        </div>
+
+        <PLRow label="REVENUE" value={d.revenue} color={d.color} bold expandKey="rev">
+          <PLRow label="Sales" value={d.sales} indent={1} expandKey="sales">
+            <PLRow label="Crop sales" value={d.cropSales} indent={2}/>
+            <PLRow label="Miscellaneous output" value={d.miscOutput} indent={2}/>
+          </PLRow>
+          <PLRow label="Operating subsidies" value={d.subsidies} color="#818cf8" indent={1} expandKey="subs">
+            <PLRow label="Decoupled payments (BPS, redistributive, GS)" value={d.decoupledPayments} indent={2}/>
+            <PLRow label="Coupled payments" value={d.coupledPayments} indent={2}/>
+            <PLRow label="Rural development support" value={d.ruralDev} indent={2}/>
+          </PLRow>
+          <PLRow label="Other output" value={d.otherOutput} indent={1}/>
+        </PLRow>
+
+        <PLRow label="GROSS MARGIN" value={grossMargin} color="#818cf8" bold/>
+
+        <PLRow label="TOTAL COSTS" value={d.totalCosts} color="#f43f5e" bold expandKey="costs">
+          <PLRow label="Crop-specific costs" value={d.cropSpecific} color="#f87171" indent={1} expandKey="cropCosts">
+            <PLRow label="Fertilisers & soil amendments" value={d.fertilisers} color="#0ea5e9" indent={2}/>
+            <PLRow label="Seeds & seedlings" value={d.seeds} indent={2}/>
+            <PLRow label="Crop protection products" value={d.cropProtection} indent={2}/>
+          </PLRow>
+          <PLRow label="Other operating costs" value={d.otherOp} indent={1} expandKey="otherCosts">
+            <PLRow label="Land rent" value={d.landRent} indent={2}/>
+            <PLRow label="Labour costs" value={d.labour} indent={2}/>
+            <PLRow label="Depreciation" value={d.depreciation} indent={2}/>
+            <PLRow label="Energy" value={d.energy} indent={2}/>
+            <PLRow label="Financial charges" value={d.financial} indent={2}/>
+            <PLRow label="Livestock-specific costs" value={d.livestock} indent={2}/>
+          </PLRow>
+        </PLRow>
+
+        <div style={{ padding:"12px 14px", background:"#0a1628", borderTop:"2px solid #1e293b", display:"flex", alignItems:"center" }}>
+          <span style={{ flex:1, fontSize:14, fontWeight:800, color:"#f1f5f9" }}>NET RESULT</span>
+          <span style={{ fontSize:16, fontWeight:800, fontFamily:"'DM Mono',monospace", color:netResult>=0?"#10b981":"#f43f5e", width:90, textAlign:"right" }}>
+            {netResult>=0?"+ ":"− "}€{Math.abs(netResult).toLocaleString()}
+          </span>
+          <span style={{ fontSize:12, fontWeight:700, fontFamily:"'DM Mono',monospace", color:netResult>=0?"#10b98180":"#f43f5e80", width:52, textAlign:"right" }}>
+            {((netResult/d.revenue)*100).toFixed(1)}%
+          </span>
+        </div>
+      </div>
+
+      {/* Fertiliser share callout */}
+      <div style={{ background:`linear-gradient(135deg,#0ea5e915,#0a0f1a)`, border:"1px solid #0ea5e930", borderRadius:14, padding:"18px 22px", display:"flex", gap:24, flexWrap:"wrap", alignItems:"center" }}>
+        <div style={{ flex:1, minWidth:200 }}>
+          <p style={{ color:"#0ea5e9", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:6, fontWeight:700 }}>🧪 Fertiliser in Context — {farmType}</p>
+          <p style={{ color:"#94a3b8", fontSize:13, lineHeight:1.7 }}>
+            Fertilisers represent <span style={{ color:"#0ea5e9", fontWeight:700 }}>€{d.fertilisers}/ha</span> — <strong style={{ color:"#f1f5f9" }}>{fertPct}% of total costs</strong> and <strong style={{ color:"#f1f5f9" }}>{fertRevPct}% of revenue</strong>. At these levels, a modest yield uplift from separation economics can entirely offset any premium on input cost.
+          </p>
+        </div>
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+          {[
+            { label:"Fertiliser cost", val:"€"+d.fertilisers+"/ha", color:"#0ea5e9" },
+            { label:"% of total costs", val:fertPct+"%", color:"#f59e0b" },
+            { label:"Gross margin", val:"€"+grossMargin+"/ha", color:"#818cf8" },
+            { label:"Net result", val:(netResult>=0?"+":"")+fmtE(netResult)+"/ha", color:netResult>=0?"#10b981":"#f43f5e" },
+          ].map((item,i)=>(
+            <div key={i} style={{ background:"#0a0f1a", borderRadius:8, padding:"8px 12px" }}>
+              <p style={{ color:"#475569", fontSize:10, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:3 }}>{item.label}</p>
+              <p style={{ color:item.color, fontSize:16, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>{item.val}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
 function MIMarketDynamicsPage({ region }) {
   const intel=MARKET_INTEL[region];
   if (!intel) return <MIPlaceholder region={region} />;
@@ -1637,7 +1914,7 @@ function HubPage({ onChoose }) {
 
       <p style={{ color:"rgba(255,255,255,0.35)",fontSize:13,marginBottom:52,letterSpacing:"0.06em",textTransform:"uppercase",animation:"hubFade 0.6s 0.1s ease both",opacity:0 }}>Select your workspace</p>
 
-      <div style={{ display:"flex", gap:24, flexWrap:"wrap", justifyContent:"center", width:"100%", maxWidth:860 }}>
+      <div style={{ display:"flex", gap:24, flexWrap:"nowrap", justifyContent:"center", width:"100%", maxWidth:900 }}>
         {[
           {
             key:"quant", icon:"⚙",
@@ -1661,7 +1938,7 @@ function HubPage({ onChoose }) {
             onMouseEnter={() => setHov(card.key)}
             onMouseLeave={() => setHov(null)}
             style={{
-              flex:"1 1 360px", maxWidth:400,
+              flex:"1 1 0", maxWidth:430,
               background: hov===card.key ? `linear-gradient(135deg,${card.color}18,#0a1020)` : "linear-gradient(135deg,#0c1422,#080e18)",
               border:`1px solid ${hov===card.key ? card.color+"60" : card.color+"20"}`,
               borderRadius:20, padding:"36px 32px",
@@ -1727,6 +2004,7 @@ export default function App() {
   const intelPages=[
     {key:"dynamics",  label:"Fundamentals",         short:"Fundamentals"   },
     {key:"farmer",    label:"Farmer Behaviour",      short:"Farmer Behav."  },
+    {key:"farmerpl",  label:"Farmer P&L",            short:"Farmer P&L"     },
     {key:"strategy",  label:"Competitive Landscape", short:"Competitive"    },
     {key:"agronomy",  label:"Agronomic Insights",    short:"Agronomy"       },
     {key:"regions",   label:"Regional Analysis",     short:"Regions"        },
@@ -1854,6 +2132,7 @@ export default function App() {
 
               {section==="intel"&&intelPage==="dynamics"  &&<MIMarketDynamicsPage region={region} />}
               {section==="intel"&&intelPage==="farmer"    &&<MIFarmerBehaviorPage region={region} />}
+              {section==="intel"&&intelPage==="farmerpl"  &&<MIFarmerPLPage />}
               {section==="intel"&&intelPage==="strategy"  &&<MIStrategyPage       region={region} />}
               {section==="intel"&&intelPage==="agronomy"  &&<MIAgronomyPage       region={region} />}
               {section==="intel"&&intelPage==="regions"   &&<RegionalPage />}
