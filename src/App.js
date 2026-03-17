@@ -621,9 +621,13 @@ function LandingPage({ onEnter }) {
 
 // ─── FRANCE MAP (GeoJSON fetched at runtime) ──────────────────────────────────
 function heatColor(val, min, max) {
-  if (val===undefined||val===null||max===min) return "#0f2035";
+  if (val===undefined||val===null||max===min) return "#1a2744";
   const t=Math.max(0,Math.min(1,(val-min)/(max-min)));
-  return `rgb(${Math.round(10+t*6)},${Math.round(32+t*153)},${Math.round(60+t*69)})`;
+  // Distinct palette: muted indigo → warm teal → bright amber-green
+  const r=Math.round(38  + t*(180-38));
+  const g=Math.round(60  + t*(210-60));
+  const b=Math.round(140 + t*(80 -140));
+  return `rgb(${r},${g},${b})`;
 }
 function projectFeature(coords, bbox, W, H, pad) {
   const [minLon,minLat,maxLon,maxLat]=bbox;
@@ -677,12 +681,12 @@ function FranceMap({ selectedRegion, onSelectRegion, heatValues }) {
         const [cx,cy]=cents[name]||[0,0];
         const isSel=selectedRegion===name,isHov=hovered===name,hasD=hasData(name);
         const hVal=heatValues?.[name];
-        const fill=isSel?"#ffffff":isHov?(hasD?"#3be8a0":"#1a2a3a"):(hasD?heatColor(hVal,minV,maxV):"#0a1420");
+        const fill=isSel?"#ffffff":isHov?(hasD?"#a3f4d0":"#1e3050"):(hasD?heatColor(hVal,minV,maxV):"#1a2744");
         return(
-          <g key={name} style={{cursor:hasD?"pointer":"default",opacity:hasD?1:0.45}}
+          <g key={name} style={{cursor:hasD?"pointer":"default",opacity:hasD?1:0.6}}
             onClick={()=>hasD&&onSelectRegion(name)}
             onMouseEnter={()=>setHovered(name)} onMouseLeave={()=>setHovered(null)}>
-            <path d={d} fill={fill} stroke={isSel?"#fff":isHov?"#5eead4":"#0a1e2e"} strokeWidth={isSel?2:0.8}
+            <path d={d} fill={fill} stroke={isSel?"#fff":isHov?"#a3f4d0":"#4a6080"} strokeWidth={isSel?2.5:1.2}
               filter={isSel?"url(#mGlow)":undefined} style={{transition:"fill 0.18s"}}/>
             {(isHov||isSel)&&(<>
               <text x={cx} y={cy-(hVal!==undefined?6:0)} textAnchor="middle" dominantBaseline="middle"
@@ -820,244 +824,258 @@ function RegionalPage(){
 
 // ─── FARMER BEHAVIOR PAGE (exhaustive, interactive) ───────────────────────────
 function MIFarmerBehaviorPage({ region }) {
-  const [activePersona, setActivePersona] = useState(FARMER_PERSONAS[0].id);
-  const [viewMode, setViewMode] = useState("grid"); // "grid" | "detail"
-  const persona = FARMER_PERSONAS.find(p=>p.id===activePersona) || FARMER_PERSONAS[0];
-
-  // Aggregate bar chart data
-  const p2o5Chart = FARMER_PERSONAS.map(p=>({ name:p.nickname.replace("The ",""), value:p.p2o5KgHa, fill:p.color }));
+  const [farmerTab,      setFarmerTab]      = useState("personas");
+  const [activePersona,  setActivePersona]  = useState(FARMER_PERSONAS[0].id);
+  const [viewMode,       setViewMode]       = useState("grid");
+  const [histMode,       setHistMode]       = useState("farms");
+  const persona   = FARMER_PERSONAS.find(p=>p.id===activePersona) || FARMER_PERSONAS[0];
+  const p2o5Chart = FARMER_PERSONAS.map(p=>({name:p.nickname.replace("The ",""),value:p.p2o5KgHa,fill:p.color}));
+  const intel     = MARKET_INTEL[region];
+  const own       = intel?.ownership;
+  const histData  = own?.farmSizeHistogram || [];
 
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
 
-      {/* Header summary */}
-      <div style={{ background:"linear-gradient(135deg,#0a0f1a,#0d1225)", border:"1px solid #1e293b", borderRadius:14, padding:"18px 20px" }}>
-        <p style={{ color:"#94a3b8", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:8 }}>France — 6 Farmer Archetypes</p>
-        <p style={{ color:"#64748b", fontSize:13, lineHeight:1.7, margin:0 }}>
-          Based on Agreste 2020 census data, McKinsey global farmer surveys, and OCP commercial field intelligence. Each archetype represents a distinct purchasing behavior, agronomy relationship, and commercial opportunity for P separation.
-        </p>
+      {/* Tab switcher */}
+      <div style={{ display:"flex", gap:0, background:"#0a0f1a", border:"1px solid #1e293b", borderRadius:10, padding:4, width:"fit-content" }}>
+        {[["personas","👤 Farmer Archetypes"],["ownership","🏛️ Ownership Structure"]].map(([k,l])=>(
+          <button key={k} onClick={()=>setFarmerTab(k)}
+            style={{ padding:"7px 20px", borderRadius:8, border:"none", background:farmerTab===k?"#10b981":"transparent", color:farmerTab===k?"#fff":"#64748b", fontSize:12, fontWeight:farmerTab===k?700:400, cursor:"pointer", transition:"all 0.15s" }}>
+            {l}
+          </button>
+        ))}
       </div>
 
-      {/* Persona selector grid */}
-      <div>
-        <div style={{ display:"flex", gap:10, flexWrap:"wrap", marginBottom:16 }}>
-          {FARMER_PERSONAS.map(p => (
-            <button key={p.id} onClick={()=>{setActivePersona(p.id);setViewMode("detail");}}
-              style={{
-                display:"flex", alignItems:"center", gap:8,
-                padding:"10px 16px", borderRadius:12, cursor:"pointer",
-                background:activePersona===p.id?p.color+"22":"#0f172a",
-                border:`1px solid ${activePersona===p.id?p.color:p.color+"30"}`,
-                transition:"all 0.15s",
-              }}>
-              <span style={{ fontSize:18 }}>{p.emoji}</span>
-              <div style={{ textAlign:"left" }}>
-                <p style={{ color:activePersona===p.id?p.color:"#94a3b8", fontSize:11, fontWeight:700, margin:0 }}>{p.nickname}</p>
-                <p style={{ color:"#475569", fontSize:10, margin:0 }}>{p.share}% of farmers</p>
-              </div>
-            </button>
-          ))}
-        </div>
-
-        {/* View mode toggle */}
-        <div style={{ display:"flex", gap:8, marginBottom:16 }}>
-          {[["grid","📊 Overview"],["detail","🔍 Deep Dive"]].map(([k,l])=>(
-            <button key={k} onClick={()=>setViewMode(k)}
-              style={{ padding:"6px 14px", borderRadius:8, border:`1px solid ${viewMode===k?"#0ea5e9":"#1e293b"}`, background:viewMode===k?"#0ea5e920":"transparent", color:viewMode===k?"#0ea5e9":"#64748b", fontSize:11, cursor:"pointer" }}>
-              {l}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* OVERVIEW MODE */}
-      {viewMode === "grid" && (
-        <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
-          {/* Market share donut + P2O5 comparison */}
+      {/* ── OWNERSHIP TAB ── */}
+      {farmerTab==="ownership" && own && (
+        <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
+          <div className="kpi-row">{own.kpis.map((k,i)=><KPICard key={i} {...k}/>)}</div>
           <div className="chart-grid-2">
             <div className="card">
-              <h3 className="card-title">P2O5 Application by Archetype (kg/ha)</h3>
-              <p style={{ color:"#475569", fontSize:11, marginBottom:10 }}>vs Comifer recommendation of 55 kg/ha</p>
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={p2o5Chart} layout="vertical" margin={{ left:80, right:20 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" horizontal={false} />
-                  <XAxis type="number" domain={[0,60]} tick={{ fill:"#64748b", fontSize:9 }} />
-                  <YAxis type="category" dataKey="name" tick={{ fill:"#94a3b8", fontSize:10 }} width={80} />
-                  <Tooltip content={<CustomTooltip />} />
-                  <ReferenceLine x={55} stroke="#f59e0b80" strokeDasharray="4 4" label={{ value:"Rec.",fill:"#f59e0b",fontSize:9 }} />
-                  <Bar dataKey="value" name="P2O5 kg/ha" radius={[0,4,4,0]}>
-                    {p2o5Chart.map((d,i)=><Cell key={i} fill={d.fill} />)}
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
+                <h3 className="card-title" style={{ marginBottom:0 }}>Farm Size Distribution — France 2020</h3>
+                <div style={{ display:"flex", gap:5 }}>
+                  {[["farms","# Farms"],["volume","Fert. Vol"]].map(([k,l])=>(
+                    <button key={k} onClick={()=>setHistMode(k)}
+                      style={{ padding:"3px 9px", borderRadius:6, border:`1px solid ${histMode===k?"#0ea5e9":"#1e293b"}`, background:histMode===k?"#0ea5e920":"transparent", color:histMode===k?"#0ea5e9":"#64748b", fontSize:10, cursor:"pointer" }}>
+                      {l}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <p style={{ color:"#475569", fontSize:11, marginBottom:10 }}>{histMode==="farms"?"Farm count (thousands) by size band":"Share of total P2O5 fertilizer volume"}</p>
+              <ResponsiveContainer width="100%" height={210}>
+                <BarChart data={histData} margin={{ left:0, right:10, bottom:10 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1e293b"/>
+                  <XAxis dataKey="range" tick={{ fill:"#64748b", fontSize:9 }} angle={-15} textAnchor="end" height={36}/>
+                  <YAxis tick={{ fill:"#64748b", fontSize:9 }}/>
+                  <Tooltip content={<CustomTooltip/>}/>
+                  <Bar dataKey={histMode==="farms"?"farms":"fertVolPct"} name={histMode==="farms"?"Farms (k)":"Fert. Vol. %"} radius={[4,4,0,0]}>
+                    {histData.map((d,i)=><Cell key={i} fill={d.color}/>)}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
+              <div style={{ background:"#0a1020", border:"1px solid #10b98130", borderRadius:8, padding:"9px 11px", marginTop:8 }}>
+                <p style={{ color:"#64748b", fontSize:11, lineHeight:1.6, margin:0 }}>
+                  {histMode==="farms"?"The >200 ha segment is 14% of farms but 38% of P2O5 volume — the primary target for bulk TSP.":"Farms over 100 ha command 62% of fertilizer volume. This is where precision P programs have the highest commercial impact."}
+                </p>
+              </div>
             </div>
             <div className="card">
-              <h3 className="card-title">Segment Share of French Farmers (%)</h3>
-              <ResponsiveContainer width="100%" height={200}>
-                <PieChart>
-                  <Pie data={FARMER_PERSONAS.map(p=>({name:p.nickname,value:p.share,color:p.color}))} cx="50%" cy="50%" innerRadius={50} outerRadius={85} dataKey="value" paddingAngle={2}>
-                    {FARMER_PERSONAS.map((p,i)=><Cell key={i} fill={p.color} />)}
-                  </Pie>
-                  <Tooltip formatter={(v,n)=>[`${v}%`,n]} />
-                </PieChart>
+              <h3 className="card-title">Land Tenure Structure</h3>
+              <ResponsiveContainer width="100%" height={175}>
+                <PieChart><Pie data={own.tenure} cx="50%" cy="50%" innerRadius={45} outerRadius={72} dataKey="value" paddingAngle={3}>{own.tenure.map((d,i)=><Cell key={i} fill={d.color}/>)}</Pie><Tooltip formatter={(v,n)=>[`${v}%`,n]}/></PieChart>
               </ResponsiveContainer>
-              <div style={{ display:"flex", flexWrap:"wrap", gap:6, marginTop:4 }}>
-                {FARMER_PERSONAS.map((p,i)=>(
-                  <div key={i} style={{ display:"flex", alignItems:"center", gap:4 }}>
-                    <div style={{ width:8,height:8,borderRadius:2,background:p.color }} />
-                    <span style={{ color:"#64748b", fontSize:10 }}>{p.emoji} {p.share}%</span>
+              <div style={{ display:"flex", flexDirection:"column", gap:6, marginTop:6 }}>
+                {own.tenure.map((d,i)=>(
+                  <div key={i} style={{ display:"flex", alignItems:"center", gap:9 }}>
+                    <div style={{ width:9, height:9, borderRadius:2, background:d.color, flexShrink:0 }}/>
+                    <span style={{ color:"#94a3b8", fontSize:12, flex:1 }}>{d.name}</span>
+                    <span style={{ color:d.color, fontSize:12, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>{d.value}%</span>
                   </div>
                 ))}
               </div>
+              <p style={{ color:"#334155", fontSize:11, marginTop:10, lineHeight:1.6 }}>~75% of agricultural land under lease. The 9-year bail rural compresses investment horizons and suppresses long-term soil P building.</p>
             </div>
           </div>
-
-          {/* Quick summary cards */}
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))", gap:12 }}>
-            {FARMER_PERSONAS.map((p,i) => (
-              <div key={i} onClick={()=>{setActivePersona(p.id);setViewMode("detail");}}
-                style={{ background:"#0a0f1a", border:`1px solid ${p.color}25`, borderTop:`3px solid ${p.color}`, borderRadius:12, padding:"16px 16px", cursor:"pointer", transition:"all 0.15s" }}
-                onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-2px)";e.currentTarget.style.boxShadow=`0 8px 20px ${p.color}20`;}}
-                onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow="none";}}>
-                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
-                  <div>
-                    <span style={{ fontSize:24 }}>{p.emoji}</span>
-                    <p style={{ color:p.color, fontSize:13, fontWeight:800, margin:"4px 0 2px" }}>{p.nickname}</p>
-                    <p style={{ color:"#475569", fontSize:10, fontStyle:"italic" }}>{p.tagline}</p>
-                  </div>
-                  <div style={{ textAlign:"right" }}>
-                    <p style={{ color:p.color, fontSize:22, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>{p.share}%</p>
-                    <p style={{ color:"#475569", fontSize:10 }}>of farmers</p>
-                  </div>
-                </div>
-                <p style={{ color:"#64748b", fontSize:11, lineHeight:1.6, marginBottom:10 }}>{p.description.slice(0,120)}…</p>
-                <div style={{ display:"flex", justifyContent:"space-between" }}>
-                  <span style={{ color:"#334155", fontSize:10 }}>P applied: <span style={{ color:p.color, fontFamily:"'DM Mono',monospace" }}>{p.p2o5KgHa} kg/ha</span></span>
-                  <span style={{ color:"#334155", fontSize:10 }}>Spends: <span style={{ color:"#94a3b8", fontFamily:"'DM Mono',monospace" }}>€{p.fertSpend}/ha</span></span>
-                </div>
-                {/* Mini score strip */}
-                <div style={{ display:"flex", gap:3, marginTop:10 }}>
-                  {[p.priceScore, p.agronomyScore, p.innovationScore, p.sustainScore, p.coopScore].map((s,j)=>(
-                    <div key={j} style={{ flex:1, height:4, borderRadius:2, background:`${["#f43f5e","#0ea5e9","#10b981","#a78bfa","#f59e0b"][j]}${Math.round(s/100*255).toString(16).padStart(2,"0")}` }} />
-                  ))}
-                </div>
-                <div style={{ display:"flex", justifyContent:"space-between", marginTop:2 }}>
-                  {["Price","Agro","Innov.","Green","Coop"].map((l,j)=><span key={j} style={{ color:"#334155", fontSize:9 }}>{l}</span>)}
-                </div>
-              </div>
-            ))}
+          <div>
+            <h3 style={{ color:"#94a3b8", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:14 }}>Structural Implications for Fertilizer Demand</h3>
+            <div className="chart-grid-2">{own.implications.map((item,i)=><InsightCard key={i} item={item}/>)}</div>
           </div>
         </div>
       )}
 
-      {/* DETAIL MODE */}
-      {viewMode === "detail" && (
-        <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
-          {/* Hero card */}
-          <div style={{ background:`linear-gradient(135deg, ${persona.color}15, #0a0f1a)`, border:`1px solid ${persona.color}30`, borderRadius:16, padding:"24px 24px" }}>
-            <div style={{ display:"flex", alignItems:"flex-start", gap:20, flexWrap:"wrap" }}>
-              <div style={{ fontSize:56 }}>{persona.emoji}</div>
-              <div style={{ flex:1, minWidth:200 }}>
-                <div style={{ display:"flex", alignItems:"center", gap:10, flexWrap:"wrap", marginBottom:6 }}>
-                  <h2 style={{ color:persona.color, fontSize:22, fontWeight:800, margin:0 }}>{persona.nickname}</h2>
-                  <span style={{ padding:"3px 10px", background:persona.color+"25", color:persona.color, borderRadius:20, fontSize:11, fontWeight:700 }}>{persona.share}% of French farmers</span>
-                </div>
-                <p style={{ color:"#94a3b8", fontSize:13, fontStyle:"italic", marginBottom:10 }}>"{persona.tagline}"</p>
-                <p style={{ color:"#cbd5e1", fontSize:13, lineHeight:1.8, margin:0 }}>{persona.description}</p>
-              </div>
-              <div style={{ background:"#0a0f1a", border:`1px solid ${persona.color}30`, borderRadius:12, padding:"14px 18px", minWidth:200 }}>
-                <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:8 }}>OCP Opportunity</p>
-                <p style={{ color:"#e2e8f0", fontSize:12, lineHeight:1.7 }}>{persona.ocpOpportunity}</p>
-              </div>
-            </div>
+      {/* ── PERSONAS TAB ── */}
+      {farmerTab==="personas" && (
+        <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+          <div style={{ background:"linear-gradient(135deg,#0a0f1a,#0d1225)", border:"1px solid #1e293b", borderRadius:14, padding:"16px 18px" }}>
+            <p style={{ color:"#94a3b8", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:6 }}>France — 6 Farmer Archetypes</p>
+            <p style={{ color:"#64748b", fontSize:12, lineHeight:1.7, margin:0 }}>Based on Agreste 2020 census data, McKinsey global farmer surveys, and OCP commercial field intelligence.</p>
           </div>
 
-          {/* Profile grid */}
-          <div className="chart-grid-2">
-            {/* Radar */}
-            <div className="card">
-              <h3 className="card-title">Behavioral Profile — {persona.nickname}</h3>
-              <PersonaRadar persona={persona} />
-              <div style={{ display:"flex", flexDirection:"column", gap:6, marginTop:4 }}>
-                <ScoreBar label="Price Sensitivity"   val={persona.priceScore}     color="#f43f5e" />
-                <ScoreBar label="Agronomy Focus"      val={persona.agronomyScore}  color="#0ea5e9" />
-                <ScoreBar label="Innovation Adoption" val={persona.innovationScore} color="#10b981" />
-                <ScoreBar label="Sustainability"       val={persona.sustainScore}   color="#a78bfa" />
-                <ScoreBar label="Coop Loyalty"         val={persona.coopScore}      color="#f59e0b" />
-                <ScoreBar label="Digital Adoption"     val={persona.digitalScore}   color="#64748b" />
-              </div>
-            </div>
-
-            {/* Stats */}
-            <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-              {/* Key facts */}
-              <div className="card">
-                <h3 className="card-title">Key Profile Facts</h3>
-                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
-                  {[
-                    { label:"Farm size",       val:persona.farmSize },
-                    { label:"Age range",        val:persona.age },
-                    { label:"Main region",      val:persona.region },
-                    { label:"Land tenure",      val:persona.tenure },
-                    { label:"Legal structure",  val:persona.structure },
-                    { label:"Buy channel",      val:persona.channel },
-                  ].map((item,i)=>(
-                    <div key={i} style={{ background:"#0a0f1a", borderRadius:8, padding:"8px 10px" }}>
-                      <p style={{ color:"#475569", fontSize:10, textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:3 }}>{item.label}</p>
-                      <p style={{ color:"#e2e8f0", fontSize:11, fontWeight:500 }}>{item.val}</p>
-                    </div>
-                  ))}
+          <div style={{ display:"flex", gap:10, flexWrap:"wrap", marginBottom:4 }}>
+            {FARMER_PERSONAS.map(p=>(
+              <button key={p.id} onClick={()=>{setActivePersona(p.id);setViewMode("detail");}}
+                style={{ display:"flex", alignItems:"center", gap:7, padding:"9px 14px", borderRadius:12, cursor:"pointer", background:activePersona===p.id?p.color+"22":"#0f172a", border:`1px solid ${activePersona===p.id?p.color:p.color+"30"}`, transition:"all 0.15s" }}>
+                <span style={{ fontSize:16 }}>{p.emoji}</span>
+                <div style={{ textAlign:"left" }}>
+                  <p style={{ color:activePersona===p.id?p.color:"#94a3b8", fontSize:11, fontWeight:700, margin:0 }}>{p.nickname}</p>
+                  <p style={{ color:"#475569", fontSize:10, margin:0 }}>{p.share}%</p>
                 </div>
-              </div>
-
-              {/* Decision + fertiliser behavior */}
-              <div className="card">
-                <h3 className="card-title">Fertilizer Decision Logic</h3>
-                <div style={{ display:"flex", gap:8, marginBottom:8 }}>
-                  <div style={{ width:8, height:8, borderRadius:"50%", background:persona.color, flexShrink:0, marginTop:4 }} />
-                  <div>
-                    <p style={{ color:persona.color, fontSize:11, fontWeight:700, marginBottom:4 }}>Primary driver: {persona.decisionDriver}</p>
-                    <p style={{ color:"#94a3b8", fontSize:12, lineHeight:1.7 }}>{persona.fertiliserBehavior}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Stats strip */}
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(160px,1fr))", gap:10 }}>
-            {persona.stats.map((s,i)=>(
-              <div key={i} style={{ background:"linear-gradient(135deg,#0f172a,#0a1020)", border:`1px solid ${persona.color}20`, borderRadius:10, padding:"12px 14px" }}>
-                <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.07em", marginBottom:5 }}>{s.label}</p>
-                <p style={{ color:persona.color, fontSize:16, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>{s.value}</p>
-                <p style={{ color:"#334155", fontSize:10, marginTop:4 }}>{s.note}</p>
-              </div>
+              </button>
             ))}
           </div>
 
-          {/* Compare all archetypes */}
-          <div className="card">
-            <h3 className="card-title">Archetype Comparison — P2O5 Applied vs Fertilizer Spend</h3>
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={FARMER_PERSONAS.map(p=>({ name:p.emoji+" "+p.nickname.replace("The ",""), p2o5:p.p2o5KgHa, spend:p.fertSpend/10, color:p.color }))}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                <XAxis dataKey="name" tick={{ fill:"#64748b", fontSize:8 }} />
-                <YAxis yAxisId="left" tick={{ fill:"#64748b", fontSize:9 }} label={{ value:"P2O5 kg/ha", angle:-90, position:"insideLeft", fill:"#64748b", fontSize:9 }} />
-                <YAxis yAxisId="right" orientation="right" tick={{ fill:"#64748b", fontSize:9 }} label={{ value:"Spend €/ha ÷10", angle:90, position:"insideRight", fill:"#64748b", fontSize:9 }} />
-                <Tooltip content={<CustomTooltip />} />
-                <ReferenceLine yAxisId="left" y={55} stroke="#f59e0b80" strokeDasharray="4 4" label={{ value:"Rec.",fill:"#f59e0b",fontSize:9 }} />
-                <Bar yAxisId="left" dataKey="p2o5" name="P2O5 kg/ha" radius={[3,3,0,0]}>
-                  {FARMER_PERSONAS.map((p,i)=><Cell key={i} fill={p.color} />)}
-                </Bar>
-                <Bar yAxisId="right" dataKey="spend" name="Spend €/ha ÷10" fill="#1e293b" radius={[3,3,0,0]} />
-              </BarChart>
-            </ResponsiveContainer>
+          <div style={{ display:"flex", gap:8 }}>
+            {[["grid","📊 Overview"],["detail","🔍 Deep Dive"]].map(([k,l])=>(
+              <button key={k} onClick={()=>setViewMode(k)}
+                style={{ padding:"5px 13px", borderRadius:8, border:`1px solid ${viewMode===k?"#0ea5e9":"#1e293b"}`, background:viewMode===k?"#0ea5e920":"transparent", color:viewMode===k?"#0ea5e9":"#64748b", fontSize:11, cursor:"pointer" }}>
+                {l}
+              </button>
+            ))}
           </div>
+
+          {/* OVERVIEW */}
+          {viewMode==="grid" && (
+            <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+              <div className="chart-grid-2">
+                <div className="card">
+                  <h3 className="card-title">P2O5 Applied by Archetype (kg/ha)</h3>
+                  <p style={{ color:"#475569", fontSize:11, marginBottom:8 }}>vs Comifer recommendation: 55 kg/ha</p>
+                  <ResponsiveContainer width="100%" height={200}>
+                    <BarChart data={p2o5Chart} layout="vertical" margin={{ left:90, right:20 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" horizontal={false}/>
+                      <XAxis type="number" domain={[0,60]} tick={{ fill:"#64748b", fontSize:9 }}/>
+                      <YAxis type="category" dataKey="name" tick={{ fill:"#94a3b8", fontSize:10 }} width={90}/>
+                      <Tooltip content={<CustomTooltip/>}/>
+                      <ReferenceLine x={55} stroke="#f59e0b80" strokeDasharray="4 4" label={{ value:"Rec.", fill:"#f59e0b", fontSize:9 }}/>
+                      <Bar dataKey="value" name="P2O5 kg/ha" radius={[0,4,4,0]}>{p2o5Chart.map((d,i)=><Cell key={i} fill={d.fill}/>)}</Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="card">
+                  <h3 className="card-title">Segment Share (%)</h3>
+                  <ResponsiveContainer width="100%" height={200}>
+                    <PieChart>
+                      <Pie data={FARMER_PERSONAS.map(p=>({name:p.nickname,value:p.share,color:p.color}))} cx="50%" cy="50%" innerRadius={50} outerRadius={85} dataKey="value" paddingAngle={2}>
+                        {FARMER_PERSONAS.map((p,i)=><Cell key={i} fill={p.color}/>)}
+                      </Pie>
+                      <Tooltip formatter={(v,n)=>[`${v}%`,n]}/>
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div style={{ display:"flex", flexWrap:"wrap", gap:6, marginTop:4 }}>
+                    {FARMER_PERSONAS.map((p,i)=><div key={i} style={{ display:"flex", alignItems:"center", gap:4 }}><div style={{ width:8, height:8, borderRadius:2, background:p.color }}/><span style={{ color:"#64748b", fontSize:10 }}>{p.emoji} {p.share}%</span></div>)}
+                  </div>
+                </div>
+              </div>
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(265px,1fr))", gap:12 }}>
+                {FARMER_PERSONAS.map((p,i)=>(
+                  <div key={i} onClick={()=>{setActivePersona(p.id);setViewMode("detail");}}
+                    style={{ background:"#0a0f1a", border:`1px solid ${p.color}20`, borderTop:`3px solid ${p.color}`, borderRadius:12, padding:"14px", cursor:"pointer", transition:"all 0.15s" }}
+                    onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-2px)";e.currentTarget.style.boxShadow=`0 8px 20px ${p.color}20`;}}
+                    onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow="none";}}>
+                    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
+                      <div>
+                        <span style={{ fontSize:22 }}>{p.emoji}</span>
+                        <p style={{ color:p.color, fontSize:12, fontWeight:800, margin:"3px 0 1px" }}>{p.nickname}</p>
+                        <p style={{ color:"#475569", fontSize:10, fontStyle:"italic" }}>{p.tagline}</p>
+                      </div>
+                      <div style={{ textAlign:"right" }}>
+                        <p style={{ color:p.color, fontSize:20, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>{p.share}%</p>
+                        <p style={{ color:"#475569", fontSize:10 }}>of farmers</p>
+                      </div>
+                    </div>
+                    <p style={{ color:"#64748b", fontSize:11, lineHeight:1.6, marginBottom:8 }}>{p.description.slice(0,110)}…</p>
+                    <div style={{ display:"flex", justifyContent:"space-between" }}>
+                      <span style={{ color:"#334155", fontSize:10 }}>P: <span style={{ color:p.color, fontFamily:"'DM Mono',monospace" }}>{p.p2o5KgHa} kg/ha</span></span>
+                      <span style={{ color:"#334155", fontSize:10 }}>€{p.fertSpend}/ha</span>
+                    </div>
+                    <div style={{ display:"flex", gap:3, marginTop:8 }}>
+                      {[p.priceScore,p.agronomyScore,p.innovationScore,p.sustainScore,p.coopScore].map((s,j)=>(
+                        <div key={j} style={{ flex:1, height:4, borderRadius:2, background:`${["#f43f5e","#0ea5e9","#10b981","#a78bfa","#f59e0b"][j]}${Math.round(s/100*255).toString(16).padStart(2,"0")}` }}/>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* DEEP DIVE */}
+          {viewMode==="detail" && (
+            <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+              <div style={{ background:`linear-gradient(135deg,${persona.color}15,#0a0f1a)`, border:`1px solid ${persona.color}30`, borderRadius:16, padding:"22px" }}>
+                <div style={{ display:"flex", alignItems:"flex-start", gap:18, flexWrap:"wrap" }}>
+                  <div style={{ fontSize:50 }}>{persona.emoji}</div>
+                  <div style={{ flex:1, minWidth:200 }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:10, flexWrap:"wrap", marginBottom:5 }}>
+                      <h2 style={{ color:persona.color, fontSize:20, fontWeight:800, margin:0 }}>{persona.nickname}</h2>
+                      <span style={{ padding:"2px 9px", background:persona.color+"25", color:persona.color, borderRadius:20, fontSize:10, fontWeight:700 }}>{persona.share}% of French farmers</span>
+                    </div>
+                    <p style={{ color:"#94a3b8", fontSize:12, fontStyle:"italic", marginBottom:8 }}>"{persona.tagline}"</p>
+                    <p style={{ color:"#cbd5e1", fontSize:12, lineHeight:1.8, margin:0 }}>{persona.description}</p>
+                  </div>
+                  <div style={{ background:"#0a0f1a", border:`1px solid ${persona.color}30`, borderRadius:10, padding:"12px 16px", minWidth:180 }}>
+                    <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:6 }}>OCP Opportunity</p>
+                    <p style={{ color:"#e2e8f0", fontSize:11, lineHeight:1.7 }}>{persona.ocpOpportunity}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="chart-grid-2">
+                <div className="card">
+                  <h3 className="card-title">Behavioral Profile</h3>
+                  <PersonaRadar persona={persona}/>
+                  <div style={{ display:"flex", flexDirection:"column", gap:5, marginTop:4 }}>
+                    <ScoreBar label="Price Sensitivity"   val={persona.priceScore}     color="#f43f5e"/>
+                    <ScoreBar label="Agronomy Focus"      val={persona.agronomyScore}  color="#0ea5e9"/>
+                    <ScoreBar label="Innovation Adoption" val={persona.innovationScore} color="#10b981"/>
+                    <ScoreBar label="Sustainability"       val={persona.sustainScore}   color="#a78bfa"/>
+                    <ScoreBar label="Coop Loyalty"         val={persona.coopScore}      color="#f59e0b"/>
+                    <ScoreBar label="Digital Adoption"     val={persona.digitalScore}   color="#64748b"/>
+                  </div>
+                </div>
+                <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+                  <div className="card">
+                    <h3 className="card-title">Profile Facts</h3>
+                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:7 }}>
+                      {[["Farm size",persona.farmSize],["Age range",persona.age],["Main region",persona.region],["Tenure",persona.tenure],["Structure",persona.structure],["Channel",persona.channel]].map(([k,v])=>(
+                        <div key={k} style={{ background:"#0a0f1a", borderRadius:7, padding:"7px 9px" }}>
+                          <p style={{ color:"#475569", fontSize:9, textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:2 }}>{k}</p>
+                          <p style={{ color:"#e2e8f0", fontSize:11, fontWeight:500 }}>{v}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="card">
+                    <h3 className="card-title">Fertilizer Decision Logic</h3>
+                    <div style={{ display:"flex", gap:7, marginBottom:6 }}>
+                      <div style={{ width:7, height:7, borderRadius:"50%", background:persona.color, flexShrink:0, marginTop:4 }}/>
+                      <div>
+                        <p style={{ color:persona.color, fontSize:10, fontWeight:700, marginBottom:3 }}>Driver: {persona.decisionDriver}</p>
+                        <p style={{ color:"#94a3b8", fontSize:11, lineHeight:1.7 }}>{persona.fertiliserBehavior}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(155px,1fr))", gap:9 }}>
+                {persona.stats.map((s,i)=>(
+                  <div key={i} style={{ background:"linear-gradient(135deg,#0f172a,#0a1020)", border:`1px solid ${persona.color}18`, borderRadius:9, padding:"11px 13px" }}>
+                    <p style={{ color:"#64748b", fontSize:9, textTransform:"uppercase", letterSpacing:"0.07em", marginBottom:4 }}>{s.label}</p>
+                    <p style={{ color:persona.color, fontSize:15, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>{s.value}</p>
+                    <p style={{ color:"#334155", fontSize:9, marginTop:3 }}>{s.note}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
   );
 }
+
 
 // ─── QUANTITATIVE PAGES ───────────────────────────────────────────────────────
 
@@ -1599,86 +1617,94 @@ function MIAgronomyPage({ region }) {
   );
 }
 
-function MIOwnershipPage({ region }) {
-  const [histMode, setHistMode] = useState("farms"); // "farms" | "volume" — must be before any early return
-  const intel=MARKET_INTEL[region];
-  if (!intel?.ownership) return <MIPlaceholder region={region} />;
-  const own=intel.ownership;
-  const histData = own.farmSizeHistogram;
 
+// ─── MAIN APP ─────────────────────────────────────────────────────────────────
+// ─── HUB PAGE — choose your section ──────────────────────────────────────────
+function HubPage({ onChoose }) {
+  const [hov, setHov] = useState(null);
   return (
-    <div style={{ display:"flex",flexDirection:"column",gap:20 }}>
-      <div className="kpi-row">{own.kpis.map((k,i)=><KPICard key={i} {...k} />)}</div>
+    <div style={{ minHeight:"100vh", background:"#04080f", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", fontFamily:"'DM Sans','Segoe UI',sans-serif", padding:"40px 24px" }}>
+      <style>{`@keyframes hubFade{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}`}</style>
 
-      <div className="chart-grid-2">
-        {/* ── HISTOGRAM ── */}
-        <div className="card">
-          <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14 }}>
-            <h3 className="card-title" style={{ marginBottom:0 }}>Farm Size Distribution — France 2020</h3>
-            <div style={{ display:"flex",gap:6 }}>
-              {[["farms","# Farms"],["volume","Fert. Volume"]].map(([k,l])=>(
-                <button key={k} onClick={()=>setHistMode(k)}
-                  style={{ padding:"3px 10px",borderRadius:6,border:`1px solid ${histMode===k?"#0ea5e9":"#1e293b"}`,background:histMode===k?"#0ea5e920":"transparent",color:histMode===k?"#0ea5e9":"#64748b",fontSize:10,cursor:"pointer" }}>
-                  {l}
-                </button>
-              ))}
-            </div>
-          </div>
-          <p style={{ color:"#475569",fontSize:11,marginBottom:12 }}>
-            {histMode==="farms" ? "Number of farms (thousands) by size band — Agreste 2020 census" : "Share of total P2O5 fertilizer volume by farm size band"}
-          </p>
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={histData} margin={{ left:0, right:10, bottom:10 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="range" tick={{ fill:"#64748b", fontSize:9 }} angle={-20} textAnchor="end" height={40} />
-              <YAxis tick={{ fill:"#64748b", fontSize:9 }} label={{ value: histMode==="farms" ? "Farms (k)" : "Vol. %", angle:-90, position:"insideLeft", fill:"#64748b", fontSize:9 }} />
-              <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey={histMode==="farms"?"farms":"fertVolPct"} name={histMode==="farms"?"Farms (k)":"Fert. Vol. %"} radius={[4,4,0,0]}>
-                {histData.map((d,i)=><Cell key={i} fill={d.color} />)}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-          {/* Insight callout */}
-          <div style={{ background:"#0a1020",border:"1px solid #10b98130",borderRadius:8,padding:"10px 12px",marginTop:10 }}>
-            <p style={{ color:"#64748b",fontSize:11,lineHeight:1.6,margin:0 }}>
-              {histMode==="farms"
-                ? "The >200 ha segment is only 14% of farm count but accounts for 38% of total P2O5 fertilizer volume — the primary commercial target for bulk TSP programs."
-                : "Farms over 100 ha represent 28% of farms but command 62% of fertilizer volume. This is where precision P programs have the highest commercial impact."}
-            </p>
-          </div>
-        </div>
-
-        {/* Tenure donut */}
-        <div className="card">
-          <h3 className="card-title">Land Tenure Structure</h3>
-          <ResponsiveContainer width="100%" height={180}>
-            <PieChart><Pie data={own.tenure} cx="50%" cy="50%" innerRadius={45} outerRadius={75} dataKey="value" paddingAngle={3}>{own.tenure.map((d,i)=><Cell key={i} fill={d.color} />)}</Pie><Tooltip formatter={(v,n)=>[`${v}%`,n]} /></PieChart>
-          </ResponsiveContainer>
-          <div style={{ display:"flex",flexDirection:"column",gap:7,marginTop:4 }}>
-            {own.tenure.map((d,i)=>(
-              <div key={i} style={{ display:"flex",alignItems:"center",gap:10 }}>
-                <div style={{ width:10,height:10,borderRadius:2,background:d.color,flexShrink:0 }} />
-                <span style={{ color:"#94a3b8",fontSize:12,flex:1 }}>{d.name}</span>
-                <span style={{ color:d.color,fontSize:13,fontWeight:700,fontFamily:"'DM Mono',monospace" }}>{d.value}%</span>
-              </div>
-            ))}
-          </div>
-          <p style={{ color:"#334155",fontSize:11,marginTop:11,lineHeight:1.6 }}>~75% of agricultural land is operated under lease. The French bail rural (9-year) compresses investment horizons and suppresses long-term soil P building.</p>
+      {/* Logo */}
+      <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:48, animation:"hubFade 0.6s ease both" }}>
+        <div style={{ width:36,height:36,borderRadius:10,background:"linear-gradient(135deg,#0ea5e9,#0369a1)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:12,color:"#fff",fontFamily:"'DM Mono',monospace",boxShadow:"0 0 16px #0ea5e930" }}>SMO</div>
+        <div>
+          <p style={{ color:"#f1f5f9",fontWeight:800,fontSize:16,letterSpacing:"-0.02em",margin:0 }}>PhosStratOS</p>
+          <p style={{ color:"#334155",fontSize:11,margin:0 }}>OCP Nutricrops · P Separation Intelligence</p>
         </div>
       </div>
 
-      {/* Implications */}
-      <div>
-        <h3 style={{ color:"#94a3b8",fontSize:11,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:14 }}>Structural Implications for Fertilizer Demand</h3>
-        <div className="chart-grid-2">{own.implications.map((item,i)=><InsightCard key={i} item={item} />)}</div>
+      <p style={{ color:"rgba(255,255,255,0.35)",fontSize:13,marginBottom:52,letterSpacing:"0.06em",textTransform:"uppercase",animation:"hubFade 0.6s 0.1s ease both",opacity:0 }}>Select your workspace</p>
+
+      <div style={{ display:"flex", gap:24, flexWrap:"wrap", justifyContent:"center", width:"100%", maxWidth:860 }}>
+        {[
+          {
+            key:"quant", icon:"⚙",
+            title:"Quantitative Engine",
+            color:"#0ea5e9",
+            desc:"Model trained on field data across multiple fertilization strategies. Simulate scenarios, analyse P&L, and model agronomic response across crops and regions.",
+            tags:["Scenario Simulator","P&L Explorer","Agronomic Response","Model Insights"],
+            delay:"0.2s",
+          },
+          {
+            key:"intel", icon:"◎",
+            title:"Market Intelligence",
+            color:"#10b981",
+            desc:"Strategic and qualitative interpretation layer. Market fundamentals, farmer behaviour archetypes, competitive landscape, and regional crop analytics.",
+            tags:["Market Fundamentals","Farmer Behaviour","Competitive Landscape","Regional Analysis"],
+            delay:"0.35s",
+          },
+        ].map(card => (
+          <div key={card.key}
+            onClick={() => onChoose(card.key)}
+            onMouseEnter={() => setHov(card.key)}
+            onMouseLeave={() => setHov(null)}
+            style={{
+              flex:"1 1 360px", maxWidth:400,
+              background: hov===card.key ? `linear-gradient(135deg,${card.color}18,#0a1020)` : "linear-gradient(135deg,#0c1422,#080e18)",
+              border:`1px solid ${hov===card.key ? card.color+"60" : card.color+"20"}`,
+              borderRadius:20, padding:"36px 32px",
+              cursor:"pointer",
+              transition:"all 0.22s",
+              transform: hov===card.key ? "translateY(-6px)" : "none",
+              boxShadow: hov===card.key ? `0 20px 60px ${card.color}18` : "none",
+              animation:`hubFade 0.7s ${card.delay} ease both`, opacity:0,
+              position:"relative", overflow:"hidden",
+            }}>
+            {/* Corner glow */}
+            <div style={{ position:"absolute",top:-30,right:-30,width:100,height:100,borderRadius:"50%",background:card.color+"08",pointerEvents:"none" }}/>
+
+            <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:22 }}>
+              <div style={{ width:48,height:48,borderRadius:14,background:card.color+"18",border:`1px solid ${card.color}30`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22 }}>{card.icon}</div>
+              <div>
+                <p style={{ color:card.color,fontSize:11,textTransform:"uppercase",letterSpacing:"0.1em",fontWeight:700,margin:0,marginBottom:3 }}>{card.key==="quant"?"Workspace A":"Workspace B"}</p>
+                <p style={{ color:"#f1f5f9",fontSize:18,fontWeight:800,letterSpacing:"-0.02em",margin:0 }}>{card.title}</p>
+              </div>
+            </div>
+
+            <p style={{ color:"#64748b",fontSize:13,lineHeight:1.75,marginBottom:24 }}>{card.desc}</p>
+
+            <div style={{ display:"flex",flexWrap:"wrap",gap:7 }}>
+              {card.tags.map(t => (
+                <span key={t} style={{ background:card.color+"12",border:`1px solid ${card.color}25`,borderRadius:20,padding:"3px 10px",color:card.color,fontSize:10,fontWeight:600 }}>{t}</span>
+              ))}
+            </div>
+
+            <div style={{ marginTop:28,display:"flex",alignItems:"center",gap:8,color:hov===card.key?card.color:"#334155",fontSize:12,fontWeight:600,transition:"color 0.2s" }}>
+              Enter {card.title} <span style={{ fontSize:14 }}>→</span>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
 }
 
-// ─── MAIN APP ─────────────────────────────────────────────────────────────────
+
 export default function App() {
   const [hasEntered, setHasEntered] = useState(false);
+  const [hubDone,    setHubDone]    = useState(false);
   const [section,    setSection]    = useState("quant");
   const [quantPage,  setQuantPage]  = useState("overview");
   const [intelPage,  setIntelPage]  = useState("dynamics");
@@ -1699,12 +1725,11 @@ export default function App() {
     {key:"insights",  label:"Insights",  short:"Insights" },
   ];
   const intelPages=[
-    {key:"dynamics",  label:"Market Dynamics",   short:"Dynamics" },
-    {key:"farmer",    label:"Farmer Behavior",   short:"Behavior" },
-    {key:"strategy",  label:"Strategic Outlook", short:"Strategy" },
-    {key:"agronomy",  label:"Agronomic Insights",short:"Agronomy" },
-    {key:"ownership", label:"Farm Ownership",    short:"Ownership"},
-    {key:"regions",   label:"Regional Analysis", short:"Regions"  },
+    {key:"dynamics",  label:"Fundamentals",         short:"Fundamentals"   },
+    {key:"farmer",    label:"Farmer Behaviour",      short:"Farmer Behav."  },
+    {key:"strategy",  label:"Competitive Landscape", short:"Competitive"    },
+    {key:"agronomy",  label:"Agronomic Insights",    short:"Agronomy"       },
+    {key:"regions",   label:"Regional Analysis",     short:"Regions"        },
   ];
 
   const subPages   = section==="quant"?quantPages:intelPages;
@@ -1721,6 +1746,7 @@ export default function App() {
   };
 
   if (!hasEntered) return <LandingPage onEnter={() => setHasEntered(true)} />;
+  if (!hubDone) return <HubPage onChoose={s => { setSection(s); setHubDone(true); }} />;
 
   return (
     <div style={{ minHeight:"100vh",background:"#060d1a",color:"#e2e8f0",fontFamily:"'DM Sans','Segoe UI',sans-serif" }}>
@@ -1830,7 +1856,6 @@ export default function App() {
               {section==="intel"&&intelPage==="farmer"    &&<MIFarmerBehaviorPage region={region} />}
               {section==="intel"&&intelPage==="strategy"  &&<MIStrategyPage       region={region} />}
               {section==="intel"&&intelPage==="agronomy"  &&<MIAgronomyPage       region={region} />}
-              {section==="intel"&&intelPage==="ownership" &&<MIOwnershipPage      region={region} />}
               {section==="intel"&&intelPage==="regions"   &&<RegionalPage />}
             </div>
 
