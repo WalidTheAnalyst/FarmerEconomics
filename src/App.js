@@ -1836,31 +1836,120 @@ function MIFarmerPLPage() {
 
 function MIMarketDynamicsPage({ region }) {
   const intel=MARKET_INTEL[region];
+  const [recoOpen,setRecoOpen]=useState(false);
   if (!intel) return <MIPlaceholder region={region} />;
   const maxMix=Math.max(...intel.productMix.map(r=>r.val2022));
+
+  const MACRO_KPIS = [
+    { label:"Population", value:"68.4 M", unit:"habitants", year:"2024", accent:"#0ea5e9" },
+    { label:"Agriculture / GDP", value:"1.43%", unit:"share of GDP", year:"2024", accent:"#10b981" },
+    { label:"P2O5 consumed", value:"226 kt", unit:"nutrient", year:"2023", accent:"#f59e0b" },
+    { label:"Total agri. land", value:"27 000 kha", unit:"utilised area", year:"2024", accent:"#a78bfa" },
+  ];
+
+  const TRENDS = [
+    { icon:"📉", title:"P use collapsed", body:"After 2021, phosphate use dropped sharply — a ~29% fall in P applications. Only about half of French parcels now receive any mineral P at all. Soils are being quietly mined." },
+    { icon:"✂️", title:"Price shock → deferred P", body:"The 2022 price spike hit farm cash flows hard. In practice, farmers cut P and K first and protect nitrogen. P becomes the adjustment variable — with long-term soil consequences." },
+    { icon:"🚢", title:"Import-dependent, exposed", body:"France produces no TSP or DAP. It imports everything. Morocco and Russia hold the dominant positions. European environmental pressure on Russian supply is a structural risk." },
+    { icon:"🧪", title:"Mix shifting to value-added", body:"Standard NPKs are losing ground. Farmers and coops are moving toward NPK+ grades — blends with sulphur, micronutrients or biostimulants. Timac, ICL and Yara are driving this hard." },
+    { icon:"👨‍🌾", title:"Two-speed farming", body:"Large, younger farms are adopting precision ag, VRA, and data-based fertilization. Smaller, older farms remain price-driven and inertial. Two very different commercial strategies are needed." },
+    { icon:"🏛️", title:"Coops = the real gatekeepers", body:"Distribution is consolidating. A few large purchasing groups control blending, warehousing and agronomy advice. If you're not working with them, you're not in the market." },
+    { icon:"🌱", title:"Low carbon = commercial opportunity", body:"EU regulation and FMCG supply chain pressure are accelerating demand for low-cadmium, low-carbon fertilizers. OCP's Moroccan P has a structural quality advantage here." },
+  ];
+
+  const RECOS = [
+    { icon:"📢", color:"#0ea5e9", title:"Rebuild P consumption", body:"Quantify the agronomic gap, run campaigns on the economic value of balanced P fertilization using Comifer/BDAT data. Partner with coops, INRAE and Arvalis for multi-year field trials — flagship farms that prove yield and soil fertility benefits." },
+    { icon:"🌾", color:"#10b981", title:"Position TSP as the reference low-carbon P", body:"Make 'High P / Low N' the default narrative for French broad-acre crops — winter cereals, rapeseed, pulses. Build a portfolio around it: high-P NPs, DAP, customized PK/NP blends that enable N/P decoupling." },
+    { icon:"🤝", color:"#f59e0b", title:"Co-design blends with major coops", body:"Use regional soil data and crop requirements to create PK and PK+ products with secondary nutrients and micronutrients. Consider an industrial JV for PK blending to compete directly with ICL and Timac on semi-specialty products." },
+    { icon:"🛰️", color:"#a78bfa", title:"Build a farmer-centric service layer", body:"Local agronomy team + digital offering around soil testing, mapping and precision tools (BeApi etc). Regular workshops, field days and Ferti-tour roadshows with coops and private retailers." },
+    { icon:"🏗️", color:"#818cf8", title:"Go direct-to-coop in France", body:"Create a local commercial subsidiary. Formalize long-term partnerships with key purchasing groups, offer flexible contracting and consignment stock. Co-brand customized blends to bypass importers and improve netbacks." },
+    { icon:"⚖️", color:"#f43f5e", title:"Own the regulatory narrative", body:"Work with UNIFA, Comifer, FNSEA and FMCGs to promote science-based standards that favor high-quality, low-cadmium Moroccan P. Position OCP Nutricrops as the partner for low-carbon, resilient cropping systems in France." },
+  ];
+
   return (
-    <div style={{ display:"flex",flexDirection:"column",gap:20 }}>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:8,marginBottom:4}}>
-        <p style={{color:"#334155",fontSize:11}}>Data period: <span style={{color:"#64748b",fontWeight:600}}>2023 (P2O5 consumption)</span> · <span style={{color:"#64748b",fontWeight:600}}>2024 (import origins)</span> · Source: Agreste, UNIFA, French Ministry of Agriculture</p>
+    <div style={{ display:"flex",flexDirection:"column",gap:22 }}>
+
+      {/* Macro KPIs — clean, no data period header */}
+      <div style={{ display:"flex",gap:12,flexWrap:"wrap" }}>
+        {MACRO_KPIS.map((k,i)=>(
+          <div key={i} style={{ background:"linear-gradient(135deg,#0f172a,#0a1020)",border:`1px solid ${k.accent}25`,borderRadius:14,padding:"16px 20px",flex:"1 1 150px",minWidth:140,position:"relative",overflow:"hidden" }}>
+            <div style={{ position:"absolute",top:-12,right:-12,width:50,height:50,borderRadius:"50%",background:k.accent+"08" }}/>
+            <p style={{ color:"#64748b",fontSize:10,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:6 }}>{k.label}</p>
+            <p style={{ color:k.accent,fontSize:22,fontWeight:800,fontFamily:"'DM Mono',monospace",margin:0 }}>{k.value}</p>
+            <p style={{ color:"#475569",fontSize:11,marginTop:3 }}>{k.unit}</p>
+            <span style={{ position:"absolute",bottom:10,right:12,color:k.accent+"60",fontSize:10,fontFamily:"'DM Mono',monospace" }}>{k.year}</span>
+          </div>
+        ))}
       </div>
-      <div className="kpi-row">{intel.kpis.map((k,i)=><KPICard key={i} {...k} />)}</div>
+
+      {/* Product mix + import origin */}
       <div className="chart-grid-2">
         <div className="card">
-          <h3 className="card-title">P2O5 Consumption by Product — kt (2022 → 2023)</h3>
-          <p style={{color:"#334155",fontSize:10,marginBottom:10}}>Source: Agreste / UNIFA — 2022/2023 season</p>
+          <h3 className="card-title">P2O5 Consumption by Product — kt</h3>
+          <p style={{color:"#334155",fontSize:10,marginBottom:10}}>2022 → 2023 · Source: Agreste / UNIFA</p>
           <div style={{ display:"flex",flexDirection:"column",gap:12,marginTop:4 }}>
             {intel.productMix.map((row,i)=><AnimBar key={i} label={row.name} val2022={row.val2022} val2023={row.val2023} maxVal={maxMix} color={row.color} />)}
           </div>
         </div>
         <div className="card">
-          <h3 className="card-title">DAP/MAP Import Origin — kt P2O5 (2024)</h3>
-          <ResponsiveContainer width="100%" height={200}>
-            <PieChart><Pie data={intel.importOrigin} cx="50%" cy="50%" outerRadius={80} dataKey="value" label={({name,value})=>`${name} ${value}kt`} labelLine={false}>{intel.importOrigin.map((d,i)=><Cell key={i} fill={d.color} />)}</Pie><Tooltip formatter={(v,n)=>[`${v} kt`,n]} /></PieChart>
+          <h3 className="card-title">DAP/MAP Import Origin — kt P2O5</h3>
+          <p style={{color:"#334155",fontSize:10,marginBottom:6}}>2024 · Source: UNIFA / French Customs</p>
+          <ResponsiveContainer width="100%" height={195}>
+            <PieChart><Pie data={intel.importOrigin} cx="50%" cy="50%" outerRadius={78} dataKey="value" label={({name,value})=>`${name} ${value}kt`} labelLine={false}>{intel.importOrigin.map((d,i)=><Cell key={i} fill={d.color} />)}</Pie><Tooltip formatter={(v,n)=>[`${v} kt`,n]} /></PieChart>
           </ResponsiveContainer>
-          <div style={{ display:"flex",flexWrap:"wrap",gap:8,marginTop:6 }}>{intel.importOrigin.map((d,i)=><div key={i} style={{ display:"flex",alignItems:"center",gap:5 }}><div style={{ width:8,height:8,borderRadius:2,background:d.color }} /><span style={{ color:"#94a3b8",fontSize:11 }}>{d.name} {d.value}kt</span></div>)}</div>
+          <div style={{ display:"flex",flexWrap:"wrap",gap:8,marginTop:4 }}>{intel.importOrigin.map((d,i)=><div key={i} style={{ display:"flex",alignItems:"center",gap:5 }}><div style={{ width:8,height:8,borderRadius:2,background:d.color }}/><span style={{ color:"#94a3b8",fontSize:11 }}>{d.name} {d.value}kt</span></div>)}</div>
         </div>
       </div>
-      <div><h3 style={{ color:"#94a3b8",fontSize:11,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:14 }}>Market Dynamics</h3><div className="chart-grid-2">{intel.dynamics.map((item,i)=><InsightCard key={i} item={item} />)}</div></div>
+
+      {/* What's happening — plain-language trend cards */}
+      <div>
+        <p style={{ color:"#475569",fontSize:10,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:14,fontWeight:600 }}>What's happening in the French P market</p>
+        <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:12 }}>
+          {TRENDS.map((t,i)=>(
+            <div key={i} style={{ background:"#0a0f1a",border:"1px solid #1e293b",borderRadius:12,padding:"14px 16px",display:"flex",gap:12,alignItems:"flex-start" }}>
+              <span style={{ fontSize:20,flexShrink:0,marginTop:1 }}>{t.icon}</span>
+              <div>
+                <p style={{ color:"#e2e8f0",fontSize:12,fontWeight:700,marginBottom:5 }}>{t.title}</p>
+                <p style={{ color:"#64748b",fontSize:12,lineHeight:1.7,margin:0 }}>{t.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* "So what?" reveal */}
+      <div style={{ borderTop:"1px solid #1e293b",paddingTop:20 }}>
+        {!recoOpen ? (
+          <button onClick={()=>setRecoOpen(true)}
+            style={{ width:"100%",background:"linear-gradient(135deg,#0f2a1a,#0a1628)",border:"1px solid #10b98140",borderRadius:14,padding:"20px 24px",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between",gap:16,transition:"all 0.2s" }}
+            onMouseEnter={e=>{e.currentTarget.style.borderColor="#10b981";e.currentTarget.style.boxShadow="0 0 20px #10b98115";}}
+            onMouseLeave={e=>{e.currentTarget.style.borderColor="#10b98140";e.currentTarget.style.boxShadow="none";}}>
+            <div style={{ textAlign:"left" }}>
+              <p style={{ color:"#10b981",fontSize:11,textTransform:"uppercase",letterSpacing:"0.1em",fontWeight:700,marginBottom:6 }}>So what does this mean for OCP?</p>
+              <p style={{ color:"#64748b",fontSize:13,margin:0 }}>The market is broken. Soil P is being depleted. Coops control access. Low-carbon products are in demand. Click to see the 6 strategic plays that follow directly from this.</p>
+            </div>
+            <span style={{ color:"#10b981",fontSize:22,flexShrink:0 }}>→</span>
+          </button>
+        ) : (
+          <div>
+            <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16 }}>
+              <p style={{ color:"#10b981",fontSize:11,textTransform:"uppercase",letterSpacing:"0.1em",fontWeight:700 }}>Strategic recommendations for OCP Nutricrops — France</p>
+              <button onClick={()=>setRecoOpen(false)} style={{ background:"transparent",border:"1px solid #1e293b",color:"#475569",borderRadius:6,padding:"4px 10px",fontSize:11,cursor:"pointer" }}>← hide</button>
+            </div>
+            <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:12 }}>
+              {RECOS.map((r,i)=>(
+                <div key={i} style={{ background:"#0a0f1a",border:`1px solid ${r.color}25`,borderLeft:`3px solid ${r.color}`,borderRadius:12,padding:"14px 16px" }}>
+                  <div style={{ display:"flex",alignItems:"center",gap:8,marginBottom:8 }}>
+                    <span style={{ fontSize:16 }}>{r.icon}</span>
+                    <p style={{ color:r.color,fontSize:11,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.05em",margin:0 }}>{r.title}</p>
+                  </div>
+                  <p style={{ color:"#94a3b8",fontSize:12,lineHeight:1.75,margin:0 }}>{r.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
