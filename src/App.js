@@ -1847,15 +1847,7 @@ function MIMarketDynamicsPage({ region }) {
     { label:"Total agri. land", value:"27 000 kha", unit:"utilised area", year:"2024", accent:"#a78bfa" },
   ];
 
-  const TRENDS = [
-    { icon:"📉", title:"P use collapsed", body:"After 2021, phosphate use dropped sharply — a ~29% fall in P applications. Only about half of French parcels now receive any mineral P at all. Soils are being quietly mined." },
-    { icon:"✂️", title:"Price shock → deferred P", body:"The 2022 price spike hit farm cash flows hard. In practice, farmers cut P and K first and protect nitrogen. P becomes the adjustment variable — with long-term soil consequences." },
-    { icon:"🚢", title:"Import-dependent, exposed", body:"France produces no TSP or DAP. It imports everything. Morocco and Russia hold the dominant positions. European environmental pressure on Russian supply is a structural risk." },
-    { icon:"🧪", title:"Mix shifting to value-added", body:"Standard NPKs are losing ground. Farmers and coops are moving toward NPK+ grades — blends with sulphur, micronutrients or biostimulants. Timac, ICL and Yara are driving this hard." },
-    { icon:"👨‍🌾", title:"Two-speed farming", body:"Large, younger farms are adopting precision ag, VRA, and data-based fertilization. Smaller, older farms remain price-driven and inertial. Two very different commercial strategies are needed." },
-    { icon:"🏛️", title:"Coops = the real gatekeepers", body:"Distribution is consolidating. A few large purchasing groups control blending, warehousing and agronomy advice. If you're not working with them, you're not in the market." },
-    { icon:"🌱", title:"Low carbon = commercial opportunity", body:"EU regulation and FMCG supply chain pressure are accelerating demand for low-cadmium, low-carbon fertilizers. OCP's Moroccan P has a structural quality advantage here." },
-  ];
+
 
   const RECOS = [
     { icon:"📢", color:"#0ea5e9", title:"Rebuild P consumption", body:"Quantify the agronomic gap, run campaigns on the economic value of balanced P fertilization using Comifer/BDAT data. Partner with coops, INRAE and Arvalis for multi-year field trials — flagship farms that prove yield and soil fertility benefits." },
@@ -2020,6 +2012,432 @@ function MIMarketDynamicsPage({ region }) {
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function MIFarmerBSPage() {
+  const [farmType, setFarmType] = useState("Cereals");
+  const [expandedBS, setExpandedBS] = useState({ assets:true, equity:true, debt:true });
+  const [activeTooltip, setActiveTooltip] = useState(null);
+  const toggleBS = key => setExpandedBS(e => ({...e, [key]:!e[key]}));
+
+  // Balance sheet data from FADN/RICA France 2024 (average per farm, €/Ha)
+  const BS_DATA = {
+    "Cereals": {
+      color:"#0ea5e9", emoji:"🌾",
+      label:"Cereals",
+      note:"Céréales et oléoprotéagineux — Average per farm · €/Ha · 2024",
+      assets: {
+        fixed: {
+          total: 1671.98,
+          items: {
+            "Land": 372.38,
+            "Land improvements": 22.03,
+            "Buildings": 187.52,
+            "Specialised installations": 67.50,
+            "Machinery": 769.75,
+            "Plantations (incl. forest)": 4.75,
+            "Breeding livestock": 35.09,
+            "Other fixed assets": 213.00,
+          }
+        },
+        current: {
+          total: 1539.65,
+          items: {
+            "Inventories & work in progress": 637.34,
+            "of which current livestock": 23.74,
+            "Receivables": 476.89,
+            "Cash & equivalents": 425.49,
+            "Asset accruals": 18.99,
+          }
+        },
+        total: 3230.62,
+      },
+      equity: {
+        total: 1959.65,
+        items: {
+          "Initial individual capital": 1241.67,
+          "Change in initial capital": 700.84,
+          "Investment subsidies": 17.14,
+        }
+      },
+      debt: {
+        total: 1269.19,
+        items: {
+          "Long & medium-term debt": 803.50,
+          "Short-term borrowings & other financial liabilities": 119.13,
+          "Trade & other payables": 346.64,
+          "Liability accruals": 1.85,
+        }
+      },
+      totalLE: 3230.62,
+      ratios: {
+        gosHa: 0.35,
+        gosAWU: 40.57,
+        profitHa: 0.10,
+        profitAWU: 11.97,
+        debtRatio: 39.29,
+        marginRate: 25.01,
+      }
+    },
+    "Oilseed & Protein": {
+      color:"#10b981", emoji:"🌻",
+      label:"Oilseed & Protein Crops",
+      note:"Oléagineux & protéagineux — Average per farm · €/Ha · 2024",
+      assets: {
+        fixed: {
+          total: 3060.96,
+          items: {
+            "Land": 344.48,
+            "Land improvements": 18.32,
+            "Buildings": 462.91,
+            "Specialised installations": 191.46,
+            "Machinery": 1091.17,
+            "Plantations (incl. forest)": 16.98,
+            "Breeding livestock": 76.24,
+            "Other fixed assets": 859.40,
+          }
+        },
+        current: {
+          total: 2754.20,
+          items: {
+            "Inventories & work in progress": 1115.75,
+            "of which current livestock": 60.60,
+            "Receivables": 954.95,
+            "Cash & equivalents": 683.50,
+            "Asset accruals": 54.70,
+          }
+        },
+        total: 5869.86,
+      },
+      equity: {
+        total: 3389.97,
+        items: {
+          "Initial individual capital": 1929.66,
+          "Change in initial capital": 1405.52,
+          "Investment subsidies": 54.70,
+        }
+      },
+      debt: {
+        total: 2472.74,
+        items: {
+          "Long & medium-term debt": 1595.19,
+          "Short-term borrowings & other financial liabilities": 166.16,
+          "Trade & other payables": 711.39,
+          "Liability accruals": 7.15,
+        }
+      },
+      totalLE: 5869.86,
+      ratios: {
+        gosHa: 1.17,
+        gosAWU: 101.85,
+        profitHa: 0.75,
+        profitAWU: 65.43,
+        debtRatio: 42.13,
+        marginRate: 36.36,
+      }
+    }
+  };
+
+  const RATIO_TOOLTIPS = {
+    gosHa: { label:"GOS/ha (k€/ha)", desc:"Gross Operating Surplus per hectare measures how much surplus is generated from farming operations before depreciation and financial charges, normalized by cultivated area. It captures operational profitability intensity per unit of land and is a key indicator of land productivity and capital efficiency." },
+    gosAWU: { label:"GOS / AWU non-salaried (k€/UTA)", desc:"Gross Operating Surplus per non-salaried Annual Work Unit approximates the economic return to the farmer's own labour. It is the closest measure to an entrepreneurial income equivalent in FADN accounting, and is routinely used to benchmark farm viability against a reference wage in the broader economy." },
+    profitHa: { label:"Current profit before tax / ha (k€/ha)", desc:"Current profit before tax per hectare represents the accounting net income of the farm per unit of area, after all operating costs, depreciation, and financial expenses but before corporate or income tax. It is the most complete measure of economic profitability at the farm level on a land-normalized basis." },
+    profitAWU: { label:"Current profit before tax / AWU non-salaried (k€/UTA)", desc:"Current profit before tax normalized by non-salaried labour units is the definitive measure of financial return to the farm entrepreneur. It captures whether the farm generates a remuneration comparable to or above the opportunity cost of labour in the wider economy, which is the fundamental solvency test for a family farming enterprise." },
+    debtRatio: { label:"Debt ratio — Debt / Total Assets (%)", desc:"The debt-to-assets ratio measures the leverage of the farm balance sheet. A higher ratio indicates that a larger share of the asset base is financed by external creditors rather than equity, which amplifies both returns and risks. In agricultural economics this ratio is used to assess financial resilience and the capacity to absorb commodity price shocks without triggering debt restructuring." },
+    marginRate: { label:"Margin rate — GOS / Revenue (%)", desc:"The gross operating margin rate expresses what fraction of total farm revenue is retained as gross operating surplus after covering all variable and operating costs. It is a direct measure of the farm's ability to convert revenue into economic surplus, and serves as a proxy for cost structure efficiency and pricing power relative to input costs." },
+  };
+
+  const d = BS_DATA[farmType];
+
+  const fmtV = v => {
+    const abs = Math.abs(v);
+    const s = abs >= 1000 ? abs.toLocaleString("fr-FR",{minimumFractionDigits:0,maximumFractionDigits:0}) : abs.toFixed(0);
+    return (v < 0 ? "−" : "") + "€" + s;
+  };
+
+  // Chart data
+  const assetBreakdown = [
+    { name:"Fixed", value: d.assets.fixed.total, fill:"#0ea5e9" },
+    { name:"Current", value: d.assets.current.total, fill:"#38bdf8" },
+  ];
+  const liabBreakdown = [
+    { name:"Equity", value: d.equity.total, fill:"#10b981" },
+    { name:"LT/MT Debt", value: d.debt.items["Long & medium-term debt"], fill:"#f43f5e" },
+    { name:"ST Debt", value: d.debt.items["Short-term borrowings & other financial liabilities"], fill:"#f59e0b" },
+    { name:"Payables", value: d.debt.items["Trade & other payables"], fill:"#a78bfa" },
+    { name:"Accruals", value: d.debt.items["Liability accruals"], fill:"#64748b" },
+  ];
+  const assetDonut = [
+    ...Object.entries(d.assets.fixed.items).map(([k,v])=>({name:k,value:v,fill:"#0ea5e9"})),
+  ];
+  const debtLeverageData = [
+    { name:"Equity", value: d.equity.total, fill:"#10b981" },
+    { name:"Total Debt", value: d.debt.total, fill:"#f43f5e" },
+  ];
+  const ratioBarData = [
+    { name:"GOS/ha\n(k€)", value: d.ratios.gosHa, fill:"#0ea5e9" },
+    { name:"GOS/AWU\n(k€)", value: d.ratios.gosAWU, fill:"#38bdf8" },
+    { name:"Profit/ha\n(k€)", value: d.ratios.profitHa, fill:"#10b981" },
+    { name:"Profit/AWU\n(k€)", value: d.ratios.profitAWU, fill:"#4ade80" },
+  ];
+
+  const BSRow = ({ label, value, indent=0, bold=false, header=false, expandKey=null, children=null, color=null }) => {
+    const isOpen = expandedBS[expandKey];
+    const textColor = header?"#0ea5e9":bold?"#f1f5f9":"#94a3b8";
+    const valColor = color||(header?d.color:bold?"#f1f5f9":"#94a3b8");
+    const bg = header?"#080e1a":bold?"#0a1020":"transparent";
+    return (
+      <>
+        <div onClick={expandKey?()=>toggleBS(expandKey):undefined}
+          style={{ display:"flex", alignItems:"center", padding:`${header||bold?"9px":"6px"} 14px`,
+            background:bg, borderBottom:"1px solid #0d1829", cursor:expandKey?"pointer":"default",
+            paddingLeft: 14+indent*16 }}
+          onMouseEnter={e=>{if(!bold&&!header)e.currentTarget.style.background="#0a1018";}}
+          onMouseLeave={e=>{if(!bold&&!header)e.currentTarget.style.background=bg;}}>
+          {expandKey && <span style={{color:"#475569",fontSize:10,marginRight:7,width:10,flexShrink:0}}>{isOpen?"▼":"▶"}</span>}
+          {!expandKey && indent>0 && <span style={{color:"#1e3040",marginRight:7,width:10,flexShrink:0}}>└</span>}
+          {!expandKey && indent===0 && <span style={{width:17,flexShrink:0}}/>}
+          <span style={{ flex:1, fontSize:header?12:bold?12:11, fontWeight:header||bold?700:400, color:textColor }}>{label}</span>
+          <span style={{ fontSize:bold||header?12:11, fontWeight:bold||header?700:500, fontFamily:"'DM Mono',monospace", color:valColor, width:96, textAlign:"right" }}>{fmtV(value)}</span>
+          <span style={{ fontSize:10, color:"#334155", width:58, textAlign:"right", fontFamily:"'DM Mono',monospace" }}>{((value/d.assets.total)*100).toFixed(1)}%</span>
+        </div>
+        {expandKey && isOpen && children}
+      </>
+    );
+  };
+
+  return (
+    <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
+
+      {/* Header */}
+      <div>
+        <h2 style={{ color:"#f1f5f9", fontSize:17, fontWeight:800, marginBottom:3 }}>
+          Farmer Balance Sheet — Average per farm · €/Ha <span style={{color:"#475569",fontWeight:400,fontSize:13}}>(2024)</span>
+        </h2>
+        <p style={{ color:"#475569", fontSize:11 }}>Source: FADN / RICA France · Cereals and oilseed/protein crops only · Values in €/Ha · Other crop categories coming soon</p>
+      </div>
+
+      {/* Crop type selector */}
+      <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
+        {Object.entries(BS_DATA).map(([key,val])=>(
+          <button key={key} onClick={()=>setFarmType(key)}
+            style={{ display:"flex", alignItems:"center", gap:7, padding:"9px 16px", borderRadius:10,
+              border:`2px solid ${farmType===key?val.color:val.color+"28"}`,
+              background:farmType===key?val.color+"18":"transparent",
+              color:farmType===key?val.color:"#64748b",
+              fontSize:12, fontWeight:farmType===key?700:400, cursor:"pointer", transition:"all 0.15s" }}>
+            <span style={{fontSize:15}}>{val.emoji}</span> {key}
+          </button>
+        ))}
+        <div style={{ display:"flex", alignItems:"center", gap:7, padding:"9px 16px", borderRadius:10,
+          border:"1px dashed #1e293b", color:"#334155", fontSize:12, opacity:0.7, cursor:"not-allowed" }}>
+          🥦 Other crops <span style={{ background:"#f59e0b20",color:"#f59e0b",fontSize:9,fontWeight:700,padding:"1px 6px",borderRadius:10,border:"1px solid #f59e0b40",marginLeft:4 }}>SOON</span>
+        </div>
+      </div>
+
+      {/* Note strip */}
+      <div style={{ background:"#080e1a", border:"1px solid #1e293b", borderRadius:8, padding:"8px 14px" }}>
+        <span style={{ color:"#475569", fontSize:11, fontStyle:"italic" }}>{d.note}</span>
+      </div>
+
+      {/* ── VISUALS FIRST ── */}
+      {/* KPI strip */}
+      <div className="kpi-row">
+        <KPICard label="Total Assets"       value={fmtV(d.assets.total)+"/ha"}  sub="fixed + current assets"    accent={d.color} />
+        <KPICard label="Total Equity"        value={fmtV(d.equity.total)+"/ha"}  sub={((d.equity.total/d.assets.total)*100).toFixed(0)+"% of total assets"}  accent="#10b981" />
+        <KPICard label="Total Debt"          value={fmtV(d.debt.total)+"/ha"}    sub={`Debt ratio: ${d.ratios.debtRatio}%`}  accent="#f43f5e" />
+        <KPICard label="Fixed Assets"        value={fmtV(d.assets.fixed.total)+"/ha"} sub={((d.assets.fixed.total/d.assets.total)*100).toFixed(0)+"% of total assets"} accent="#a78bfa" />
+      </div>
+
+      {/* Chart row 1 */}
+      <div className="chart-grid-2">
+        {/* Asset composition bar */}
+        <div className="card">
+          <h3 className="card-title">Asset Composition (€/Ha)</h3>
+          <p style={{color:"#334155",fontSize:10,marginBottom:10}}>Fixed assets vs current assets · balance sheet structure</p>
+          <ResponsiveContainer width="100%" height={200}>
+            <BarChart data={[{name:farmType,...d.assets.fixed.items}]} layout="vertical" margin={{left:8,right:16}}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" horizontal={false}/>
+              <XAxis type="number" tick={{fill:"#64748b",fontSize:9}} />
+              <YAxis type="category" dataKey="name" tick={{fill:"#94a3b8",fontSize:10}} width={80}/>
+              <Tooltip formatter={v=>[fmtV(v),"€/ha"]} contentStyle={{background:"#0f172a",border:"1px solid #1e293b",borderRadius:8,fontSize:11}}/>
+              {assetBreakdown.map((a,i)=>(
+                <Bar key={i} dataKey={a.name} stackId="a" fill={a.fill} radius={i===assetBreakdown.length-1?[0,4,4,0]:[0,0,0,0]} />
+              ))}
+            </BarChart>
+          </ResponsiveContainer>
+          <div style={{display:"flex",gap:20,marginTop:8,paddingLeft:6}}>
+            {assetBreakdown.map((a,i)=>(
+              <div key={i} style={{display:"flex",alignItems:"center",gap:6}}>
+                <div style={{width:8,height:8,borderRadius:2,background:a.fill}}/>
+                <span style={{color:"#64748b",fontSize:11}}>{a.name}: {fmtV(a.value)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Liability + equity composition */}
+        <div className="card">
+          <h3 className="card-title">Funding Structure — Equity vs Debt (€/Ha)</h3>
+          <p style={{color:"#334155",fontSize:10,marginBottom:8}}>How the farm's asset base is financed · balance sheet liability side</p>
+          <ResponsiveContainer width="100%" height={180}>
+            <PieChart>
+              <Pie data={liabBreakdown} cx="50%" cy="50%" outerRadius={72} dataKey="value"
+                label={({name,value,cx,cy,midAngle,innerRadius,outerRadius})=>{
+                  const RADIAN=Math.PI/180;
+                  const r=innerRadius+(outerRadius-innerRadius)*0.55;
+                  const x=cx+r*Math.cos(-midAngle*RADIAN);
+                  const y=cy+r*Math.sin(-midAngle*RADIAN);
+                  return value>100?<text x={x} y={y} fill="#fff" textAnchor="middle" dominantBaseline="central" fontSize={9} fontWeight={700} fontFamily="DM Mono,monospace">{fmtV(value)}</text>:null;
+                }}
+                labelLine={false}>
+                {liabBreakdown.map((d2,i)=><Cell key={i} fill={d2.fill}/>)}
+              </Pie>
+              <Tooltip formatter={(v,n)=>[fmtV(v),n]} contentStyle={{background:"#0f172a",border:"1px solid #1e293b",borderRadius:8,fontSize:11}}/>
+            </PieChart>
+          </ResponsiveContainer>
+          <div style={{display:"flex",flexWrap:"wrap",gap:8,marginTop:4}}>
+            {liabBreakdown.map((a,i)=>(
+              <div key={i} style={{display:"flex",alignItems:"center",gap:5}}>
+                <div style={{width:8,height:8,borderRadius:2,background:a.fill}}/>
+                <span style={{color:"#94a3b8",fontSize:10}}>{a.name}: {fmtV(a.value)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Chart row 2 */}
+      <div className="chart-grid-2">
+        {/* Fixed asset breakdown */}
+        <div className="card">
+          <h3 className="card-title">Fixed Asset Breakdown (€/Ha)</h3>
+          <p style={{color:"#334155",fontSize:10,marginBottom:10}}>Decomposition of long-term productive capital stock</p>
+          <div style={{display:"flex",flexDirection:"column",gap:8}}>
+            {Object.entries(d.assets.fixed.items).map(([name,val],i)=>{
+              const pct = (val/d.assets.fixed.total)*100;
+              return (
+                <div key={i}>
+                  <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
+                    <span style={{color:"#94a3b8",fontSize:11}}>{name}</span>
+                    <span style={{color:d.color,fontSize:11,fontFamily:"'DM Mono',monospace",fontWeight:600}}>{fmtV(val)}</span>
+                  </div>
+                  <div style={{height:5,background:"#1e293b",borderRadius:3,overflow:"hidden"}}>
+                    <div style={{height:"100%",width:`${pct}%`,background:d.color,borderRadius:3,transition:"width 0.5s"}}/>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Equity vs debt leverage */}
+        <div className="card">
+          <h3 className="card-title">Leverage Analysis — Equity vs Total Debt (€/Ha)</h3>
+          <p style={{color:"#334155",fontSize:10,marginBottom:10}}>Financial solvency structure · debt ratio: {d.ratios.debtRatio}%</p>
+          <ResponsiveContainer width="100%" height={180}>
+            <BarChart data={debtLeverageData} margin={{left:8,right:16,bottom:4}}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false}/>
+              <XAxis dataKey="name" tick={{fill:"#94a3b8",fontSize:11}}/>
+              <YAxis tick={{fill:"#64748b",fontSize:9}} tickFormatter={v=>"€"+v.toLocaleString()}/>
+              <Tooltip formatter={(v,n)=>[fmtV(v),n]} contentStyle={{background:"#0f172a",border:"1px solid #1e293b",borderRadius:8,fontSize:11}}/>
+              <Bar dataKey="value" radius={[4,4,0,0]}>
+                {debtLeverageData.map((entry,i)=><Cell key={i} fill={entry.fill}/>)}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+          <div style={{background:"#060d1a",borderRadius:8,padding:"10px 14px",marginTop:12,border:"1px solid #1e293b"}}>
+            <p style={{color:"#64748b",fontSize:11,lineHeight:1.7,margin:0}}>
+              For every euro of assets, this farm type finances <span style={{color:"#f43f5e",fontWeight:600}}>{d.ratios.debtRatio.toFixed(1)}¢ through debt</span> and <span style={{color:"#10b981",fontWeight:600}}>{(100-d.ratios.debtRatio).toFixed(1)}¢ through equity</span>. This debt ratio reflects the structural capital intensity of the sector and the historical recourse to medium-term machinery and land improvement loans.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* ── BALANCE SHEET TABLE ── */}
+      <div style={{ background:"#0a1020", border:"1px solid #1e293b", borderRadius:14, overflow:"hidden" }}>
+        {/* Table header */}
+        <div style={{ display:"flex", alignItems:"center", padding:"12px 14px", background:"#060d1a", borderBottom:"1px solid #1e293b" }}>
+          <span style={{width:17,flexShrink:0}}/>
+          <span style={{ flex:1, color:"#475569", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em" }}>Line item</span>
+          <span style={{ width:96, textAlign:"right", color:"#475569", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em" }}>€ / ha</span>
+          <span style={{ width:58, textAlign:"right", color:"#475569", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em" }}>% total</span>
+        </div>
+
+        {/* ASSETS */}
+        <div style={{padding:"6px 0 2px",background:"#060d1a",borderBottom:"1px solid #0d1829"}}>
+          <span style={{paddingLeft:14,color:"#334155",fontSize:9,textTransform:"uppercase",letterSpacing:"0.1em"}}>Assets</span>
+        </div>
+        <BSRow label="Fixed Assets" value={d.assets.fixed.total} bold expandKey="assets">
+          {Object.entries(d.assets.fixed.items).map(([k,v],i)=>(
+            <BSRow key={i} label={k} value={v} indent={1} />
+          ))}
+        </BSRow>
+        <BSRow label="Current Assets" value={d.assets.current.total} bold expandKey="equity">
+          {Object.entries(d.assets.current.items).map(([k,v],i)=>(
+            <BSRow key={i} label={k} value={v} indent={1} />
+          ))}
+        </BSRow>
+        <BSRow label="TOTAL ASSETS" value={d.assets.total} bold header color={d.color} />
+
+        {/* LIABILITIES & EQUITY */}
+        <div style={{padding:"6px 0 2px",background:"#060d1a",borderBottom:"1px solid #0d1829",marginTop:4}}>
+          <span style={{paddingLeft:14,color:"#334155",fontSize:9,textTransform:"uppercase",letterSpacing:"0.1em"}}>Equity & Liabilities</span>
+        </div>
+        <BSRow label="Equity" value={d.equity.total} bold expandKey="debt">
+          {Object.entries(d.equity.items).map(([k,v],i)=>(
+            <BSRow key={i} label={k} value={v} indent={1} />
+          ))}
+        </BSRow>
+        <BSRow label="Total Debt" value={d.debt.total} bold color="#f43f5e">
+          {Object.entries(d.debt.items).map(([k,v],i)=>(
+            <BSRow key={i} label={k} value={v} indent={1} />
+          ))}
+        </BSRow>
+        <BSRow label="TOTAL LIABILITIES & EQUITY" value={d.totalLE} bold header color={d.color} />
+      </div>
+
+      {/* ── RATIOS ── */}
+      <div style={{ background:"#0a1020", border:"1px solid #1e293b", borderRadius:14, overflow:"hidden" }}>
+        <div style={{ padding:"12px 16px 10px", background:"#060d1a", borderBottom:"1px solid #1e293b" }}>
+          <p style={{ color:"#94a3b8", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, margin:0 }}>Key Financial Ratios</p>
+          <p style={{ color:"#334155", fontSize:10, margin:"3px 0 0" }}>Click the ⓘ icon for an economic definition of each ratio</p>
+        </div>
+        <div style={{ padding:16, display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))", gap:12 }}>
+          {[
+            { key:"gosHa",     value: d.ratios.gosHa.toFixed(2)+" k€/ha",   unit:"k€/ha",   accent:"#0ea5e9" },
+            { key:"gosAWU",    value: d.ratios.gosAWU.toFixed(2)+" k€/UTA",  unit:"k€/UTA",  accent:"#38bdf8" },
+            { key:"profitHa",  value: d.ratios.profitHa.toFixed(2)+" k€/ha", unit:"k€/ha",   accent:"#10b981" },
+            { key:"profitAWU", value: d.ratios.profitAWU.toFixed(2)+" k€/UTA",unit:"k€/UTA", accent:"#4ade80" },
+            { key:"debtRatio", value: d.ratios.debtRatio.toFixed(1)+"%",      unit:"%",       accent:"#f43f5e" },
+            { key:"marginRate",value: d.ratios.marginRate.toFixed(1)+"%",     unit:"%",       accent:"#f59e0b" },
+          ].map(r => {
+            const tip = RATIO_TOOLTIPS[r.key];
+            const isOpen = activeTooltip === r.key;
+            return (
+              <div key={r.key} style={{ background:"#080e1a", border:`1px solid ${r.accent}20`, borderRadius:10, padding:"12px 14px", position:"relative" }}>
+                <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:6 }}>
+                  <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.07em", margin:0, flex:1, paddingRight:6 }}>{tip.label}</p>
+                  <button
+                    onClick={()=>setActiveTooltip(isOpen?null:r.key)}
+                    style={{ background:"transparent", border:`1px solid ${r.accent}40`, borderRadius:"50%", width:18, height:18, display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", flexShrink:0, color:r.accent, fontSize:10, fontWeight:700, fontFamily:"serif", lineHeight:1 }}>
+                    i
+                  </button>
+                </div>
+                <p style={{ color:r.accent, fontSize:22, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>{r.value}</p>
+                {isOpen && (
+                  <div style={{ marginTop:10, padding:"10px 12px", background:"#060d1a", border:`1px solid ${r.accent}30`, borderRadius:8 }}>
+                    <p style={{ color:"#94a3b8", fontSize:11, lineHeight:1.75, margin:0 }}>{tip.desc}</p>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
     </div>
   );
 }
@@ -2208,6 +2626,7 @@ export default function App() {
     {key:"dynamics",  label:"Fundamentals",         short:"Fundamentals"   },
     {key:"farmer",    label:"Farmer Behaviour",      short:"Farmer Behav."  },
     {key:"farmerpl",  label:"Farmer P&L",            short:"Farmer P&L"     },
+    {key:"farmerbs",  label:"Farmer Balance Sheet",  short:"Balance Sheet"  },
     {key:"strategy",  label:"Competitive Landscape", short:"Competitive"    },
     {key:"agronomy",  label:"Agronomic Insights",    short:"Agronomy"       },
     {key:"regions",   label:"Regional Analysis",     short:"Regions"        },
@@ -2273,19 +2692,6 @@ export default function App() {
           </div>
         </div>
         <div style={{ display:"flex",gap:8,alignItems:"center" }}>
-          {section!=="atlas"&&(
-            <div style={{display:"flex",alignItems:"center",gap:6}}>
-              <div style={{background:"#1e293b",border:"1px solid #0ea5e940",borderRadius:6,padding:"6px 12px",display:"flex",alignItems:"center",gap:6}}>
-                <div style={{width:6,height:6,borderRadius:"50%",background:"#10b981",boxShadow:"0 0 6px #10b981"}}/>
-                <span style={{color:"#e2e8f0",fontSize:13,fontWeight:600}}>France</span>
-              </div>
-              <div style={{background:"#1e293b",border:"1px solid #334155",borderRadius:6,padding:"6px 12px",display:"flex",alignItems:"center",gap:6,opacity:0.5,cursor:"not-allowed"}}>
-                <div style={{width:6,height:6,borderRadius:"50%",background:"#f59e0b"}}/>
-                <span style={{color:"#64748b",fontSize:12}}>Turkey</span>
-                <span style={{background:"#f59e0b20",color:"#f59e0b",fontSize:9,fontWeight:700,padding:"1px 5px",borderRadius:10,border:"1px solid #f59e0b40"}}>SOON</span>
-              </div>
-            </div>
-          )}
           {section==="quant"&&!isOverview&&<select value={crop} onChange={e=>setCrop(e.target.value)}>{availableCrops.map(c=><option key={c}>{c}</option>)}</select>}
           {section!=="atlas"&&<button onClick={()=>setSidebarOpen(o=>!o)} style={{ background:"#1e293b",border:"1px solid #334155",color:"#94a3b8",padding:"6px 10px",borderRadius:6,fontSize:18,cursor:"pointer",lineHeight:1 }}>☰</button>}
         </div>
@@ -2358,6 +2764,7 @@ export default function App() {
               {section==="intel"&&intelPage==="dynamics"  &&<MIMarketDynamicsPage region={region} />}
               {section==="intel"&&intelPage==="farmer"    &&<MIFarmerBehaviorPage region={region} />}
               {section==="intel"&&intelPage==="farmerpl"  &&<MIFarmerPLPage />}
+              {section==="intel"&&intelPage==="farmerbs"  &&<MIFarmerBSPage />}
               {section==="intel"&&intelPage==="strategy"  &&<MIStrategyPage       region={region} />}
               {section==="intel"&&intelPage==="agronomy"  &&<MIAgronomyPage       region={region} />}
               {section==="intel"&&intelPage==="regions"   &&<RegionalPage />}
