@@ -1676,17 +1676,10 @@ function MIFarmerPLPage() {
       {/* Header */}
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", flexWrap:"wrap", gap:14 }}>
         <div>
-          <h2 style={{ color:"#f1f5f9", fontSize:17, fontWeight:800, marginBottom:3 }}>Farmer P&L — Average per farm · €/Ha</h2>
+          <h2 style={{ color:"#f1f5f9", fontSize:17, fontWeight:800, marginBottom:3 }}>Farmer P&L — Average per farm · €/Ha <span style={{color:"#475569",fontWeight:400,fontSize:13}}>(2024)</span></h2>
           <p style={{ color:"#475569", fontSize:11 }}>Source: FADN / RICA France · Standard Output &gt; 25k€ · Values in €/Ha unless stated</p>
         </div>
-        <a href="https://agriculture.ec.europa.eu/data-and-analysis/farm-structures-and-economics/fadn_en"
-          target="_blank" rel="noopener noreferrer"
-          style={{ display:"flex", alignItems:"center", gap:8, background:"#0a1a0e", border:"1px solid #10b98130", borderRadius:8, padding:"8px 14px", textDecoration:"none", flexShrink:0 }}
-          onMouseEnter={e=>e.currentTarget.style.background="#0f2415"}
-          onMouseLeave={e=>e.currentTarget.style.background="#0a1a0e"}>
-          <svg width="22" height="22" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#1e7145"/><text x="3.5" y="16" fontSize="9.5" fontWeight="800" fill="white" fontFamily="Arial,sans-serif">XLS</text></svg>
-          <span style={{ color:"#10b981", fontSize:11, fontWeight:600 }}>Download FADN source</span>
-        </a>
+
       </div>
 
       {/* Farm type selector */}
@@ -1847,10 +1840,14 @@ function MIMarketDynamicsPage({ region }) {
   const maxMix=Math.max(...intel.productMix.map(r=>r.val2022));
   return (
     <div style={{ display:"flex",flexDirection:"column",gap:20 }}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:8,marginBottom:4}}>
+        <p style={{color:"#334155",fontSize:11}}>Data period: <span style={{color:"#64748b",fontWeight:600}}>2023 (P2O5 consumption)</span> · <span style={{color:"#64748b",fontWeight:600}}>2024 (import origins)</span> · Source: Agreste, UNIFA, French Ministry of Agriculture</p>
+      </div>
       <div className="kpi-row">{intel.kpis.map((k,i)=><KPICard key={i} {...k} />)}</div>
       <div className="chart-grid-2">
         <div className="card">
           <h3 className="card-title">P2O5 Consumption by Product — kt (2022 → 2023)</h3>
+          <p style={{color:"#334155",fontSize:10,marginBottom:10}}>Source: Agreste / UNIFA — 2022/2023 season</p>
           <div style={{ display:"flex",flexDirection:"column",gap:12,marginTop:4 }}>
             {intel.productMix.map((row,i)=><AnimBar key={i} label={row.name} val2022={row.val2022} val2023={row.val2023} maxVal={maxMix} color={row.color} />)}
           </div>
@@ -1959,7 +1956,7 @@ function HubPage({ onChoose }) {
         </div>
       </div>
 
-      <p style={{ color:"rgba(255,255,255,0.35)",fontSize:13,marginBottom:52,letterSpacing:"0.06em",textTransform:"uppercase",animation:"hubFade 0.6s 0.1s ease both",opacity:0 }}>Select your workspace</p>
+      <p style={{ color:"#f1f5f9",fontSize:22,fontWeight:700,marginBottom:52,letterSpacing:"-0.01em",animation:"hubFade 0.6s 0.1s ease both",opacity:0 }}>Select your workspace</p>
 
       <div style={{ display:"flex", gap:24, flexWrap:"nowrap", justifyContent:"center", width:"100%", maxWidth:900 }}>
         {[
@@ -2136,18 +2133,40 @@ export default function App() {
       </div>
 
       {/* ── SECTION SWITCHER ── */}
-      <div style={{ background:"#080e1a",borderBottom:"1px solid #1e293b",padding:"0 16px",display:"flex",alignItems:"center",overflowX:"auto" }}>
-        {[{key:"quant",icon:"⚙",full:"Quantitative Engine",short:"Quant",color:"#0ea5e9"},{key:"intel",icon:"◎",full:"Market Intelligence",short:"Intel",color:"#10b981"}].map(s=>(
-          <button key={s.key} onClick={()=>setSection(s.key)}
-            style={{ padding:"11px 16px",background:"transparent",border:"none",borderBottom:section===s.key?`2px solid ${s.color}`:"2px solid transparent",color:section===s.key?"#f1f5f9":"#475569",fontSize:12,fontWeight:section===s.key?700:400,cursor:"pointer",display:"flex",alignItems:"center",gap:6,whiteSpace:"nowrap" }}>
-            <span style={{ color:section===s.key?s.color:"#334155" }}>{s.icon}</span>
-            <span className="sec-label-full">{s.full}</span>
-            <span className="sec-label-short">{s.short}</span>
-          </button>
-        ))}
+      <div style={{ background:"#060d1a",borderBottom:"1px solid #1e293b",padding:"0 20px",display:"flex",alignItems:"center",gap:4,overflowX:"auto" }}>
+        <div style={{ display:"flex",gap:4,padding:"8px 0",flex:1 }}>
+          {[{key:"quant",icon:"⚙",full:"Quantitative Engine",short:"Quant",color:"#0ea5e9"},{key:"intel",icon:"◎",full:"Market Intelligence",short:"Intel",color:"#10b981"}].map(s=>(
+            <button key={s.key} onClick={()=>setSection(s.key)}
+              style={{
+                padding:"9px 20px",
+                background:section===s.key?s.color+"22":"#0f172a",
+                border:`1px solid ${section===s.key?s.color:s.color+"20"}`,
+                borderRadius:8,
+                color:section===s.key?s.color:"#475569",
+                fontSize:13,fontWeight:700,cursor:"pointer",
+                display:"flex",alignItems:"center",gap:8,whiteSpace:"nowrap",
+                transition:"all 0.15s",
+                boxShadow:section===s.key?`0 0 16px ${s.color}22`:"none",
+              }}>
+              <span style={{ fontSize:15 }}>{s.icon}</span>
+              <span className="sec-label-full">{s.full}</span>
+              <span className="sec-label-short">{s.short}</span>
+            </button>
+          ))}
+        </div>
         <button onClick={()=>setSection("atlas")}
-          style={{ marginLeft:"auto",padding:"11px 16px",background:"transparent",border:"none",borderBottom:section==="atlas"?"2px solid #a78bfa":"2px solid transparent",color:section==="atlas"?"#f1f5f9":"#475569",fontSize:12,fontWeight:section==="atlas"?700:400,cursor:"pointer",display:"flex",alignItems:"center",gap:6,whiteSpace:"nowrap" }}>
-          <span style={{ color:section==="atlas"?"#a78bfa":"#334155" }}>◈</span>
+          style={{
+            padding:"9px 18px",
+            background:section==="atlas"?"#a78bfa22":"#0f172a",
+            border:`1px solid ${section==="atlas"?"#a78bfa":"#a78bfa20"}`,
+            borderRadius:8,
+            color:section==="atlas"?"#a78bfa":"#475569",
+            fontSize:13,fontWeight:700,cursor:"pointer",
+            display:"flex",alignItems:"center",gap:8,whiteSpace:"nowrap",
+            transition:"all 0.15s",
+            boxShadow:section==="atlas"?"0 0 16px #a78bfa22":"none",
+          }}>
+          <span>◈</span>
           ATLAS
           <span style={{ padding:"1px 6px",borderRadius:20,fontSize:9,fontWeight:700,background:"#a78bfa20",color:"#a78bfa",border:"1px solid #a78bfa40" }}>AI</span>
         </button>
