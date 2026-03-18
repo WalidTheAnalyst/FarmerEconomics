@@ -1837,6 +1837,7 @@ function MIFarmerPLPage() {
 function MIMarketDynamicsPage({ region }) {
   const intel=MARKET_INTEL[region];
   const [recoOpen,setRecoOpen]=useState(false);
+  const [briefOpen,setBriefOpen]=useState(false);
   if (!intel) return <MIPlaceholder region={region} />;
   const maxMix=Math.max(...intel.productMix.map(r=>r.val2022));
 
@@ -1889,14 +1890,15 @@ function MIMarketDynamicsPage({ region }) {
           <ResponsiveContainer width="100%" height={195}>
             <PieChart>
                 <Pie data={intel.importOrigin} cx="50%" cy="50%" outerRadius={78} dataKey="value"
-                  label={({cx,cy,midAngle,innerRadius,outerRadius,value,name}) => {
+                  label={({cx,cy,midAngle,innerRadius,outerRadius,value}) => {
                     const RADIAN=Math.PI/180;
                     const r=innerRadius+(outerRadius-innerRadius)*0.55;
                     const x=cx+r*Math.cos(-midAngle*RADIAN);
                     const y=cy+r*Math.sin(-midAngle*RADIAN);
-                    const pct=((value/106.9)*100).toFixed(0);
-                    return value>1.5?(
-                      <text x={x} y={y} fill="#fff" textAnchor="middle" dominantBaseline="central" fontSize={value>10?11:9} fontWeight={700} fontFamily="DM Mono,monospace">{value>=10?value+"kt":pct+"%"}</text>
+                    const total=intel.importOrigin.reduce((s,d2)=>s+d2.value,0);
+                    const pct=((value/total)*100).toFixed(0);
+                    return value/total>0.03?(
+                      <text x={x} y={y} fill="#fff" textAnchor="middle" dominantBaseline="central" fontSize={value/total>0.1?11:9} fontWeight={700} fontFamily="DM Mono,monospace">{pct}%</text>
                     ):null;
                   }}
                   labelLine={false}>
@@ -1910,93 +1912,114 @@ function MIMarketDynamicsPage({ region }) {
       </div>
 
       {/* ── EXECUTIVE BRIEF ── */}
-      <div style={{ background:"linear-gradient(135deg,#080e18,#060b14)", border:"1px solid #1e293b", borderRadius:16, overflow:"hidden" }}>
+      <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
 
-        {/* Header */}
-        <div style={{ padding:"18px 24px 16px", borderBottom:"1px solid #1e293b", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-          <div>
-            <p style={{ color:"#475569", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:700, marginBottom:4 }}>Executive Brief</p>
-            <p style={{ color:"#f1f5f9", fontSize:16, fontWeight:700, margin:0 }}>What is happening in France — the P market in 2024</p>
-          </div>
-          <span style={{ color:"#1e293b", fontSize:11, fontStyle:"italic" }}>France · P fertilizer</span>
-        </div>
-
-        {/* Narrative body — one flowing story, not boxes */}
-        <div style={{ padding:"24px", display:"flex", flexDirection:"column", gap:18 }}>
-
-          {/* Act 1 */}
-          <div style={{ display:"flex", gap:16, alignItems:"flex-start" }}>
-            <div style={{ flexShrink:0, width:28, height:28, borderRadius:"50%", background:"#0ea5e920", border:"1px solid #0ea5e940", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, marginTop:2 }}>1</div>
+        {/* Big "Open Executive Brief" button */}
+        {!briefOpen ? (
+          <button onClick={()=>setBriefOpen(true)}
+            style={{ width:"100%", padding:"28px 32px", background:"linear-gradient(135deg,#080e18,#060b14)", border:"1px solid #1e293b", borderRadius:16, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"space-between", gap:20, transition:"all 0.2s", textAlign:"left" }}
+            onMouseEnter={e=>{e.currentTarget.style.borderColor="#0ea5e940";e.currentTarget.style.background="linear-gradient(135deg,#0a1422,#080e18)";}}
+            onMouseLeave={e=>{e.currentTarget.style.borderColor="#1e293b";e.currentTarget.style.background="linear-gradient(135deg,#080e18,#060b14)";}}>
             <div>
-              <p style={{ color:"#e2e8f0", fontSize:14, fontWeight:600, marginBottom:6 }}>The soil is being mined — quietly, at scale</p>
-              <p style={{ color:"#64748b", fontSize:13, lineHeight:1.85, margin:0 }}>
-                Since 2021, P applications in France have fallen by roughly 29%. Today, <span style={{color:"#f1f5f9",fontWeight:600}}>only half of French parcels receive any mineral P at all</span>. Farmers are not replacing what crops take out. The agronomic gap versus Comifer recommendations is now 157 kt P₂O₅ — the equivalent of leaving an entire year's TSP import sitting in the ground unplanted.
-              </p>
+              <p style={{ color:"#475569", fontSize:10, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, marginBottom:8 }}>Executive Brief · France · P Fertilizer Market 2024</p>
+              <p style={{ color:"#f1f5f9", fontSize:20, fontWeight:800, letterSpacing:"-0.02em", margin:0 }}>What is happening in France?</p>
+              <p style={{ color:"#475569", fontSize:13, marginTop:8, lineHeight:1.6 }}>Four structural forces reshaping the French phosphate market — soil depletion, price-driven behaviour, import dependency, and regulatory opportunity.</p>
             </div>
-          </div>
-
-          <div style={{ height:1, background:"#1e293b", marginLeft:44 }}/>
-
-          {/* Act 2 */}
-          <div style={{ display:"flex", gap:16, alignItems:"flex-start" }}>
-            <div style={{ flexShrink:0, width:28, height:28, borderRadius:"50%", background:"#f59e0b20", border:"1px solid #f59e0b40", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, marginTop:2, color:"#f59e0b" }}>2</div>
-            <div>
-              <p style={{ color:"#e2e8f0", fontSize:14, fontWeight:600, marginBottom:6 }}>Prices broke the habit — and farmers didn't recover it</p>
-              <p style={{ color:"#64748b", fontSize:13, lineHeight:1.85, margin:0 }}>
-                The 2022 price spike created a scissors effect: input costs doubled while margins compressed. Farmers responded rationally — they <span style={{color:"#f1f5f9",fontWeight:600}}>protected nitrogen and cut P and K</span>. The problem is that this became a habit. Even as prices normalised, the behaviour stuck. P is now the first line item cut when budgets tighten.
-              </p>
+            <div style={{ flexShrink:0, background:"#0ea5e918", border:"1px solid #0ea5e940", borderRadius:12, padding:"14px 22px", display:"flex", alignItems:"center", gap:10 }}>
+              <span style={{ color:"#0ea5e9", fontSize:14, fontWeight:700 }}>Read the brief</span>
+              <span style={{ color:"#0ea5e9", fontSize:20 }}>→</span>
             </div>
-          </div>
+          </button>
+        ) : (
+          <div style={{ background:"linear-gradient(135deg,#080e18,#060b14)", border:"1px solid #1e293b", borderRadius:16, overflow:"hidden" }}>
 
-          <div style={{ height:1, background:"#1e293b", marginLeft:44 }}/>
-
-          {/* Act 3 */}
-          <div style={{ display:"flex", gap:16, alignItems:"flex-start" }}>
-            <div style={{ flexShrink:0, width:28, height:28, borderRadius:"50%", background:"#10b98120", border:"1px solid #10b98140", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, marginTop:2, color:"#10b981" }}>3</div>
-            <div>
-              <p style={{ color:"#e2e8f0", fontSize:14, fontWeight:600, marginBottom:6 }}>Who controls the market? Coops — and Morocco is well placed</p>
-              <p style={{ color:"#64748b", fontSize:13, lineHeight:1.85, margin:0 }}>
-                France produces no TSP or DAP domestically. Everything is imported. <span style={{color:"#10b981",fontWeight:600}}>Morocco (OCP) already holds ~62% of the DAP/MAP import market</span>. But the real gatekeepers are the large purchasing cooperatives — Inoxa, Axereal, InVivo — which control blending, warehousing and agronomy advice for ~70% of fertilizer volumes. Access without them is nearly impossible.
-              </p>
-            </div>
-          </div>
-
-          <div style={{ height:1, background:"#1e293b", marginLeft:44 }}/>
-
-          {/* Act 4 */}
-          <div style={{ display:"flex", gap:16, alignItems:"flex-start" }}>
-            <div style={{ flexShrink:0, width:28, height:28, borderRadius:"50%", background:"#a78bfa20", border:"1px solid #a78bfa40", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, marginTop:2, color:"#a78bfa" }}>4</div>
-            <div>
-              <p style={{ color:"#e2e8f0", fontSize:14, fontWeight:600, marginBottom:6 }}>The market is moving toward value — and regulation favours clean P</p>
-              <p style={{ color:"#64748b", fontSize:13, lineHeight:1.85, margin:0 }}>
-                Standard NPKs are losing share. Farmers and coops are shifting to NPK+ grades — blends with sulphur, micronutrients and biostimulants. At the same time, EU heavy metal and carbon regulations are tightening. <span style={{color:"#a78bfa",fontWeight:600}}>OCP's low-cadmium Moroccan P is structurally advantaged</span> — not as a marketing claim, but as a regulatory compliance asset for the next decade.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* So what CTA */}
-        <div style={{ borderTop:"1px solid #1e293b" }}>
-          {!recoOpen ? (
-            <button onClick={()=>setRecoOpen(true)}
-              style={{ width:"100%", padding:"18px 24px", background:"transparent", border:"none", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"space-between", gap:16, transition:"background 0.15s" }}
-              onMouseEnter={e=>e.currentTarget.style.background="#0f1f14"}
-              onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
-              <div style={{ textAlign:"left" }}>
-                <p style={{ color:"#10b981", fontSize:12, fontWeight:700, marginBottom:4 }}>So what does this mean for OCP Nutricrops?</p>
-                <p style={{ color:"#475569", fontSize:12, margin:0 }}>6 strategic plays that follow directly from this brief — from rebuilding P consumption to owning the regulatory narrative.</p>
+            {/* Header */}
+            <div style={{ padding:"18px 24px 16px", borderBottom:"1px solid #1e293b", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+              <div>
+                <p style={{ color:"#475569", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:700, marginBottom:4 }}>Executive Brief · France · P Fertilizer Market 2024</p>
+                <p style={{ color:"#f1f5f9", fontSize:16, fontWeight:700, margin:0 }}>What is happening in France?</p>
               </div>
-              <div style={{ flexShrink:0, background:"#10b98120", border:"1px solid #10b98140", borderRadius:8, padding:"8px 16px", display:"flex", alignItems:"center", gap:8 }}>
-                <span style={{ color:"#10b981", fontSize:12, fontWeight:700 }}>Discover</span>
-                <span style={{ color:"#10b981", fontSize:16 }}>→</span>
+              <button onClick={()=>setBriefOpen(false)} style={{ background:"transparent", border:"1px solid #1e293b", color:"#475569", borderRadius:8, padding:"6px 14px", fontSize:11, cursor:"pointer" }}>← close</button>
+            </div>
+
+            {/* Narrative body */}
+            <div style={{ padding:"24px", display:"flex", flexDirection:"column", gap:18 }}>
+
+              <div style={{ display:"flex", gap:16, alignItems:"flex-start" }}>
+                <div style={{ flexShrink:0, width:28, height:28, borderRadius:"50%", background:"#0ea5e920", border:"1px solid #0ea5e940", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, marginTop:2, color:"#0ea5e9" }}>1</div>
+                <div>
+                  <p style={{ color:"#e2e8f0", fontSize:14, fontWeight:700, marginBottom:8 }}>French soils are being quietly mined of phosphorus at scale</p>
+                  <p style={{ color:"#64748b", fontSize:13, lineHeight:1.85, margin:0 }}>
+                    Since 2021, P applications have fallen by roughly 29% across France. Today only half of French parcels receive any mineral phosphorus at all. Farmers are systematically extracting more phosphorus through harvests than they are returning to the soil through fertilization. The resulting agronomic gap versus Comifer recommendations now stands at 157 kt P₂O₅, an amount equivalent to an entire year of TSP imports. <span style={{color:"#f1f5f9",fontWeight:600}}>This is a slow-motion soil fertility crisis with no self-correcting mechanism currently in place.</span>
+                  </p>
+                </div>
               </div>
-            </button>
-          ) : (
+
+              <div style={{ height:1, background:"#1e293b", marginLeft:44 }}/>
+
+              <div style={{ display:"flex", gap:16, alignItems:"flex-start" }}>
+                <div style={{ flexShrink:0, width:28, height:28, borderRadius:"50%", background:"#f59e0b20", border:"1px solid #f59e0b40", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, marginTop:2, color:"#f59e0b" }}>2</div>
+                <div>
+                  <p style={{ color:"#e2e8f0", fontSize:14, fontWeight:700, marginBottom:8 }}>The 2022 price shock broke a fertilization habit that has not recovered</p>
+                  <p style={{ color:"#64748b", fontSize:13, lineHeight:1.85, margin:0 }}>
+                    The 2022 fertilizer price spike created a scissors effect: input costs doubled while farm margins compressed sharply. Farmers responded by protecting their nitrogen budget and cutting phosphorus and potassium first. What began as a rational short-term adjustment became embedded behaviour. <span style={{color:"#f1f5f9",fontWeight:600}}>Even as prices normalised through 2023 and 2024, P remained the first line item sacrificed when budgets tightened</span>, leaving a structural underapplication that compounds year on year.
+                  </p>
+                </div>
+              </div>
+
+              <div style={{ height:1, background:"#1e293b", marginLeft:44 }}/>
+
+              <div style={{ display:"flex", gap:16, alignItems:"flex-start" }}>
+                <div style={{ flexShrink:0, width:28, height:28, borderRadius:"50%", background:"#10b98120", border:"1px solid #10b98140", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, marginTop:2, color:"#10b981" }}>3</div>
+                <div>
+                  <p style={{ color:"#e2e8f0", fontSize:14, fontWeight:700, marginBottom:8 }}>France imports everything and cooperatives control the market</p>
+                  <p style={{ color:"#64748b", fontSize:13, lineHeight:1.85, margin:0 }}>
+                    France produces no TSP or DAP domestically. Every tonne must be imported. Morocco through OCP already captures roughly 62% of the DAP and MAP import market, which is a meaningful structural advantage. However the real commercial gatekeepers are the large purchasing cooperatives — Inoxa, Axereal, InVivo and a handful of others — which collectively control blending capacity, warehousing logistics and agronomic advisory services for approximately 70% of fertilizer volumes reaching farmers. <span style={{color:"#10b981",fontWeight:600}}>Market access without a formal relationship with these structures is effectively impossible.</span>
+                  </p>
+                </div>
+              </div>
+
+              <div style={{ height:1, background:"#1e293b", marginLeft:44 }}/>
+
+              <div style={{ display:"flex", gap:16, alignItems:"flex-start" }}>
+                <div style={{ flexShrink:0, width:28, height:28, borderRadius:"50%", background:"#a78bfa20", border:"1px solid #a78bfa40", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, marginTop:2, color:"#a78bfa" }}>4</div>
+                <div>
+                  <p style={{ color:"#e2e8f0", fontSize:14, fontWeight:700, marginBottom:8 }}>Regulatory pressure and product premiumisation are creating a structural opening</p>
+                  <p style={{ color:"#64748b", fontSize:13, lineHeight:1.85, margin:0 }}>
+                    Standard NPK compounds are losing market share as farmers and cooperatives migrate toward NPK+ grades incorporating sulphur, micronutrients and biostimulants. Simultaneously, EU heavy metal regulations are tightening cadmium thresholds for phosphate fertilizers and FMCG supply chains are beginning to demand low-carbon input certification from their farm suppliers. <span style={{color:"#a78bfa",fontWeight:600}}>OCP's low-cadmium Moroccan phosphate is not merely a quality differentiator — it is a forward regulatory compliance asset</span> that becomes more valuable as the European standard tightens over the next decade.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Big "Why does this matter for OCP?" button */}
+        {!recoOpen ? (
+          <button onClick={()=>setRecoOpen(true)}
+            style={{ width:"100%", padding:"28px 32px", background:"linear-gradient(135deg,#061410,#040c0a)", border:"1px solid #10b98130", borderRadius:16, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"space-between", gap:20, transition:"all 0.2s", textAlign:"left" }}
+            onMouseEnter={e=>{e.currentTarget.style.borderColor="#10b98160";e.currentTarget.style.background="linear-gradient(135deg,#081a14,#060f0c)";}}
+            onMouseLeave={e=>{e.currentTarget.style.borderColor="#10b98130";e.currentTarget.style.background="linear-gradient(135deg,#061410,#040c0a)";}}>
+            <div>
+              <p style={{ color:"#10b981", fontSize:10, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, marginBottom:8 }}>Strategic Implications · OCP Nutricrops · France</p>
+              <p style={{ color:"#f1f5f9", fontSize:20, fontWeight:800, letterSpacing:"-0.02em", margin:0 }}>Why does this matter for OCP Nutricrops?</p>
+              <p style={{ color:"#475569", fontSize:13, marginTop:8, lineHeight:1.6 }}>Six strategic plays that follow directly from this market analysis — from rebuilding phosphorus consumption to owning the regulatory narrative.</p>
+            </div>
+            <div style={{ flexShrink:0, background:"#10b98118", border:"1px solid #10b98150", borderRadius:12, padding:"14px 22px", display:"flex", alignItems:"center", gap:10 }}>
+              <span style={{ color:"#10b981", fontSize:14, fontWeight:700 }}>Discover</span>
+              <span style={{ color:"#10b981", fontSize:20 }}>→</span>
+            </div>
+          </button>
+        ) : (
+          <div style={{ background:"linear-gradient(135deg,#061410,#040c0a)", border:"1px solid #10b98130", borderRadius:16, overflow:"hidden" }}>
+            <div style={{ padding:"18px 24px 16px", borderBottom:"1px solid #10b98120", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+              <div>
+                <p style={{ color:"#10b981", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:700, marginBottom:4 }}>Strategic Implications · OCP Nutricrops · France</p>
+                <p style={{ color:"#f1f5f9", fontSize:16, fontWeight:700, margin:0 }}>Why does this matter for OCP Nutricrops?</p>
+              </div>
+              <button onClick={()=>setRecoOpen(false)} style={{ background:"transparent", border:"1px solid #1e293b", color:"#475569", borderRadius:8, padding:"6px 14px", fontSize:11, cursor:"pointer" }}>← close</button>
+            </div>
             <div style={{ padding:"20px 24px" }}>
-              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
-                <p style={{ color:"#10b981", fontSize:12, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em" }}>Strategic recommendations — OCP Nutricrops · France</p>
-                <button onClick={()=>setRecoOpen(false)} style={{ background:"transparent", border:"1px solid #1e293b", color:"#475569", borderRadius:6, padding:"4px 12px", fontSize:11, cursor:"pointer" }}>← hide</button>
-              </div>
               <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))", gap:12 }}>
                 {RECOS.map((r,i)=>(
                   <div key={i} style={{ background:"#060d1a", border:`1px solid ${r.color}25`, borderLeft:`3px solid ${r.color}`, borderRadius:10, padding:"14px 16px" }}>
@@ -2009,24 +2032,24 @@ function MIMarketDynamicsPage({ region }) {
                 ))}
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
 function MIFarmerBSPage() {
-  const [farmType, setFarmType] = useState("Cereals");
+  const [farmType, setFarmType] = useState("Cereals & Oilseeds");
   const [expandedBS, setExpandedBS] = useState({ assets:true, equity:true, debt:true });
   const [activeTooltip, setActiveTooltip] = useState(null);
   const toggleBS = key => setExpandedBS(e => ({...e, [key]:!e[key]}));
 
   // Balance sheet data from FADN/RICA France 2024 (average per farm, €/Ha)
   const BS_DATA = {
-    "Cereals": {
+    "Cereals & Oilseeds": {
       color:"#0ea5e9", emoji:"🌾",
-      label:"Cereals",
+      label:"Cereals & Oilseeds",
       note:"Céréales et oléoprotéagineux — Average per farm · €/Ha · 2024",
       assets: {
         fixed: {
@@ -2081,10 +2104,10 @@ function MIFarmerBSPage() {
         marginRate: 25.01,
       }
     },
-    "Oilseed & Protein": {
-      color:"#10b981", emoji:"🌻",
-      label:"Oilseed & Protein Crops",
-      note:"Oléagineux & protéagineux — Average per farm · €/Ha · 2024",
+    "General Crops": {
+      color:"#10b981", emoji:"🌱",
+      label:"General Crops",
+      note:"Grandes cultures — Average per farm · €/Ha · 2024",
       assets: {
         fixed: {
           total: 3060.96,
@@ -2137,7 +2160,121 @@ function MIFarmerBSPage() {
         debtRatio: 42.13,
         marginRate: 36.36,
       }
-    }
+    },
+    "Market Gardening": {
+      color:"#f59e0b", emoji:"🥦",
+      label:"Market Gardening (Maraîchage)",
+      note:"Maraîchage — Average per farm · €/Ha · 2024",
+      assets: {
+        fixed: {
+          total: 13362.85,
+          items: {
+            "Land": 939.11,
+            "Land improvements": 152.52,
+            "Buildings": 3572.57,
+            "Specialised installations": 2891.76,
+            "Machinery": 4317.34,
+            "Plantations (incl. forest)": 156.83,
+            "Breeding livestock": 86.72,
+            "Other fixed assets": 1246.62,
+          }
+        },
+        current: {
+          total: 10909.59,
+          items: {
+            "Inventories & work in progress": 2403.44,
+            "of which current livestock": 47.97,
+            "Receivables": 3030.75,
+            "Cash & equivalents": 5475.40,
+            "Asset accruals": 353.63,
+          }
+        },
+        total: 24626.08,
+      },
+      equity: {
+        total: 11649.45,
+        items: {
+          "Initial individual capital": 7313.04,
+          "Change in initial capital": 3365.31,
+          "Investment subsidies": 971.09,
+        }
+      },
+      debt: {
+        total: 12967.40,
+        items: {
+          "Long & medium-term debt": 7872.08,
+          "Short-term borrowings & other financial liabilities": 916.36,
+          "Trade & other payables": 4178.97,
+          "Liability accruals": 8.61,
+        }
+      },
+      totalLE: 24626.08,
+      ratios: {
+        gosHa: 6.37,
+        gosAWU: 73.15,
+        profitHa: 3.78,
+        profitAWU: 43.38,
+        debtRatio: 52.66,
+        marginRate: 26.18,
+      }
+    },
+    "Viticulture": {
+      color:"#a78bfa", emoji:"🍇",
+      label:"Viticulture",
+      note:"Viticulture — Average per farm · €/Ha · 2024",
+      assets: {
+        fixed: {
+          total: 10976.55,
+          items: {
+            "Land": 3545.59,
+            "Land improvements": 63.64,
+            "Buildings": 2074.80,
+            "Specialised installations": 231.48,
+            "Machinery": 2358.76,
+            "Plantations (incl. forest)": 2085.23,
+            "Breeding livestock": 11.91,
+            "Other fixed assets": 605.14,
+          }
+        },
+        current: {
+          total: 18059.17,
+          items: {
+            "Inventories & work in progress": 11894.31,
+            "of which current livestock": 6.70,
+            "Receivables": 3329.74,
+            "Cash & equivalents": 2835.50,
+            "Asset accruals": 83.36,
+          }
+        },
+        total: 29119.09,
+      },
+      equity: {
+        total: 20427.24,
+        items: {
+          "Initial individual capital": 12281.35,
+          "Change in initial capital": 7365.46,
+          "Investment subsidies": 780.42,
+        }
+      },
+      debt: {
+        total: 8678.45,
+        items: {
+          "Long & medium-term debt": 4709.71,
+          "Short-term borrowings & other financial liabilities": 978.04,
+          "Trade & other payables": 2990.70,
+          "Liability accruals": 13.40,
+        }
+      },
+      totalLE: 29119.09,
+      ratios: {
+        gosHa: 3.96,
+        gosAWU: 84.14,
+        profitHa: 2.69,
+        profitAWU: 57.14,
+        debtRatio: 29.80,
+        marginRate: 39.97,
+      }
+    },
   };
 
   const RATIO_TOOLTIPS = {
@@ -2206,7 +2343,7 @@ function MIFarmerBSPage() {
         <h2 style={{ color:"#f1f5f9", fontSize:17, fontWeight:800, marginBottom:3 }}>
           Farmer Balance Sheet — Average per farm · €/Ha <span style={{color:"#475569",fontWeight:400,fontSize:13}}>(2024)</span>
         </h2>
-        <p style={{ color:"#475569", fontSize:11 }}>Source: FADN / RICA France · Cereals and oilseed/protein crops only · Values in €/Ha · Other crop categories coming soon</p>
+        <p style={{ color:"#475569", fontSize:11 }}>Source: FADN / RICA France · Cereals, general crops, market gardening and viticulture · Values in €/Ha</p>
       </div>
 
       {/* Crop type selector */}
@@ -2221,10 +2358,6 @@ function MIFarmerBSPage() {
             <span style={{fontSize:15}}>{val.emoji}</span> {key}
           </button>
         ))}
-        <div style={{ display:"flex", alignItems:"center", gap:7, padding:"9px 16px", borderRadius:10,
-          border:"1px dashed #1e293b", color:"#334155", fontSize:12, opacity:0.7, cursor:"not-allowed" }}>
-          🥦 Other crops <span style={{ background:"#f59e0b20",color:"#f59e0b",fontSize:9,fontWeight:700,padding:"1px 6px",borderRadius:10,border:"1px solid #f59e0b40",marginLeft:4 }}>SOON</span>
-        </div>
       </div>
 
       {/* Note strip */}
