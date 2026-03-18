@@ -2169,20 +2169,10 @@ function MIFarmerBSPage() {
     { name:"Payables", value: d.debt.items["Trade & other payables"], fill:"#a78bfa" },
     { name:"Accruals", value: d.debt.items["Liability accruals"], fill:"#64748b" },
   ];
-  const assetDonut = [
-    ...Object.entries(d.assets.fixed.items).map(([k,v])=>({name:k,value:v,fill:"#0ea5e9"})),
-  ];
   const debtLeverageData = [
     { name:"Equity", value: d.equity.total, fill:"#10b981" },
     { name:"Total Debt", value: d.debt.total, fill:"#f43f5e" },
   ];
-  const ratioBarData = [
-    { name:"GOS/ha\n(k€)", value: d.ratios.gosHa, fill:"#0ea5e9" },
-    { name:"GOS/AWU\n(k€)", value: d.ratios.gosAWU, fill:"#38bdf8" },
-    { name:"Profit/ha\n(k€)", value: d.ratios.profitHa, fill:"#10b981" },
-    { name:"Profit/AWU\n(k€)", value: d.ratios.profitAWU, fill:"#4ade80" },
-  ];
-
   const BSRow = ({ label, value, indent=0, bold=false, header=false, expandKey=null, children=null, color=null }) => {
     const isOpen = expandedBS[expandKey];
     const textColor = header?"#0ea5e9":bold?"#f1f5f9":"#94a3b8";
