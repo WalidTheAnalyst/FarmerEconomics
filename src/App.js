@@ -825,323 +825,114 @@ function RegionalPage(){
 // ─── FARMER BEHAVIOR PAGE (exhaustive, interactive) ───────────────────────────
 function MIFarmerBehaviorPage({ region }) {
   const [topic, setTopic] = useState(null);
-  const [activeAttr, setActiveAttr] = useState(null);
   const [activePersona, setActivePersona] = useState(FARMER_PERSONAS[0].id);
   const [viewMode, setViewMode] = useState("grid");
   const persona = FARMER_PERSONAS.find(p=>p.id===activePersona) || FARMER_PERSONAS[0];
 
-  // ── Decision Drivers data (Simon-Kucher N=20 France VoC) ──────────────────
   const DECISION_DRIVERS = [
-    {
-      rank:1, group:"Program Economics",
-      label:"Total fertilizer cost per hectare",
-      surveyScore:4.9, internalScore:5.0,
-      wtpPremium:60, wtpColor:"#10b981",
-      insight:"#1 driver — farmers evaluate value at program level, not price-per-bag. This is OCP's primary lever.",
-      accentColor:"#10b981",
-      ocpAngle:"TSP + N separation can be framed as a lower total €/ha program vs standard NPK blends."
-    },
-    {
-      rank:2, group:"Agronomic Performance",
-      label:"Product quality (granules & consistency)",
-      surveyScore:4.7, internalScore:3.4,
-      wtpPremium:50, wtpColor:"#f59e0b",
-      insight:"Granule quality and consistency matter — linked to ease of spreading and application reliability.",
-      accentColor:"#f59e0b",
-      ocpAngle:"OCP's TSP granule quality is a differentiator vs lower-grade imports. Needs field demonstration."
-    },
-    {
-      rank:2, group:"Agronomic Performance",
-      label:"Phosphorus efficiency",
-      surveyScore:4.6, internalScore:2.6,
-      wtpPremium:55, wtpColor:"#f59e0b",
-      insight:"High importance score — farmers know poor P efficiency is a problem. WTP 55% with better performance.",
-      accentColor:"#f59e0b",
-      ocpAngle:"The core agronomic argument for TSP separation. Most actionable attribute for OCP."
-    },
-    {
-      rank:2, group:"Agronomic Performance",
-      label:"Ease of application",
-      surveyScore:4.4, internalScore:2.6,
-      wtpPremium:40, wtpColor:"#f59e0b",
-      insight:"Operational simplicity is valued. Extra passes for separation are a friction point to address.",
-      accentColor:"#f59e0b",
-      ocpAngle:"One-pass TSP programs or coop-managed separation removes this barrier entirely."
-    },
-    {
-      rank:2, group:"Agronomic Performance",
-      label:"Yield gain (tons/ha)",
-      surveyScore:4.4, internalScore:2.6,
-      wtpPremium:55, wtpColor:"#f59e0b",
-      insight:"55% WTP premium for better yield — among highest. Farm trial data is the proof required.",
-      accentColor:"#f59e0b",
-      ocpAngle:"Field trial ROI data from ARVALIS and coop networks is the unlock for this attribute."
-    },
-    {
-      rank:2, group:"Agronomic Performance",
-      label:"Nutrient match to crop & soil",
-      surveyScore:4.4, internalScore:3.4,
-      wtpPremium:45, wtpColor:"#f59e0b",
-      insight:"Precision fit to soil type and crop matters — ties directly into coop agronomist advisory.",
-      accentColor:"#f59e0b",
-      ocpAngle:"Soil analysis–based TSP dosing by coop agronomists is a natural entry point."
-    },
-    {
-      rank:3, group:"Price",
-      label:"Price per bag (farm-gate)",
-      surveyScore:4.3, internalScore:4.2,
-      wtpPremium:null, wtpColor:null,
-      insight:"Ranks #3 — below program economics and agronomy. Price sensitivity is real but not the top driver.",
-      accentColor:"#a78bfa",
-      ocpAngle:"Price-per-bag is not the primary battleground. Program €/ha framing bypasses this objection."
-    },
-    {
-      rank:4, group:"Secondary Attributes",
-      label:"Delivery reliability",
-      surveyScore:3.9, internalScore:3.4,
-      wtpPremium:20, wtpColor:"#f43f5e",
-      insight:"Important for logistics but below 40% WTP — not a primary differentiator.",
-      accentColor:"#64748b",
-      ocpAngle:"Table stakes — must be met, not a source of competitive advantage."
-    },
-    {
-      rank:5, group:"Sustainability",
-      label:"Sustainability / lower carbon footprint",
-      surveyScore:3.0, internalScore:1.0,
-      wtpPremium:25, wtpColor:"#f43f5e",
-      insight:"Lowest score overall. 25% WTP but only among those who consider it important — a niche driver today.",
-      accentColor:"#818cf8",
-      ocpAngle:"Emerging segment. Low-cadmium / low-carbon positioning is forward-looking, not a mass-market lever yet."
-    },
+    { id:"cost",    group:"Program Economics",     label:"Total fertilizer cost / ha", surveyScore:4.9, wtpPremium:60, wtpColor:"#10b981",
+      insight:"Farmers evaluate at program level — total €/ha, not price per bag. A TSP+N separated program can be framed as cheaper per hectare than an equivalent NPK blend.",
+      ocpAngle:"Lead every commercial conversation with total program cost. Do not defend TSP price per tonne in isolation.", accentColor:"#10b981" },
+    { id:"quality", group:"Agronomic Performance",  label:"Product quality — granules & consistency", surveyScore:4.7, wtpPremium:50, wtpColor:"#f59e0b",
+      insight:"Granule quality directly affects spreading uniformity. Inconsistent granules create application risk that farmers attribute to the product, not the spreader.",
+      ocpAngle:"OCP TSP granule specification is a demonstrable differentiator. Deploy side-by-side spreading trials with cooperative agronomists.", accentColor:"#f59e0b" },
+    { id:"peff",    group:"Agronomic Performance",  label:"Phosphorus efficiency", surveyScore:4.6, wtpPremium:55, wtpColor:"#f59e0b",
+      insight:"Farmers know P efficiency is a problem — soil pH, fixation, and placement all affect it. This is the strongest agronomic entry point for the TSP separation argument.",
+      ocpAngle:"P efficiency is the core case for separation. Every cooperative agronomist visit should anchor on this. ARVALIS trial data is the credibility lever.", accentColor:"#f59e0b" },
+    { id:"ease",    group:"Agronomic Performance",  label:"Ease of application", surveyScore:4.4, wtpPremium:40, wtpColor:"#f59e0b",
+      insight:"An extra pass for TSP creates friction. Farmers running large acreage on tight seasonal windows weigh machine time directly against agronomic benefit.",
+      ocpAngle:"Remove the friction: one-pass programs via cooperative blending units, or contract-applied TSP pre-sowing. Make separation invisible operationally.", accentColor:"#f59e0b" },
+    { id:"yield",   group:"Agronomic Performance",  label:"Yield gain (t/ha)", surveyScore:4.4, wtpPremium:55, wtpColor:"#f59e0b",
+      insight:"55% WTP for better yield — the highest premium acceptance alongside P efficiency. Requires concrete farm trial evidence, not theoretical claims.",
+      ocpAngle:"Commission replicated on-farm trials through Chambres d'Agriculture and ARVALIS. Publish results in cooperative newsletters, not marketing brochures.", accentColor:"#f59e0b" },
+    { id:"match",   group:"Agronomic Performance",  label:"Nutrient match to crop & soil", surveyScore:4.4, wtpPremium:45, wtpColor:"#f59e0b",
+      insight:"Precision match to soil type and crop requirement is seen as high value. Tied directly into the cooperative agronomist advisory relationship.",
+      ocpAngle:"Soil analysis–driven TSP dosing recommendations delivered through cooperative advisory is the natural commercial entry point.", accentColor:"#f59e0b" },
+    { id:"bagprice",group:"Price",                  label:"Price per bag (farm-gate)", surveyScore:4.3, wtpPremium:null, wtpColor:null,
+      insight:"Ranks #3. Price sensitivity is real but subordinate to program economics and agronomy. The framing of the conversation determines which dimension dominates.",
+      ocpAngle:"Never let the negotiation anchor on price per bag. Reframe to €/ha total program cost and cost per tonne of yield gained.", accentColor:"#a78bfa" },
+    { id:"delivery",group:"Secondary",              label:"Delivery reliability", surveyScore:3.9, wtpPremium:20, wtpColor:"#f43f5e",
+      insight:"Below 40% WTP — table stakes, not a differentiator. Must be met; will not win a sale.",
+      ocpAngle:"Ensure logistics commitments are kept. Do not over-invest here as a competitive lever.", accentColor:"#64748b" },
+    { id:"sustain", group:"Sustainability",         label:"Sustainability / lower carbon", surveyScore:3.0, wtpPremium:25, wtpColor:"#f43f5e",
+      insight:"Lowest score today. 25% WTP is concentrated among HVE-certified farms and younger operators. Growing, but not yet a mass-market purchase driver.",
+      ocpAngle:"Low-cadmium, low-carbon positioning is a forward asset — target HVE farms now as reference customers. Do not lead with this for the mainstream.", accentColor:"#818cf8" },
   ];
 
   const INFLUENCERS = [
-    { label:"Cooperatives", pct:31, color:"#10b981", note:"#1 influencer in France — cooperatives and their agronomists gate the fertilizer decision" },
-    { label:"Agronomists / Technical advisors", pct:26, color:"#0ea5e9", note:"Cooperative agronomists are the key technical voice — win the agronomist, win the farmer" },
-    { label:"Own decision", pct:18, color:"#a78bfa", note:"Only 18% decide alone — mostly large farms and consolidators" },
-    { label:"Other farmers / Peers", pct:15, color:"#f59e0b", note:"Peer influence matters at community level, especially in dense cooperative zones" },
-    { label:"Traders", pct:10, color:"#64748b", note:"Mainly for commodity inputs — less relevant for differentiated P products" },
+    { label:"Cooperatives", pct:31, color:"#10b981", detail:"Cooperatives are the #1 decision influencer in France — no other country comes close. They control blending, logistics, credit, and agronomic advice. The cooperative agronomist is the de facto P product selector for 32% of French farmers." },
+    { label:"Agronomists / Technical advisors", pct:26, color:"#0ea5e9", detail:"Cooperative agronomists overlap heavily with the cooperative channel — they are the technical gatekeepers within the coop structure. Winning their recommendation is the single most scalable commercial lever available to OCP in France." },
+    { label:"Own decision", pct:18, color:"#a78bfa", detail:"Only 18% of French farmers decide alone — concentrated in large farms (>200ha), Consolidators and Precision Pioneers. These farmers can be approached directly and respond to agronomic data and bulk commercial terms." },
+    { label:"Peer farmers", pct:15, color:"#f59e0b", detail:"Peer influence operates through local agricultural networks and field day observations. Reference farms producing visible yield results create pull-through demand in their local coop zone." },
+    { label:"Traders", pct:10, color:"#64748b", detail:"Traders matter for commodity NPK. For differentiated P products like TSP, their influence is limited — they lack the agronomic credibility to recommend a separation program." },
   ];
 
   const p2o5Chart = FARMER_PERSONAS.map(p=>({name:p.nickname.replace("The ",""),value:p.p2o5KgHa,fill:p.color}));
 
+  // ─ STEP STATE for drivers experience
+  const [driverStep, setDriverStep] = useState(0); // 0=overview 1=explore 2=influence 3=implication
+  const [activeDriver, setActiveDriver] = useState(null);
+  const [activeInfluencer, setActiveInfluencer] = useState(null);
+  const [viewMetric, setViewMetric] = useState("importance"); // importance | wtp
+
   // ── GATEWAY ──────────────────────────────────────────────────────────────────
   if (!topic) return (
-    <div style={{ display:"flex", flexDirection:"column", gap:32, paddingTop:16 }}>
+    <div style={{ display:"flex", flexDirection:"column", gap:40, paddingTop:8 }}>
       <div>
-        <p style={{ color:"#64748b", fontSize:11, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, marginBottom:12 }}>Farmer Behaviour · {region} · N=20 (Simon-Kucher VoC)</p>
-        <h2 style={{ color:"#f1f5f9", fontSize:28, fontWeight:800, letterSpacing:"-0.02em", lineHeight:1.2, margin:0 }}>What do you want to know about the farmer?</h2>
+        <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.16em", fontWeight:600, marginBottom:12 }}>Farmer Behaviour · {region}</p>
+        <h2 style={{ color:"#f1f5f9", fontSize:26, fontWeight:700, letterSpacing:"-0.025em", lineHeight:1.25, margin:0 }}>What do you want to know about the farmer?</h2>
       </div>
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))", gap:16 }}>
+
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:12 }}>
         {[
           {
             key:"drivers",
-            icon:"🎯",
+            num:"01",
             color:"#0ea5e9",
-            title:"Farmer Decision Drivers",
-            desc:"What criteria drive fertilizer purchase decisions in France, and how much premium farmers would pay for better performance on each attribute.",
-            tag:"N=20 · Simon-Kucher VoC · 2024",
+            title:"Decision Drivers",
+            desc:"What criteria determine which fertilizer product a French farmer buys — and how much they will pay for better performance.",
+            src:"Simon-Kucher × OCP Voice of Customer",
             available:true,
           },
           {
             key:"premium",
-            icon:"💶",
+            num:"02",
             color:"#10b981",
-            title:"Farmer Premium Acceptance",
-            desc:"Willingness-to-pay analysis by attribute — which performance gains justify a higher price and by how much.",
-            tag:"Coming soon",
+            title:"Premium Acceptance",
+            desc:"Willingness-to-pay analysis by performance attribute — which gains justify a higher price and by how much.",
+            src:"Coming soon",
             available:false,
           },
           {
             key:"archetypes",
-            icon:"👤",
+            num:"03",
             color:"#a78bfa",
             title:"Farmer Archetypes",
-            desc:"Six buyer profiles segmented by farm size, technology adoption, cooperative dependency and P application behaviour.",
-            tag:"Agreste 2020 · McKinsey VoC · FADN",
+            desc:"Six buyer profiles built from farm size, technology adoption, cooperative dependency and P application behaviour.",
+            src:"Agreste 2020 census × McKinsey European Farmer Survey × FADN",
             available:true,
           },
         ].map(card=>(
           <button key={card.key}
             onClick={()=>card.available&&setTopic(card.key)}
-            style={{ background:card.available?"linear-gradient(135deg,#0c1422,#080e18)":"#080e14",
-              border:`1px solid ${card.available?card.color+"30":"#1e293b"}`,
-              borderRadius:16, padding:"28px 24px", cursor:card.available?"pointer":"not-allowed",
-              textAlign:"left", transition:"all 0.18s", opacity:card.available?1:0.55 }}
-            onMouseEnter={e=>{if(card.available){e.currentTarget.style.borderColor=card.color+"70";e.currentTarget.style.transform="translateY(-3px)";}}}
-            onMouseLeave={e=>{e.currentTarget.style.borderColor=card.available?card.color+"30":"#1e293b";e.currentTarget.style.transform="none";}}>
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:16 }}>
-              <div style={{ width:44,height:44,borderRadius:12,background:card.color+"18",border:`1px solid ${card.color}30`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20 }}>{card.icon}</div>
-              {!card.available&&<span style={{background:"#f59e0b20",color:"#f59e0b",fontSize:9,fontWeight:700,padding:"2px 8px",borderRadius:10,border:"1px solid #f59e0b40",marginTop:4}}>SOON</span>}
-              {card.available&&<span style={{color:card.color,fontSize:18}}>→</span>}
+            style={{ background:"#080e18", border:`1px solid ${card.available?"#1a2436":"#111827"}`,
+              borderRadius:12, padding:"28px 24px", cursor:card.available?"pointer":"default",
+              textAlign:"left", transition:"border-color 0.15s, transform 0.15s", opacity:card.available?1:0.45,
+              display:"flex", flexDirection:"column", gap:0 }}
+            onMouseEnter={e=>{if(card.available){e.currentTarget.style.borderColor=card.color+"50";e.currentTarget.style.transform="translateY(-2px)";}}}
+            onMouseLeave={e=>{e.currentTarget.style.borderColor=card.available?"#1a2436":"#111827";e.currentTarget.style.transform="none";}}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:20 }}>
+              <span style={{ color:card.color, fontSize:11, fontWeight:700, letterSpacing:"0.06em", fontFamily:"'DM Mono',monospace" }}>{card.num}</span>
+              {!card.available
+                ? <span style={{background:"#1e293b",color:"#64748b",fontSize:9,fontWeight:600,padding:"2px 8px",borderRadius:4,letterSpacing:"0.06em"}}>COMING SOON</span>
+                : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={card.color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              }
             </div>
-            <p style={{ color:card.color, fontSize:11, textTransform:"uppercase", letterSpacing:"0.1em", fontWeight:700, marginBottom:8 }}>{card.title}</p>
-            <p style={{ color:"#94a3b8", fontSize:13, lineHeight:1.7, marginBottom:14 }}>{card.desc}</p>
-            <p style={{ color:"#94a3b8", fontSize:10 }}>{card.tag}</p>
+            <p style={{ color:card.color, fontSize:11, textTransform:"uppercase", letterSpacing:"0.1em", fontWeight:600, marginBottom:10 }}>{card.title}</p>
+            <p style={{ color:"#94a3b8", fontSize:13, lineHeight:1.7, marginBottom:20, flex:1 }}>{card.desc}</p>
+            <p style={{ color:"#475569", fontSize:10, borderTop:"1px solid #1a2436", paddingTop:14, marginTop:"auto" }}>{card.src}</p>
           </button>
         ))}
-      </div>
-    </div>
-  );
-
-  // ── DECISION DRIVERS ─────────────────────────────────────────────────────────
-  if (topic==="drivers") return (
-    <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
-      <div style={{ display:"flex", alignItems:"center", gap:12, flexWrap:"wrap" }}>
-        <button onClick={()=>{setTopic(null);setActiveAttr(null);}} style={{ background:"transparent",border:"none",color:"#64748b",fontSize:13,cursor:"pointer",padding:"4px 0" }}>← Back</button>
-        <div style={{ width:1, height:16, background:"#1e293b" }}/>
-        <div>
-          <span style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:700 }}>Farmer Decision Drivers · France</span>
-          <span style={{ color:"#64748b", fontSize:10, marginLeft:10 }}>Source: Simon-Kucher × OCP Nutricrops VoC — N=20 French farmers · 2024</span>
-        </div>
-      </div>
-
-      {/* Key call-out strip */}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))", gap:10 }}>
-        {[
-          { label:"#1 decision driver", val:"Total €/ha cost", color:"#10b981", note:"Not price per bag — program cost" },
-          { label:"Cooperative influence", val:"31% of decisions", color:"#0ea5e9", note:"Highest influencer in France" },
-          { label:"Agronomist influence", val:"26% of decisions", color:"#0ea5e9", note:"Tied to coop advisory channel" },
-          { label:"WTP for P efficiency", val:"55% accept premium", color:"#f59e0b", note:"If better performance proven" },
-        ].map((k,i)=>(
-          <div key={i} style={{ background:"linear-gradient(135deg,#0f172a,#0a1020)", border:`1px solid ${k.color}25`, borderRadius:12, padding:"14px 16px" }}>
-            <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:6 }}>{k.label}</p>
-            <p style={{ color:k.color, fontSize:18, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>{k.val}</p>
-            <p style={{ color:"#64748b", fontSize:11, marginTop:4 }}>{k.note}</p>
-          </div>
-        ))}
-      </div>
-
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
-        {/* Ranked attribute chart */}
-        <div className="card">
-          <p style={{ color:"#94a3b8", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:4 }}>Purchase Criteria — Importance Score (1–5)</p>
-          <p style={{ color:"#64748b", fontSize:11, marginBottom:14 }}>Click a row to see OCP implication</p>
-          <div style={{ display:"flex", flexDirection:"column", gap:3 }}>
-            {DECISION_DRIVERS.map((d,i)=>{
-              const isActive = activeAttr===i;
-              return (
-                <div key={i}>
-                  <div onClick={()=>setActiveAttr(isActive?null:i)}
-                    style={{ display:"flex", alignItems:"center", gap:8, padding:"8px 10px", borderRadius:8,
-                      background:isActive?d.accentColor+"18":"transparent",
-                      border:`1px solid ${isActive?d.accentColor+"40":"transparent"}`,
-                      cursor:"pointer", transition:"all 0.15s" }}
-                    onMouseEnter={e=>{if(!isActive)e.currentTarget.style.background="#1e293b";}}
-                    onMouseLeave={e=>{if(!isActive)e.currentTarget.style.background="transparent";}}>
-                    <span style={{ color:"#94a3b8", fontSize:10, width:16, flexShrink:0, fontFamily:"'DM Mono',monospace" }}>#{d.rank}</span>
-                    <div style={{ flex:1, minWidth:0 }}>
-                      <p style={{ color:"#e2e8f0", fontSize:12, fontWeight:500, margin:0, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{d.label}</p>
-                      <p style={{ color:"#94a3b8", fontSize:10, margin:0 }}>{d.group}</p>
-                    </div>
-                    <div style={{ display:"flex", alignItems:"center", gap:6, flexShrink:0 }}>
-                      <div style={{ width:80, height:6, background:"#1e293b", borderRadius:3, overflow:"hidden" }}>
-                        <div style={{ height:"100%", width:`${(d.surveyScore/5)*100}%`, background:d.accentColor, borderRadius:3 }}/>
-                      </div>
-                      <span style={{ color:d.accentColor, fontSize:12, fontWeight:700, fontFamily:"'DM Mono',monospace", width:28 }}>{d.surveyScore}</span>
-                    </div>
-                  </div>
-                  {isActive&&(
-                    <div style={{ margin:"4px 0 6px 24px", padding:"10px 14px", background:"#060d1a", border:`1px solid ${d.accentColor}30`, borderLeft:`3px solid ${d.accentColor}`, borderRadius:"0 8px 8px 0" }}>
-                      <p style={{ color:"#94a3b8", fontSize:12, lineHeight:1.65, margin:0 }}>{d.insight}</p>
-                      <p style={{ color:d.accentColor, fontSize:11, fontWeight:600, marginTop:8 }}>OCP angle: <span style={{ color:"#94a3b8", fontWeight:400 }}>{d.ocpAngle}</span></p>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Right column: WTP + influencer */}
-        <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
-          {/* WTP bars */}
-          <div className="card">
-            <p style={{ color:"#94a3b8", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:4 }}>Willingness to Pay a Premium (%)</p>
-            <p style={{ color:"#64748b", fontSize:11, marginBottom:14 }}>% of farmers who'd accept higher price if attribute performs better</p>
-            <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
-              {DECISION_DRIVERS.filter(d=>d.wtpPremium!==null).map((d,i)=>(
-                <div key={i}>
-                  <div style={{ display:"flex", justifyContent:"space-between", marginBottom:3 }}>
-                    <span style={{ color:"#e2e8f0", fontSize:11 }}>{d.label}</span>
-                    <span style={{ color:d.wtpColor, fontSize:12, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>{d.wtpPremium}%</span>
-                  </div>
-                  <div style={{ height:6, background:"#1e293b", borderRadius:3, overflow:"hidden" }}>
-                    <div style={{ height:"100%", width:`${d.wtpPremium}%`, background:d.wtpColor, borderRadius:3 }}/>
-                  </div>
-                </div>
-              ))}
-              <div style={{ display:"flex", gap:12, marginTop:4 }}>
-                {[["#10b981",">60% — strong"],["#f59e0b","40–60% — moderate"],["#f43f5e","<40% — low"]].map(([c,l])=>(
-                  <div key={l} style={{ display:"flex", alignItems:"center", gap:5 }}>
-                    <div style={{ width:8,height:8,borderRadius:2,background:c }}/>
-                    <span style={{ color:"#64748b", fontSize:10 }}>{l}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Who influences the decision */}
-          <div className="card">
-            <p style={{ color:"#94a3b8", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:4 }}>Who influences the decision? — France</p>
-            <p style={{ color:"#64748b", fontSize:11, marginBottom:14 }}>Primary influencer relied on when choosing fertilizer product</p>
-            <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
-              {INFLUENCERS.map((inf,i)=>(
-                <div key={i}>
-                  <div style={{ display:"flex", justifyContent:"space-between", marginBottom:3 }}>
-                    <span style={{ color:"#e2e8f0", fontSize:12, fontWeight:i===0?700:400 }}>{inf.label}</span>
-                    <span style={{ color:inf.color, fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>{inf.pct}%</span>
-                  </div>
-                  <div style={{ height:8, background:"#1e293b", borderRadius:4, overflow:"hidden", marginBottom:4 }}>
-                    <div style={{ height:"100%", width:`${inf.pct*2}%`, background:inf.color, borderRadius:4 }}/>
-                  </div>
-                  <p style={{ color:"#64748b", fontSize:10, margin:0 }}>{inf.note}</p>
-                </div>
-              ))}
-            </div>
-            <div style={{ marginTop:12, padding:"10px 12px", background:"#060d1a", border:"1px solid #10b98130", borderLeft:"3px solid #10b981", borderRadius:"0 8px 8px 0" }}>
-              <p style={{ color:"#94a3b8", fontSize:11, lineHeight:1.7, margin:0 }}>
-                In France, <span style={{ color:"#10b981", fontWeight:700 }}>57% of decisions flow through cooperative or agronomist channels</span> (vs 0% via local retailers). Winning OCP's commercial position in France requires working at the coop level, not the farm-gate level.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Internal vs Survey gap analysis */}
-      <div className="card">
-        <p style={{ color:"#94a3b8", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:4 }}>Survey Score vs OCP Internal Assessment — Gap Analysis</p>
-        <p style={{ color:"#64748b", fontSize:11, marginBottom:16 }}>Where OCP's internal view underestimates or overestimates what farmers actually care about</p>
-        <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
-          {DECISION_DRIVERS.map((d,i)=>{
-            const gap = d.surveyScore - d.internalScore;
-            const gapColor = gap > 0.5 ? "#f43f5e" : gap < -0.5 ? "#10b981" : "#f59e0b";
-            const gapLabel = gap > 0.5 ? "Underestimated" : gap < -0.5 ? "Overestimated" : "Aligned";
-            return (
-              <div key={i} style={{ display:"flex", alignItems:"center", gap:10 }}>
-                <span style={{ color:"#94a3b8", fontSize:11, width:220, flexShrink:0 }}>{d.label}</span>
-                <div style={{ flex:1, display:"flex", alignItems:"center", gap:6 }}>
-                  <span style={{ color:"#64748b", fontSize:10, width:32, textAlign:"right", fontFamily:"'DM Mono',monospace" }}>{d.internalScore}</span>
-                  <div style={{ flex:1, position:"relative", height:6, background:"#1e293b", borderRadius:3 }}>
-                    <div style={{ position:"absolute", left:`${(Math.min(d.surveyScore,d.internalScore)/5)*100}%`, height:"100%",
-                      width:`${(Math.abs(gap)/5)*100}%`, background:gapColor+"60", borderRadius:3 }}/>
-                    <div style={{ position:"absolute", left:`${(d.internalScore/5)*100}%`, top:"50%", transform:"translateY(-50%)",
-                      width:8, height:8, borderRadius:"50%", background:"#64748b", border:"2px solid #94a3b8", marginLeft:-4 }}/>
-                    <div style={{ position:"absolute", left:`${(d.surveyScore/5)*100}%`, top:"50%", transform:"translateY(-50%)",
-                      width:8, height:8, borderRadius:"50%", background:d.accentColor, border:"2px solid #fff", marginLeft:-4 }}/>
-                  </div>
-                  <span style={{ color:d.accentColor, fontSize:10, width:28, fontFamily:"'DM Mono',monospace" }}>{d.surveyScore}</span>
-                  <span style={{ color:gapColor, fontSize:9, fontWeight:700, width:80, textAlign:"right" }}>{gapLabel}</span>
-                </div>
-              </div>
-            );
-          })}
-          <div style={{ display:"flex", gap:16, marginTop:6 }}>
-            <div style={{ display:"flex",alignItems:"center",gap:6 }}><div style={{width:8,height:8,borderRadius:"50%",background:"#94a3b8",border:"2px solid #94a3b8"}}/><span style={{color:"#64748b",fontSize:10}}>OCP internal assessment</span></div>
-            <div style={{ display:"flex",alignItems:"center",gap:6 }}><div style={{width:8,height:8,borderRadius:"50%",background:"#0ea5e9",border:"2px solid #fff"}}/><span style={{color:"#64748b",fontSize:10}}>Farmer survey score</span></div>
-          </div>
-        </div>
       </div>
     </div>
   );
@@ -1149,34 +940,34 @@ function MIFarmerBehaviorPage({ region }) {
   // ── ARCHETYPES ───────────────────────────────────────────────────────────────
   if (topic==="archetypes") return (
     <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
-      <div style={{ display:"flex", alignItems:"center", gap:12, flexWrap:"wrap" }}>
-        <button onClick={()=>{setTopic(null);}} style={{ background:"transparent",border:"none",color:"#64748b",fontSize:13,cursor:"pointer",padding:"4px 0" }}>← Back</button>
-        <div style={{ width:1, height:16, background:"#1e293b" }}/>
-        <span style={{ color:"#a78bfa", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:700 }}>Farmer Archetypes · France · 6 profiles</span>
-        <span style={{ color:"#64748b", fontSize:10 }}>Agreste 2020 census × McKinsey European Farmer Survey 2024 × FADN</span>
+      <div style={{ display:"flex", alignItems:"center", gap:14 }}>
+        <button onClick={()=>setTopic(null)} style={{ background:"transparent",border:"none",color:"#64748b",fontSize:12,cursor:"pointer",display:"flex",alignItems:"center",gap:6,padding:0 }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+        <div style={{width:1,height:14,background:"#1e293b"}}/>
+        <p style={{ color:"#a78bfa", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:600, margin:0 }}>Farmer Archetypes · France · 6 profiles</p>
+        <p style={{ color:"#475569", fontSize:10, margin:0 }}>Agreste 2020 × McKinsey European Farmer Survey 2024 × FADN</p>
       </div>
 
-      <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
+      <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
         {FARMER_PERSONAS.map(p=>(
           <button key={p.id} onClick={()=>setActivePersona(p.id)}
-            style={{ display:"flex", alignItems:"center", gap:7, padding:"8px 14px", borderRadius:10, cursor:"pointer",
-              background:activePersona===p.id?p.color+"22":"#0f172a",
-              border:`1px solid ${activePersona===p.id?p.color:p.color+"30"}`,
-              transition:"all 0.15s" }}>
-            <span style={{ fontSize:15 }}>{p.emoji}</span>
-            <div style={{ textAlign:"left" }}>
-              <p style={{ color:activePersona===p.id?p.color:"#94a3b8", fontSize:11, fontWeight:700, margin:0 }}>{p.nickname}</p>
-              <p style={{ color:"#64748b", fontSize:10, margin:0 }}>{p.share}%</p>
-            </div>
+            style={{ padding:"8px 16px", borderRadius:6, cursor:"pointer",
+              background:activePersona===p.id?p.color+"20":"transparent",
+              border:`1px solid ${activePersona===p.id?p.color:"#1e293b"}`,
+              color:activePersona===p.id?p.color:"#94a3b8",
+              fontSize:12, fontWeight:activePersona===p.id?700:400, transition:"all 0.15s" }}>
+            {p.nickname} <span style={{opacity:0.7}}>·</span> <span style={{fontFamily:"'DM Mono',monospace"}}>{p.share}%</span>
           </button>
         ))}
       </div>
 
-      <div style={{ display:"flex", gap:8 }}>
+      <div style={{ display:"flex", gap:8, marginTop:4 }}>
         {[["grid","Overview"],["detail","Deep Dive"]].map(([k,l])=>(
           <button key={k} onClick={()=>setViewMode(k)}
-            style={{ padding:"5px 14px", borderRadius:8, border:`1px solid ${viewMode===k?"#0ea5e9":"#1e293b"}`,
-              background:viewMode===k?"#0ea5e920":"transparent", color:viewMode===k?"#0ea5e9":"#64748b", fontSize:11, cursor:"pointer" }}>
+            style={{ padding:"5px 14px", borderRadius:6, border:`1px solid ${viewMode===k?"#94a3b8":"#1e293b"}`,
+              background:"transparent", color:viewMode===k?"#f1f5f9":"#64748b", fontSize:11, cursor:"pointer" }}>
             {l}
           </button>
         ))}
@@ -1186,21 +977,21 @@ function MIFarmerBehaviorPage({ region }) {
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
           <div className="chart-grid-2">
             <div className="card">
-              <p style={{ color:"#94a3b8", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:4 }}>P2O5 Applied by Archetype (kg/ha)</p>
-              <p style={{ color:"#64748b", fontSize:11, marginBottom:8 }}>vs Comifer recommendation: 55 kg/ha</p>
+              <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:4 }}>P2O5 Applied by Archetype (kg/ha)</p>
+              <p style={{ color:"#64748b", fontSize:11, marginBottom:10 }}>vs Comifer recommendation: 55 kg/ha</p>
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={p2o5Chart} layout="vertical" margin={{ left:90, right:20 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" horizontal={false}/>
                   <XAxis type="number" domain={[0,60]} tick={{ fill:"#94a3b8", fontSize:9 }}/>
                   <YAxis type="category" dataKey="name" tick={{ fill:"#94a3b8", fontSize:10 }} width={90}/>
                   <Tooltip content={<CustomTooltip/>}/>
-                  <ReferenceLine x={55} stroke="#f59e0b80" strokeDasharray="4 4" label={{ value:"Rec.", fill:"#f59e0b", fontSize:9 }}/>
+                  <ReferenceLine x={55} stroke="#f59e0b60" strokeDasharray="4 4" label={{ value:"Rec.", fill:"#f59e0b", fontSize:9 }}/>
                   <Bar dataKey="value" name="P2O5 kg/ha" radius={[0,4,4,0]}>{p2o5Chart.map((d,i)=><Cell key={i} fill={d.fill}/>)}</Bar>
                 </BarChart>
               </ResponsiveContainer>
             </div>
             <div className="card">
-              <p style={{ color:"#94a3b8", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:8 }}>Segment Share (%)</p>
+              <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:10 }}>Segment Share (%)</p>
               <ResponsiveContainer width="100%" height={200}>
                 <PieChart>
                   <Pie data={FARMER_PERSONAS.map(p=>({name:p.nickname,value:p.share,color:p.color}))} cx="50%" cy="50%" innerRadius={50} outerRadius={85} dataKey="value" paddingAngle={2}>
@@ -1209,31 +1000,32 @@ function MIFarmerBehaviorPage({ region }) {
                   <Tooltip formatter={(v,n)=>[`${v}%`,n]}/>
                 </PieChart>
               </ResponsiveContainer>
-              <div style={{ display:"flex", flexWrap:"wrap", gap:6, marginTop:4 }}>
-                {FARMER_PERSONAS.map((p,i)=><div key={i} style={{ display:"flex", alignItems:"center", gap:4 }}><div style={{ width:8, height:8, borderRadius:2, background:p.color }}/><span style={{ color:"#94a3b8", fontSize:10 }}>{p.emoji} {p.share}%</span></div>)}
+              <div style={{ display:"flex", flexWrap:"wrap", gap:"4px 12px" }}>
+                {FARMER_PERSONAS.map((p,i)=>(
+                  <div key={i} style={{ display:"flex", alignItems:"center", gap:5 }}>
+                    <div style={{ width:6,height:6,borderRadius:1,background:p.color }}/>
+                    <span style={{ color:"#94a3b8", fontSize:10 }}>{p.nickname.replace("The ","")} {p.share}%</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(265px,1fr))", gap:12 }}>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(265px,1fr))", gap:10 }}>
             {FARMER_PERSONAS.map((p,i)=>(
               <div key={i} onClick={()=>{setActivePersona(p.id);setViewMode("detail");}}
-                style={{ background:"#0a0f1a", border:`1px solid ${p.color}20`, borderTop:`3px solid ${p.color}`, borderRadius:12, padding:"14px", cursor:"pointer", transition:"all 0.15s" }}
-                onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-2px)";e.currentTarget.style.boxShadow=`0 8px 20px ${p.color}20`;}}
-                onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow="none";}}>
-                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
+                style={{ background:"#080e18", border:`1px solid #1a2436`, borderTop:`2px solid ${p.color}`, borderRadius:10, padding:"16px", cursor:"pointer", transition:"border-color 0.15s" }}
+                onMouseEnter={e=>e.currentTarget.style.borderColor=p.color+"40"}
+                onMouseLeave={e=>{e.currentTarget.style.borderColor="#1a2436";e.currentTarget.style.borderTopColor=p.color;}}>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
                   <div>
-                    <span style={{ fontSize:22 }}>{p.emoji}</span>
-                    <p style={{ color:p.color, fontSize:12, fontWeight:800, margin:"3px 0 1px" }}>{p.nickname}</p>
-                    <p style={{ color:"#64748b", fontSize:10, fontStyle:"italic" }}>{p.tagline}</p>
+                    <p style={{ color:p.color, fontSize:13, fontWeight:700, margin:"0 0 2px" }}>{p.nickname}</p>
+                    <p style={{ color:"#64748b", fontSize:10, fontStyle:"italic", margin:0 }}>{p.tagline}</p>
                   </div>
-                  <div style={{ textAlign:"right" }}>
-                    <p style={{ color:p.color, fontSize:20, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>{p.share}%</p>
-                    <p style={{ color:"#64748b", fontSize:10 }}>of farmers</p>
-                  </div>
+                  <p style={{ color:p.color, fontSize:19, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>{p.share}%</p>
                 </div>
-                <p style={{ color:"#94a3b8", fontSize:11, lineHeight:1.6, marginBottom:8 }}>{p.description.slice(0,110)}…</p>
-                <div style={{ display:"flex", justifyContent:"space-between" }}>
-                  <span style={{ color:"#64748b", fontSize:10 }}>P: <span style={{ color:p.color, fontFamily:"'DM Mono',monospace" }}>{p.p2o5KgHa} kg/ha</span></span>
+                <p style={{ color:"#94a3b8", fontSize:11, lineHeight:1.65, marginBottom:10 }}>{p.description.slice(0,105)}…</p>
+                <div style={{ display:"flex", justifyContent:"space-between", borderTop:"1px solid #1a2436", paddingTop:10 }}>
+                  <span style={{ color:"#64748b", fontSize:10 }}>P applied: <span style={{ color:p.color, fontFamily:"'DM Mono',monospace" }}>{p.p2o5KgHa} kg/ha</span></span>
                   <span style={{ color:"#64748b", fontSize:10 }}>€{p.fertSpend}/ha</span>
                 </div>
               </div>
@@ -1244,31 +1036,30 @@ function MIFarmerBehaviorPage({ region }) {
 
       {viewMode==="detail" && (
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
-          <div style={{ background:`linear-gradient(135deg,${persona.color}15,#0a0f1a)`, border:`1px solid ${persona.color}30`, borderRadius:16, padding:"22px" }}>
-            <div style={{ display:"flex", alignItems:"flex-start", gap:18, flexWrap:"wrap" }}>
-              <div style={{ fontSize:50 }}>{persona.emoji}</div>
+          <div style={{ background:`linear-gradient(135deg,${persona.color}10,#080e18)`, border:`1px solid ${persona.color}25`, borderRadius:14, padding:"24px" }}>
+            <div style={{ display:"flex", alignItems:"flex-start", gap:20, flexWrap:"wrap" }}>
               <div style={{ flex:1, minWidth:200 }}>
-                <div style={{ display:"flex", alignItems:"center", gap:10, flexWrap:"wrap", marginBottom:5 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:6 }}>
                   <h2 style={{ color:persona.color, fontSize:20, fontWeight:800, margin:0 }}>{persona.nickname}</h2>
-                  <span style={{ padding:"2px 9px", background:persona.color+"25", color:persona.color, borderRadius:20, fontSize:10, fontWeight:700 }}>{persona.share}% of French farmers</span>
+                  <span style={{ padding:"2px 10px", background:persona.color+"20", color:persona.color, borderRadius:4, fontSize:10, fontWeight:700 }}>{persona.share}% of French farmers</span>
                 </div>
-                <p style={{ color:"#94a3b8", fontSize:12, fontStyle:"italic", marginBottom:8 }}>"{persona.tagline}"</p>
+                <p style={{ color:"#94a3b8", fontSize:12, fontStyle:"italic", marginBottom:10 }}>"{persona.tagline}"</p>
                 <p style={{ color:"#cbd5e1", fontSize:12, lineHeight:1.8, margin:0 }}>{persona.description}</p>
               </div>
-              <div style={{ background:"#0a0f1a", border:`1px solid ${persona.color}30`, borderRadius:10, padding:"12px 16px", minWidth:180 }}>
-                <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:6 }}>OCP Opportunity</p>
-                <p style={{ color:"#e2e8f0", fontSize:11, lineHeight:1.7 }}>{persona.ocpOpportunity}</p>
+              <div style={{ background:"#060d1a", border:`1px solid ${persona.color}20`, borderRadius:10, padding:"14px 18px", minWidth:200 }}>
+                <p style={{ color:"#64748b", fontSize:9, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:8 }}>OCP Opportunity</p>
+                <p style={{ color:"#e2e8f0", fontSize:11, lineHeight:1.75 }}>{persona.ocpOpportunity}</p>
               </div>
             </div>
           </div>
           <div className="chart-grid-2">
             <div className="card">
-              <p style={{ color:"#94a3b8", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:14 }}>Behavioral Profile</p>
+              <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:14 }}>Behavioral Profile</p>
               <PersonaRadar persona={persona}/>
-              <div style={{ display:"flex", flexDirection:"column", gap:5, marginTop:4 }}>
+              <div style={{ display:"flex", flexDirection:"column", gap:6, marginTop:4 }}>
                 <ScoreBar label="Price Sensitivity"   val={persona.priceScore}     color="#f43f5e"/>
                 <ScoreBar label="Agronomy Focus"      val={persona.agronomyScore}  color="#0ea5e9"/>
-                <ScoreBar label="Innovation Adoption" val={persona.innovationScore} color="#10b981"/>
+                <ScoreBar label="Innovation"           val={persona.innovationScore} color="#10b981"/>
                 <ScoreBar label="Sustainability"       val={persona.sustainScore}   color="#a78bfa"/>
                 <ScoreBar label="Coop Loyalty"         val={persona.coopScore}      color="#f59e0b"/>
                 <ScoreBar label="Digital Adoption"     val={persona.digitalScore}   color="#64748b"/>
@@ -1276,10 +1067,10 @@ function MIFarmerBehaviorPage({ region }) {
             </div>
             <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
               <div className="card">
-                <p style={{ color:"#94a3b8", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:12 }}>Profile Facts</p>
-                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:7 }}>
-                  {[["Farm size",persona.farmSize],["Age range",persona.age],["Main region",persona.region],["Tenure",persona.tenure],["Structure",persona.structure],["Channel",persona.channel]].map(([k,v])=>(
-                    <div key={k} style={{ background:"#0a0f1a", borderRadius:7, padding:"7px 9px" }}>
+                <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:12 }}>Profile Facts</p>
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:6 }}>
+                  {[["Farm size",persona.farmSize],["Age range",persona.age],["Region",persona.region],["Tenure",persona.tenure],["Structure",persona.structure],["Channel",persona.channel]].map(([k,v])=>(
+                    <div key={k} style={{ background:"#0a0f1a", borderRadius:6, padding:"8px 10px" }}>
                       <p style={{ color:"#64748b", fontSize:9, textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:2 }}>{k}</p>
                       <p style={{ color:"#e2e8f0", fontSize:11, fontWeight:500 }}>{v}</p>
                     </div>
@@ -1287,20 +1078,15 @@ function MIFarmerBehaviorPage({ region }) {
                 </div>
               </div>
               <div className="card">
-                <p style={{ color:"#94a3b8", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:8 }}>Fertilizer Decision Logic</p>
-                <div style={{ display:"flex", gap:7 }}>
-                  <div style={{ width:7, height:7, borderRadius:"50%", background:persona.color, flexShrink:0, marginTop:4 }}/>
-                  <div>
-                    <p style={{ color:persona.color, fontSize:10, fontWeight:700, marginBottom:3 }}>Driver: {persona.decisionDriver}</p>
-                    <p style={{ color:"#94a3b8", fontSize:11, lineHeight:1.7 }}>{persona.fertiliserBehavior}</p>
-                  </div>
-                </div>
+                <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:8 }}>Fertilizer Decision Logic</p>
+                <p style={{ color:persona.color, fontSize:10, fontWeight:700, marginBottom:4 }}>Driver: {persona.decisionDriver}</p>
+                <p style={{ color:"#94a3b8", fontSize:11, lineHeight:1.7 }}>{persona.fertiliserBehavior}</p>
               </div>
             </div>
           </div>
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(155px,1fr))", gap:9 }}>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(155px,1fr))", gap:8 }}>
             {persona.stats.map((s,i)=>(
-              <div key={i} style={{ background:"linear-gradient(135deg,#0f172a,#0a1020)", border:`1px solid ${persona.color}18`, borderRadius:9, padding:"11px 13px" }}>
+              <div key={i} style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:8, padding:"12px" }}>
                 <p style={{ color:"#64748b", fontSize:9, textTransform:"uppercase", letterSpacing:"0.07em", marginBottom:4 }}>{s.label}</p>
                 <p style={{ color:persona.color, fontSize:15, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>{s.value}</p>
                 <p style={{ color:"#64748b", fontSize:9, marginTop:3 }}>{s.note}</p>
@@ -1312,532 +1098,337 @@ function MIFarmerBehaviorPage({ region }) {
     </div>
   );
 
-  return null;
-}
+  // ── DECISION DRIVERS — INTERACTIVE EXPLORATION ────────────────────────────────
+  if (topic==="drivers") {
+    const STEPS = [
+      { id:"overview",   label:"What matters" },
+      { id:"explore",    label:"Explore each driver" },
+      { id:"influence",  label:"Who decides" },
+      { id:"implication",label:"OCP implication" },
+    ];
 
+    const stepIdx = STEPS.findIndex(s=>s.id===driverStep)||0;
 
+    // Sorted drivers for display
+    const sortedDrivers = [...DECISION_DRIVERS].sort((a,b)=>b.surveyScore-a.surveyScore);
 
-// ─── QUANTITATIVE PAGES ───────────────────────────────────────────────────────
+    return (
+      <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
 
-function OverviewPage({ data, region }) {
-  const regionCrops = [...new Set(data.filter(d=>d.region===region).map(d=>d.crop))];
-  const cropSummary = regionCrops.map(c=>{
-    const b=data.find(d=>d.region===region&&d.crop===c&&d.strategy==="Blended (MAP)");
-    const s=data.find(d=>d.region===region&&d.crop===c&&d.strategy==="Separated (TSP+N)");
-    const o=data.find(d=>d.region===region&&d.crop===c&&d.strategy==="Optimized");
-    return { crop:c, blended:b?.margin??0, separated:s?.margin??0, optimized:o?.margin??0, delta:(s?.margin??0)-(b?.margin??0) };
-  });
-  const regionAttractive = REGIONS.map(r=>{
-    const crops=[...new Set(data.filter(d=>d.region===r).map(d=>d.crop))];
-    const deltas=crops.map(c=>{
-      const b=data.find(d=>d.region===r&&d.crop===c&&d.strategy==="Blended (MAP)");
-      const s=data.find(d=>d.region===r&&d.crop===c&&d.strategy==="Separated (TSP+N)");
-      return b&&s?s.margin-b.margin:0;
-    });
-    return { region:r, avg:deltas.reduce((a,x)=>a+x,0)/deltas.length };
-  });
-  const allBase=data.filter(d=>d.region===region&&d.strategy==="Blended (MAP)");
-  const allSep=data.filter(d=>d.region===region&&d.strategy==="Separated (TSP+N)");
-  const avgB=allBase.reduce((a,d)=>a+d.margin,0)/(allBase.length||1);
-  const avgS=allSep.reduce((a,d)=>a+d.margin,0)/(allSep.length||1);
-  const avgD=avgS-avgB;
-  const avgF=allBase.reduce((a,d)=>a+(d.fert_cost/d.op_cost)*100,0)/(allBase.length||1);
-
-  return (
-    <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
-      <div className="kpi-row">
-        <KPICard label="Avg. Margin — Blended"  value={fmt(avgB)+"/ha"} sub={`all crops · ${region}`} accent="#64748b" />
-        <KPICard label="Avg. Margin — Separated" value={fmt(avgS)+"/ha"} sub={`all crops · ${region}`} accent="#0ea5e9" />
-        <KPICard label="Avg. Sep. Benefit"       value={(avgD>=0?"+":"")+fmt(avgD)+"/ha"} sub="vs blended" accent={avgD>=0?"#10b981":"#f43f5e"} />
-        <KPICard label="Avg. Fert. Cost Share"   value={pct(avgF)}        sub="of production cost" accent="#f59e0b" />
-        <KPICard label="Crops modelled"          value={regionCrops.length} sub={`in ${region}`} accent="#a78bfa" />
-      </div>
-      {/* Product mix histogram from Excel */}
-      <div className="card">
-        <h3 className="card-title">Product Mix Evolution — France (kt P2O5)</h3>
-        <p style={{color:"#94a3b8",fontSize:11,marginBottom:10}}>Season-by-season · Source: Agreste / French Ministry of Agriculture</p>
-        <ResponsiveContainer width="100%" height={230}>
-          <BarChart data={PRODUCT_MIX_DATA} margin={{left:8,right:10,bottom:4}}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false}/>
-            <XAxis dataKey="season" tick={{fill:"#64748b",fontSize:9}}/>
-            <YAxis tick={{fill:"#64748b",fontSize:9}} label={{value:"kt P2O5",angle:-90,position:"insideLeft",fill:"#475569",fontSize:9,offset:8}}/>
-            <Tooltip content={<CustomTooltip/>}/>
-            <Legend wrapperStyle={{fontSize:10}}/>
-            {Object.entries(PM_COLORS).map(([k,c])=>(
-              <Bar key={k} dataKey={k} fill={c} stackId="a" radius={k==="Organomineral"?[3,3,0,0]:undefined}/>
-            ))}
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-
-      <div className="chart-grid-2">
-        <div className="card">
-          <h3 className="card-title">Gross Margin by Crop & Strategy — {region}</h3>
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={cropSummary} margin={{ left:0,right:10 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="crop" tick={{ fill:"#64748b",fontSize:11 }} />
-              <YAxis tick={{ fill:"#64748b",fontSize:10 }} />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend wrapperStyle={{ fontSize:10 }} />
-              <Bar dataKey="blended"   name="Blended"   fill="#64748b" radius={[3,3,0,0]} />
-              <Bar dataKey="separated" name="Separated" fill="#0ea5e9" radius={[3,3,0,0]} />
-              <Bar dataKey="optimized" name="Optimized" fill="#10b981" radius={[3,3,0,0]} />
-            </BarChart>
-          </ResponsiveContainer>
+        {/* Back + breadcrumb */}
+        <div style={{ display:"flex", alignItems:"center", gap:14 }}>
+          <button onClick={()=>{setTopic(null);setDriverStep("overview");setActiveDriver(null);}}
+            style={{ background:"transparent",border:"none",color:"#64748b",fontSize:12,cursor:"pointer",display:"flex",alignItems:"center",gap:6,padding:0 }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Back
+          </button>
+          <div style={{width:1,height:14,background:"#1e293b"}}/>
+          <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:600, margin:0 }}>Farmer Decision Drivers · France</p>
+          <p style={{ color:"#475569", fontSize:10, margin:0 }}>Source: Simon-Kucher × OCP Nutricrops Voice of Customer</p>
         </div>
-        <div className="card">
-          <h3 className="card-title">Separation Attractiveness by Region</h3>
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={regionAttractive} margin={{ left:0,right:10 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="region" tick={{ fill:"#64748b",fontSize:10 }} />
-              <YAxis tick={{ fill:"#64748b",fontSize:10 }} />
-              <Tooltip content={<CustomTooltip />} />
-              <ReferenceLine y={0} stroke="#334155" />
-              <Bar dataKey="avg" name="Avg Δ Margin ($/ha)" radius={[4,4,0,0]}>
-                {regionAttractive.map((e,i)=><Cell key={i} fill={e.avg>30?"#10b981":e.avg>0?"#0ea5e9":"#f43f5e"} />)}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-      <div className="card">
-        <h3 className="card-title">Separation Delta — {region}</h3>
-        <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
-          {cropSummary.map((row,i)=>{
-            const max=Math.max(...cropSummary.map(r=>r.separated));
-            const dc=row.delta>30?"#10b981":row.delta>0?"#0ea5e9":"#f43f5e";
+
+        {/* Step navigator */}
+        <div style={{ display:"flex", gap:0, background:"#080e18", border:"1px solid #1a2436", borderRadius:10, padding:4, width:"fit-content" }}>
+          {STEPS.map((s,i)=>{
+            const active = driverStep===s.id;
+            const done = STEPS.indexOf(STEPS.find(x=>x.id===driverStep)) > i;
             return (
-              <div key={i} style={{ display:"flex", alignItems:"center", gap:12 }}>
-                <span style={{ color:"#94a3b8",fontSize:12,width:72,flexShrink:0 }}>{row.crop}</span>
-                <div style={{ flex:1, background:"#1e293b", borderRadius:4, height:24, position:"relative", overflow:"hidden" }}>
-                  <div style={{ position:"absolute",left:0,top:0,height:"100%",width:`${(row.separated/max)*100}%`,background:`linear-gradient(90deg,${dc}40,${dc}20)`,borderRadius:4 }} />
-                  <span style={{ position:"absolute",left:10,top:"50%",transform:"translateY(-50%)",color:"#e2e8f0",fontSize:11,fontFamily:"'DM Mono',monospace" }}>${row.separated}/ha</span>
-                </div>
-                <span style={{ color:dc,fontSize:12,fontWeight:700,fontFamily:"'DM Mono',monospace",width:56,textAlign:"right",flexShrink:0 }}>{row.delta>0?"+":""}{row.delta}</span>
-                <span style={{ padding:"2px 8px",borderRadius:20,fontSize:10,background:dc+"20",color:dc,width:68,textAlign:"center",flexShrink:0 }}>{row.delta>30?"STRONG":row.delta>0?"MARGINAL":"NEUTRAL"}</span>
-              </div>
+              <button key={s.id} onClick={()=>{setDriverStep(s.id);setActiveDriver(null);}}
+                style={{ padding:"8px 18px", borderRadius:7, border:"none", cursor:"pointer", transition:"all 0.15s",
+                  background:active?"#0ea5e920":"transparent",
+                  color:active?"#0ea5e9":done?"#64748b":"#475569",
+                  fontSize:12, fontWeight:active?700:400,
+                  borderRight: i<STEPS.length-1?"1px solid #1a2436":"none" }}>
+                <span style={{ color:done&&!active?"#0ea5e940":active?"#0ea5e9":"#1e3050", fontSize:10, marginRight:6, fontFamily:"'DM Mono',monospace" }}>{String(i+1).padStart(2,"0")}</span>
+                {s.label}
+              </button>
             );
           })}
         </div>
-      </div>
-    </div>
-  );
-}
 
-function SimulatorPage({ data, region, crop }) {
-  const [cropPrice,setCropPrice]=useState(250);
-  const [mapPrice,setMapPrice]=useState(520);
-  const [tspPrice,setTspPrice]=useState(480);
-  const [baseYield,setBaseYield]=useState(4.5);
-  const [yieldBoost,setYieldBoost]=useState(8);
-  const [extraPasses,setExtraPasses]=useState(1);
-  const [costPerPass,setCostPerPass]=useState(55);
-  const [appRateN,setAppRateN]=useState(150);
-  const [appRateP,setAppRateP]=useState(80);
-  const realBase=data.find(d=>d.region===region&&d.crop===crop&&d.strategy==="Blended (MAP)");
-  const scenarios=useMemo(()=>{
-    const fb=(appRateP*mapPrice)/1000+(appRateN*280)/1000;
-    const fs=(appRateP*tspPrice)/1000+(appRateN*280)/1000;
-    const ex=extraPasses*costPerPass;
-    const yS=baseYield*(1+yieldBoost/100);
-    const yO=baseYield*(1+(yieldBoost*1.3)/100);
-    const boc=realBase?.op_cost??750;
-    return [
-      { strategy:"Blended (MAP)",     yield:baseYield,revenue:baseYield*cropPrice,fertCost:fb,opCost:boc,       totalCost:boc+fb,            margin:baseYield*cropPrice-boc-fb },
-      { strategy:"Separated (TSP+N)", yield:yS,       revenue:yS*cropPrice,       fertCost:fs,opCost:boc+ex,   totalCost:boc+ex+fs,         margin:yS*cropPrice-(boc+ex)-fs },
-      { strategy:"Optimized",         yield:yO,       revenue:yO*cropPrice,       fertCost:fs*0.95,opCost:boc+ex*0.85,totalCost:boc+ex*0.85+fs*0.95,margin:yO*cropPrice-(boc+ex*0.85)-fs*0.95 },
-    ];
-  },[cropPrice,mapPrice,tspPrice,baseYield,yieldBoost,extraPasses,costPerPass,appRateN,appRateP,realBase]);
-  const base=scenarios[0];
-  const breakEven=((extraPasses*costPerPass)/cropPrice).toFixed(2);
-  const passes=yieldBoost/100*baseYield>=breakEven;
-  const waterfallData=[
-    {name:"Base",value:base.margin,fill:"#64748b"},
-    {name:"+Yield",value:scenarios[1].revenue-base.revenue,fill:"#10b981"},
-    {name:"-Passes",value:-(extraPasses*costPerPass),fill:"#f43f5e"},
-    {name:"-FertΔ",value:-(scenarios[1].fertCost-base.fertCost),fill:"#f59e0b"},
-    {name:"=Sep.",value:scenarios[1].margin,fill:"#0ea5e9"},
-  ];
-  const Slider=({label,min,max,step,value,onChange,unit})=>(
-    <div style={{ marginBottom:11 }}>
-      <div style={{ display:"flex",justifyContent:"space-between",marginBottom:3 }}>
-        <span style={{ color:"#94a3b8",fontSize:12 }}>{label}</span>
-        <span style={{ color:"#f1f5f9",fontSize:12,fontFamily:"'DM Mono',monospace" }}>{value}{unit}</span>
-      </div>
-      <input type="range" min={min} max={max} step={step} value={value} onChange={e=>onChange(Number(e.target.value))} style={{ width:"100%",accentColor:"#0ea5e9",cursor:"pointer" }} />
-    </div>
-  );
-  return (
-    <div>
-      <div className="simulator-grid">
-        <div className="card">
-          <h3 className="card-title">Inputs — {crop} · {region}</h3>
-          {realBase&&<p style={{ color:"#10b981",fontSize:11,marginBottom:11,background:"#10b98110",borderRadius:6,padding:"5px 10px",border:"1px solid #10b98120" }}>Base op. cost: ${realBase.op_cost}/ha</p>}
-          <Slider label="Crop Price ($/t)" min={100} max={600} step={10} value={cropPrice} onChange={setCropPrice} unit=" $/t"/>
-          <Slider label="MAP Price ($/t)"  min={300} max={900} step={10} value={mapPrice}  onChange={setMapPrice}  unit=" $/t"/>
-          <Slider label="TSP Price ($/t)"  min={280} max={850} step={10} value={tspPrice}  onChange={setTspPrice}  unit=" $/t"/>
-          <Slider label="Base Yield"       min={1}   max={15}  step={0.1}value={baseYield} onChange={setBaseYield} unit=" t/ha"/>
-          <Slider label="Yield Boost Sep." min={0}   max={30}  step={0.5}value={yieldBoost}onChange={setYieldBoost}unit="%"/>
-          <Slider label="Extra Passes"     min={0}   max={4}   step={1}  value={extraPasses}onChange={setExtraPasses}unit=""/>
-          <Slider label="Cost/Pass"        min={20}  max={150} step={5}  value={costPerPass}onChange={setCostPerPass}unit=" $/ha"/>
-          <Slider label="N Rate"           min={50}  max={300} step={5}  value={appRateN}  onChange={setAppRateN}  unit=" kg/ha"/>
-          <Slider label="P Rate"           min={20}  max={200} step={5}  value={appRateP}  onChange={setAppRateP}  unit=" kg/ha"/>
-        </div>
-        <div style={{ display:"flex",flexDirection:"column",gap:14 }}>
-          <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12 }}>
-            {scenarios.map((s,si)=>{
-              const delta=s.margin-base.margin;
-              const col=Object.values(STRATEGY_COLORS)[si];
-              const winner=s.margin===Math.max(...scenarios.map(x=>x.margin));
-              return (
-                <div key={si} style={{ background:"linear-gradient(135deg,#0f172a,#0a1020)",border:`1px solid ${col}${winner?"80":"30"}`,borderRadius:14,padding:"16px 14px",position:"relative",overflow:"hidden" }}>
-                  {winner&&<div style={{ position:"absolute",top:8,right:10,fontSize:14 }}>🏆</div>}
-                  <div style={{ width:10,height:10,borderRadius:"50%",background:col,marginBottom:8,boxShadow:`0 0 8px ${col}` }} />
-                  <p style={{ color:col,fontSize:10,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:8,fontWeight:700 }}>{s.strategy}</p>
-                  <p style={{ color:"#f1f5f9",fontSize:20,fontWeight:800,fontFamily:"'DM Mono',monospace",margin:0 }}>{fmt(s.margin)}</p>
-                  <p style={{ color:"#64748b",fontSize:10,marginTop:2 }}>$/ha margin</p>
-                  {si>0&&<div style={{ marginTop:8,padding:"3px 8px",borderRadius:6,background:delta>=0?"#10b98120":"#f43f5e20",display:"inline-block" }}><span style={{ color:delta>=0?"#10b981":"#f43f5e",fontSize:11,fontWeight:700,fontFamily:"'DM Mono',monospace" }}>{delta>=0?"+":""}{fmt(delta)}</span></div>}
-                </div>
-              );
-            })}
-          </div>
-          <div className="chart-grid-2">
-            <div className="card">
-              <h3 className="card-title">Profit Waterfall</h3>
-              <ResponsiveContainer width="100%" height={160}>
-                <BarChart data={waterfallData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                  <XAxis dataKey="name" tick={{ fill:"#64748b",fontSize:9 }} />
-                  <YAxis tick={{ fill:"#64748b",fontSize:9 }} />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Bar dataKey="value" name="$/ha" radius={[3,3,0,0]}>{waterfallData.map((d,i)=><Cell key={i} fill={d.fill} />)}</Bar>
-                </BarChart>
-              </ResponsiveContainer>
+        {/* ── STEP 1: OVERVIEW ── */}
+        {driverStep==="overview" && (
+          <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+            <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"24px" }}>
+              <p style={{ color:"#f1f5f9", fontSize:15, fontWeight:700, marginBottom:16, lineHeight:1.4 }}>
+                French farmers rank <span style={{color:"#10b981"}}>total program cost per hectare</span> as their #1 purchase driver — not price per bag, not brand, not sustainability.
+              </p>
+              <p style={{ color:"#94a3b8", fontSize:13, lineHeight:1.8, marginBottom:0 }}>
+                Agronomic performance comes immediately after: phosphorus efficiency, granule quality, and yield gain all score above 4.4 out of 5. Price per bag only ranks third. Sustainability scores last. The commercial implication is clear — the conversation must be framed at program economics, backed by agronomic proof.
+              </p>
             </div>
-            <div className="card" style={{ display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",gap:10 }}>
-              <h3 className="card-title">Break-Even</h3>
-              <p style={{ color:"#f59e0b",fontSize:30,fontWeight:800,fontFamily:"'DM Mono',monospace" }}>{breakEven} t/ha</p>
-              <div style={{ width:"100%",background:passes?"#10b98120":"#f43f5e20",borderRadius:10,padding:"10px",textAlign:"center",border:`1px solid ${passes?"#10b98140":"#f43f5e40"}` }}>
-                <p style={{ color:passes?"#10b981":"#f43f5e",fontWeight:700,fontSize:12 }}>{passes?"✓ SEPARATION PAYS OFF":"✗ DOES NOT BREAK EVEN"}</p>
+
+            {/* Toggle: importance vs WTP */}
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+              <p style={{ color:"#94a3b8", fontSize:11, fontWeight:600, margin:0 }}>
+                {viewMetric==="importance" ? "Purchase criteria ranked by importance score (1–5)" : "% of farmers who would accept a higher price if performance improved"}
+              </p>
+              <div style={{ display:"flex", gap:0, background:"#060d1a", border:"1px solid #1a2436", borderRadius:7, padding:3 }}>
+                {[["importance","Importance"],["wtp","Willingness to Pay"]].map(([k,l])=>(
+                  <button key={k} onClick={()=>setViewMetric(k)}
+                    style={{ padding:"5px 14px", borderRadius:5, border:"none", cursor:"pointer", transition:"all 0.12s",
+                      background:viewMetric===k?"#0ea5e920":"transparent",
+                      color:viewMetric===k?"#0ea5e9":"#64748b", fontSize:11, fontWeight:viewMetric===k?700:400 }}>
+                    {l}
+                  </button>
+                ))}
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
-function PLPage({ data, region, crop }) {
-  const [expanded,setExpanded]=useState({});
-  const base=data.find(d=>d.region===region&&d.crop===crop&&d.strategy==="Blended (MAP)");
-  const categories=[
-    {key:"seed",label:"Seed",           value:95,                   share:11,color:"#a78bfa"},
-    {key:"fert",label:"Fertilizer",     value:base?.fert_cost||310,  share:Math.round((base?.fert_cost||310)/(base?.op_cost||900)*100),color:"#f59e0b"},
-    {key:"cp",  label:"Crop Protection",value:120,                   share:14,color:"#0ea5e9"},
-    {key:"mach",label:"Machinery",      value:180,                   share:21,color:"#64748b"},
-    {key:"labor",label:"Labor",         value:95,                    share:11,color:"#10b981"},
-    {key:"fuel",label:"Fuel",           value:65,                    share:8, color:"#f43f5e"},
-    {key:"land",label:"Land / Rent",    value:145,                   share:17,color:"#e2e8f0"},
-  ];
-  const sensData=[200,300,400,500,600,700,800].map(fp=>({
-    price:fp,
-    "Blended":  (base?.revenue||1050)-(base?.op_cost||900-(base?.fert_cost||310))-fp,
-    "Separated":(base?.revenue||1050)*1.08-((base?.op_cost||900)+55-((base?.fert_cost||310)*0.95))-fp*0.95,
-  }));
-  const donutData=categories.map(c=>({name:c.label,value:c.share,color:c.color}));
-  return (
-    <div style={{ display:"flex",flexDirection:"column",gap:18 }}>
-      <div className="chart-grid-2">
-        <div className="card">
-          <h3 className="card-title">Cost Breakdown — {crop} · {region}</h3>
-          <ResponsiveContainer width="100%" height={160}>
-            <PieChart><Pie data={donutData} cx="50%" cy="50%" innerRadius={45} outerRadius={75} dataKey="value" paddingAngle={2}>{donutData.map((d,i)=><Cell key={i} fill={d.color} />)}</Pie><Tooltip formatter={(v,n)=>[`${v}%`,n]} /></PieChart>
-          </ResponsiveContainer>
-          {categories.map(cat=>(
-            <div key={cat.key} style={{ marginBottom:5 }}>
-              <div onClick={()=>setExpanded(e=>({...e,[cat.key]:!e[cat.key]}))}
-                style={{ display:"flex",alignItems:"center",gap:9,cursor:"pointer",padding:"5px 7px",borderRadius:7,background:expanded[cat.key]?"#1e293b":"transparent" }}>
-                <div style={{ width:9,height:9,borderRadius:2,background:cat.color,flexShrink:0 }} />
-                <span style={{ color:"#e2e8f0",fontSize:12,flex:1 }}>{cat.label}</span>
-                <div style={{ width:80,background:"#1e293b",borderRadius:3,height:4 }}><div style={{ width:`${cat.share}%`,background:cat.color,borderRadius:3,height:"100%" }} /></div>
-                <span style={{ color:"#94a3b8",fontSize:11,width:28,textAlign:"right" }}>{cat.share}%</span>
-                <span style={{ color:"#f1f5f9",fontSize:11,fontFamily:"'DM Mono',monospace",width:52,textAlign:"right" }}>${cat.value}</span>
-              </div>
-              {expanded[cat.key]&&<div style={{ marginLeft:22,padding:"5px 10px",background:"#0a0f1a",borderRadius:7,fontSize:11,color:"#64748b" }}>{cat.key==="fert"?`Blended: $${cat.value}/ha → Sep.: $${Math.round(cat.value*0.95)}/ha`:`Standard allocation for ${crop.toLowerCase()} in ${region}.`}</div>}
-            </div>
-          ))}
-        </div>
-        <div className="card">
-          <h3 className="card-title">Margin Sensitivity to Fertilizer Price</h3>
-          <p style={{ color:"#94a3b8",fontSize:11,marginBottom:10 }}>{crop} · {region}</p>
-          <ResponsiveContainer width="100%" height={200}>
-            <AreaChart data={sensData}>
-              <defs>
-                <linearGradient id="gbFill" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#64748b" stopOpacity={0.3}/><stop offset="95%" stopColor="#64748b" stopOpacity={0}/></linearGradient>
-                <linearGradient id="gsFill" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.3}/><stop offset="95%" stopColor="#0ea5e9" stopOpacity={0}/></linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="price" tick={{ fill:"#64748b",fontSize:10 }} />
-              <YAxis tick={{ fill:"#64748b",fontSize:10 }} />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend wrapperStyle={{ fontSize:11 }} />
-              <ReferenceLine y={0} stroke="#334155" strokeDasharray="4 4" />
-              <Area type="monotone" dataKey="Blended"   stroke="#64748b" fill="url(#gbFill)" strokeWidth={2} />
-              <Area type="monotone" dataKey="Separated" stroke="#0ea5e9" fill="url(#gsFill)" strokeWidth={2} />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-    </div>
-  );
-}
+            {/* Unified ranking visual */}
+            <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, overflow:"hidden" }}>
+              {sortedDrivers.map((d,i)=>{
+                const val = viewMetric==="importance" ? d.surveyScore : d.wtpPremium;
+                const maxVal = viewMetric==="importance" ? 5 : 60;
+                const pct = val ? (val/maxVal)*100 : 0;
+                const isActive = activeDriver===d.id;
+                const groupColor = d.group==="Program Economics"?"#10b981":d.group==="Agronomic Performance"?"#f59e0b":d.group==="Price"?"#a78bfa":d.group==="Sustainability"?"#818cf8":"#64748b";
 
-function AgronomyPage({ data, region, crop }) {
-  const base=data.find(d=>d.region===region&&d.crop===crop&&d.strategy==="Blended (MAP)");
-  const ph=base?.soil_ph??6.5;
-  const phData=Array.from({length:30},(_,i)=>{const p=5.0+i*0.15;return{ph:p.toFixed(1),"MAP/DAP":Math.max(0,6.5-Math.abs(p-6.2)*1.8+(p>7.0?-(p-7.0)*2:0)),"TSP Sep.":Math.max(0,7.0-Math.abs(p-6.5)*1.2+(p>7.5?-(p-7.5)*1.5:0)),"Optimized":Math.max(0,7.5-Math.abs(p-6.8)*1.0)};});
-  const pRateData=Array.from({length:10},(_,i)=>{const r=i*20+20;return{rate:r,"MAP/DAP":Math.min(8,3+Math.sqrt(r)*0.65),"TSP Sep.":Math.min(9,3.2+Math.sqrt(r)*0.72),"Optimized":Math.min(9.5,3.4+Math.sqrt(r)*0.78)};});
-  const omData=Array.from({length:8},(_,i)=>{const om=0.5+i*0.5;return{om:om.toFixed(1),"P Eff. MAP":Math.min(85,40+om*18),"P Eff. TSP":Math.min(92,45+om*20)};});
-  return (
-    <div style={{ display:"flex",flexDirection:"column",gap:18 }}>
-      <div className="card">
-        <h3 className="card-title">Annual Nutrient Consumption — France (t nutrient)</h3>
-        <p style={{color:"#94a3b8",fontSize:11,marginBottom:10}}>2017–2023 · Source: Agreste / French Ministry of Agriculture</p>
-        <ResponsiveContainer width="100%" height={195}>
-          <LineChart data={CONSUMPTION_DATA} margin={{left:10,right:20}}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b"/>
-            <XAxis dataKey="year" tick={{fill:"#64748b",fontSize:9}}/>
-            <YAxis tick={{fill:"#64748b",fontSize:9}} tickFormatter={v=>(v/1000).toFixed(0)+"k"} label={{value:"t nutrient",angle:-90,position:"insideLeft",fill:"#64748b",fontSize:9,offset:6}}/>
-            <Tooltip content={<CustomTooltip/>} formatter={v=>[v.toLocaleString()+" t",""]}/>
-            <Legend wrapperStyle={{fontSize:10}}/>
-            <Line type="monotone" dataKey="N"    name="N (t)"    stroke="#0ea5e9" strokeWidth={2} dot={{r:3}}/>
-            <Line type="monotone" dataKey="P2O5" name="P2O5 (t)" stroke="#10b981" strokeWidth={2} dot={{r:3}}/>
-            <Line type="monotone" dataKey="K2O"  name="K2O (t)"  stroke="#f59e0b" strokeWidth={2} dot={{r:3}}/>
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-      {base&&(
-        <div style={{ display:"flex",gap:12,flexWrap:"wrap" }}>
-          {[{label:"Crop",val:crop,color:"#0ea5e9"},{label:"Region",val:region,color:"#a78bfa"},{label:"Soil pH",val:ph,color:"#f59e0b"},{label:"Org. Matter",val:base.om+"%",color:"#10b981"}].map((item,i)=>(
-            <div key={i} style={{ background:"linear-gradient(135deg,#0f172a,#0a1020)",border:`1px solid ${item.color}25`,borderRadius:12,padding:"12px 16px",flex:1,minWidth:90 }}>
-              <p style={{ color:"#64748b",fontSize:10,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:4 }}>{item.label}</p>
-              <p style={{ color:item.color,fontSize:17,fontWeight:700,fontFamily:"'DM Mono',monospace" }}>{item.val}</p>
-            </div>
-          ))}
-        </div>
-      )}
-      <div className="chart-grid-2">
-        <div className="card">
-          <h3 className="card-title">Yield vs Soil pH</h3>
-          <p style={{ color:"#94a3b8",fontSize:11,marginBottom:10 }}>Separation advantage highest at pH &gt; 7.5</p>
-          <ResponsiveContainer width="100%" height={175}>
-            <LineChart data={phData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="ph" tick={{ fill:"#64748b",fontSize:9 }} />
-              <YAxis tick={{ fill:"#64748b",fontSize:9 }} />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend wrapperStyle={{ fontSize:9 }} />
-              <ReferenceLine x={String(ph.toFixed(1))} stroke="#f59e0b80" strokeDasharray="4 4" label={{ value:"↑ now",fill:"#f59e0b",fontSize:9 }} />
-              {["MAP/DAP","TSP Sep.","Optimized"].map((k,i)=><Line key={k} type="monotone" dataKey={k} stroke={Object.values(STRATEGY_COLORS)[i]} strokeWidth={2} dot={false} />)}
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="card">
-          <h3 className="card-title">Yield vs P Rate</h3>
-          <p style={{ color:"#94a3b8",fontSize:11,marginBottom:10 }}>Separation shifts the plateau upward</p>
-          <ResponsiveContainer width="100%" height={175}>
-            <LineChart data={pRateData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="rate" tick={{ fill:"#64748b",fontSize:9 }} />
-              <YAxis tick={{ fill:"#64748b",fontSize:9 }} />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend wrapperStyle={{ fontSize:9 }} />
-              {["MAP/DAP","TSP Sep.","Optimized"].map((k,i)=><Line key={k} type="monotone" dataKey={k} stroke={Object.values(STRATEGY_COLORS)[i]} strokeWidth={2} dot={false} />)}
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="card">
-          <h3 className="card-title">P Efficiency vs Organic Matter</h3>
-          <p style={{ color:"#94a3b8",fontSize:11,marginBottom:10 }}>Gap narrows above 2.5% OM</p>
-          <ResponsiveContainer width="100%" height={175}>
-            <AreaChart data={omData}>
-              <defs>
-                <linearGradient id="mapFill" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#64748b" stopOpacity={0.4}/><stop offset="95%" stopColor="#64748b" stopOpacity={0}/></linearGradient>
-                <linearGradient id="tspFill" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.4}/><stop offset="95%" stopColor="#0ea5e9" stopOpacity={0}/></linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="om" tick={{ fill:"#64748b",fontSize:9 }} />
-              <YAxis tick={{ fill:"#64748b",fontSize:9 }} />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend wrapperStyle={{ fontSize:9 }} />
-              <Area type="monotone" dataKey="P Eff. MAP" stroke="#64748b" fill="url(#mapFill)" strokeWidth={2} />
-              <Area type="monotone" dataKey="P Eff. TSP" stroke="#0ea5e9" fill="url(#tspFill)" strokeWidth={2} />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="card">
-          <h3 className="card-title">Biochemical Mechanisms</h3>
-          {[
-            {title:"P Fixation in Calcareous Soils",body:"At pH > 7.5, Ca²⁺ precipitates MAP phosphate within hours. TSP maintains a lower pH microzone, delaying fixation.",accent:"#f59e0b",icon:"🧲"},
-            {title:"NH₄⁺ Interference in Blends",  body:"MAP/DAP release N and P simultaneously. High NH₄⁺ suppresses root P uptake. Separation removes this competition.",accent:"#a78bfa",icon:"⚗️"},
-            {title:"Placement & Timing",            body:"Banded TSP subsurface puts P directly in the root zone. Broadcast MAP loses 15–35% to surface fixation.",accent:"#0ea5e9",icon:"📍"},
-          ].map((item,i)=>(
-            <div key={i} style={{ borderLeft:`3px solid ${item.accent}`,paddingLeft:11,marginBottom:13,paddingTop:2 }}>
-              <div style={{ display:"flex",alignItems:"center",gap:6,marginBottom:3 }}><span style={{ fontSize:13 }}>{item.icon}</span><p style={{ color:item.accent,fontSize:11,fontWeight:700 }}>{item.title}</p></div>
-              <p style={{ color:"#64748b",fontSize:11,lineHeight:1.6 }}>{item.body}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
+                return (
+                  <div key={d.id}>
+                    <div onClick={()=>setActiveDriver(isActive?null:d.id)}
+                      style={{ display:"flex", alignItems:"center", gap:14, padding:"14px 20px",
+                        background:isActive?"#0a1628":"transparent",
+                        borderBottom:"1px solid #0f1929",
+                        cursor:"pointer", transition:"background 0.12s" }}
+                      onMouseEnter={e=>{if(!isActive)e.currentTarget.style.background="#0a1020";}}
+                      onMouseLeave={e=>{if(!isActive)e.currentTarget.style.background="transparent";}}>
 
-function InsightsPage({ data, region, crop }) {
-  const insights=generateInsights(data,region,crop);
-  const allCrops=[...new Set(data.map(d=>d.crop))];const allInsights=[...new Set(data.map(d=>d.region))].flatMap(r=>allCrops.filter(c=>data.some(d=>d.region===r&&d.crop===c)).map(c=>{
-    const b=data.find(d=>d.region===r&&d.crop===c&&d.strategy==="Blended (MAP)");
-    const s=data.find(d=>d.region===r&&d.crop===c&&d.strategy==="Separated (TSP+N)");
-    if(!b||!s) return null;
-    return {region:r,crop:c,delta:s.margin-b.margin,ph:b.soil_ph};
-  }).filter(Boolean));
-  const base=data.find(d=>d.region===region&&d.crop===crop&&d.strategy==="Blended (MAP)");
-  const sep=data.find(d=>d.region===region&&d.crop===crop&&d.strategy==="Separated (TSP+N)");
-  const radarData=base&&sep?[
-    {metric:"Yield",    blended:base.yield/0.1,  separated:sep.yield/0.1},
-    {metric:"Margin",   blended:base.margin/10,  separated:sep.margin/10},
-    {metric:"P Effic.", blended:60,              separated:80},
-    {metric:"Revenue",  blended:base.revenue/20, separated:sep.revenue/20},
-    {metric:"Cost Eff.",blended:50,              separated:70},
-  ]:[];
-  return (
-    <div style={{ display:"flex",flexDirection:"column",gap:18 }}>
-      <div className="chart-grid-2">
-        <div className="card" style={{ border:"1px solid #0ea5e930" }}>
-          <h3 style={{ color:"#0ea5e9",fontSize:11,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:14 }}>◈ Model Insights — {crop} · {region}</h3>
-          {insights.length?insights.map((ins,i)=>(
-            <div key={i} style={{ display:"flex",gap:10,marginBottom:11,padding:"9px 12px",background:"#0a0f1a",borderRadius:8,borderLeft:"2px solid #0ea5e940" }}>
-              <span style={{ color:"#0ea5e9",fontSize:13,marginTop:1,flexShrink:0 }}>→</span>
-              <p style={{ color:"#cbd5e1",fontSize:12,lineHeight:1.7,margin:0 }}>{ins}</p>
+                      <span style={{ color:"#475569", fontSize:10, width:18, flexShrink:0, fontFamily:"'DM Mono',monospace", fontWeight:700 }}>#{i+1}</span>
+
+                      <div style={{ flex:1, minWidth:0 }}>
+                        <p style={{ color:"#e2e8f0", fontSize:12, fontWeight:500, margin:0 }}>{d.label}</p>
+                        <span style={{ display:"inline-block", marginTop:3, padding:"1px 7px", background:groupColor+"15", color:groupColor, fontSize:9, fontWeight:600, borderRadius:3, letterSpacing:"0.04em" }}>{d.group}</span>
+                      </div>
+
+                      <div style={{ display:"flex", alignItems:"center", gap:10, flexShrink:0, width:200 }}>
+                        <div style={{ flex:1, height:4, background:"#1e293b", borderRadius:2, overflow:"hidden" }}>
+                          {val && <div style={{ height:"100%", width:`${pct}%`, background:isActive?"#0ea5e9":d.accentColor, borderRadius:2, transition:"width 0.3s" }}/>}
+                        </div>
+                        <span style={{ color:isActive?"#0ea5e9":d.accentColor, fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace", width:36, textAlign:"right" }}>
+                          {viewMetric==="importance" ? d.surveyScore : (d.wtpPremium ? d.wtpPremium+"%" : "—")}
+                        </span>
+                      </div>
+
+                      <svg style={{ color:"#1e293b", flexShrink:0, transition:"transform 0.15s", transform:isActive?"rotate(90deg)":"none" }} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                    </div>
+
+                    {isActive && (
+                      <div style={{ padding:"16px 52px 16px 52px", background:"#060d18", borderBottom:"1px solid #0f1929" }}>
+                        <p style={{ color:"#94a3b8", fontSize:12, lineHeight:1.75, marginBottom:10 }}>{d.insight}</p>
+                        <div style={{ display:"flex", gap:8, alignItems:"flex-start" }}>
+                          <div style={{ width:3, height:"100%", minHeight:40, background:d.accentColor, borderRadius:2, flexShrink:0, alignSelf:"stretch" }}/>
+                          <div>
+                            <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:600, marginBottom:4 }}>OCP implication</p>
+                            <p style={{ color:"#cbd5e1", fontSize:12, lineHeight:1.75 }}>{d.ocpAngle}</p>
+                          </div>
+                        </div>
+                        <button onClick={()=>{setDriverStep("explore");setActiveDriver(d.id);}}
+                          style={{ marginTop:12, background:"transparent", border:"1px solid #1a2436", color:"#94a3b8", borderRadius:6, padding:"6px 14px", fontSize:11, cursor:"pointer" }}>
+                          Explore this driver in detail →
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
-          )):<p style={{ color:"#94a3b8" }}>No data for selected context.</p>}
-        </div>
-        {radarData.length>0&&(
-          <div className="card">
-            <h3 className="card-title">Strategy Radar — {crop} · {region}</h3>
-            <ResponsiveContainer width="100%" height={230}>
-              <RadarChart data={radarData}>
-                <PolarGrid stroke="#1e293b" />
-                <PolarAngleAxis dataKey="metric" tick={{ fill:"#64748b",fontSize:10 }} />
-                <Radar name="Blended"   dataKey="blended"   stroke="#64748b" fill="#64748b" fillOpacity={0.2} strokeWidth={2} />
-                <Radar name="Separated" dataKey="separated" stroke="#0ea5e9" fill="#0ea5e9" fillOpacity={0.25} strokeWidth={2} />
-                <Legend wrapperStyle={{ fontSize:10 }} />
-                <Tooltip content={<CustomTooltip />} />
-              </RadarChart>
-            </ResponsiveContainer>
+
+            <button onClick={()=>setDriverStep("explore")}
+              style={{ alignSelf:"flex-end", display:"flex", alignItems:"center", gap:8, background:"#0ea5e915", border:"1px solid #0ea5e930", color:"#0ea5e9", borderRadius:8, padding:"10px 20px", fontSize:12, fontWeight:600, cursor:"pointer" }}>
+              Explore each driver
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
           </div>
         )}
-      </div>
-      <div className="card" style={{ overflow:"auto" }}>
-        <h3 className="card-title">Full Separation Benefit Matrix</h3>
-        <table style={{ width:"100%",borderCollapse:"collapse",fontSize:12,minWidth:360 }}>
-          <thead><tr style={{ borderBottom:"1px solid #1e293b" }}>{["Region","Crop","pH","Δ Margin","Verdict"].map((h,i)=><th key={i} style={{ padding:"8px 12px",textAlign:i>1?"right":"left",color:"#64748b",fontSize:10,textTransform:"uppercase",fontWeight:500,whiteSpace:"nowrap" }}>{h}</th>)}</tr></thead>
-          <tbody>{allInsights.sort((a,b)=>b.delta-a.delta).map((row,i)=>{const dc=row.delta>30?"#10b981":row.delta>0?"#0ea5e9":"#f43f5e";return(<tr key={i} style={{ borderBottom:"1px solid #0f1929",background:i%2===0?"#0a0f1a":"#0f172a" }}><td style={{ padding:"8px 12px",color:"#94a3b8" }}>{row.region}</td><td style={{ padding:"8px 12px",color:"#94a3b8" }}>{row.crop}</td><td style={{ padding:"8px 12px",textAlign:"right",color:"#64748b",fontFamily:"'DM Mono',monospace" }}>{row.ph}</td><td style={{ padding:"8px 12px",textAlign:"right",fontFamily:"'DM Mono',monospace",fontWeight:700,color:dc }}>{row.delta>0?"+":""}{row.delta}</td><td style={{ padding:"8px 12px",textAlign:"right" }}><span style={{ padding:"2px 8px",borderRadius:20,fontSize:10,background:dc+"20",color:dc,whiteSpace:"nowrap" }}>{row.delta>30?"STRONG":row.delta>0?"MARGINAL":"NEUTRAL"}</span></td></tr>);})}</tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
 
-// ─── MARKET INTELLIGENCE PAGES ────────────────────────────────────────────────
-function MIPlaceholder({ region }) {
-  return <div style={{ display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:300,gap:12 }}><p style={{ fontSize:40 }}>🌍</p><p style={{ fontSize:15,color:"#64748b" }}>No market intelligence data for {region}.</p><p style={{ fontSize:12,color:"#334155" }}>Available: {Object.keys(MARKET_INTEL).join(", ")}</p></div>;
-}
+        {/* ── STEP 2: EXPLORE ── */}
+        {driverStep==="explore" && (
+          <div style={{ display:"flex", gap:14 }}>
+            {/* Sidebar selector */}
+            <div style={{ width:220, flexShrink:0, display:"flex", flexDirection:"column", gap:2 }}>
+              <p style={{ color:"#64748b", fontSize:9, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8, fontWeight:600 }}>Select a driver</p>
+              {sortedDrivers.map((d,i)=>{
+                const isActive = activeDriver===d.id;
+                return (
+                  <button key={d.id} onClick={()=>setActiveDriver(d.id)}
+                    style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 12px", borderRadius:7,
+                      background:isActive?"#0a1628":"transparent",
+                      border:`1px solid ${isActive?"#0ea5e930":"transparent"}`,
+                      cursor:"pointer", textAlign:"left", transition:"all 0.12s" }}
+                    onMouseEnter={e=>{if(!isActive)e.currentTarget.style.background="#0a1020";}}
+                    onMouseLeave={e=>{if(!isActive)e.currentTarget.style.background="transparent";}}>
+                    <div style={{ width:4, height:4, borderRadius:"50%", background:d.accentColor, flexShrink:0 }}/>
+                    <p style={{ color:isActive?"#f1f5f9":"#94a3b8", fontSize:11, margin:0, flex:1 }}>{d.label}</p>
+                    <span style={{ color:d.accentColor, fontSize:10, fontFamily:"'DM Mono',monospace", fontWeight:700 }}>{d.surveyScore}</span>
+                  </button>
+                );
+              })}
+            </div>
 
-// ─── FARMER P&L PAGE ──────────────────────────────────────────────────────────
-// Data source: FADN / Réseau d'Information Comptable Agricole (RICA) France
-// Average per farm, SOP above 25k€, values in €/ha
-const FARMER_PL_DATA = {
-  "Cereals & Oilseeds": {
-    color:"#0ea5e9", emoji:"🌾", farms:48140, uaa:134.81, uta:1.30, nonsalUta:1.17,
-    totalOutput:1685.41,
-    revenue:{ total:1412.14,
-      sales:{ total:1366.96, cropSales:1278.76 },
-      miscOutput:{ total:45.17, ownConsumption:1.19, storedProduction:-23.59, capitalisedProduction:6.01 },
-      subsidies:{ total:264.22, decoupled:209.85, coupled:12.98,
-        ruralDev:{ total:32.27, lhda:3.04, aecm:11.65 } },
-      otherOutput:39.91,
-      livestockPurchases:-14.54,
-    },
-    totalCosts:1581.19,
-    costs:{
-      cropSpecific:{ total:732.22, fertilisers:357.10, seeds:94.28, cropProtection:162.82 },
-      livestockSpecific:{ total:16.47, feed:10.31 },
-      otherOp:{ total:811.29, landRent:137.45, labour:25.96, depreciation:238.78, energy:102.29 },
-      financial:21.22,
-    },
-  },
-  "General Crops": {
-    color:"#10b981", emoji:"🥕", farms:24745, uaa:111.88, uta:1.99, nonsalUta:1.29,
-    totalOutput:3641.04,
-    revenue:{ total:3225.69,
-      sales:{ total:3120.22, cropSales:2420.90 },
-      miscOutput:{ total:105.47, ownConsumption:0.54, storedProduction:46.30, capitalisedProduction:18.14 },
-      subsidies:{ total:312.48, decoupled:213.35, coupled:16.09,
-        ruralDev:{ total:32.80, lhda:3.66, aecm:11.71 } },
-      otherOutput:55.60,
-      livestockPurchases:-17.61,
-    },
-    totalCosts:2887.56,
-    costs:{
-      cropSpecific:{ total:1212.01, fertilisers:487.93, seeds:248.03, cropProtection:247.14 },
-      livestockSpecific:{ total:50.05, feed:39.69 },
-      otherOp:{ total:1586.79, landRent:225.69, labour:170.45, depreciation:399.89, energy:173.22 },
-      financial:38.70,
-    },
-  },
-  "Market Gardening": {
-    color:"#f59e0b", emoji:"🥦", farms:7629, uaa:16.26, uta:4.85, nonsalUta:1.42,
-    totalOutput:25835.79,
-    revenue:{ total:24319.80,
-      sales:{ total:23956.95, cropSales:334.81 },
-      miscOutput:{ total:362.85, ownConsumption:6.77, storedProduction:68.88, capitalisedProduction:151.29 },
-      subsidies:{ total:1094.10, decoupled:190.04, coupled:27.68,
-        ruralDev:{ total:62.12, lhda:9.23, aecm:48.59 } },
-      otherOutput:279.83,
-      livestockPurchases:-84.26,
-    },
-    totalCosts:22060.27,
-    costs:{
-      cropSpecific:{ total:4268.76, fertilisers:1121.77, seeds:2207.26, cropProtection:451.41 },
-      livestockSpecific:{ total:55.35, feed:46.74 },
-      otherOp:{ total:17538.75, landRent:337.02, labour:5666.05, depreciation:2480.32, energy:2627.92 },
-      financial:197.42,
-    },
-  },
-  "Viticulture": {
-    color:"#a78bfa", emoji:"🍇", farms:44240, uaa:26.87, uta:2.63, nonsalUta:1.26,
-    totalOutput:11401.94,
-    revenue:{ total:9901.00,
-      sales:{ total:9726.83, cropSales:2026.05 },
-      miscOutput:{ total:174.17, ownConsumption:217.34, storedProduction:573.13, capitalisedProduction:183.48 },
-      subsidies:{ total:383.33, decoupled:128.02, coupled:4.84,
-        ruralDev:{ total:116.49, lhda:6.70, aecm:24.93 } },
-      otherOutput:146.26,
-      livestockPurchases:-2.98,
-    },
-    totalCosts:8714.55,
-    costs:{
-      cropSpecific:{ total:1520.28, fertilisers:291.03, seeds:61.78, cropProtection:407.89 },
-      livestockSpecific:{ total:11.16, feed:8.19 },
-      otherOp:{ total:7048.01, landRent:1049.87, labour:1503.16, depreciation:1186.83, energy:315.59 },
-      financial:134.72,
-    },
-  },
-};
+            {/* Detail panel */}
+            <div style={{ flex:1, minWidth:0 }}>
+              {!activeDriver ? (
+                <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"40px", display:"flex", alignItems:"center", justifyContent:"center", minHeight:300 }}>
+                  <p style={{ color:"#475569", fontSize:13 }}>Select a driver from the list to explore its details.</p>
+                </div>
+              ) : (()=>{
+                const d = DECISION_DRIVERS.find(x=>x.id===activeDriver);
+                if (!d) return null;
+                const importancePct = (d.surveyScore/5)*100;
+                const wtpPct = d.wtpPremium || 0;
+                const wtpBand = d.wtpPremium>=60?"High — strong premium acceptance":d.wtpPremium>=40?"Moderate — performance must be proven":d.wtpPremium?"Low — not a premium lever yet":"—";
+                const wtpBandColor = d.wtpPremium>=60?"#10b981":d.wtpPremium>=40?"#f59e0b":d.wtpPremium?"#f43f5e":"#64748b";
+
+                return (
+                  <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+                    <div style={{ background:"#080e18", border:`1px solid ${d.accentColor}25`, borderRadius:12, padding:"24px" }}>
+                      <p style={{ color:"#64748b", fontSize:9, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>{d.group}</p>
+                      <h3 style={{ color:"#f1f5f9", fontSize:17, fontWeight:700, margin:"0 0 16px", letterSpacing:"-0.02em" }}>{d.label}</h3>
+                      <p style={{ color:"#94a3b8", fontSize:13, lineHeight:1.8, margin:0 }}>{d.insight}</p>
+                    </div>
+
+                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+                      <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:10, padding:"20px" }}>
+                        <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:12 }}>Importance score</p>
+                        <p style={{ color:d.accentColor, fontSize:32, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"0 0 12px" }}>{d.surveyScore}<span style={{ fontSize:14, color:"#475569", fontWeight:400 }}> / 5</span></p>
+                        <div style={{ height:6, background:"#1a2436", borderRadius:3, overflow:"hidden" }}>
+                          <div style={{ height:"100%", width:`${importancePct}%`, background:d.accentColor, borderRadius:3 }}/>
+                        </div>
+                      </div>
+                      <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:10, padding:"20px" }}>
+                        <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:12 }}>WTP for premium</p>
+                        {d.wtpPremium ? (
+                          <>
+                            <p style={{ color:wtpBandColor, fontSize:32, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"0 0 4px" }}>{d.wtpPremium}%</p>
+                            <p style={{ color:wtpBandColor, fontSize:10, fontWeight:600, margin:"0 0 8px" }}>{wtpBand}</p>
+                            <div style={{ height:6, background:"#1a2436", borderRadius:3, overflow:"hidden" }}>
+                              <div style={{ height:"100%", width:`${wtpPct}%`, background:wtpBandColor, borderRadius:3 }}/>
+                            </div>
+                          </>
+                        ) : (
+                          <p style={{ color:"#475569", fontSize:13, marginTop:6 }}>Not measured — price sensitivity tracked separately.</p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div style={{ background:"#080e18", border:`1px solid ${d.accentColor}20`, borderLeft:`3px solid ${d.accentColor}`, borderRadius:"0 10px 10px 0", padding:"18px 20px" }}>
+                      <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:8 }}>OCP commercial implication</p>
+                      <p style={{ color:"#f1f5f9", fontSize:13, lineHeight:1.8, margin:0 }}>{d.ocpAngle}</p>
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+        )}
+
+        {/* ── STEP 3: INFLUENCE ── */}
+        {driverStep==="influence" && (
+          <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+            <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"24px" }}>
+              <p style={{ color:"#f1f5f9", fontSize:15, fontWeight:700, marginBottom:12, lineHeight:1.4 }}>
+                In France, <span style={{color:"#10b981"}}>57% of fertilizer decisions</span> are controlled by cooperatives and their agronomists — no other country in the survey comes close.
+              </p>
+              <p style={{ color:"#94a3b8", fontSize:13, lineHeight:1.8 }}>
+                Local distributors and retailers account for 0% of influence in France, compared to 22% in India. This makes France a country where OCP must operate through the cooperative channel — not around it.
+              </p>
+            </div>
+
+            <p style={{ color:"#64748b", fontSize:11, margin:0 }}>Click an influencer to see the commercial implication for OCP.</p>
+
+            <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+              {INFLUENCERS.map((inf,i)=>{
+                const isActive = activeInfluencer===i;
+                return (
+                  <div key={i} onClick={()=>setActiveInfluencer(isActive?null:i)}
+                    style={{ background:isActive?"#0a1628":"#080e18", border:`1px solid ${isActive?"#0ea5e930":"#1a2436"}`, borderRadius:10, overflow:"hidden", cursor:"pointer", transition:"all 0.15s" }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:14, padding:"16px 20px" }}>
+                      <div style={{ width:32, flexShrink:0 }}>
+                        <p style={{ color:inf.color, fontSize:18, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0, lineHeight:1 }}>{inf.pct}%</p>
+                      </div>
+                      <div style={{ flex:1 }}>
+                        <div style={{ height:6, background:"#1a2436", borderRadius:3, overflow:"hidden", marginBottom:6 }}>
+                          <div style={{ height:"100%", width:`${inf.pct*2}%`, background:inf.color, borderRadius:3 }}/>
+                        </div>
+                        <p style={{ color:isActive?"#f1f5f9":"#e2e8f0", fontSize:13, fontWeight:isActive?700:500, margin:0 }}>{inf.label}</p>
+                      </div>
+                      <svg style={{ color:"#1e293b", transition:"transform 0.15s", transform:isActive?"rotate(90deg)":"none" }} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                    </div>
+                    {isActive && (
+                      <div style={{ padding:"0 20px 18px 66px", borderTop:"1px solid #1a2436" }}>
+                        <p style={{ color:"#94a3b8", fontSize:12, lineHeight:1.8, marginTop:14 }}>{inf.detail}</p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            <button onClick={()=>setDriverStep("implication")}
+              style={{ alignSelf:"flex-end", display:"flex", alignItems:"center", gap:8, background:"#0ea5e915", border:"1px solid #0ea5e930", color:"#0ea5e9", borderRadius:8, padding:"10px 20px", fontSize:12, fontWeight:600, cursor:"pointer" }}>
+              See OCP implication
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        )}
+
+        {/* ── STEP 4: OCP IMPLICATION ── */}
+        {driverStep==="implication" && (
+          <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+            <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"24px" }}>
+              <p style={{ color:"#10b981", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:700, marginBottom:12 }}>Strategic read-out for OCP Nutricrops · France</p>
+              <p style={{ color:"#f1f5f9", fontSize:15, fontWeight:700, lineHeight:1.5, marginBottom:0 }}>
+                The data points to one route: win the cooperative agronomist first, then frame the TSP program around total €/ha cost and P efficiency — not price per tonne.
+              </p>
+            </div>
+
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+              {[
+                { num:"01", color:"#10b981", title:"Cooperatives gate the decision", body:"31% of decisions go through cooperatives — the highest of any country surveyed. Access at the coop level is not a distribution strategy, it is the only strategy that reaches scale in France." },
+                { num:"02", color:"#0ea5e9", title:"Frame everything as program €/ha", body:"Total cost per hectare is the #1 purchase criterion. Every commercial interaction must anchor on what the full TSP+N program costs vs a standard NPK program — not what TSP costs per tonne." },
+                { num:"03", color:"#f59e0b", title:"Agronomic proof unlocks WTP", body:"Yield gain and P efficiency both carry 55% WTP premium if better performance is demonstrated. ARVALIS field trials and cooperative demonstration plots are the required proof vehicle." },
+                { num:"04", color:"#a78bfa", title:"Sustainability is a future asset", body:"Only 3.0 importance score today. Target HVE-certified farms as early reference customers. Do not lead with carbon positioning for the mainstream audience — it costs credibility." },
+              ].map((item,i)=>(
+                <div key={i} style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:10, padding:"20px", borderTop:`2px solid ${item.color}` }}>
+                  <div style={{ display:"flex", justifyContent:"space-between", marginBottom:12 }}>
+                    <span style={{ color:item.color, fontSize:10, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>{item.num}</span>
+                  </div>
+                  <p style={{ color:"#f1f5f9", fontSize:13, fontWeight:600, marginBottom:8 }}>{item.title}</p>
+                  <p style={{ color:"#94a3b8", fontSize:12, lineHeight:1.75, margin:0 }}>{item.body}</p>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ background:"linear-gradient(135deg,#0a1f14,#080e18)", border:"1px solid #10b98125", borderRadius:12, padding:"20px 24px" }}>
+              <p style={{ color:"#10b981", fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:10 }}>The sequenced entry play</p>
+              <div style={{ display:"flex", gap:0, alignItems:"stretch" }}>
+                {[
+                  { step:"1", label:"Cooperative agronomist", desc:"Train on P efficiency and TSP program economics. Make them the internal champion." },
+                  { step:"2", label:"Demonstration program", desc:"Co-fund on-farm trials with Chambres d'Agriculture. Produce visible, measurable yield results." },
+                  { step:"3", label:"Program pricing pitch", desc:"Present total program cost to farmer. Coop agronomist validates. Farmer signs." },
+                  { step:"4", label:"Scale through coop", desc:"Replicate in adjacent zones via the same coop structure. Resistance is minimal once agronomist is aligned." },
+                ].map((s,i,arr)=>(
+                  <div key={i} style={{ flex:1, display:"flex", flexDirection:"column" }}>
+                    <div style={{ display:"flex", alignItems:"center", marginBottom:12 }}>
+                      <div style={{ width:28,height:28,borderRadius:"50%",background:"#10b98118",border:"1px solid #10b98130",display:"flex",alignItems:"center",justifyContent:"center",color:"#10b981",fontSize:11,fontWeight:700,flexShrink:0 }}>{s.step}</div>
+                      {i<arr.length-1&&<div style={{flex:1,height:1,background:"#10b98120",margin:"0 8px"}}/>}
+                    </div>
+                    <p style={{ color:"#f1f5f9", fontSize:11, fontWeight:600, marginBottom:4 }}>{s.label}</p>
+                    <p style={{ color:"#64748b", fontSize:11, lineHeight:1.6 }}>{s.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+      </div>
+    );
+  }
+
+  return null;
+}
 
 function MIFarmerPLPage() {
   const [farmType, setFarmType] = useState("Cereals & Oilseeds");
@@ -2586,38 +2177,54 @@ function MIAgronomyPage({ region }) {
 // ─── HUB PAGE — choose your section ──────────────────────────────────────────
 function HubPage({ onChoose }) {
   const [hov, setHov] = useState(null);
+
+  const QuantIcon = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+    </svg>
+  );
+  const IntelIcon = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="3"/><path d="M3 12h3m12 0h3M12 3v3m0 12v3m-6.4-2.4 2.1-2.1m8.6-8.6 2.1-2.1M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1"/>
+    </svg>
+  );
+
   return (
     <div style={{ minHeight:"100vh", background:"#04080f", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", fontFamily:"'DM Sans','Segoe UI',sans-serif", padding:"40px 24px" }}>
       <style>{`@keyframes hubFade{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}`}</style>
 
-      {/* Logo */}
-      <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:48, animation:"hubFade 0.6s ease both" }}>
-        <div style={{ width:36,height:36,borderRadius:10,background:"linear-gradient(135deg,#0ea5e9,#0369a1)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:12,color:"#fff",fontFamily:"'DM Mono',monospace",boxShadow:"0 0 16px #0ea5e930" }}>SMO</div>
+      <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:60, animation:"hubFade 0.6s ease both" }}>
+        <div style={{ width:40,height:40,borderRadius:10,background:"linear-gradient(135deg,#0ea5e9,#0369a1)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:12,color:"#fff",fontFamily:"'DM Mono',monospace",boxShadow:"0 0 20px #0ea5e940" }}>SMO</div>
         <div>
-          <p style={{ color:"#f1f5f9",fontWeight:800,fontSize:16,letterSpacing:"-0.02em",margin:0 }}>PhosStratOS</p>
-          <p style={{ color:"#64748b",fontSize:11,margin:0 }}>OCP Nutricrops · P Separation Intelligence</p>
+          <p style={{ color:"#f1f5f9",fontWeight:800,fontSize:17,letterSpacing:"-0.03em",margin:0 }}>PhosStratOS</p>
+          <p style={{ color:"#94a3b8",fontSize:12,margin:0 }}>OCP Nutricrops · P Separation Intelligence</p>
         </div>
       </div>
 
-      <p style={{ color:"#f1f5f9",fontSize:22,fontWeight:700,marginBottom:52,letterSpacing:"-0.01em",animation:"hubFade 0.6s 0.1s ease both",opacity:0 }}>Select your workspace</p>
+      <p style={{ color:"#f1f5f9",fontSize:24,fontWeight:300,marginBottom:8,letterSpacing:"-0.01em",animation:"hubFade 0.6s 0.1s ease both",opacity:0 }}>Select your workspace</p>
+      <p style={{ color:"#64748b",fontSize:13,marginBottom:56,animation:"hubFade 0.6s 0.2s ease both",opacity:0 }}>France · Phosphorus Separation Intelligence</p>
 
-      <div style={{ display:"flex", gap:24, flexWrap:"nowrap", justifyContent:"center", width:"100%", maxWidth:900 }}>
+      <div style={{ display:"flex", gap:16, flexWrap:"nowrap", justifyContent:"center", width:"100%", maxWidth:840 }}>
         {[
           {
-            key:"quant", icon:"⚙",
+            key:"quant",
+            Icon:QuantIcon,
+            label:"WORKSPACE A",
             title:"Quantitative Engine",
             color:"#0ea5e9",
-            desc:"Model trained on field data across multiple fertilization strategies. Simulate scenarios, analyse P&L, and model agronomic response across crops and regions.",
+            desc:"Simulate P separation scenarios, model agronomic response across soil types, and analyse P&L by crop and region.",
             tags:["Scenario Simulator","P&L Explorer","Agronomic Response","Model Insights"],
-            delay:"0.2s",
+            delay:"0.25s",
           },
           {
-            key:"intel", icon:"◎",
+            key:"intel",
+            Icon:IntelIcon,
+            label:"WORKSPACE B",
             title:"Market Intelligence",
             color:"#10b981",
-            desc:"Strategic and qualitative interpretation layer. Market fundamentals, farmer behaviour archetypes, competitive landscape, and regional crop analytics.",
+            desc:"Farmer decision drivers, market fundamentals, competitive landscape, and regional crop analytics for France.",
             tags:["Market Fundamentals","Farmer Behaviour","Competitive Landscape","Regional Analysis"],
-            delay:"0.35s",
+            delay:"0.4s",
           },
         ].map(card => (
           <div key={card.key}
@@ -2625,38 +2232,38 @@ function HubPage({ onChoose }) {
             onMouseEnter={() => setHov(card.key)}
             onMouseLeave={() => setHov(null)}
             style={{
-              flex:"1 1 0", maxWidth:430,
-              background: hov===card.key ? `linear-gradient(135deg,${card.color}18,#0a1020)` : "linear-gradient(135deg,#0c1422,#080e18)",
-              border:`1px solid ${hov===card.key ? card.color+"60" : card.color+"20"}`,
-              borderRadius:20, padding:"36px 32px",
+              flex:"1 1 0", maxWidth:410,
+              background: hov===card.key ? `linear-gradient(150deg,${card.color}12,#080e18 60%)` : "#080e18",
+              border:`1px solid ${hov===card.key ? card.color+"40" : "#1a2436"}`,
+              borderRadius:16, padding:"36px 32px",
               cursor:"pointer",
-              transition:"all 0.22s",
-              transform: hov===card.key ? "translateY(-6px)" : "none",
-              boxShadow: hov===card.key ? `0 20px 60px ${card.color}18` : "none",
+              transition:"all 0.2s ease",
+              transform: hov===card.key ? "translateY(-4px)" : "none",
+              boxShadow: hov===card.key ? `0 20px 50px ${card.color}10` : "none",
               animation:`hubFade 0.7s ${card.delay} ease both`, opacity:0,
               position:"relative", overflow:"hidden",
             }}>
-            {/* Corner glow */}
-            <div style={{ position:"absolute",top:-30,right:-30,width:100,height:100,borderRadius:"50%",background:card.color+"08",pointerEvents:"none" }}/>
-
-            <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:22 }}>
-              <div style={{ width:48,height:48,borderRadius:14,background:card.color+"18",border:`1px solid ${card.color}30`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22 }}>{card.icon}</div>
+            <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:28 }}>
               <div>
-                <p style={{ color:card.color,fontSize:11,textTransform:"uppercase",letterSpacing:"0.1em",fontWeight:700,margin:0,marginBottom:3 }}>{card.key==="quant"?"Workspace A":"Workspace B"}</p>
-                <p style={{ color:"#f1f5f9",fontSize:18,fontWeight:800,letterSpacing:"-0.02em",margin:0 }}>{card.title}</p>
+                <p style={{ color:card.color,fontSize:10,textTransform:"uppercase",letterSpacing:"0.14em",fontWeight:600,margin:0,marginBottom:10 }}>{card.label}</p>
+                <p style={{ color:"#f1f5f9",fontSize:20,fontWeight:700,letterSpacing:"-0.025em",margin:0,lineHeight:1.2 }}>{card.title}</p>
+              </div>
+              <div style={{ width:44,height:44,borderRadius:10,background:card.color+"14",border:`1px solid ${card.color}20`,display:"flex",alignItems:"center",justifyContent:"center",color:card.color,flexShrink:0 }}>
+                <card.Icon />
               </div>
             </div>
 
-            <p style={{ color:"#64748b",fontSize:13,lineHeight:1.75,marginBottom:24 }}>{card.desc}</p>
+            <p style={{ color:"#94a3b8",fontSize:13,lineHeight:1.75,marginBottom:28 }}>{card.desc}</p>
 
-            <div style={{ display:"flex",flexWrap:"wrap",gap:7 }}>
+            <div style={{ display:"flex",flexWrap:"wrap",gap:6,marginBottom:32 }}>
               {card.tags.map(t => (
-                <span key={t} style={{ background:card.color+"12",border:`1px solid ${card.color}25`,borderRadius:20,padding:"3px 10px",color:card.color,fontSize:10,fontWeight:600 }}>{t}</span>
+                <span key={t} style={{ background:"#ffffff08",border:"1px solid #ffffff0f",borderRadius:4,padding:"3px 10px",color:"#94a3b8",fontSize:10,fontWeight:500 }}>{t}</span>
               ))}
             </div>
 
-            <div style={{ marginTop:28,display:"flex",alignItems:"center",gap:8,color:hov===card.key?card.color:"#64748b",fontSize:12,fontWeight:600,transition:"color 0.2s" }}>
-              Enter {card.title} <span style={{ fontSize:14 }}>→</span>
+            <div style={{ display:"flex",alignItems:"center",gap:8,color:hov===card.key?card.color:"#475569",fontSize:12,fontWeight:600,transition:"color 0.2s",borderTop:"1px solid #1a2436",paddingTop:20 }}>
+              Enter workspace
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </div>
           </div>
         ))}
@@ -2798,7 +2405,12 @@ export default function App() {
       {/* ── SECTION SWITCHER ── */}
       <div style={{ background:"#060d1a",borderBottom:"1px solid #1e293b",padding:"0 20px",display:"flex",alignItems:"center",gap:4,overflowX:"auto" }}>
         <div style={{ display:"flex",gap:4,padding:"8px 0",flex:1 }}>
-          {[{key:"quant",icon:"⚙",full:"Quantitative Engine",short:"Quant",color:"#0ea5e9"},{key:"intel",icon:"◎",full:"Market Intelligence",short:"Intel",color:"#10b981"}].map(s=>(
+          {[
+            {key:"quant",full:"Quantitative Engine",short:"Quant",color:"#0ea5e9",
+              icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>},
+            {key:"intel",full:"Market Intelligence",short:"Intel",color:"#10b981",
+              icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M3 12h3m12 0h3M12 3v3m0 12v3m-6.4-2.4 2.1-2.1m8.6-8.6 2.1-2.1M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1"/></svg>},
+          ].map(s=>(
             <button key={s.key} onClick={()=>setSection(s.key)}
               style={{
                 padding:"9px 20px",
@@ -2811,7 +2423,7 @@ export default function App() {
                 transition:"all 0.15s",
                 boxShadow:section===s.key?`0 0 16px ${s.color}22`:"none",
               }}>
-              <span style={{ fontSize:15 }}>{s.icon}</span>
+              <span style={{ display:"flex",alignItems:"center" }}>{s.icon}</span>
               <span className="sec-label-full">{s.full}</span>
               <span className="sec-label-short">{s.short}</span>
             </button>
@@ -2829,7 +2441,9 @@ export default function App() {
             transition:"all 0.15s",
             boxShadow:section==="atlas"?"0 0 16px #a78bfa22":"none",
           }}>
-          <span>◈</span>
+          <span style={{display:"flex",alignItems:"center"}}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z"/><path d="M12 2c-2.8 2.8-4 6-4 10s1.2 7.2 4 10"/><path d="M12 2c2.8 2.8 4 6 4 10s-1.2 7.2-4 10"/><path d="M2 12h20"/></svg>
+          </span>
           ATLAS
           <span style={{ padding:"1px 6px",borderRadius:20,fontSize:9,fontWeight:700,background:"#a78bfa20",color:"#a78bfa",border:"1px solid #a78bfa40" }}>AI</span>
         </button>
