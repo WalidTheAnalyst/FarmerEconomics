@@ -1107,8 +1107,6 @@ function MIFarmerBehaviorPage({ region }) {
       { id:"implication",label:"OCP implication" },
     ];
 
-    const stepIdx = STEPS.findIndex(s=>s.id===driverStep)||0;
-
     // Sorted drivers for display
     const sortedDrivers = [...DECISION_DRIVERS].sort((a,b)=>b.surveyScore-a.surveyScore);
 
