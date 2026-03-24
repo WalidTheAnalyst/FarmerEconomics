@@ -824,15 +824,11 @@ function RegionalPage(){
 
 // ─── FARMER BEHAVIOR PAGE (exhaustive, interactive) ───────────────────────────
 function MIFarmerBehaviorPage({ region }) {
-  const [topic, setTopic] = useState(null); // null = gateway, "drivers" | "premium" | "archetypes"
+  const [topic, setTopic] = useState(null);
   const [activeAttr, setActiveAttr] = useState(null);
   const [activePersona, setActivePersona] = useState(FARMER_PERSONAS[0].id);
   const [viewMode, setViewMode] = useState("grid");
-  const [histMode, setHistMode] = useState("farms");
   const persona = FARMER_PERSONAS.find(p=>p.id===activePersona) || FARMER_PERSONAS[0];
-  const intel = MARKET_INTEL[region];
-  const own = intel?.ownership;
-  const histData = own?.farmSizeHistogram || [];
 
   // ── Decision Drivers data (Simon-Kucher N=20 France VoC) ──────────────────
   const DECISION_DRIVERS = [
