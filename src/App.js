@@ -1430,6 +1430,530 @@ function MIFarmerBehaviorPage({ region }) {
   return null;
 }
 
+
+// ─── QUANTITATIVE PAGES ───────────────────────────────────────────────────────
+
+function OverviewPage({ data, region }) {
+  const regionCrops = [...new Set(data.filter(d=>d.region===region).map(d=>d.crop))];
+  const cropSummary = regionCrops.map(c=>{
+    const b=data.find(d=>d.region===region&&d.crop===c&&d.strategy==="Blended (MAP)");
+    const s=data.find(d=>d.region===region&&d.crop===c&&d.strategy==="Separated (TSP+N)");
+    const o=data.find(d=>d.region===region&&d.crop===c&&d.strategy==="Optimized");
+    return { crop:c, blended:b?.margin??0, separated:s?.margin??0, optimized:o?.margin??0, delta:(s?.margin??0)-(b?.margin??0) };
+  });
+  const regionAttractive = REGIONS.map(r=>{
+    const crops=[...new Set(data.filter(d=>d.region===r).map(d=>d.crop))];
+    const deltas=crops.map(c=>{
+      const b=data.find(d=>d.region===r&&d.crop===c&&d.strategy==="Blended (MAP)");
+      const s=data.find(d=>d.region===r&&d.crop===c&&d.strategy==="Separated (TSP+N)");
+      return b&&s?s.margin-b.margin:0;
+    });
+    return { region:r, avg:deltas.reduce((a,x)=>a+x,0)/deltas.length };
+  });
+  const allBase=data.filter(d=>d.region===region&&d.strategy==="Blended (MAP)");
+  const allSep=data.filter(d=>d.region===region&&d.strategy==="Separated (TSP+N)");
+  const avgB=allBase.reduce((a,d)=>a+d.margin,0)/(allBase.length||1);
+  const avgS=allSep.reduce((a,d)=>a+d.margin,0)/(allSep.length||1);
+  const avgD=avgS-avgB;
+  const avgF=allBase.reduce((a,d)=>a+(d.fert_cost/d.op_cost)*100,0)/(allBase.length||1);
+
+  return (
+    <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
+      <div className="kpi-row">
+        <KPICard label="Avg. Margin — Blended"  value={fmt(avgB)+"/ha"} sub={`all crops · ${region}`} accent="#64748b" />
+        <KPICard label="Avg. Margin — Separated" value={fmt(avgS)+"/ha"} sub={`all crops · ${region}`} accent="#0ea5e9" />
+        <KPICard label="Avg. Sep. Benefit"       value={(avgD>=0?"+":"")+fmt(avgD)+"/ha"} sub="vs blended" accent={avgD>=0?"#10b981":"#f43f5e"} />
+        <KPICard label="Avg. Fert. Cost Share"   value={pct(avgF)}        sub="of production cost" accent="#f59e0b" />
+        <KPICard label="Crops modelled"          value={regionCrops.length} sub={`in ${region}`} accent="#a78bfa" />
+      </div>
+      {/* Product mix histogram from Excel */}
+      <div className="card">
+        <h3 className="card-title">Product Mix Evolution — France (kt P2O5)</h3>
+        <p style={{color:"#475569",fontSize:11,marginBottom:10}}>Season-by-season · Source: Agreste / French Ministry of Agriculture</p>
+        <ResponsiveContainer width="100%" height={230}>
+          <BarChart data={PRODUCT_MIX_DATA} margin={{left:8,right:10,bottom:4}}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false}/>
+            <XAxis dataKey="season" tick={{fill:"#64748b",fontSize:9}}/>
+            <YAxis tick={{fill:"#64748b",fontSize:9}} label={{value:"kt P2O5",angle:-90,position:"insideLeft",fill:"#475569",fontSize:9,offset:8}}/>
+            <Tooltip content={<CustomTooltip/>}/>
+            <Legend wrapperStyle={{fontSize:10}}/>
+            {Object.entries(PM_COLORS).map(([k,c])=>(
+              <Bar key={k} dataKey={k} fill={c} stackId="a" radius={k==="Organomineral"?[3,3,0,0]:undefined}/>
+            ))}
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div className="chart-grid-2">
+        <div className="card">
+          <h3 className="card-title">Gross Margin by Crop & Strategy — {region}</h3>
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart data={cropSummary} margin={{ left:0,right:10 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+              <XAxis dataKey="crop" tick={{ fill:"#64748b",fontSize:11 }} />
+              <YAxis tick={{ fill:"#64748b",fontSize:10 }} />
+              <Tooltip content={<CustomTooltip />} />
+              <Legend wrapperStyle={{ fontSize:10 }} />
+              <Bar dataKey="blended"   name="Blended"   fill="#64748b" radius={[3,3,0,0]} />
+              <Bar dataKey="separated" name="Separated" fill="#0ea5e9" radius={[3,3,0,0]} />
+              <Bar dataKey="optimized" name="Optimized" fill="#10b981" radius={[3,3,0,0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="card">
+          <h3 className="card-title">Separation Attractiveness by Region</h3>
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart data={regionAttractive} margin={{ left:0,right:10 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+              <XAxis dataKey="region" tick={{ fill:"#64748b",fontSize:10 }} />
+              <YAxis tick={{ fill:"#64748b",fontSize:10 }} />
+              <Tooltip content={<CustomTooltip />} />
+              <ReferenceLine y={0} stroke="#334155" />
+              <Bar dataKey="avg" name="Avg Δ Margin ($/ha)" radius={[4,4,0,0]}>
+                {regionAttractive.map((e,i)=><Cell key={i} fill={e.avg>30?"#10b981":e.avg>0?"#0ea5e9":"#f43f5e"} />)}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+      <div className="card">
+        <h3 className="card-title">Separation Delta — {region}</h3>
+        <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+          {cropSummary.map((row,i)=>{
+            const max=Math.max(...cropSummary.map(r=>r.separated));
+            const dc=row.delta>30?"#10b981":row.delta>0?"#0ea5e9":"#f43f5e";
+            return (
+              <div key={i} style={{ display:"flex", alignItems:"center", gap:12 }}>
+                <span style={{ color:"#94a3b8",fontSize:12,width:72,flexShrink:0 }}>{row.crop}</span>
+                <div style={{ flex:1, background:"#1e293b", borderRadius:4, height:24, position:"relative", overflow:"hidden" }}>
+                  <div style={{ position:"absolute",left:0,top:0,height:"100%",width:`${(row.separated/max)*100}%`,background:`linear-gradient(90deg,${dc}40,${dc}20)`,borderRadius:4 }} />
+                  <span style={{ position:"absolute",left:10,top:"50%",transform:"translateY(-50%)",color:"#e2e8f0",fontSize:11,fontFamily:"'DM Mono',monospace" }}>${row.separated}/ha</span>
+                </div>
+                <span style={{ color:dc,fontSize:12,fontWeight:700,fontFamily:"'DM Mono',monospace",width:56,textAlign:"right",flexShrink:0 }}>{row.delta>0?"+":""}{row.delta}</span>
+                <span style={{ padding:"2px 8px",borderRadius:20,fontSize:10,background:dc+"20",color:dc,width:68,textAlign:"center",flexShrink:0 }}>{row.delta>30?"STRONG":row.delta>0?"MARGINAL":"NEUTRAL"}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SimulatorPage({ data, region, crop }) {
+  const [cropPrice,setCropPrice]=useState(250);
+  const [mapPrice,setMapPrice]=useState(520);
+  const [tspPrice,setTspPrice]=useState(480);
+  const [baseYield,setBaseYield]=useState(4.5);
+  const [yieldBoost,setYieldBoost]=useState(8);
+  const [extraPasses,setExtraPasses]=useState(1);
+  const [costPerPass,setCostPerPass]=useState(55);
+  const [appRateN,setAppRateN]=useState(150);
+  const [appRateP,setAppRateP]=useState(80);
+  const realBase=data.find(d=>d.region===region&&d.crop===crop&&d.strategy==="Blended (MAP)");
+  const scenarios=useMemo(()=>{
+    const fb=(appRateP*mapPrice)/1000+(appRateN*280)/1000;
+    const fs=(appRateP*tspPrice)/1000+(appRateN*280)/1000;
+    const ex=extraPasses*costPerPass;
+    const yS=baseYield*(1+yieldBoost/100);
+    const yO=baseYield*(1+(yieldBoost*1.3)/100);
+    const boc=realBase?.op_cost??750;
+    return [
+      { strategy:"Blended (MAP)",     yield:baseYield,revenue:baseYield*cropPrice,fertCost:fb,opCost:boc,       totalCost:boc+fb,            margin:baseYield*cropPrice-boc-fb },
+      { strategy:"Separated (TSP+N)", yield:yS,       revenue:yS*cropPrice,       fertCost:fs,opCost:boc+ex,   totalCost:boc+ex+fs,         margin:yS*cropPrice-(boc+ex)-fs },
+      { strategy:"Optimized",         yield:yO,       revenue:yO*cropPrice,       fertCost:fs*0.95,opCost:boc+ex*0.85,totalCost:boc+ex*0.85+fs*0.95,margin:yO*cropPrice-(boc+ex*0.85)-fs*0.95 },
+    ];
+  },[cropPrice,mapPrice,tspPrice,baseYield,yieldBoost,extraPasses,costPerPass,appRateN,appRateP,realBase]);
+  const base=scenarios[0];
+  const breakEven=((extraPasses*costPerPass)/cropPrice).toFixed(2);
+  const passes=yieldBoost/100*baseYield>=breakEven;
+  const waterfallData=[
+    {name:"Base",value:base.margin,fill:"#64748b"},
+    {name:"+Yield",value:scenarios[1].revenue-base.revenue,fill:"#10b981"},
+    {name:"-Passes",value:-(extraPasses*costPerPass),fill:"#f43f5e"},
+    {name:"-FertΔ",value:-(scenarios[1].fertCost-base.fertCost),fill:"#f59e0b"},
+    {name:"=Sep.",value:scenarios[1].margin,fill:"#0ea5e9"},
+  ];
+  const Slider=({label,min,max,step,value,onChange,unit})=>(
+    <div style={{ marginBottom:11 }}>
+      <div style={{ display:"flex",justifyContent:"space-between",marginBottom:3 }}>
+        <span style={{ color:"#94a3b8",fontSize:12 }}>{label}</span>
+        <span style={{ color:"#f1f5f9",fontSize:12,fontFamily:"'DM Mono',monospace" }}>{value}{unit}</span>
+      </div>
+      <input type="range" min={min} max={max} step={step} value={value} onChange={e=>onChange(Number(e.target.value))} style={{ width:"100%",accentColor:"#0ea5e9",cursor:"pointer" }} />
+    </div>
+  );
+  return (
+    <div>
+      <div className="simulator-grid">
+        <div className="card">
+          <h3 className="card-title">Inputs — {crop} · {region}</h3>
+          {realBase&&<p style={{ color:"#10b981",fontSize:11,marginBottom:11,background:"#10b98110",borderRadius:6,padding:"5px 10px",border:"1px solid #10b98120" }}>Base op. cost: ${realBase.op_cost}/ha</p>}
+          <Slider label="Crop Price ($/t)" min={100} max={600} step={10} value={cropPrice} onChange={setCropPrice} unit=" $/t"/>
+          <Slider label="MAP Price ($/t)"  min={300} max={900} step={10} value={mapPrice}  onChange={setMapPrice}  unit=" $/t"/>
+          <Slider label="TSP Price ($/t)"  min={280} max={850} step={10} value={tspPrice}  onChange={setTspPrice}  unit=" $/t"/>
+          <Slider label="Base Yield"       min={1}   max={15}  step={0.1}value={baseYield} onChange={setBaseYield} unit=" t/ha"/>
+          <Slider label="Yield Boost Sep." min={0}   max={30}  step={0.5}value={yieldBoost}onChange={setYieldBoost}unit="%"/>
+          <Slider label="Extra Passes"     min={0}   max={4}   step={1}  value={extraPasses}onChange={setExtraPasses}unit=""/>
+          <Slider label="Cost/Pass"        min={20}  max={150} step={5}  value={costPerPass}onChange={setCostPerPass}unit=" $/ha"/>
+          <Slider label="N Rate"           min={50}  max={300} step={5}  value={appRateN}  onChange={setAppRateN}  unit=" kg/ha"/>
+          <Slider label="P Rate"           min={20}  max={200} step={5}  value={appRateP}  onChange={setAppRateP}  unit=" kg/ha"/>
+        </div>
+        <div style={{ display:"flex",flexDirection:"column",gap:14 }}>
+          <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12 }}>
+            {scenarios.map((s,si)=>{
+              const delta=s.margin-base.margin;
+              const col=Object.values(STRATEGY_COLORS)[si];
+              const winner=s.margin===Math.max(...scenarios.map(x=>x.margin));
+              return (
+                <div key={si} style={{ background:"linear-gradient(135deg,#0f172a,#0a1020)",border:`1px solid ${col}${winner?"80":"30"}`,borderRadius:14,padding:"16px 14px",position:"relative",overflow:"hidden" }}>
+                  {winner&&<div style={{ position:"absolute",top:8,right:10,fontSize:14 }}>🏆</div>}
+                  <div style={{ width:10,height:10,borderRadius:"50%",background:col,marginBottom:8,boxShadow:`0 0 8px ${col}` }} />
+                  <p style={{ color:col,fontSize:10,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:8,fontWeight:700 }}>{s.strategy}</p>
+                  <p style={{ color:"#f1f5f9",fontSize:20,fontWeight:800,fontFamily:"'DM Mono',monospace",margin:0 }}>{fmt(s.margin)}</p>
+                  <p style={{ color:"#64748b",fontSize:10,marginTop:2 }}>$/ha margin</p>
+                  {si>0&&<div style={{ marginTop:8,padding:"3px 8px",borderRadius:6,background:delta>=0?"#10b98120":"#f43f5e20",display:"inline-block" }}><span style={{ color:delta>=0?"#10b981":"#f43f5e",fontSize:11,fontWeight:700,fontFamily:"'DM Mono',monospace" }}>{delta>=0?"+":""}{fmt(delta)}</span></div>}
+                </div>
+              );
+            })}
+          </div>
+          <div className="chart-grid-2">
+            <div className="card">
+              <h3 className="card-title">Profit Waterfall</h3>
+              <ResponsiveContainer width="100%" height={160}>
+                <BarChart data={waterfallData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                  <XAxis dataKey="name" tick={{ fill:"#64748b",fontSize:9 }} />
+                  <YAxis tick={{ fill:"#64748b",fontSize:9 }} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Bar dataKey="value" name="$/ha" radius={[3,3,0,0]}>{waterfallData.map((d,i)=><Cell key={i} fill={d.fill} />)}</Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="card" style={{ display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",gap:10 }}>
+              <h3 className="card-title">Break-Even</h3>
+              <p style={{ color:"#f59e0b",fontSize:30,fontWeight:800,fontFamily:"'DM Mono',monospace" }}>{breakEven} t/ha</p>
+              <div style={{ width:"100%",background:passes?"#10b98120":"#f43f5e20",borderRadius:10,padding:"10px",textAlign:"center",border:`1px solid ${passes?"#10b98140":"#f43f5e40"}` }}>
+                <p style={{ color:passes?"#10b981":"#f43f5e",fontWeight:700,fontSize:12 }}>{passes?"✓ SEPARATION PAYS OFF":"✗ DOES NOT BREAK EVEN"}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PLPage({ data, region, crop }) {
+  const [expanded,setExpanded]=useState({});
+  const base=data.find(d=>d.region===region&&d.crop===crop&&d.strategy==="Blended (MAP)");
+  const categories=[
+    {key:"seed",label:"Seed",           value:95,                   share:11,color:"#a78bfa"},
+    {key:"fert",label:"Fertilizer",     value:base?.fert_cost||310,  share:Math.round((base?.fert_cost||310)/(base?.op_cost||900)*100),color:"#f59e0b"},
+    {key:"cp",  label:"Crop Protection",value:120,                   share:14,color:"#0ea5e9"},
+    {key:"mach",label:"Machinery",      value:180,                   share:21,color:"#64748b"},
+    {key:"labor",label:"Labor",         value:95,                    share:11,color:"#10b981"},
+    {key:"fuel",label:"Fuel",           value:65,                    share:8, color:"#f43f5e"},
+    {key:"land",label:"Land / Rent",    value:145,                   share:17,color:"#e2e8f0"},
+  ];
+  const sensData=[200,300,400,500,600,700,800].map(fp=>({
+    price:fp,
+    "Blended":  (base?.revenue||1050)-(base?.op_cost||900-(base?.fert_cost||310))-fp,
+    "Separated":(base?.revenue||1050)*1.08-((base?.op_cost||900)+55-((base?.fert_cost||310)*0.95))-fp*0.95,
+  }));
+  const donutData=categories.map(c=>({name:c.label,value:c.share,color:c.color}));
+  return (
+    <div style={{ display:"flex",flexDirection:"column",gap:18 }}>
+      <div className="chart-grid-2">
+        <div className="card">
+          <h3 className="card-title">Cost Breakdown — {crop} · {region}</h3>
+          <ResponsiveContainer width="100%" height={160}>
+            <PieChart><Pie data={donutData} cx="50%" cy="50%" innerRadius={45} outerRadius={75} dataKey="value" paddingAngle={2}>{donutData.map((d,i)=><Cell key={i} fill={d.color} />)}</Pie><Tooltip formatter={(v,n)=>[`${v}%`,n]} /></PieChart>
+          </ResponsiveContainer>
+          {categories.map(cat=>(
+            <div key={cat.key} style={{ marginBottom:5 }}>
+              <div onClick={()=>setExpanded(e=>({...e,[cat.key]:!e[cat.key]}))}
+                style={{ display:"flex",alignItems:"center",gap:9,cursor:"pointer",padding:"5px 7px",borderRadius:7,background:expanded[cat.key]?"#1e293b":"transparent" }}>
+                <div style={{ width:9,height:9,borderRadius:2,background:cat.color,flexShrink:0 }} />
+                <span style={{ color:"#e2e8f0",fontSize:12,flex:1 }}>{cat.label}</span>
+                <div style={{ width:80,background:"#1e293b",borderRadius:3,height:4 }}><div style={{ width:`${cat.share}%`,background:cat.color,borderRadius:3,height:"100%" }} /></div>
+                <span style={{ color:"#94a3b8",fontSize:11,width:28,textAlign:"right" }}>{cat.share}%</span>
+                <span style={{ color:"#f1f5f9",fontSize:11,fontFamily:"'DM Mono',monospace",width:52,textAlign:"right" }}>${cat.value}</span>
+              </div>
+              {expanded[cat.key]&&<div style={{ marginLeft:22,padding:"5px 10px",background:"#0a0f1a",borderRadius:7,fontSize:11,color:"#64748b" }}>{cat.key==="fert"?`Blended: $${cat.value}/ha → Sep.: $${Math.round(cat.value*0.95)}/ha`:`Standard allocation for ${crop.toLowerCase()} in ${region}.`}</div>}
+            </div>
+          ))}
+        </div>
+        <div className="card">
+          <h3 className="card-title">Margin Sensitivity to Fertilizer Price</h3>
+          <p style={{ color:"#475569",fontSize:11,marginBottom:10 }}>{crop} · {region}</p>
+          <ResponsiveContainer width="100%" height={200}>
+            <AreaChart data={sensData}>
+              <defs>
+                <linearGradient id="gbFill" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#64748b" stopOpacity={0.3}/><stop offset="95%" stopColor="#64748b" stopOpacity={0}/></linearGradient>
+                <linearGradient id="gsFill" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.3}/><stop offset="95%" stopColor="#0ea5e9" stopOpacity={0}/></linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+              <XAxis dataKey="price" tick={{ fill:"#64748b",fontSize:10 }} />
+              <YAxis tick={{ fill:"#64748b",fontSize:10 }} />
+              <Tooltip content={<CustomTooltip />} />
+              <Legend wrapperStyle={{ fontSize:11 }} />
+              <ReferenceLine y={0} stroke="#334155" strokeDasharray="4 4" />
+              <Area type="monotone" dataKey="Blended"   stroke="#64748b" fill="url(#gbFill)" strokeWidth={2} />
+              <Area type="monotone" dataKey="Separated" stroke="#0ea5e9" fill="url(#gsFill)" strokeWidth={2} />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AgronomyPage({ data, region, crop }) {
+  const base=data.find(d=>d.region===region&&d.crop===crop&&d.strategy==="Blended (MAP)");
+  const ph=base?.soil_ph??6.5;
+  const phData=Array.from({length:30},(_,i)=>{const p=5.0+i*0.15;return{ph:p.toFixed(1),"MAP/DAP":Math.max(0,6.5-Math.abs(p-6.2)*1.8+(p>7.0?-(p-7.0)*2:0)),"TSP Sep.":Math.max(0,7.0-Math.abs(p-6.5)*1.2+(p>7.5?-(p-7.5)*1.5:0)),"Optimized":Math.max(0,7.5-Math.abs(p-6.8)*1.0)};});
+  const pRateData=Array.from({length:10},(_,i)=>{const r=i*20+20;return{rate:r,"MAP/DAP":Math.min(8,3+Math.sqrt(r)*0.65),"TSP Sep.":Math.min(9,3.2+Math.sqrt(r)*0.72),"Optimized":Math.min(9.5,3.4+Math.sqrt(r)*0.78)};});
+  const omData=Array.from({length:8},(_,i)=>{const om=0.5+i*0.5;return{om:om.toFixed(1),"P Eff. MAP":Math.min(85,40+om*18),"P Eff. TSP":Math.min(92,45+om*20)};});
+  return (
+    <div style={{ display:"flex",flexDirection:"column",gap:18 }}>
+      <div className="card">
+        <h3 className="card-title">Annual Nutrient Consumption — France (t nutrient)</h3>
+        <p style={{color:"#475569",fontSize:11,marginBottom:10}}>2017–2023 · Source: Agreste / French Ministry of Agriculture</p>
+        <ResponsiveContainer width="100%" height={195}>
+          <LineChart data={CONSUMPTION_DATA} margin={{left:10,right:20}}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b"/>
+            <XAxis dataKey="year" tick={{fill:"#64748b",fontSize:9}}/>
+            <YAxis tick={{fill:"#64748b",fontSize:9}} tickFormatter={v=>(v/1000).toFixed(0)+"k"} label={{value:"t nutrient",angle:-90,position:"insideLeft",fill:"#64748b",fontSize:9,offset:6}}/>
+            <Tooltip content={<CustomTooltip/>} formatter={v=>[v.toLocaleString()+" t",""]}/>
+            <Legend wrapperStyle={{fontSize:10}}/>
+            <Line type="monotone" dataKey="N"    name="N (t)"    stroke="#0ea5e9" strokeWidth={2} dot={{r:3}}/>
+            <Line type="monotone" dataKey="P2O5" name="P2O5 (t)" stroke="#10b981" strokeWidth={2} dot={{r:3}}/>
+            <Line type="monotone" dataKey="K2O"  name="K2O (t)"  stroke="#f59e0b" strokeWidth={2} dot={{r:3}}/>
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+      {base&&(
+        <div style={{ display:"flex",gap:12,flexWrap:"wrap" }}>
+          {[{label:"Crop",val:crop,color:"#0ea5e9"},{label:"Region",val:region,color:"#a78bfa"},{label:"Soil pH",val:ph,color:"#f59e0b"},{label:"Org. Matter",val:base.om+"%",color:"#10b981"}].map((item,i)=>(
+            <div key={i} style={{ background:"linear-gradient(135deg,#0f172a,#0a1020)",border:`1px solid ${item.color}25`,borderRadius:12,padding:"12px 16px",flex:1,minWidth:90 }}>
+              <p style={{ color:"#64748b",fontSize:10,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:4 }}>{item.label}</p>
+              <p style={{ color:item.color,fontSize:17,fontWeight:700,fontFamily:"'DM Mono',monospace" }}>{item.val}</p>
+            </div>
+          ))}
+        </div>
+      )}
+      <div className="chart-grid-2">
+        <div className="card">
+          <h3 className="card-title">Yield vs Soil pH</h3>
+          <p style={{ color:"#475569",fontSize:11,marginBottom:10 }}>Separation advantage highest at pH &gt; 7.5</p>
+          <ResponsiveContainer width="100%" height={175}>
+            <LineChart data={phData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+              <XAxis dataKey="ph" tick={{ fill:"#64748b",fontSize:9 }} />
+              <YAxis tick={{ fill:"#64748b",fontSize:9 }} />
+              <Tooltip content={<CustomTooltip />} />
+              <Legend wrapperStyle={{ fontSize:9 }} />
+              <ReferenceLine x={String(ph.toFixed(1))} stroke="#f59e0b80" strokeDasharray="4 4" label={{ value:"↑ now",fill:"#f59e0b",fontSize:9 }} />
+              {["MAP/DAP","TSP Sep.","Optimized"].map((k,i)=><Line key={k} type="monotone" dataKey={k} stroke={Object.values(STRATEGY_COLORS)[i]} strokeWidth={2} dot={false} />)}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="card">
+          <h3 className="card-title">Yield vs P Rate</h3>
+          <p style={{ color:"#475569",fontSize:11,marginBottom:10 }}>Separation shifts the plateau upward</p>
+          <ResponsiveContainer width="100%" height={175}>
+            <LineChart data={pRateData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+              <XAxis dataKey="rate" tick={{ fill:"#64748b",fontSize:9 }} />
+              <YAxis tick={{ fill:"#64748b",fontSize:9 }} />
+              <Tooltip content={<CustomTooltip />} />
+              <Legend wrapperStyle={{ fontSize:9 }} />
+              {["MAP/DAP","TSP Sep.","Optimized"].map((k,i)=><Line key={k} type="monotone" dataKey={k} stroke={Object.values(STRATEGY_COLORS)[i]} strokeWidth={2} dot={false} />)}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="card">
+          <h3 className="card-title">P Efficiency vs Organic Matter</h3>
+          <p style={{ color:"#475569",fontSize:11,marginBottom:10 }}>Gap narrows above 2.5% OM</p>
+          <ResponsiveContainer width="100%" height={175}>
+            <AreaChart data={omData}>
+              <defs>
+                <linearGradient id="mapFill" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#64748b" stopOpacity={0.4}/><stop offset="95%" stopColor="#64748b" stopOpacity={0}/></linearGradient>
+                <linearGradient id="tspFill" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.4}/><stop offset="95%" stopColor="#0ea5e9" stopOpacity={0}/></linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+              <XAxis dataKey="om" tick={{ fill:"#64748b",fontSize:9 }} />
+              <YAxis tick={{ fill:"#64748b",fontSize:9 }} />
+              <Tooltip content={<CustomTooltip />} />
+              <Legend wrapperStyle={{ fontSize:9 }} />
+              <Area type="monotone" dataKey="P Eff. MAP" stroke="#64748b" fill="url(#mapFill)" strokeWidth={2} />
+              <Area type="monotone" dataKey="P Eff. TSP" stroke="#0ea5e9" fill="url(#tspFill)" strokeWidth={2} />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="card">
+          <h3 className="card-title">Biochemical Mechanisms</h3>
+          {[
+            {title:"P Fixation in Calcareous Soils",body:"At pH > 7.5, Ca²⁺ precipitates MAP phosphate within hours. TSP maintains a lower pH microzone, delaying fixation.",accent:"#f59e0b",icon:"🧲"},
+            {title:"NH₄⁺ Interference in Blends",  body:"MAP/DAP release N and P simultaneously. High NH₄⁺ suppresses root P uptake. Separation removes this competition.",accent:"#a78bfa",icon:"⚗️"},
+            {title:"Placement & Timing",            body:"Banded TSP subsurface puts P directly in the root zone. Broadcast MAP loses 15–35% to surface fixation.",accent:"#0ea5e9",icon:"📍"},
+          ].map((item,i)=>(
+            <div key={i} style={{ borderLeft:`3px solid ${item.accent}`,paddingLeft:11,marginBottom:13,paddingTop:2 }}>
+              <div style={{ display:"flex",alignItems:"center",gap:6,marginBottom:3 }}><span style={{ fontSize:13 }}>{item.icon}</span><p style={{ color:item.accent,fontSize:11,fontWeight:700 }}>{item.title}</p></div>
+              <p style={{ color:"#64748b",fontSize:11,lineHeight:1.6 }}>{item.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function InsightsPage({ data, region, crop }) {
+  const insights=generateInsights(data,region,crop);
+  const allCrops=[...new Set(data.map(d=>d.crop))];const allInsights=[...new Set(data.map(d=>d.region))].flatMap(r=>allCrops.filter(c=>data.some(d=>d.region===r&&d.crop===c)).map(c=>{
+    const b=data.find(d=>d.region===r&&d.crop===c&&d.strategy==="Blended (MAP)");
+    const s=data.find(d=>d.region===r&&d.crop===c&&d.strategy==="Separated (TSP+N)");
+    if(!b||!s) return null;
+    return {region:r,crop:c,delta:s.margin-b.margin,ph:b.soil_ph};
+  }).filter(Boolean));
+  const base=data.find(d=>d.region===region&&d.crop===crop&&d.strategy==="Blended (MAP)");
+  const sep=data.find(d=>d.region===region&&d.crop===crop&&d.strategy==="Separated (TSP+N)");
+  const radarData=base&&sep?[
+    {metric:"Yield",    blended:base.yield/0.1,  separated:sep.yield/0.1},
+    {metric:"Margin",   blended:base.margin/10,  separated:sep.margin/10},
+    {metric:"P Effic.", blended:60,              separated:80},
+    {metric:"Revenue",  blended:base.revenue/20, separated:sep.revenue/20},
+    {metric:"Cost Eff.",blended:50,              separated:70},
+  ]:[];
+  return (
+    <div style={{ display:"flex",flexDirection:"column",gap:18 }}>
+      <div className="chart-grid-2">
+        <div className="card" style={{ border:"1px solid #0ea5e930" }}>
+          <h3 style={{ color:"#0ea5e9",fontSize:11,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:14 }}>◈ Model Insights — {crop} · {region}</h3>
+          {insights.length?insights.map((ins,i)=>(
+            <div key={i} style={{ display:"flex",gap:10,marginBottom:11,padding:"9px 12px",background:"#0a0f1a",borderRadius:8,borderLeft:"2px solid #0ea5e940" }}>
+              <span style={{ color:"#0ea5e9",fontSize:13,marginTop:1,flexShrink:0 }}>→</span>
+              <p style={{ color:"#cbd5e1",fontSize:12,lineHeight:1.7,margin:0 }}>{ins}</p>
+            </div>
+          )):<p style={{ color:"#475569" }}>No data for selected context.</p>}
+        </div>
+        {radarData.length>0&&(
+          <div className="card">
+            <h3 className="card-title">Strategy Radar — {crop} · {region}</h3>
+            <ResponsiveContainer width="100%" height={230}>
+              <RadarChart data={radarData}>
+                <PolarGrid stroke="#1e293b" />
+                <PolarAngleAxis dataKey="metric" tick={{ fill:"#64748b",fontSize:10 }} />
+                <Radar name="Blended"   dataKey="blended"   stroke="#64748b" fill="#64748b" fillOpacity={0.2} strokeWidth={2} />
+                <Radar name="Separated" dataKey="separated" stroke="#0ea5e9" fill="#0ea5e9" fillOpacity={0.25} strokeWidth={2} />
+                <Legend wrapperStyle={{ fontSize:10 }} />
+                <Tooltip content={<CustomTooltip />} />
+              </RadarChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+      </div>
+      <div className="card" style={{ overflow:"auto" }}>
+        <h3 className="card-title">Full Separation Benefit Matrix</h3>
+        <table style={{ width:"100%",borderCollapse:"collapse",fontSize:12,minWidth:360 }}>
+          <thead><tr style={{ borderBottom:"1px solid #1e293b" }}>{["Region","Crop","pH","Δ Margin","Verdict"].map((h,i)=><th key={i} style={{ padding:"8px 12px",textAlign:i>1?"right":"left",color:"#64748b",fontSize:10,textTransform:"uppercase",fontWeight:500,whiteSpace:"nowrap" }}>{h}</th>)}</tr></thead>
+          <tbody>{allInsights.sort((a,b)=>b.delta-a.delta).map((row,i)=>{const dc=row.delta>30?"#10b981":row.delta>0?"#0ea5e9":"#f43f5e";return(<tr key={i} style={{ borderBottom:"1px solid #0f1929",background:i%2===0?"#0a0f1a":"#0f172a" }}><td style={{ padding:"8px 12px",color:"#94a3b8" }}>{row.region}</td><td style={{ padding:"8px 12px",color:"#94a3b8" }}>{row.crop}</td><td style={{ padding:"8px 12px",textAlign:"right",color:"#64748b",fontFamily:"'DM Mono',monospace" }}>{row.ph}</td><td style={{ padding:"8px 12px",textAlign:"right",fontFamily:"'DM Mono',monospace",fontWeight:700,color:dc }}>{row.delta>0?"+":""}{row.delta}</td><td style={{ padding:"8px 12px",textAlign:"right" }}><span style={{ padding:"2px 8px",borderRadius:20,fontSize:10,background:dc+"20",color:dc,whiteSpace:"nowrap" }}>{row.delta>30?"STRONG":row.delta>0?"MARGINAL":"NEUTRAL"}</span></td></tr>);})}</tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+// ─── MARKET INTELLIGENCE PAGES ────────────────────────────────────────────────
+function MIPlaceholder({ region }) {
+  return <div style={{ display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:300,gap:12 }}><p style={{ fontSize:40 }}>🌍</p><p style={{ fontSize:15,color:"#64748b" }}>No market intelligence data for {region}.</p><p style={{ fontSize:12,color:"#334155" }}>Available: {Object.keys(MARKET_INTEL).join(", ")}</p></div>;
+}
+
+// ─── FARMER P&L PAGE ──────────────────────────────────────────────────────────
+// Data source: FADN / Réseau d'Information Comptable Agricole (RICA) France
+// Average per farm, SOP above 25k€, values in €/ha
+const FARMER_PL_DATA = {
+  "Cereals & Oilseeds": {
+    color:"#0ea5e9", emoji:"🌾", farms:48140, uaa:134.81, uta:1.30, nonsalUta:1.17,
+    totalOutput:1685.41,
+    revenue:{ total:1412.14,
+      sales:{ total:1366.96, cropSales:1278.76 },
+      miscOutput:{ total:45.17, ownConsumption:1.19, storedProduction:-23.59, capitalisedProduction:6.01 },
+      subsidies:{ total:264.22, decoupled:209.85, coupled:12.98,
+        ruralDev:{ total:32.27, lhda:3.04, aecm:11.65 } },
+      otherOutput:39.91,
+      livestockPurchases:-14.54,
+    },
+    totalCosts:1581.19,
+    costs:{
+      cropSpecific:{ total:732.22, fertilisers:357.10, seeds:94.28, cropProtection:162.82 },
+      livestockSpecific:{ total:16.47, feed:10.31 },
+      otherOp:{ total:811.29, landRent:137.45, labour:25.96, depreciation:238.78, energy:102.29 },
+      financial:21.22,
+    },
+  },
+  "General Crops": {
+    color:"#10b981", emoji:"🥕", farms:24745, uaa:111.88, uta:1.99, nonsalUta:1.29,
+    totalOutput:3641.04,
+    revenue:{ total:3225.69,
+      sales:{ total:3120.22, cropSales:2420.90 },
+      miscOutput:{ total:105.47, ownConsumption:0.54, storedProduction:46.30, capitalisedProduction:18.14 },
+      subsidies:{ total:312.48, decoupled:213.35, coupled:16.09,
+        ruralDev:{ total:32.80, lhda:3.66, aecm:11.71 } },
+      otherOutput:55.60,
+      livestockPurchases:-17.61,
+    },
+    totalCosts:2887.56,
+    costs:{
+      cropSpecific:{ total:1212.01, fertilisers:487.93, seeds:248.03, cropProtection:247.14 },
+      livestockSpecific:{ total:50.05, feed:39.69 },
+      otherOp:{ total:1586.79, landRent:225.69, labour:170.45, depreciation:399.89, energy:173.22 },
+      financial:38.70,
+    },
+  },
+  "Market Gardening": {
+    color:"#f59e0b", emoji:"🥦", farms:7629, uaa:16.26, uta:4.85, nonsalUta:1.42,
+    totalOutput:25835.79,
+    revenue:{ total:24319.80,
+      sales:{ total:23956.95, cropSales:334.81 },
+      miscOutput:{ total:362.85, ownConsumption:6.77, storedProduction:68.88, capitalisedProduction:151.29 },
+      subsidies:{ total:1094.10, decoupled:190.04, coupled:27.68,
+        ruralDev:{ total:62.12, lhda:9.23, aecm:48.59 } },
+      otherOutput:279.83,
+      livestockPurchases:-84.26,
+    },
+    totalCosts:22060.27,
+    costs:{
+      cropSpecific:{ total:4268.76, fertilisers:1121.77, seeds:2207.26, cropProtection:451.41 },
+      livestockSpecific:{ total:55.35, feed:46.74 },
+      otherOp:{ total:17538.75, landRent:337.02, labour:5666.05, depreciation:2480.32, energy:2627.92 },
+      financial:197.42,
+    },
+  },
+  "Viticulture": {
+    color:"#a78bfa", emoji:"🍇", farms:44240, uaa:26.87, uta:2.63, nonsalUta:1.26,
+    totalOutput:11401.94,
+    revenue:{ total:9901.00,
+      sales:{ total:9726.83, cropSales:2026.05 },
+      miscOutput:{ total:174.17, ownConsumption:217.34, storedProduction:573.13, capitalisedProduction:183.48 },
+      subsidies:{ total:383.33, decoupled:128.02, coupled:4.84,
+        ruralDev:{ total:116.49, lhda:6.70, aecm:24.93 } },
+      otherOutput:146.26,
+      livestockPurchases:-2.98,
+    },
+    totalCosts:8714.55,
+    costs:{
+      cropSpecific:{ total:1520.28, fertilisers:291.03, seeds:61.78, cropProtection:407.89 },
+      livestockSpecific:{ total:11.16, feed:8.19 },
+      otherOp:{ total:7048.01, landRent:1049.87, labour:1503.16, depreciation:1186.83, energy:315.59 },
+      financial:134.72,
+    },
+  },
+};
+
+
 function MIFarmerPLPage() {
   const [farmType, setFarmType] = useState("Cereals & Oilseeds");
   const [expanded, setExpanded] = useState({ output:true, costs:true });
