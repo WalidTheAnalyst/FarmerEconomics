@@ -1680,10 +1680,8 @@ function MathieuFarmPage({ region }) {
   const overSpent = Object.entries(CONFIG).sort((a,b)=>(alloc[b[0]]/b[1].e1)-(alloc[a[0]]/a[1].e1))[0][0];
   const underSpent = Object.entries(CONFIG).sort((a,b)=>(alloc[a[0]]/a[1].e1)-(alloc[b[0]]/b[1].e1))[0][0];
   const biggestIncomeGain = Object.entries(CONFIG).sort((a,b)=>b[1].e2-a[1].e2)[0][0];
-  const biggestIncomeDrag = Object.entries(CONFIG).sort((a,b)=>a[1].e2-b[1].e2)[0][0];
 
   const fmt = (n) => n >= 0 ? `+€${n.toFixed(0)}` : `-€${Math.abs(n).toFixed(0)}`;
-  const fmtPct = (n) => n >= 0 ? `+${n.toFixed(1)}%` : `${n.toFixed(1)}%`;
 
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:24 }}>
