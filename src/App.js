@@ -1551,10 +1551,10 @@ function MathieuIntroPage({ region, onEnterFarm }) {
           </div>
         </div>
 
-        {/* Right: real portrait — flush, no frame */}
+        {/* Right: real portrait — flush, cropped to remove white edges */}
         <div style={{ position:"relative", overflow:"hidden", minHeight:480 }}>
           <img src="/farmer.png" alt="Mathieu, céréalier"
-            style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }}
+            style={{ position:"absolute", top:"-6%", left:"-3%", width:"106%", height:"112%", objectFit:"cover", objectPosition:"center 15%" }}
             onError={e => { e.target.style.display="none"; }}
           />
           <div style={{ position:"absolute", bottom:0, left:0, right:0, height:100, background:"linear-gradient(to top,#04080f,transparent)", pointerEvents:"none" }}/>
@@ -1601,367 +1601,417 @@ function MathieuIntroPage({ region, onEnterFarm }) {
 
 // ─── MATHIEU FARM SIMULATION ──────────────────────────────────────────────────
 function MathieuFarmPage({ region }) {
-  const [budget, setBudget] = useState(1000);
-  const [alloc, setAlloc]   = useState({ fertilisers:0.25, wages:0.15, depreciation:0.20, intermediate:0.40 });
-  const [prevAlloc, setPrevAlloc] = useState(null);
-  const [prevBudget, setPrevBudget] = useState(null);
+
+  // ── BASELINE: what Mathieu spent yesterday ──────────────────────────────────
+  const [baseline, setBaseline] = useState({
+    fertilisers:  357,   // €/ha — FADN France cereals reference
+    wages:        130,
+    depreciation: 239,
+    intermediate: 257,
+  });
+
+  // ── CURRENT: what he plans to spend today ───────────────────────────────────
+  const [current, setCurrent] = useState({
+    fertilisers:  357,
+    wages:        130,
+    depreciation: 239,
+    intermediate: 257,
+  });
+
+  // Which input the user is actively editing (highlights the row)
+  // Which scenario panel is shown: "baseline" | "current"
+  const [editMode, setEditMode] = useState("current");
 
   if (region !== "France") return (
-    <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:400, gap:16 }}>
+    <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:400 }}>
       <p style={{ color:"#94a3b8", fontSize:15 }}>This simulation is only available for France.</p>
     </div>
   );
 
-  const spending = {
-    fertilisers:  budget * alloc.fertilisers,
-    wages:        budget * alloc.wages,
-    depreciation: budget * alloc.depreciation,
-    intermediate: budget * alloc.intermediate,
-  };
-  const prevSpending = prevAlloc && prevBudget ? {
-    fertilisers:  prevBudget * prevAlloc.fertilisers,
-    wages:        prevBudget * prevAlloc.wages,
-    depreciation: prevBudget * prevAlloc.depreciation,
-    intermediate: prevBudget * prevAlloc.intermediate,
-  } : spending;
-
-  const calcOutput = (sp) => Math.exp(
+  // ── INTERNAL CALCULATOR ─────────────────────────────────────────────────────
+  // For each input, compute the % change from baseline to current.
+  // Then apply the log-log elasticity: ΔlogY = β * Δlog(X) = β * log(X_new/X_old)
+  // Predicted output given a spending vector:
+  const calcLogOutput = (sp) =>
     MODEL1.intercept
     + MODEL1.elasticities.fertilisers.coef  * Math.log(Math.max(sp.fertilisers,  1))
     + MODEL1.elasticities.wages.coef         * Math.log(Math.max(sp.wages,         1))
     + MODEL1.elasticities.depreciation.coef  * Math.log(Math.max(sp.depreciation, 1))
-    + MODEL1.elasticities.intermediate.coef  * Math.log(Math.max(sp.intermediate, 1))
-  );
-  const calcFNI = (sp) => Math.exp(
-    MODEL2.intercept
-    + MODEL2.elasticities.fertilisers.coef  * Math.log(Math.max(sp.fertilisers,  1))
-    + MODEL2.elasticities.wages.coef         * Math.log(Math.max(sp.wages,         1))
-    + MODEL2.elasticities.depreciation.coef  * Math.log(Math.max(sp.depreciation, 1))
-    + MODEL2.elasticities.intermediate.coef  * Math.log(Math.max(sp.intermediate, 1))
-  );
+    + MODEL1.elasticities.intermediate.coef  * Math.log(Math.max(sp.intermediate, 1));
 
-  const predictedOutput = calcOutput(spending);
-  const predictedFNI    = calcFNI(spending);
-  const prevOutput      = calcOutput(prevSpending);
-  const prevFNI         = calcFNI(prevSpending);
+  const baselineOutput = Math.exp(calcLogOutput(baseline));
+  const currentOutput  = Math.exp(calcLogOutput(current));
+  const outputDelta    = currentOutput - baselineOutput;
+  const outputDeltaPct = ((currentOutput - baselineOutput) / baselineOutput) * 100;
 
-  const outputDelta = predictedOutput - prevOutput;
-  const fniDelta    = predictedFNI - prevFNI;
-
-  const updateAlloc = (key, val) => {
-    setPrevAlloc({...alloc}); setPrevBudget(budget);
-    const clamped = Math.max(0.02, Math.min(0.88, val));
-    const rest = 1 - clamped;
-    const others = Object.keys(alloc).filter(k => k !== key);
-    const sumOthers = others.reduce((s, k) => s + alloc[k], 0);
-    const newAlloc = { ...alloc, [key]: clamped };
-    others.forEach(k => { newAlloc[k] = sumOthers > 0 ? (alloc[k] / sumOthers) * rest : rest / others.length; });
-    const total = Object.values(newAlloc).reduce((s, v) => s + v, 0);
-    Object.keys(newAlloc).forEach(k => { newAlloc[k] = newAlloc[k] / total; });
-    setAlloc(newAlloc);
-  };
-  const updateBudget = (val) => { setPrevAlloc({...alloc}); setPrevBudget(budget); setBudget(val); };
+  // Per-input: what % change in spending, and what does that contribute to output change?
+  const inputKeys = ["fertilisers", "wages", "depreciation", "intermediate"];
+  const pctChanges = {};
+  const outputContribs = {}; // log-log marginal contribution of each input's change
+  inputKeys.forEach(k => {
+    const pct = baseline[k] > 0 ? ((current[k] - baseline[k]) / baseline[k]) * 100 : 0;
+    pctChanges[k] = pct;
+    // Δlog(output) attributable to input k = β_k * (log(current_k) - log(baseline_k))
+    outputContribs[k] = MODEL1.elasticities[k].coef * Math.log(Math.max(current[k],1) / Math.max(baseline[k],1));
+  });
+  const totalLogOutputChange = Object.values(outputContribs).reduce((s,v)=>s+v,0);
 
   const CONFIG = {
-    fertilisers:  { label:"Fertilizers",            color:"#0ea5e9", e1: MODEL1.elasticities.fertilisers.coef,  e2: MODEL2.elasticities.fertilisers.coef,
-      icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/></svg> },
-    wages:        { label:"Labour",                  color:"#10b981", e1: MODEL1.elasticities.wages.coef,         e2: MODEL2.elasticities.wages.coef,
-      icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> },
-    depreciation: { label:"Machinery",               color:"#f59e0b", e1: MODEL1.elasticities.depreciation.coef,  e2: MODEL2.elasticities.depreciation.coef,
-      icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg> },
-    intermediate: { label:"Seeds & crop protection", color:"#a78bfa", e1: MODEL1.elasticities.intermediate.coef,  e2: MODEL2.elasticities.intermediate.coef,
-      icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22V12M12 12C12 7 17 3 17 3s0 5-5 9zM12 12C12 7 7 3 7 3s0 5 5 9z"/><path d="M5 21c0-4 3-7 7-7s7 3 7 7"/></svg> },
+    fertilisers:  { label:"Fertilizers",            color:"#0ea5e9", min:50,  max:900,  step:10 },
+    wages:        { label:"Labour",                  color:"#10b981", min:20,  max:600,  step:10 },
+    depreciation: { label:"Machinery",               color:"#f59e0b", min:50,  max:800,  step:10 },
+    intermediate: { label:"Seeds & crop protection", color:"#a78bfa", min:50,  max:800,  step:10 },
   };
 
-  // Dominant input by current spending contribution to output
-  const contribs = Object.entries(CONFIG).map(([k,c]) => ({ k, v: c.e1 * Math.log(Math.max(spending[k],1)) }));
-  const topOutput = contribs.sort((a,b)=>b.v-a.v)[0].k;
-  // Input with most over-spend relative to its elasticity (diminishing returns)
-  const overSpent = Object.entries(CONFIG).sort((a,b)=>(alloc[b[0]]/b[1].e1)-(alloc[a[0]]/a[1].e1))[0][0];
-  const underSpent = Object.entries(CONFIG).sort((a,b)=>(alloc[a[0]]/a[1].e1)-(alloc[b[0]]/b[1].e1))[0][0];
-  const biggestIncomeGain = Object.entries(CONFIG).sort((a,b)=>b[1].e2-a[1].e2)[0][0];
+  const updateSpending = (mode, key, val) => {
+    if (mode === "baseline") setBaseline(p => ({ ...p, [key]: Number(val) }));
+    else setCurrent(p => ({ ...p, [key]: Number(val) }));
+  };
 
-  const fmt = (n) => n >= 0 ? `+€${n.toFixed(0)}` : `-€${Math.abs(n).toFixed(0)}`;
+  const resetCurrentToBaseline = () => setCurrent({...baseline});
 
   return (
-    <div style={{ display:"flex", flexDirection:"column", gap:24 }}>
+    <div style={{ display:"flex", flexDirection:"column", gap:28 }}>
       <style>{`
         @keyframes resultReveal { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes deltaFlash { 0%{opacity:0;transform:translateY(-6px)} 30%{opacity:1;transform:translateY(0)} 80%{opacity:1} 100%{opacity:0} }
-        .barn-slot { transition:border-color 0.15s; }
-        .barn-slot:focus-within { border-color:rgba(255,255,255,0.2) !important; }
-        input[type=range] { height:4px; }
+        @keyframes deltaGlow { 0%{opacity:0.5} 50%{opacity:1} 100%{opacity:0.5} }
+        .spending-row { transition:background 0.15s,border-color 0.15s; }
+        .spending-row:hover { border-color:rgba(255,255,255,0.15) !important; }
+        .spending-row.active { border-color:rgba(255,255,255,0.22) !important; background:#0d1626 !important; }
       `}</style>
 
-      {/* ── SECTION 1: THE TWO MODELS ────────────────────────────────────────── */}
+      {/* ── SECTION 1: THE MODEL FRAMEWORK ────────────────────────────────────── */}
       <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:16, overflow:"hidden" }}>
         <div style={{ padding:"22px 28px 18px", borderBottom:"1px solid #1a2436" }}>
           <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.16em", fontWeight:700, margin:0, marginBottom:6 }}>The statistical framework</p>
-          <p style={{ color:"#f1f5f9", fontSize:16, fontWeight:700, letterSpacing:"-0.02em", margin:0 }}>Two models. One question. A surprising answer.</p>
+          <p style={{ color:"#f1f5f9", fontSize:16, fontWeight:700, letterSpacing:"-0.02em", margin:0 }}>Different models answer different questions.</p>
         </div>
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:0 }}>
 
-          {/* Model 1 */}
-          <div style={{ padding:"22px 28px", borderRight:"1px solid #1a2436" }}>
-            <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:14 }}>
-              <div style={{ width:32, height:32, borderRadius:8, background:"#0ea5e915", border:"1px solid #0ea5e930", display:"flex", alignItems:"center", justifyContent:"center" }}>
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-              </div>
-              <div>
-                <p style={{ color:"#0ea5e9", fontSize:11, fontWeight:700, margin:0 }}>Model 1 — Production</p>
-                <p style={{ color:"#94a3b8", fontSize:10, margin:0 }}>R² = {MODEL1.rSquared} · 864 obs.</p>
-              </div>
+        {/* Model 1: log-log */}
+        <div style={{ padding:"22px 28px", borderBottom:"1px solid #1a2436" }}>
+          <div style={{ display:"flex", alignItems:"flex-start", gap:16, marginBottom:14 }}>
+            <div style={{ width:36, height:36, borderRadius:9, background:"#0ea5e915", border:"1px solid #0ea5e930", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, marginTop:2 }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
             </div>
-            <p style={{ color:"#cbd5e1", fontSize:12, lineHeight:1.8, marginBottom:14 }}>
-              This model estimates how a 1% increase in each input category changes Mathieu's output per hectare. It answers the first half of his hypothesis: <em>does spending more produce more?</em>
-            </p>
-            <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
-              {Object.entries(CONFIG).map(([k,c]) => (
-                <div key={k} style={{ display:"flex", alignItems:"center", gap:8 }}>
-                  <div style={{ width:6, height:6, borderRadius:2, background:c.color, flexShrink:0 }}/>
-                  <span style={{ color:"#e2e8f0", fontSize:11, flex:1 }}>{c.label}</span>
-                  <span style={{ color:c.color, fontSize:12, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>+{(c.e1*100).toFixed(1)}%</span>
-                  <span style={{ color:"#94a3b8", fontSize:10 }}>output per 1% more</span>
-                </div>
-              ))}
-            </div>
-            <div style={{ marginTop:14, padding:"10px 12px", background:"#060d1a", borderRadius:8, border:"1px solid #0ea5e920" }}>
-              <p style={{ color:"#94a3b8", fontSize:11, lineHeight:1.7, margin:0 }}>
-                The dominant driver is <span style={{ color:"#a78bfa", fontWeight:700 }}>seeds and crop protection</span> at {(MODEL1.elasticities.intermediate.coef*100).toFixed(1)}% — nearly {(MODEL1.elasticities.intermediate.coef/MODEL1.elasticities.fertilisers.coef).toFixed(0)}x more powerful than fertilizer. Mathieu has been overrating the wrong input.
+            <div style={{ flex:1 }}>
+              <p style={{ color:"#0ea5e9", fontSize:12, fontWeight:700, margin:0, marginBottom:4 }}>Model in use — Log-Log Production Model</p>
+              <p style={{ color:"#94a3b8", fontSize:11, margin:0, marginBottom:12, fontFamily:"'DM Mono',monospace" }}>
+                log(output/ha) = α + β₁·log(fertilizers) + β₂·log(labour) + β₃·log(machinery) + β₄·log(seeds) + region FE + farmtype FE
+              </p>
+              <p style={{ color:"#cbd5e1", fontSize:12, lineHeight:1.8, margin:0 }}>
+                This model answers the question: <em>if Mathieu increases spending on an input by 1%, how much does his output per hectare increase?</em> Because both sides are in logs, the coefficient β is a pure elasticity — a scale-free percentage-to-percentage relationship. It does not matter whether Mathieu is spending €100 or €800; the ratio is constant.
               </p>
             </div>
           </div>
 
-          {/* Model 2 */}
-          <div style={{ padding:"22px 28px" }}>
-            <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:14 }}>
-              <div style={{ width:32, height:32, borderRadius:8, background:"#10b98115", border:"1px solid #10b98130", display:"flex", alignItems:"center", justifyContent:"center" }}>
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-              </div>
-              <div>
-                <p style={{ color:"#10b981", fontSize:11, fontWeight:700, margin:0 }}>Model 2 — Farm Net Income</p>
-                <p style={{ color:"#94a3b8", fontSize:10, margin:0 }}>R² = {MODEL2.rSquared} · 864 obs.</p>
-              </div>
+          {/* Elasticities table */}
+          <div style={{ background:"#060d1a", borderRadius:10, border:"1px solid #1a2436", overflow:"hidden" }}>
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 110px 110px 180px", padding:"8px 14px", borderBottom:"1px solid #1a2436" }}>
+              <span style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em" }}>Input</span>
+              <span style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em" }}>Elasticity (β)</span>
+              <span style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em" }}>Significance</span>
+              <span style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em" }}>Reading</span>
             </div>
-            <p style={{ color:"#cbd5e1", fontSize:12, lineHeight:1.8, marginBottom:14 }}>
-              This model asks the harder question: does more spending actually make Mathieu <em>richer</em>? It estimates the net income effect of each input — after all costs are accounted for.
-            </p>
-            <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
-              {Object.entries(CONFIG).map(([k,c]) => {
-                const e2 = c.e2;
-                const col = e2 >= 0 ? c.color : "#f43f5e";
-                return (
-                  <div key={k} style={{ display:"flex", alignItems:"center", gap:8 }}>
-                    <div style={{ width:6, height:6, borderRadius:2, background:col, flexShrink:0 }}/>
-                    <span style={{ color:"#e2e8f0", fontSize:11, flex:1 }}>{c.label}</span>
-                    <span style={{ color:col, fontSize:12, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>{e2>=0?"+":""}{(e2*100).toFixed(1)}%</span>
-                    <span style={{ color:"#94a3b8", fontSize:10 }}>income per 1% more</span>
-                  </div>
-                );
-              })}
-            </div>
-            <div style={{ marginTop:14, padding:"10px 12px", background:"#060d1a", borderRadius:8, border:"1px solid #f43f5e20" }}>
-              <p style={{ color:"#94a3b8", fontSize:11, lineHeight:1.7, margin:0 }}>
-                <span style={{ color:"#f43f5e", fontWeight:700 }}>Machinery has a negative income elasticity</span> of {(MODEL2.elasticities.depreciation.coef*100).toFixed(1)}%. Spending more on equipment raises output — but costs more than it earns. More tractor, less profit.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* The link between models */}
-        <div style={{ padding:"16px 28px", borderTop:"1px solid #1a2436", background:"linear-gradient(135deg,#060d18,#080e14)", display:"flex", alignItems:"center", gap:16 }}>
-          <div style={{ flexShrink:0 }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-          </div>
-          <p style={{ color:"#cbd5e1", fontSize:12, lineHeight:1.75, margin:0 }}>
-            <span style={{ color:"#f59e0b", fontWeight:700 }}>The link between the two models</span> is the core of Mathieu's problem. The input that most powerfully drives output (seeds and crop protection, elasticity {(MODEL1.elasticities.intermediate.coef).toFixed(3)}) is also the one that most powerfully drives income (elasticity {(MODEL2.elasticities.intermediate.coef).toFixed(3)}). But machinery — which does raise output — destroys income at the margin. Mathieu's intuition collapses the two models into one. They are not the same.
-          </p>
-        </div>
-      </div>
-
-      {/* ── SECTION 2: INTERACTIVE EXERCISE ─────────────────────────────────── */}
-      <div>
-        <p style={{ color:"#f1f5f9", fontSize:14, fontWeight:700, marginBottom:4 }}>Now put yourself in Mathieu's position.</p>
-        <p style={{ color:"#94a3b8", fontSize:12, lineHeight:1.7, marginBottom:16 }}>
-          You have a fixed budget per hectare. Decide how to split it across the four input categories. The models calculate what happens to output and income in real time — and the interpretation below tells you what your choices mean.
-        </p>
-
-        {/* Budget slider */}
-        <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"16px 22px", marginBottom:16 }}>
-          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
-            <span style={{ color:"#e2e8f0", fontSize:13, fontWeight:600 }}>Total budget per hectare</span>
-            <span style={{ color:"#f1f5f9", fontSize:20, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>€{budget.toLocaleString()}<span style={{ color:"#94a3b8", fontSize:12, fontWeight:400 }}>/ha</span></span>
-          </div>
-          <input type="range" min={300} max={2500} step={50} value={budget}
-            onChange={e=>updateBudget(Number(e.target.value))}
-            style={{ width:"100%", accentColor:"#0ea5e9", cursor:"pointer" }}/>
-          <div style={{ display:"flex", justifyContent:"space-between", marginTop:4 }}>
-            <span style={{ color:"#94a3b8", fontSize:10 }}>€300 — minimal farm</span>
-            <span style={{ color:"#94a3b8", fontSize:10 }}>€2,500 — intensive</span>
-          </div>
-        </div>
-
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 320px", gap:16, alignItems:"start" }}>
-
-          {/* Left: input sliders */}
-          <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
-            {Object.entries(CONFIG).map(([key, cfg]) => {
-              const euros = spending[key];
-              const sharePct = (alloc[key] * 100).toFixed(0);
-              const e2col = cfg.e2 >= 0 ? cfg.color : "#f43f5e";
-
+            {inputKeys.map(k => {
+              const e = MODEL1.elasticities[k];
+              const cfg = CONFIG[k];
               return (
-                <div key={key} className="barn-slot" style={{ background:"#080e18", border:`1px solid ${cfg.color}22`, borderRadius:12, padding:"14px 18px" }}>
-                  <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:10 }}>
-                    <div style={{ width:40, height:40, borderRadius:9, background:`${cfg.color}15`, border:`1px solid ${cfg.color}28`, display:"flex", alignItems:"center", justifyContent:"center", color:cfg.color, flexShrink:0 }}>
-                      {cfg.icon}
-                    </div>
-                    <div style={{ flex:1 }}>
-                      <p style={{ color:"#f1f5f9", fontSize:13, fontWeight:600, margin:0 }}>{cfg.label}</p>
-                      <p style={{ color:"#94a3b8", fontSize:10, margin:"2px 0 0" }}>
-                        Output: <span style={{ color:cfg.color, fontWeight:700 }}>+{(cfg.e1*100).toFixed(1)}%</span> per 1% more
-                        <span style={{ margin:"0 6px", color:"#1e293b" }}>·</span>
-                        Income: <span style={{ color:e2col, fontWeight:700 }}>{cfg.e2>=0?"+":""}{(cfg.e2*100).toFixed(1)}%</span> per 1% more
-                      </p>
-                    </div>
-                    <div style={{ textAlign:"right", flexShrink:0 }}>
-                      <p style={{ color:cfg.color, fontSize:18, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>€{euros.toFixed(0)}</p>
-                      <p style={{ color:"#94a3b8", fontSize:10, margin:0 }}>{sharePct}% of budget</p>
-                    </div>
+                <div key={k} style={{ display:"grid", gridTemplateColumns:"1fr 110px 110px 180px", padding:"10px 14px", borderBottom:"1px solid #0d1520", alignItems:"center" }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                    <div style={{ width:6, height:6, borderRadius:2, background:cfg.color }}/>
+                    <span style={{ color:"#e2e8f0", fontSize:12 }}>{cfg.label}</span>
                   </div>
-                  <input type="range" min={0.02} max={0.88} step={0.01} value={alloc[key]}
-                    onChange={e => updateAlloc(key, Number(e.target.value))}
-                    style={{ width:"100%", accentColor:cfg.color, cursor:"pointer" }}/>
-                  <div style={{ height:3, background:"#1a2436", borderRadius:2, overflow:"hidden", marginTop:6 }}>
-                    <div style={{ height:"100%", width:`${alloc[key]*100}%`, background:cfg.color, borderRadius:2, transition:"width 0.18s" }}/>
-                  </div>
+                  <span style={{ color:cfg.color, fontSize:13, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>+{(e.coef*100).toFixed(1)}%</span>
+                  <span style={{ color:"#10b981", fontSize:11, fontFamily:"'DM Mono',monospace" }}>{e.sig}</span>
+                  <span style={{ color:"#94a3b8", fontSize:11 }}>+1% spend → +{(e.coef*100).toFixed(1)}% output</span>
                 </div>
               );
             })}
-
-            {/* Stack bar */}
-            <div style={{ height:6, borderRadius:3, overflow:"hidden", display:"flex" }}>
-              {Object.entries(CONFIG).map(([k,c]) => (
-                <div key={k} style={{ width:`${alloc[k]*100}%`, background:c.color, transition:"width 0.18s" }}/>
-              ))}
-            </div>
           </div>
+        </div>
 
-          {/* Right: live results */}
-          <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
-            <div style={{ background:"linear-gradient(135deg,#060d18,#080e14)", border:"1px solid #0ea5e928", borderRadius:12, padding:"18px 20px" }}>
-              <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>Model 1 — Predicted output</p>
-              <p style={{ color:"#0ea5e9", fontSize:30, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0, lineHeight:1 }}>
-                €{predictedOutput.toFixed(0)}<span style={{ fontSize:12, color:"#94a3b8", fontWeight:400 }}>/ha</span>
-              </p>
-              {outputDelta !== 0 && (
-                <p style={{ color:outputDelta>0?"#10b981":"#f43f5e", fontSize:11, fontWeight:700, marginTop:6, fontFamily:"'DM Mono',monospace" }}>
-                  {fmt(outputDelta)} vs previous allocation
-                </p>
-              )}
+        {/* Model 2: placeholder */}
+        <div style={{ padding:"18px 28px", background:"#060a12" }}>
+          <div style={{ display:"flex", alignItems:"center", gap:14 }}>
+            <div style={{ width:36, height:36, borderRadius:9, background:"#1a263a", border:"1px dashed #2a3a50", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#475569" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             </div>
-
-            <div style={{ background:"linear-gradient(135deg,#060d18,#080e14)", border:`1px solid ${predictedFNI>=0?"#10b98128":"#f43f5e28"}`, borderRadius:12, padding:"18px 20px" }}>
-              <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>Model 2 — Farm net income</p>
-              <p style={{ color:predictedFNI>=0?"#10b981":"#f43f5e", fontSize:30, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0, lineHeight:1 }}>
-                €{predictedFNI.toFixed(0)}<span style={{ fontSize:12, color:"#94a3b8", fontWeight:400 }}>/ha</span>
+            <div>
+              <p style={{ color:"#475569", fontSize:12, fontWeight:700, margin:0, marginBottom:3 }}>Second model — coming once data distribution is confirmed</p>
+              <p style={{ color:"#334155", fontSize:11, lineHeight:1.7, margin:0 }}>
+                A different functional form will answer a different question: given an exact spending level in euros, what is the predicted output in absolute terms? The specification depends on the shape of the residuals once the log-log model has been fitted. Once the distribution is confirmed, this slot will be filled.
               </p>
-              {fniDelta !== 0 && (
-                <p style={{ color:fniDelta>0?"#10b981":"#f43f5e", fontSize:11, fontWeight:700, marginTop:6, fontFamily:"'DM Mono',monospace" }}>
-                  {fmt(fniDelta)} vs previous allocation
-                </p>
-              )}
-            </div>
-
-            {/* Output contribution breakdown */}
-            <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"14px 16px" }}>
-              <p style={{ color:"#e2e8f0", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", fontWeight:700, marginBottom:10 }}>What's driving Mathieu's output</p>
-              {Object.entries(CONFIG).map(([key, cfg]) => {
-                const contrib = cfg.e1 * Math.log(Math.max(spending[key], 1));
-                const total = Object.entries(CONFIG).reduce((s,[k,c]) => s + c.e1*Math.log(Math.max(spending[k],1)), 0);
-                const sharePct2 = total > 0 ? (contrib/total*100).toFixed(0) : 0;
-                return (
-                  <div key={key} style={{ marginBottom:7 }}>
-                    <div style={{ display:"flex", justifyContent:"space-between", marginBottom:2 }}>
-                      <span style={{ color:"#e2e8f0", fontSize:11 }}>{cfg.label}</span>
-                      <span style={{ color:cfg.color, fontSize:11, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>{sharePct2}%</span>
-                    </div>
-                    <div style={{ height:4, background:"#1a2436", borderRadius:2, overflow:"hidden" }}>
-                      <div style={{ height:"100%", width:`${sharePct2}%`, background:cfg.color, borderRadius:2, transition:"width 0.2s" }}/>
-                    </div>
-                  </div>
-                );
-              })}
             </div>
           </div>
         </div>
       </div>
 
-      {/* ── SECTION 3: LIVE INTERPRETATION ──────────────────────────────────── */}
+      {/* ── SECTION 2: BASELINE vs CURRENT SPENDING ───────────────────────────── */}
+      <div>
+        <div style={{ marginBottom:16 }}>
+          <p style={{ color:"#f1f5f9", fontSize:14, fontWeight:700, margin:0, marginBottom:4 }}>The exercise: yesterday vs today.</p>
+          <p style={{ color:"#94a3b8", fontSize:12, lineHeight:1.75, margin:0 }}>
+            Set what Mathieu spent yesterday as the baseline. Then set what he plans to spend today. The calculator will take the percentage difference on each input, apply the log-log elasticities, and show you the predicted change in output.
+          </p>
+        </div>
+
+        {/* Tab switcher */}
+        <div style={{ display:"flex", gap:8, marginBottom:16 }}>
+          {[{id:"baseline",label:"Yesterday — Baseline",color:"#64748b"},{id:"current",label:"Today — New Allocation",color:"#0ea5e9"}].map(tab => (
+            <button key={tab.id} onClick={()=>setEditMode(tab.id)}
+              style={{ padding:"8px 18px", borderRadius:8, border:`1px solid ${editMode===tab.id ? tab.color+"60" : "#1a2436"}`,
+                background: editMode===tab.id ? tab.color+"15" : "transparent",
+                color: editMode===tab.id ? tab.color : "#94a3b8",
+                fontSize:12, fontWeight:700, cursor:"pointer" }}>
+              {tab.label}
+            </button>
+          ))}
+          <button onClick={resetCurrentToBaseline}
+            style={{ padding:"8px 14px", borderRadius:8, border:"1px solid #1a2436", background:"transparent", color:"#94a3b8", fontSize:11, cursor:"pointer", marginLeft:"auto" }}>
+            Reset today → baseline
+          </button>
+        </div>
+
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+          {/* Baseline panel */}
+          <div style={{ background:"#080e18", border:`1px solid ${editMode==="baseline" ? "#64748b40" : "#1a2436"}`, borderRadius:14, padding:"18px 20px", opacity: editMode==="current" ? 0.7 : 1, transition:"opacity 0.2s" }}>
+            <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:700, marginBottom:14 }}>Yesterday — Baseline spending</p>
+            <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+              {inputKeys.map(k => {
+                const cfg = CONFIG[k];
+                return (
+                  <div key={k}>
+                    <div style={{ display:"flex", justifyContent:"space-between", marginBottom:5 }}>
+                      <div style={{ display:"flex", alignItems:"center", gap:7 }}>
+                        <div style={{ width:6, height:6, borderRadius:2, background:cfg.color }}/>
+                        <span style={{ color:"#e2e8f0", fontSize:12 }}>{cfg.label}</span>
+                      </div>
+                      <span style={{ color:cfg.color, fontSize:13, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>€{baseline[k]}</span>
+                    </div>
+                    <input type="range" min={cfg.min} max={cfg.max} step={cfg.step}
+                      value={baseline[k]}
+                      onChange={e => updateSpending("baseline", k, e.target.value)}
+                      style={{ width:"100%", accentColor:cfg.color, cursor:"pointer" }}/>
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ marginTop:14, paddingTop:12, borderTop:"1px solid #1a2436" }}>
+              <div style={{ display:"flex", justifyContent:"space-between" }}>
+                <span style={{ color:"#94a3b8", fontSize:11 }}>Total baseline spend</span>
+                <span style={{ color:"#e2e8f0", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>€{Object.values(baseline).reduce((s,v)=>s+v,0).toLocaleString()}/ha</span>
+              </div>
+              <div style={{ display:"flex", justifyContent:"space-between", marginTop:4 }}>
+                <span style={{ color:"#94a3b8", fontSize:11 }}>Predicted baseline output</span>
+                <span style={{ color:"#0ea5e9", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>€{baselineOutput.toFixed(0)}/ha</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Current panel */}
+          <div style={{ background:"#080e18", border:`1px solid ${editMode==="current" ? "#0ea5e940" : "#1a2436"}`, borderRadius:14, padding:"18px 20px", opacity: editMode==="baseline" ? 0.7 : 1, transition:"opacity 0.2s" }}>
+            <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:700, marginBottom:14 }}>Today — New spending</p>
+            <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+              {inputKeys.map(k => {
+                const cfg = CONFIG[k];
+                const chg = pctChanges[k];
+                return (
+                  <div key={k}>
+                    <div style={{ display:"flex", justifyContent:"space-between", marginBottom:5 }}>
+                      <div style={{ display:"flex", alignItems:"center", gap:7 }}>
+                        <div style={{ width:6, height:6, borderRadius:2, background:cfg.color }}/>
+                        <span style={{ color:"#e2e8f0", fontSize:12 }}>{cfg.label}</span>
+                      </div>
+                      <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                        {chg !== 0 && (
+                          <span style={{ color:chg>0?"#10b981":"#f43f5e", fontSize:10, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>
+                            {chg>0?"+":""}{chg.toFixed(1)}%
+                          </span>
+                        )}
+                        <span style={{ color:cfg.color, fontSize:13, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>€{current[k]}</span>
+                      </div>
+                    </div>
+                    <input type="range" min={cfg.min} max={cfg.max} step={cfg.step}
+                      value={current[k]}
+                      onChange={e => updateSpending("current", k, e.target.value)}
+                      style={{ width:"100%", accentColor:cfg.color, cursor:"pointer" }}/>
+                    {/* Delta bar — shows direction and magnitude of change */}
+                    <div style={{ height:3, background:"#1a2436", borderRadius:2, overflow:"hidden", marginTop:4, position:"relative" }}>
+                      <div style={{
+                        position:"absolute",
+                        height:"100%",
+                        left: chg >= 0 ? "50%" : `${Math.max(0, 50 + chg/2)}%`,
+                        width: `${Math.min(50, Math.abs(chg)/2)}%`,
+                        background: chg > 0 ? "#10b981" : "#f43f5e",
+                        borderRadius:2, transition:"all 0.2s"
+                      }}/>
+                      <div style={{ position:"absolute", left:"50%", top:0, width:1, height:"100%", background:"#334155" }}/>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ marginTop:14, paddingTop:12, borderTop:"1px solid #1a2436" }}>
+              <div style={{ display:"flex", justifyContent:"space-between" }}>
+                <span style={{ color:"#94a3b8", fontSize:11 }}>Total new spend</span>
+                <span style={{ color:"#e2e8f0", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>€{Object.values(current).reduce((s,v)=>s+v,0).toLocaleString()}/ha</span>
+              </div>
+              <div style={{ display:"flex", justifyContent:"space-between", marginTop:4 }}>
+                <span style={{ color:"#94a3b8", fontSize:11 }}>Predicted new output</span>
+                <span style={{ color:"#0ea5e9", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>€{currentOutput.toFixed(0)}/ha</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── SECTION 3: RESULTS PANEL ──────────────────────────────────────────── */}
+      <div style={{ background:"linear-gradient(135deg,#060d18,#080e14)", border:"1px solid #1a2436", borderRadius:16, overflow:"hidden" }}>
+        <div style={{ padding:"20px 28px", borderBottom:"1px solid #1a2436" }}>
+          <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, margin:0 }}>Model output — what the log-log calculator predicts</p>
+        </div>
+
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:0 }}>
+          {/* Baseline output */}
+          <div style={{ padding:"20px 24px", borderRight:"1px solid #1a2436" }}>
+            <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>Baseline output</p>
+            <p style={{ color:"#e2e8f0", fontSize:28, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0, lineHeight:1 }}>
+              €{baselineOutput.toFixed(0)}<span style={{ fontSize:12, color:"#94a3b8", fontWeight:400 }}>/ha</span>
+            </p>
+            <p style={{ color:"#94a3b8", fontSize:10, marginTop:6 }}>at yesterday's allocation</p>
+          </div>
+
+          {/* New output */}
+          <div style={{ padding:"20px 24px", borderRight:"1px solid #1a2436" }}>
+            <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>Predicted new output</p>
+            <p style={{ color:"#0ea5e9", fontSize:28, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0, lineHeight:1 }}>
+              €{currentOutput.toFixed(0)}<span style={{ fontSize:12, color:"#94a3b8", fontWeight:400 }}>/ha</span>
+            </p>
+            <p style={{ color:"#94a3b8", fontSize:10, marginTop:6 }}>at today's allocation</p>
+          </div>
+
+          {/* Delta */}
+          <div style={{ padding:"20px 24px" }}>
+            <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>Change</p>
+            <p style={{ color: outputDelta >= 0 ? "#10b981" : "#f43f5e", fontSize:28, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0, lineHeight:1 }}>
+              {outputDelta >= 0 ? "+" : ""}€{Math.abs(outputDelta).toFixed(0)}<span style={{ fontSize:12, color:"#94a3b8", fontWeight:400 }}>/ha</span>
+            </p>
+            <p style={{ color: outputDelta >= 0 ? "#10b981" : "#f43f5e", fontSize:11, fontWeight:700, marginTop:6, fontFamily:"'DM Mono',monospace" }}>
+              {outputDeltaPct >= 0 ? "+" : ""}{outputDeltaPct.toFixed(2)}% vs baseline
+            </p>
+          </div>
+        </div>
+
+        {/* Per-input breakdown of the output change */}
+        <div style={{ padding:"18px 28px", borderTop:"1px solid #1a2436" }}>
+          <p style={{ color:"#e2e8f0", fontSize:11, fontWeight:700, marginBottom:12 }}>How each input contributed to the output change</p>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:12 }}>
+            {inputKeys.map(k => {
+              const cfg = CONFIG[k];
+              const chg = pctChanges[k];
+              const contrib = outputContribs[k];
+              const pctOfTotal = totalLogOutputChange !== 0 ? (contrib / Math.abs(totalLogOutputChange)) * 100 : 0;
+              return (
+                <div key={k} style={{ background:"#060d1a", borderRadius:10, padding:"12px 14px", border:`1px solid ${cfg.color}20` }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:8 }}>
+                    <div style={{ width:6, height:6, borderRadius:2, background:cfg.color }}/>
+                    <span style={{ color:"#e2e8f0", fontSize:11, fontWeight:600 }}>{cfg.label}</span>
+                  </div>
+                  <p style={{ color:chg===0?"#475569":chg>0?"#10b981":"#f43f5e", fontSize:11, fontFamily:"'DM Mono',monospace", margin:0, marginBottom:4 }}>
+                    Spending {chg===0?"unchanged":chg>0?"↑":"↓"} {chg===0?"":Math.abs(chg).toFixed(1)+"%"}
+                  </p>
+                  <p style={{ color:contrib===0?"#475569":contrib>0?cfg.color:"#f43f5e", fontSize:13, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>
+                    {contrib===0 ? "no change" : (contrib>0?"+":"")}{ (contrib*100).toFixed(2)}% log pts
+                  </p>
+                  {totalLogOutputChange !== 0 && contrib !== 0 && (
+                    <p style={{ color:"#94a3b8", fontSize:10, margin:"4px 0 0" }}>
+                      {Math.abs(pctOfTotal).toFixed(0)}% of total shift
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* ── SECTION 4: LIVE INTERPRETATION ───────────────────────────────────── */}
       <div style={{ background:"linear-gradient(135deg,#0a1628,#060d18)", border:"1px solid #0ea5e920", borderRadius:14, padding:"22px 28px" }}>
         <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.16em", fontWeight:700, marginBottom:18 }}>
-          Interpretation — based on Mathieu's current allocation
+          Interpretation — reading Mathieu's choices
         </p>
 
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
 
-          {/* Sentence 1 — what dominates output right now */}
-          <div style={{ paddingLeft:16, borderLeft:`3px solid ${CONFIG[topOutput].color}` }}>
+          {/* Overall shift */}
+          <div style={{ paddingLeft:16, borderLeft:`3px solid ${outputDelta>=0?"#10b981":"#f43f5e"}` }}>
             <p style={{ color:"#e2e8f0", fontSize:13, lineHeight:1.85, margin:0 }}>
-              With his current allocation, <span style={{ color:CONFIG[topOutput].color, fontWeight:700 }}>{CONFIG[topOutput].label}</span> is contributing the most to Mathieu's output —
-              representing <span style={{ color:CONFIG[topOutput].color, fontWeight:700 }}>
-                {(CONFIG[topOutput].e1 * Math.log(Math.max(spending[topOutput],1)) /
-                  Object.entries(CONFIG).reduce((s,[k,c])=>s+c.e1*Math.log(Math.max(spending[k],1)),0) * 100).toFixed(0)}%
-              </span> of the total input-driven output effect.
-              He is spending <span style={{ color:CONFIG[topOutput].color, fontWeight:700 }}>€{spending[topOutput].toFixed(0)}/ha</span> on it,
-              which carries an output elasticity of <span style={{ color:CONFIG[topOutput].color, fontWeight:700 }}>+{(CONFIG[topOutput].e1*100).toFixed(1)}%</span>.
-              That means each additional percent he allocates here raises his output by that much.
-            </p>
-          </div>
-
-          {/* Sentence 2 — over/under allocation signal */}
-          <div style={{ paddingLeft:16, borderLeft:`3px solid ${CONFIG[overSpent].color}` }}>
-            <p style={{ color:"#e2e8f0", fontSize:13, lineHeight:1.85, margin:0 }}>
-              Looking at the ratio of spending to elasticity, Mathieu is relatively over-invested in{" "}
-              <span style={{ color:CONFIG[overSpent].color, fontWeight:700 }}>{CONFIG[overSpent].label}</span> (€{spending[overSpent].toFixed(0)}/ha for an elasticity of {(CONFIG[overSpent].e1*100).toFixed(1)}%) and
-              under-invested in <span style={{ color:CONFIG[underSpent].color, fontWeight:700 }}>{CONFIG[underSpent].label}</span> (€{spending[underSpent].toFixed(0)}/ha for an elasticity of {(CONFIG[underSpent].e1*100).toFixed(1)}%).
-              The data suggests redistributing toward <span style={{ color:CONFIG[underSpent].color, fontWeight:700 }}>{CONFIG[underSpent].label}</span> would improve output efficiency.
-            </p>
-          </div>
-
-          {/* Sentence 3 — income vs output tension */}
-          <div style={{ paddingLeft:16, borderLeft:"3px solid #f43f5e" }}>
-            <p style={{ color:"#e2e8f0", fontSize:13, lineHeight:1.85, margin:0 }}>
-              On income, the picture changes. Machinery currently costs Mathieu{" "}
-              <span style={{ color:"#f43f5e", fontWeight:700 }}>€{spending.depreciation.toFixed(0)}/ha</span>.
-              Despite having a positive output effect (+{(MODEL1.elasticities.depreciation.coef*100).toFixed(1)}%), it carries a{" "}
-              <span style={{ color:"#f43f5e", fontWeight:700 }}>negative income elasticity of {(MODEL2.elasticities.depreciation.coef*100).toFixed(1)}%</span>.
-              This means his machinery investment raises what he produces but reduces what he takes home.
-              At the same time, <span style={{ color:CONFIG[biggestIncomeGain].color, fontWeight:700 }}>{CONFIG[biggestIncomeGain].label}</span>{" "}
-              is the strongest positive income lever (elasticity +{(CONFIG[biggestIncomeGain].e2*100).toFixed(1)}%), meaning more spending there actually improves his bottom line.
-            </p>
-          </div>
-
-          {/* Sentence 4 — model verdict on this allocation */}
-          <div style={{ paddingLeft:16, borderLeft:"3px solid #10b981", background:"rgba(16,185,129,0.04)", padding:"14px 14px 14px 16px", borderRadius:"0 8px 8px 0" }}>
-            <p style={{ color:"#e2e8f0", fontSize:13, lineHeight:1.85, margin:0 }}>
-              <span style={{ color:"#10b981", fontWeight:700 }}>The model verdict:</span>{" "}
-              With €{budget.toLocaleString()}/ha total, Mathieu's current allocation produces a predicted output of{" "}
-              <span style={{ color:"#0ea5e9", fontWeight:700 }}>€{predictedOutput.toFixed(0)}/ha</span> and a predicted farm net income of{" "}
-              <span style={{ color:predictedFNI>=0?"#10b981":"#f43f5e", fontWeight:700 }}>€{predictedFNI.toFixed(0)}/ha</span>.
-              {predictedFNI < predictedOutput * 0.1
-                ? " His costs are consuming most of his output. Rebalancing away from machinery toward seeds and crop protection is what the income model recommends."
-                : predictedFNI > 200
-                ? " His allocation is reasonably profitable. The main remaining tension is between his intuition around fertilizer and what the models actually show about its relative weakness."
-                : " There is room to improve. The models suggest the balance between output levers and income levers is not yet optimal."
+              Moving from his baseline allocation to today's, Mathieu's total input spend{" "}
+              {Object.values(current).reduce((s,v)=>s+v,0) > Object.values(baseline).reduce((s,v)=>s+v,0)
+                ? <span style={{ color:"#10b981", fontWeight:700 }}>increases by €{(Object.values(current).reduce((s,v)=>s+v,0) - Object.values(baseline).reduce((s,v)=>s+v,0)).toLocaleString()}/ha</span>
+                : Object.values(current).reduce((s,v)=>s+v,0) < Object.values(baseline).reduce((s,v)=>s+v,0)
+                ? <span style={{ color:"#f43f5e", fontWeight:700 }}>decreases by €{(Object.values(baseline).reduce((s,v)=>s+v,0) - Object.values(current).reduce((s,v)=>s+v,0)).toLocaleString()}/ha</span>
+                : <span style={{ color:"#94a3b8", fontWeight:700 }}>stays the same</span>
+              }.{" "}
+              The log-log model predicts his output per hectare will{" "}
+              {outputDelta >= 0
+                ? <><span style={{ color:"#10b981", fontWeight:700 }}>increase by €{outputDelta.toFixed(0)}</span>, a gain of <span style={{ color:"#10b981", fontWeight:700 }}>+{outputDeltaPct.toFixed(2)}%</span> over his baseline of €{baselineOutput.toFixed(0)}/ha.</>
+                : <><span style={{ color:"#f43f5e", fontWeight:700 }}>fall by €{Math.abs(outputDelta).toFixed(0)}</span>, a loss of <span style={{ color:"#f43f5e", fontWeight:700 }}>{outputDeltaPct.toFixed(2)}%</span> from his baseline of €{baselineOutput.toFixed(0)}/ha.</>
               }
             </p>
           </div>
+
+          {/* Biggest driver of the change */}
+          {(() => {
+            const sorted = inputKeys.filter(k => outputContribs[k] !== 0).sort((a,b) => Math.abs(outputContribs[b]) - Math.abs(outputContribs[a]));
+            if (sorted.length === 0) return (
+              <div style={{ paddingLeft:16, borderLeft:"3px solid #1a2436" }}>
+                <p style={{ color:"#94a3b8", fontSize:13, lineHeight:1.85, margin:0 }}>Mathieu has not changed any of his input levels yet. Adjust the sliders above to see the model respond.</p>
+              </div>
+            );
+            const top = sorted[0];
+            const cfg = CONFIG[top];
+            const e = MODEL1.elasticities[top].coef;
+            const chg = pctChanges[top];
+            return (
+              <div style={{ paddingLeft:16, borderLeft:`3px solid ${cfg.color}` }}>
+                <p style={{ color:"#e2e8f0", fontSize:13, lineHeight:1.85, margin:0 }}>
+                  The single biggest driver of this output change is{" "}
+                  <span style={{ color:cfg.color, fontWeight:700 }}>{cfg.label}</span>, where Mathieu{" "}
+                  {chg > 0
+                    ? <><span style={{ color:"#10b981", fontWeight:700 }}>increased spending by {chg.toFixed(1)}%</span> (from €{baseline[top]} to €{current[top]}/ha)</>
+                    : <><span style={{ color:"#f43f5e", fontWeight:700 }}>reduced spending by {Math.abs(chg).toFixed(1)}%</span> (from €{baseline[top]} to €{current[top]}/ha)</>
+                  }.{" "}
+                  With an output elasticity of <span style={{ color:cfg.color, fontWeight:700 }}>{(e*100).toFixed(1)}%</span>, that {chg>0?"increase":"cut"} alone accounts for{" "}
+                  <span style={{ color:cfg.color, fontWeight:700 }}>
+                    {Math.abs(outputContribs[top]/totalLogOutputChange*100).toFixed(0)}% of the total output shift
+                  </span>.
+                </p>
+              </div>
+            );
+          })()}
+
+          {/* Seeds vs fertilizer tension */}
+          <div style={{ paddingLeft:16, borderLeft:"3px solid #a78bfa" }}>
+            <p style={{ color:"#e2e8f0", fontSize:13, lineHeight:1.85, margin:0 }}>
+              Across both allocations, the input with the strongest structural leverage on output remains{" "}
+              <span style={{ color:"#a78bfa", fontWeight:700 }}>seeds and crop protection</span> (elasticity{" "}
+              <span style={{ color:"#a78bfa", fontWeight:700 }}>+{(MODEL1.elasticities.intermediate.coef*100).toFixed(1)}%</span>),
+              roughly {(MODEL1.elasticities.intermediate.coef / MODEL1.elasticities.fertilisers.coef).toFixed(0)}x more sensitive than fertilizer.
+              Mathieu is currently spending <span style={{ color:"#a78bfa", fontWeight:700 }}>€{current.intermediate}/ha</span> there
+              versus <span style={{ color:"#0ea5e9", fontWeight:700 }}>€{current.fertilisers}/ha</span> on fertilizer.
+              {(current.fertilisers / current.intermediate) > (MODEL1.elasticities.fertilisers.coef / MODEL1.elasticities.intermediate.coef)
+                ? " Given the relative elasticities, his fertilizer share is disproportionately high."
+                : " His allocation is broadly consistent with the relative elasticities."}
+            </p>
+          </div>
+
         </div>
       </div>
     </div>
   );
 }
+
 
 
 // ─── MARKET INTELLIGENCE PAGES ────────────────────────────────────────────────
@@ -3046,7 +3096,7 @@ export default function App() {
 
               {/* Quant = Mathieu experience */}
               {section==="quant" && mathieuPhase==="intro" && (
-                <MathieuIntroPage region={region} onEnterFarm={()=>setMathieuPhase("farm")} />
+                <MathieuIntroPage region={region} onEnterFarm={()=>{ setMathieuPhase("farm"); setTimeout(()=>window.scrollTo({top:0,behavior:"smooth"}),50); }} />
               )}
               {section==="quant" && mathieuPhase==="farm" && (
                 <>
