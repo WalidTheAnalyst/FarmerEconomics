@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import ATLASPage from "./ATLAS";
 import {
   BarChart, Bar, LineChart, Line, RadarChart, Radar, PolarGrid, PolarAngleAxis,
@@ -1429,440 +1429,801 @@ function MIFarmerBehaviorPage({ region }) {
 }
 
 
-// ─── QUANTITATIVE PAGES ───────────────────────────────────────────────────────
+// ─── MODEL COEFFICIENTS ───────────────────────────────────────────────────────
+// Source: log-log OLS models estimated on FADN France panel (df_model_profit)
+// Model 1: log_output_per_ha ~ inputs + factor(Region) + factor(farming_type) + factor(Year)
+// Model 2: log_fni_per_ha   ~ inputs + factor(Region) + factor(farming_type) + factor(Year)
 
-function OverviewPage({ data, region }) {
-  const regionCrops = [...new Set(data.filter(d=>d.region===region).map(d=>d.crop))];
-  const cropSummary = regionCrops.map(c=>{
-    const b=data.find(d=>d.region===region&&d.crop===c&&d.strategy==="Blended (MAP)");
-    const s=data.find(d=>d.region===region&&d.crop===c&&d.strategy==="Separated (TSP+N)");
-    const o=data.find(d=>d.region===region&&d.crop===c&&d.strategy==="Optimized");
-    return { crop:c, blended:b?.margin??0, separated:s?.margin??0, optimized:o?.margin??0, delta:(s?.margin??0)-(b?.margin??0) };
-  });
-  const regionAttractive = REGIONS.map(r=>{
-    const crops=[...new Set(data.filter(d=>d.region===r).map(d=>d.crop))];
-    const deltas=crops.map(c=>{
-      const b=data.find(d=>d.region===r&&d.crop===c&&d.strategy==="Blended (MAP)");
-      const s=data.find(d=>d.region===r&&d.crop===c&&d.strategy==="Separated (TSP+N)");
-      return b&&s?s.margin-b.margin:0;
-    });
-    return { region:r, avg:deltas.reduce((a,x)=>a+x,0)/deltas.length };
-  });
-  const allBase=data.filter(d=>d.region===region&&d.strategy==="Blended (MAP)");
-  const allSep=data.filter(d=>d.region===region&&d.strategy==="Separated (TSP+N)");
-  const avgB=allBase.reduce((a,d)=>a+d.margin,0)/(allBase.length||1);
-  const avgS=allSep.reduce((a,d)=>a+d.margin,0)/(allSep.length||1);
-  const avgD=avgS-avgB;
-  const avgF=allBase.reduce((a,d)=>a+(d.fert_cost/d.op_cost)*100,0)/(allBase.length||1);
+const MODEL1 = {
+  intercept: 0.435989,
+  elasticities: {
+    fertilisers:   { coef: 0.079490, se: 0.012384, sig: "***", label: "Fertilizers" },
+    wages:         { coef: 0.070174, se: 0.007653, sig: "***", label: "Labour" },
+    depreciation:  { coef: 0.104566, se: 0.020773, sig: "***", label: "Depreciation" },
+    intermediate:  { coef: 0.818163, se: 0.020677, sig: "***", label: "Intermediate inputs" },
+  },
+  regions: {
+    "Champagne-Ardenne":          0.000000, // reference
+    "Picardie":                   0.001749,
+    "Haute-Normandie":           -0.028750,
+    "Centre":                    -0.086309,
+    "Basse-Normandie":           -0.017096,
+    "Bourgogne":                  0.004091,
+    "Nord-Pas-de-Calais":        -0.033862,
+    "Lorraine":                  -0.028002,
+    "Alsace":                    -0.034643,
+    "Franche-Comté":              0.010878,
+    "Pays de la Loire":          -0.055964,
+    "Bretagne":                   0.001932,
+    "Poitou-Charentes":          -0.062178,
+    "Aquitaine":                 -0.172144,
+    "Midi-Pyrénées":             -0.098734,
+    "Limousin":                  -0.038942,
+    "Rhône-Alpes":               -0.061287,
+    "Auvergne":                  -0.025612,
+    "Languedoc-Roussillon":      -0.128978,
+    "Provence-Alpes-Côte d'Azur": -0.081352,
+    "Corse":                     -0.102003,
+  },
+  regionSig: {
+    "Centre":"**","Poitou-Charentes":"*","Aquitaine":"***","Midi-Pyrénées":"**",
+    "Rhône-Alpes":"*","Languedoc-Roussillon":"***","Provence-Alpes-Côte d'Azur":"**","Corse":"**",
+  },
+  farmingTypes: {
+    "Cereals & field crops":     0.000000, // reference (type 1)
+    "Horticulture":              0.034287,
+    "Wine":                      0.332818,
+    "Other permanent crops":     0.197452,
+    "Milk":                      0.004924,
+    "Other grazing livestock":  -0.017115,
+    "Granivores":               -0.004129,
+    "Mixed":                    -0.254951,
+  },
+  farmingTypeSig: {
+    "Wine":"***","Other permanent crops":"***","Mixed":"**",
+  },
+  years: {
+    2014: 0.000000, // reference
+    2015: 0.029098, 2016: 0.029144, 2017: 0.034014, 2018: 0.026501,
+    2019: 0.024309, 2020: 0.005613, 2021: 0.040371, 2022: 0.032308, 2023: -0.053000,
+  },
+  yearSig: {
+    2016:"*",2017:"**",2018:"*",2019:"*",2021:"**",2022:"*",2023:"***",
+  },
+  rSquared: 0.993,
+};
+
+const MODEL2 = {
+  intercept: -1.440197,
+  elasticities: {
+    fertilisers:   { coef: 0.489567, se: 0.099927, sig: "***", label: "Fertilizers" },
+    wages:         { coef: 0.114168, se: 0.061751, sig: "",    label: "Labour" },
+    depreciation:  { coef:-0.511779, se: 0.167614, sig: "***", label: "Depreciation" },
+    intermediate:  { coef: 0.953344, se: 0.166846, sig: "***", label: "Intermediate inputs" },
+  },
+  regions: {
+    "Champagne-Ardenne":          0.000000,
+    "Picardie":                   0.052013,
+    "Haute-Normandie":           -0.007706,
+    "Centre":                    -0.572507,
+    "Basse-Normandie":           -0.092901,
+    "Bourgogne":                 -0.381785,
+    "Nord-Pas-de-Calais":        -0.048827,
+    "Lorraine":                  -0.568408,
+    "Alsace":                    -0.172486,
+    "Franche-Comté":             -0.244064,
+    "Pays de la Loire":          -0.237046,
+    "Bretagne":                   0.217626,
+    "Poitou-Charentes":          -0.735575,
+    "Aquitaine":                 -1.244187,
+    "Midi-Pyrénées":             -0.922328,
+    "Limousin":                  -0.504611,
+    "Rhône-Alpes":               -0.622993,
+    "Auvergne":                  -0.249003,
+    "Languedoc-Roussillon":      -0.738922,
+    "Provence-Alpes-Côte d'Azur": -0.612950,
+    "Corse":                     -0.749503,
+  },
+  regionSig: {
+    "Centre":"*","Lorraine":"*","Poitou-Charentes":"***","Aquitaine":"***",
+    "Midi-Pyrénées":"***","Rhône-Alpes":"*","Languedoc-Roussillon":"***",
+    "Provence-Alpes-Côte d'Azur":"*","Corse":"*",
+  },
+  farmingTypes: {
+    "Cereals & field crops":    0.000000,
+    "Horticulture":             0.594899,
+    "Wine":                     1.982972,
+    "Other permanent crops":    1.077548,
+    "Milk":                     0.150015,
+    "Other grazing livestock": -0.017115,
+    "Granivores":               0.448912,
+    "Mixed":                   -0.240481,
+  },
+  farmingTypeSig: {
+    "Horticulture":"**","Wine":"***","Other permanent crops":"***","Mixed":"*",
+  },
+  years: {
+    2014: 0.000000,
+    2015: 0.052276, 2016: 0.022772, 2017: 0.284229, 2018: 0.208273,
+    2019: 0.284587, 2020: 0.130212, 2021: 0.470946, 2022: 0.464453, 2023: -0.189943,
+  },
+  yearSig: {
+    2017:"**",2018:"*",2019:"**",2021:"***",2022:"***",
+  },
+  rSquared: 0.8075,
+};
+
+// ─── QUANTITATIVE ENGINE — MATHIEU EXPERIENCE ─────────────────────────────────
+
+// Act 0: Region + farming type selection
+// Act 1: Budget allocation
+// Act 2: Model output reveal
+// Act 3: Income reality check
+
+function MathieuIntroPage({ region, onEnterFarm }) {
+  const [hov, setHov] = useState(false);
+
+  if (region !== "France") return (
+    <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:400, gap:20 }}>
+      <div style={{ fontSize:48, opacity:0.3 }}>🌏</div>
+      <p style={{ color:"#475569", fontSize:16, fontWeight:500 }}>Mathieu's story is specific to France.</p>
+      <p style={{ color:"#334155", fontSize:13 }}>Select France in the country selector to begin.</p>
+    </div>
+  );
+
+  return (
+    <div style={{ display:"flex", flexDirection:"column", gap:0 }}>
+      <style>{`
+        @keyframes mFadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes mPulse  { 0%,100%{opacity:0.6} 50%{opacity:1} }
+        .mathieu-farm-btn:hover { transform:translateY(-4px) !important; box-shadow:0 24px 60px rgba(14,165,233,0.18) !important; border-color:rgba(14,165,233,0.6) !important; }
+        .mathieu-farm-btn:hover .farm-enter-label { color:#f1f5f9 !important; }
+      `}</style>
+
+      {/* Hero — split layout: text left, portrait right */}
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:0, minHeight:480, background:"linear-gradient(135deg,#04080f 60%,#060d1a)", borderRadius:16, overflow:"hidden", border:"1px solid #1a2436", marginBottom:24 }}>
+
+        {/* Left: text */}
+        <div style={{ padding:"52px 48px", display:"flex", flexDirection:"column", justifyContent:"center", gap:24, animation:"mFadeUp 0.7s ease both" }}>
+          <div>
+            <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.18em", fontWeight:700, marginBottom:16 }}>Quantitative Engine · France</p>
+            <h1 style={{ color:"#f1f5f9", fontSize:38, fontWeight:300, letterSpacing:"-0.03em", lineHeight:1.2, margin:0 }}>
+              Meet <span style={{ fontWeight:800, color:"#f1f5f9" }}>Mathieu.</span>
+            </h1>
+          </div>
+
+          <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+            <p style={{ color:"#94a3b8", fontSize:14, lineHeight:1.85, margin:0 }}>
+              Mathieu is a cereal farmer in northern France. He manages 120 hectares of wheat and barley, watches his costs carefully, and every spring faces the same question: should he spend more on his inputs, or hold back?
+            </p>
+            <p style={{ color:"#94a3b8", fontSize:14, lineHeight:1.85, margin:0 }}>
+              His intuition has always been simple. Spend more on fertilizers, get more yield. Get more yield, earn more. It feels obvious. It's what his father did, and his father's father before him.
+            </p>
+            <p style={{ color:"#cbd5e1", fontSize:14, lineHeight:1.85, margin:0, fontStyle:"italic", borderLeft:"2px solid #0ea5e940", paddingLeft:16 }}>
+              "If I invest more in my fields, I should harvest more. And if I harvest more, I should earn more."
+            </p>
+            <p style={{ color:"#94a3b8", fontSize:14, lineHeight:1.85, margin:0 }}>
+              That belief guides almost every decision Mathieu makes. But it is a hypothesis, not a fact. And we have spent the last year testing it with data from thousands of farms just like his.
+            </p>
+          </div>
+
+          <div style={{ display:"flex", alignItems:"center", gap:10, paddingTop:8 }}>
+            <div style={{ width:8, height:8, borderRadius:"50%", background:"#10b981", boxShadow:"0 0 8px #10b981", animation:"mPulse 2s ease infinite" }}/>
+            <p style={{ color:"#64748b", fontSize:11, margin:0 }}>Based on FADN France panel data · log-log OLS production and income models</p>
+          </div>
+        </div>
+
+        {/* Right: portrait placeholder */}
+        <div style={{ position:"relative", background:"linear-gradient(135deg,#060d1a,#0a1520)", display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden" }}>
+          {/* Decorative grain */}
+          <div style={{ position:"absolute", inset:0, backgroundImage:"radial-gradient(circle at 30% 40%, rgba(14,165,233,0.06) 0%, transparent 60%), radial-gradient(circle at 70% 70%, rgba(16,185,129,0.04) 0%, transparent 50%)" }}/>
+          {/* Portrait placeholder */}
+          <div style={{ position:"relative", zIndex:1, display:"flex", flexDirection:"column", alignItems:"center", gap:16 }}>
+            <div style={{ width:200, height:240, borderRadius:12, background:"linear-gradient(160deg,#0f1f2e,#0a1420)", border:"1px dashed #1e3040", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:8 }}>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1e3a4a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+              </svg>
+              <p style={{ color:"#1e3a4a", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em" }}>Mathieu's portrait</p>
+              <p style={{ color:"#152535", fontSize:9 }}>Replace with .png or .jpg</p>
+            </div>
+            <p style={{ color:"#334155", fontSize:11, textAlign:"center" }}>Mathieu · Céréalier · Champagne-Ardenne</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Farm entrance card */}
+      <div
+        className="mathieu-farm-btn"
+        onClick={onEnterFarm}
+        style={{ background:"linear-gradient(135deg,#060d1a,#04080f)", border:"1px solid rgba(14,165,233,0.25)", borderRadius:16, overflow:"hidden", cursor:"pointer", transition:"all 0.25s ease", position:"relative", animation:"mFadeUp 0.7s 0.3s ease both", opacity:0 }}>
+
+        {/* Farm image placeholder */}
+        <div style={{ height:220, background:"linear-gradient(160deg,#040810,#060f1a,#041018)", position:"relative", display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden" }}>
+          <div style={{ position:"absolute", inset:0, backgroundImage:"linear-gradient(rgba(14,165,233,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(14,165,233,0.03) 1px,transparent 1px)", backgroundSize:"40px 40px" }}/>
+          <div style={{ position:"absolute", bottom:0, left:0, right:0, height:"60%", background:"linear-gradient(to top,#060d1a,transparent)" }}/>
+          <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:10, position:"relative", zIndex:1 }}>
+            <div style={{ width:"100%", maxWidth:340, height:140, borderRadius:8, background:"linear-gradient(160deg,#060f18,#0a1828)", border:"1px dashed #1e3040", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:8 }}>
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1e3040" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+              <p style={{ color:"#1e3040", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em" }}>Farm photograph</p>
+              <p style={{ color:"#152535", fontSize:9 }}>Replace with .png or .jpg</p>
+            </div>
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div style={{ padding:"28px 36px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+          <div>
+            <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.14em", marginBottom:8 }}>Begin the simulation</p>
+            <p className="farm-enter-label" style={{ color:"#94a3b8", fontSize:20, fontWeight:700, letterSpacing:"-0.02em", margin:0, transition:"color 0.2s" }}>Enter Mathieu's Farm</p>
+            <p style={{ color:"#475569", fontSize:12, marginTop:6 }}>Choose your context, allocate your budget, run the models.</p>
+          </div>
+          <div style={{ width:52, height:52, borderRadius:"50%", background:"rgba(14,165,233,0.08)", border:"1px solid rgba(14,165,233,0.2)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── MATHIEU FARM SIMULATION ──────────────────────────────────────────────────
+function MathieuFarmPage({ region }) {
+  const [simPhase, setSimPhase]   = useState("context"); // context | allocate | running | result1 | result2
+  const [farmType, setFarmType]   = useState("Cereals & field crops");
+  const [simRegion, setSimRegion] = useState("Champagne-Ardenne");
+  const [budget, setBudget]       = useState(1000); // €/ha total budget
+  const [alloc, setAlloc]         = useState({ fertilisers:0.25, wages:0.15, depreciation:0.20, intermediate:0.40 });
+  const [running, setRunning]     = useState(false);
+  const [revealed, setRevealed]   = useState(false);
+
+  if (region !== "France") return (
+    <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:400, gap:16 }}>
+      <p style={{ color:"#475569", fontSize:15 }}>This simulation is only available for France.</p>
+    </div>
+  );
+
+  // Derived spending from allocation
+  const spending = {
+    fertilisers:  budget * alloc.fertilisers,
+    wages:        budget * alloc.wages,
+    depreciation: budget * alloc.depreciation,
+    intermediate: budget * alloc.intermediate,
+  };
+
+  // Model 1 prediction: log_output = intercept + sum(elasticity * log_spending) + region_fe + farmtype_fe
+  const logOutput = MODEL1.intercept
+    + MODEL1.elasticities.fertilisers.coef  * Math.log(Math.max(spending.fertilisers,  1))
+    + MODEL1.elasticities.wages.coef         * Math.log(Math.max(spending.wages,         1))
+    + MODEL1.elasticities.depreciation.coef  * Math.log(Math.max(spending.depreciation, 1))
+    + MODEL1.elasticities.intermediate.coef  * Math.log(Math.max(spending.intermediate, 1))
+    + (MODEL1.regions[simRegion] || 0)
+    + (MODEL1.farmingTypes[farmType] || 0);
+  const predictedOutput = Math.exp(logOutput); // €/ha output
+
+  // Model 2 prediction: log_fni = intercept + ...
+  const logFNI = MODEL2.intercept
+    + MODEL2.elasticities.fertilisers.coef  * Math.log(Math.max(spending.fertilisers,  1))
+    + MODEL2.elasticities.wages.coef         * Math.log(Math.max(spending.wages,         1))
+    + MODEL2.elasticities.depreciation.coef  * Math.log(Math.max(spending.depreciation, 1))
+    + MODEL2.elasticities.intermediate.coef  * Math.log(Math.max(spending.intermediate, 1))
+    + (MODEL2.regions[simRegion] || 0)
+    + (MODEL2.farmingTypes[farmType] || 0);
+  const predictedFNI = Math.exp(logFNI); // €/ha farm net income
+
+  const regionFE1 = MODEL1.regions[simRegion] || 0;
+  const regionFE2 = MODEL2.regions[simRegion] || 0;
+  const ftFE1 = MODEL1.farmingTypes[farmType] || 0;
+  const ftFE2 = MODEL2.farmingTypes[farmType] || 0;
+
+  const updateAlloc = (key, val) => {
+    const rest = 1 - val;
+    const others = Object.keys(alloc).filter(k=>k!==key);
+    const sumOthers = others.reduce((s,k)=>s+alloc[k],0);
+    const newAlloc = { ...alloc, [key]: val };
+    others.forEach(k => { newAlloc[k] = sumOthers > 0 ? (alloc[k]/sumOthers)*rest : rest/others.length; });
+    // Clamp
+    Object.keys(newAlloc).forEach(k => { newAlloc[k] = Math.max(0.01, Math.min(0.9, newAlloc[k])); });
+    const total = Object.values(newAlloc).reduce((s,v)=>s+v,0);
+    Object.keys(newAlloc).forEach(k => { newAlloc[k] = newAlloc[k]/total; });
+    setAlloc(newAlloc);
+  };
+
+  const allocColors = { fertilisers:"#0ea5e9", wages:"#10b981", depreciation:"#f59e0b", intermediate:"#a78bfa" };
+  const allocLabels = { fertilisers:"Fertilizers", wages:"Labour", depreciation:"Machinery / Depreciation", intermediate:"Intermediate inputs" };
+  const allocIcons = {
+    fertilisers:"M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z",
+    wages:"M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2",
+    depreciation:"M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z",
+    intermediate:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
+  };
+
+  const regionFEPct1 = (Math.exp(regionFE1)-1)*100;
+  const regionFEPct2 = (Math.exp(regionFE2)-1)*100;
+  const ftFEPct1 = (Math.exp(ftFE1)-1)*100;
+  const ftFEPct2 = (Math.exp(ftFE2)-1)*100;
+
+  const FARMING_TYPES = ["Cereals & field crops","Horticulture","Wine","Other permanent crops","Milk","Other grazing livestock","Granivores","Mixed"];
+  const REGIONS_LIST = Object.keys(MODEL1.regions);
+
+  const runSim = () => {
+    setRunning(true);
+    setSimPhase("running");
+    setTimeout(() => { setSimPhase("result1"); setRunning(false); }, 2200);
+  };
 
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
-      <div className="kpi-row">
-        <KPICard label="Avg. Margin — Blended"  value={fmt(avgB)+"/ha"} sub={`all crops · ${region}`} accent="#64748b" />
-        <KPICard label="Avg. Margin — Separated" value={fmt(avgS)+"/ha"} sub={`all crops · ${region}`} accent="#0ea5e9" />
-        <KPICard label="Avg. Sep. Benefit"       value={(avgD>=0?"+":"")+fmt(avgD)+"/ha"} sub="vs blended" accent={avgD>=0?"#10b981":"#f43f5e"} />
-        <KPICard label="Avg. Fert. Cost Share"   value={pct(avgF)}        sub="of production cost" accent="#f59e0b" />
-        <KPICard label="Crops modelled"          value={regionCrops.length} sub={`in ${region}`} accent="#a78bfa" />
-      </div>
-      {/* Product mix histogram from Excel */}
-      <div className="card">
-        <h3 className="card-title">Product Mix Evolution — France (kt P2O5)</h3>
-        <p style={{color:"#475569",fontSize:11,marginBottom:10}}>Season-by-season · Source: Agreste / French Ministry of Agriculture</p>
-        <ResponsiveContainer width="100%" height={230}>
-          <BarChart data={PRODUCT_MIX_DATA} margin={{left:8,right:10,bottom:4}}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false}/>
-            <XAxis dataKey="season" tick={{fill:"#64748b",fontSize:9}}/>
-            <YAxis tick={{fill:"#64748b",fontSize:9}} label={{value:"kt P2O5",angle:-90,position:"insideLeft",fill:"#475569",fontSize:9,offset:8}}/>
-            <Tooltip content={<CustomTooltip/>}/>
-            <Legend wrapperStyle={{fontSize:10}}/>
-            {Object.entries(PM_COLORS).map(([k,c])=>(
-              <Bar key={k} dataKey={k} fill={c} stackId="a" radius={k==="Organomineral"?[3,3,0,0]:undefined}/>
-            ))}
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+      <style>{`
+        @keyframes simSpin { to{transform:rotate(360deg)} }
+        @keyframes simReveal { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes progressFill { from{width:0%} to{width:100%} }
+        .alloc-slider::-webkit-slider-thumb { width:18px;height:18px;border-radius:50%;cursor:pointer; }
+      `}</style>
 
-      <div className="chart-grid-2">
-        <div className="card">
-          <h3 className="card-title">Gross Margin by Crop & Strategy — {region}</h3>
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={cropSummary} margin={{ left:0,right:10 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="crop" tick={{ fill:"#64748b",fontSize:11 }} />
-              <YAxis tick={{ fill:"#64748b",fontSize:10 }} />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend wrapperStyle={{ fontSize:10 }} />
-              <Bar dataKey="blended"   name="Blended"   fill="#64748b" radius={[3,3,0,0]} />
-              <Bar dataKey="separated" name="Separated" fill="#0ea5e9" radius={[3,3,0,0]} />
-              <Bar dataKey="optimized" name="Optimized" fill="#10b981" radius={[3,3,0,0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="card">
-          <h3 className="card-title">Separation Attractiveness by Region</h3>
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={regionAttractive} margin={{ left:0,right:10 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="region" tick={{ fill:"#64748b",fontSize:10 }} />
-              <YAxis tick={{ fill:"#64748b",fontSize:10 }} />
-              <Tooltip content={<CustomTooltip />} />
-              <ReferenceLine y={0} stroke="#334155" />
-              <Bar dataKey="avg" name="Avg Δ Margin ($/ha)" radius={[4,4,0,0]}>
-                {regionAttractive.map((e,i)=><Cell key={i} fill={e.avg>30?"#10b981":e.avg>0?"#0ea5e9":"#f43f5e"} />)}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-      <div className="card">
-        <h3 className="card-title">Separation Delta — {region}</h3>
-        <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
-          {cropSummary.map((row,i)=>{
-            const max=Math.max(...cropSummary.map(r=>r.separated));
-            const dc=row.delta>30?"#10b981":row.delta>0?"#0ea5e9":"#f43f5e";
-            return (
-              <div key={i} style={{ display:"flex", alignItems:"center", gap:12 }}>
-                <span style={{ color:"#94a3b8",fontSize:12,width:72,flexShrink:0 }}>{row.crop}</span>
-                <div style={{ flex:1, background:"#1e293b", borderRadius:4, height:24, position:"relative", overflow:"hidden" }}>
-                  <div style={{ position:"absolute",left:0,top:0,height:"100%",width:`${(row.separated/max)*100}%`,background:`linear-gradient(90deg,${dc}40,${dc}20)`,borderRadius:4 }} />
-                  <span style={{ position:"absolute",left:10,top:"50%",transform:"translateY(-50%)",color:"#e2e8f0",fontSize:11,fontFamily:"'DM Mono',monospace" }}>${row.separated}/ha</span>
-                </div>
-                <span style={{ color:dc,fontSize:12,fontWeight:700,fontFamily:"'DM Mono',monospace",width:56,textAlign:"right",flexShrink:0 }}>{row.delta>0?"+":""}{row.delta}</span>
-                <span style={{ padding:"2px 8px",borderRadius:20,fontSize:10,background:dc+"20",color:dc,width:68,textAlign:"center",flexShrink:0 }}>{row.delta>30?"STRONG":row.delta>0?"MARGINAL":"NEUTRAL"}</span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-}
+      {/* Back button + breadcrumb */}
+      {simPhase !== "context" && (
+        <button onClick={()=>{setSimPhase("context");setRevealed(false);}}
+          style={{ display:"flex",alignItems:"center",gap:8,background:"transparent",border:"none",color:"#64748b",fontSize:12,cursor:"pointer",padding:0,width:"fit-content" }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back to context selection
+        </button>
+      )}
 
-function SimulatorPage({ data, region, crop }) {
-  const [cropPrice,setCropPrice]=useState(250);
-  const [mapPrice,setMapPrice]=useState(520);
-  const [tspPrice,setTspPrice]=useState(480);
-  const [baseYield,setBaseYield]=useState(4.5);
-  const [yieldBoost,setYieldBoost]=useState(8);
-  const [extraPasses,setExtraPasses]=useState(1);
-  const [costPerPass,setCostPerPass]=useState(55);
-  const [appRateN,setAppRateN]=useState(150);
-  const [appRateP,setAppRateP]=useState(80);
-  const realBase=data.find(d=>d.region===region&&d.crop===crop&&d.strategy==="Blended (MAP)");
-  const scenarios=useMemo(()=>{
-    const fb=(appRateP*mapPrice)/1000+(appRateN*280)/1000;
-    const fs=(appRateP*tspPrice)/1000+(appRateN*280)/1000;
-    const ex=extraPasses*costPerPass;
-    const yS=baseYield*(1+yieldBoost/100);
-    const yO=baseYield*(1+(yieldBoost*1.3)/100);
-    const boc=realBase?.op_cost??750;
-    return [
-      { strategy:"Blended (MAP)",     yield:baseYield,revenue:baseYield*cropPrice,fertCost:fb,opCost:boc,       totalCost:boc+fb,            margin:baseYield*cropPrice-boc-fb },
-      { strategy:"Separated (TSP+N)", yield:yS,       revenue:yS*cropPrice,       fertCost:fs,opCost:boc+ex,   totalCost:boc+ex+fs,         margin:yS*cropPrice-(boc+ex)-fs },
-      { strategy:"Optimized",         yield:yO,       revenue:yO*cropPrice,       fertCost:fs*0.95,opCost:boc+ex*0.85,totalCost:boc+ex*0.85+fs*0.95,margin:yO*cropPrice-(boc+ex*0.85)-fs*0.95 },
-    ];
-  },[cropPrice,mapPrice,tspPrice,baseYield,yieldBoost,extraPasses,costPerPass,appRateN,appRateP,realBase]);
-  const base=scenarios[0];
-  const breakEven=((extraPasses*costPerPass)/cropPrice).toFixed(2);
-  const passes=yieldBoost/100*baseYield>=breakEven;
-  const waterfallData=[
-    {name:"Base",value:base.margin,fill:"#64748b"},
-    {name:"+Yield",value:scenarios[1].revenue-base.revenue,fill:"#10b981"},
-    {name:"-Passes",value:-(extraPasses*costPerPass),fill:"#f43f5e"},
-    {name:"-FertΔ",value:-(scenarios[1].fertCost-base.fertCost),fill:"#f59e0b"},
-    {name:"=Sep.",value:scenarios[1].margin,fill:"#0ea5e9"},
-  ];
-  const Slider=({label,min,max,step,value,onChange,unit})=>(
-    <div style={{ marginBottom:11 }}>
-      <div style={{ display:"flex",justifyContent:"space-between",marginBottom:3 }}>
-        <span style={{ color:"#94a3b8",fontSize:12 }}>{label}</span>
-        <span style={{ color:"#f1f5f9",fontSize:12,fontFamily:"'DM Mono',monospace" }}>{value}{unit}</span>
-      </div>
-      <input type="range" min={min} max={max} step={step} value={value} onChange={e=>onChange(Number(e.target.value))} style={{ width:"100%",accentColor:"#0ea5e9",cursor:"pointer" }} />
-    </div>
-  );
-  return (
-    <div>
-      <div className="simulator-grid">
-        <div className="card">
-          <h3 className="card-title">Inputs — {crop} · {region}</h3>
-          {realBase&&<p style={{ color:"#10b981",fontSize:11,marginBottom:11,background:"#10b98110",borderRadius:6,padding:"5px 10px",border:"1px solid #10b98120" }}>Base op. cost: ${realBase.op_cost}/ha</p>}
-          <Slider label="Crop Price ($/t)" min={100} max={600} step={10} value={cropPrice} onChange={setCropPrice} unit=" $/t"/>
-          <Slider label="MAP Price ($/t)"  min={300} max={900} step={10} value={mapPrice}  onChange={setMapPrice}  unit=" $/t"/>
-          <Slider label="TSP Price ($/t)"  min={280} max={850} step={10} value={tspPrice}  onChange={setTspPrice}  unit=" $/t"/>
-          <Slider label="Base Yield"       min={1}   max={15}  step={0.1}value={baseYield} onChange={setBaseYield} unit=" t/ha"/>
-          <Slider label="Yield Boost Sep." min={0}   max={30}  step={0.5}value={yieldBoost}onChange={setYieldBoost}unit="%"/>
-          <Slider label="Extra Passes"     min={0}   max={4}   step={1}  value={extraPasses}onChange={setExtraPasses}unit=""/>
-          <Slider label="Cost/Pass"        min={20}  max={150} step={5}  value={costPerPass}onChange={setCostPerPass}unit=" $/ha"/>
-          <Slider label="N Rate"           min={50}  max={300} step={5}  value={appRateN}  onChange={setAppRateN}  unit=" kg/ha"/>
-          <Slider label="P Rate"           min={20}  max={200} step={5}  value={appRateP}  onChange={setAppRateP}  unit=" kg/ha"/>
-        </div>
-        <div style={{ display:"flex",flexDirection:"column",gap:14 }}>
-          <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12 }}>
-            {scenarios.map((s,si)=>{
-              const delta=s.margin-base.margin;
-              const col=Object.values(STRATEGY_COLORS)[si];
-              const winner=s.margin===Math.max(...scenarios.map(x=>x.margin));
-              return (
-                <div key={si} style={{ background:"linear-gradient(135deg,#0f172a,#0a1020)",border:`1px solid ${col}${winner?"80":"30"}`,borderRadius:14,padding:"16px 14px",position:"relative",overflow:"hidden" }}>
-                  {winner&&<div style={{ position:"absolute",top:8,right:10,fontSize:14 }}>🏆</div>}
-                  <div style={{ width:10,height:10,borderRadius:"50%",background:col,marginBottom:8,boxShadow:`0 0 8px ${col}` }} />
-                  <p style={{ color:col,fontSize:10,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:8,fontWeight:700 }}>{s.strategy}</p>
-                  <p style={{ color:"#f1f5f9",fontSize:20,fontWeight:800,fontFamily:"'DM Mono',monospace",margin:0 }}>{fmt(s.margin)}</p>
-                  <p style={{ color:"#64748b",fontSize:10,marginTop:2 }}>$/ha margin</p>
-                  {si>0&&<div style={{ marginTop:8,padding:"3px 8px",borderRadius:6,background:delta>=0?"#10b98120":"#f43f5e20",display:"inline-block" }}><span style={{ color:delta>=0?"#10b981":"#f43f5e",fontSize:11,fontWeight:700,fontFamily:"'DM Mono',monospace" }}>{delta>=0?"+":""}{fmt(delta)}</span></div>}
-                </div>
-              );
-            })}
+      {/* ── PHASE: CONTEXT ─────────────────────────────────────────────────── */}
+      {simPhase === "context" && (
+        <div style={{ display:"flex", flexDirection:"column", gap:24, animation:"simReveal 0.5s ease both" }}>
+          <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:14, padding:"28px 32px" }}>
+            <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, marginBottom:12 }}>Step 1 of 3 — Set Mathieu's context</p>
+            <p style={{ color:"#f1f5f9", fontSize:17, fontWeight:700, marginBottom:6, letterSpacing:"-0.02em" }}>Where does Mathieu farm, and what does he grow?</p>
+            <p style={{ color:"#64748b", fontSize:13, lineHeight:1.8 }}>
+              The model controls for region and farming type because they shape what the same spending can produce. Two farms spending identically can end up with very different outputs depending on their soil, climate, and crop system. Choose Mathieu's context before he makes any investment decisions.
+            </p>
           </div>
-          <div className="chart-grid-2">
-            <div className="card">
-              <h3 className="card-title">Profit Waterfall</h3>
-              <ResponsiveContainer width="100%" height={160}>
-                <BarChart data={waterfallData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                  <XAxis dataKey="name" tick={{ fill:"#64748b",fontSize:9 }} />
-                  <YAxis tick={{ fill:"#64748b",fontSize:9 }} />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Bar dataKey="value" name="$/ha" radius={[3,3,0,0]}>{waterfallData.map((d,i)=><Cell key={i} fill={d.fill} />)}</Bar>
-                </BarChart>
-              </ResponsiveContainer>
+
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
+            {/* Region */}
+            <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"22px 24px" }}>
+              <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", fontWeight:700, marginBottom:14 }}>Region</p>
+              <div style={{ display:"flex", flexDirection:"column", gap:4, maxHeight:280, overflowY:"auto" }}>
+                {REGIONS_LIST.map(r => {
+                  const fe = MODEL1.regions[r] || 0;
+                  const pct = (Math.exp(fe)-1)*100;
+                  const sig = MODEL1.regionSig[r] || "";
+                  const isRef = r === "Champagne-Ardenne";
+                  return (
+                    <button key={r} onClick={()=>setSimRegion(r)}
+                      style={{ display:"flex", alignItems:"center", gap:10, padding:"8px 12px", borderRadius:8, cursor:"pointer", textAlign:"left",
+                        background:simRegion===r?"#0a1628":"transparent",
+                        border:`1px solid ${simRegion===r?"#0ea5e940":"transparent"}`,
+                        transition:"all 0.12s" }}
+                      onMouseEnter={e=>{if(simRegion!==r)e.currentTarget.style.background="#0a1020";}}
+                      onMouseLeave={e=>{if(simRegion!==r)e.currentTarget.style.background="transparent";}}>
+                      <span style={{ flex:1, color:simRegion===r?"#f1f5f9":"#94a3b8", fontSize:11 }}>{r}</span>
+                      {isRef
+                        ? <span style={{ color:"#475569", fontSize:9, fontStyle:"italic" }}>reference</span>
+                        : <span style={{ color:pct>=0?"#10b981":"#f43f5e", fontSize:10, fontFamily:"'DM Mono',monospace", fontWeight:600 }}>
+                            {pct>=0?"+":""}{pct.toFixed(1)}% {sig}
+                          </span>
+                      }
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-            <div className="card" style={{ display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",gap:10 }}>
-              <h3 className="card-title">Break-Even</h3>
-              <p style={{ color:"#f59e0b",fontSize:30,fontWeight:800,fontFamily:"'DM Mono',monospace" }}>{breakEven} t/ha</p>
-              <div style={{ width:"100%",background:passes?"#10b98120":"#f43f5e20",borderRadius:10,padding:"10px",textAlign:"center",border:`1px solid ${passes?"#10b98140":"#f43f5e40"}` }}>
-                <p style={{ color:passes?"#10b981":"#f43f5e",fontWeight:700,fontSize:12 }}>{passes?"✓ SEPARATION PAYS OFF":"✗ DOES NOT BREAK EVEN"}</p>
+
+            {/* Farming type */}
+            <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"22px 24px" }}>
+              <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", fontWeight:700, marginBottom:14 }}>Farming type</p>
+              <div style={{ display:"flex", flexDirection:"column", gap:4 }}>
+                {FARMING_TYPES.map(ft => {
+                  const fe = MODEL1.farmingTypes[ft] || 0;
+                  const pct = (Math.exp(fe)-1)*100;
+                  const sig = MODEL1.farmingTypeSig[ft] || "";
+                  const isRef = ft === "Cereals & field crops";
+                  return (
+                    <button key={ft} onClick={()=>setFarmType(ft)}
+                      style={{ display:"flex", alignItems:"center", gap:10, padding:"8px 12px", borderRadius:8, cursor:"pointer", textAlign:"left",
+                        background:farmType===ft?"#0a1628":"transparent",
+                        border:`1px solid ${farmType===ft?"#a78bfa40":"transparent"}`,
+                        transition:"all 0.12s" }}
+                      onMouseEnter={e=>{if(farmType!==ft)e.currentTarget.style.background="#0a1020";}}
+                      onMouseLeave={e=>{if(farmType!==ft)e.currentTarget.style.background="transparent";}}>
+                      <span style={{ flex:1, color:farmType===ft?"#f1f5f9":"#94a3b8", fontSize:11 }}>{ft}</span>
+                      {isRef
+                        ? <span style={{ color:"#475569", fontSize:9, fontStyle:"italic" }}>reference</span>
+                        : <span style={{ color:pct>=0?"#10b981":"#f43f5e", fontSize:10, fontFamily:"'DM Mono',monospace", fontWeight:600 }}>
+                            {pct>=0?"+":""}{pct.toFixed(1)}% {sig}
+                          </span>
+                      }
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Context summary */}
+              <div style={{ marginTop:16, padding:"12px 14px", background:"#060d1a", borderRadius:10, border:"1px solid #1a2436" }}>
+                <p style={{ color:"#64748b", fontSize:10, marginBottom:6 }}>Mathieu's structural context vs reference</p>
+                <p style={{ color:"#0ea5e9", fontSize:11, margin:0 }}>
+                  Region: <span style={{ color:regionFEPct1>=0?"#10b981":"#f43f5e", fontWeight:700 }}>{regionFEPct1>=0?"+":""}{regionFEPct1.toFixed(1)}%</span> on output,{" "}
+                  <span style={{ color:regionFEPct2>=0?"#10b981":"#f43f5e", fontWeight:700 }}>{regionFEPct2>=0?"+":""}{regionFEPct2.toFixed(1)}%</span> on income
+                </p>
+                <p style={{ color:"#0ea5e9", fontSize:11, margin:"4px 0 0" }}>
+                  Farm type: <span style={{ color:ftFEPct1>=0?"#10b981":"#f43f5e", fontWeight:700 }}>{ftFEPct1>=0?"+":""}{ftFEPct1.toFixed(1)}%</span> on output,{" "}
+                  <span style={{ color:ftFEPct2>=0?"#10b981":"#f43f5e", fontWeight:700 }}>{ftFEPct2>=0?"+":""}{ftFEPct2.toFixed(1)}%</span> on income
+                </p>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
-function PLPage({ data, region, crop }) {
-  const [expanded,setExpanded]=useState({});
-  const base=data.find(d=>d.region===region&&d.crop===crop&&d.strategy==="Blended (MAP)");
-  const categories=[
-    {key:"seed",label:"Seed",           value:95,                   share:11,color:"#a78bfa"},
-    {key:"fert",label:"Fertilizer",     value:base?.fert_cost||310,  share:Math.round((base?.fert_cost||310)/(base?.op_cost||900)*100),color:"#f59e0b"},
-    {key:"cp",  label:"Crop Protection",value:120,                   share:14,color:"#0ea5e9"},
-    {key:"mach",label:"Machinery",      value:180,                   share:21,color:"#64748b"},
-    {key:"labor",label:"Labor",         value:95,                    share:11,color:"#10b981"},
-    {key:"fuel",label:"Fuel",           value:65,                    share:8, color:"#f43f5e"},
-    {key:"land",label:"Land / Rent",    value:145,                   share:17,color:"#e2e8f0"},
-  ];
-  const sensData=[200,300,400,500,600,700,800].map(fp=>({
-    price:fp,
-    "Blended":  (base?.revenue||1050)-(base?.op_cost||900-(base?.fert_cost||310))-fp,
-    "Separated":(base?.revenue||1050)*1.08-((base?.op_cost||900)+55-((base?.fert_cost||310)*0.95))-fp*0.95,
-  }));
-  const donutData=categories.map(c=>({name:c.label,value:c.share,color:c.color}));
-  return (
-    <div style={{ display:"flex",flexDirection:"column",gap:18 }}>
-      <div className="chart-grid-2">
-        <div className="card">
-          <h3 className="card-title">Cost Breakdown — {crop} · {region}</h3>
-          <ResponsiveContainer width="100%" height={160}>
-            <PieChart><Pie data={donutData} cx="50%" cy="50%" innerRadius={45} outerRadius={75} dataKey="value" paddingAngle={2}>{donutData.map((d,i)=><Cell key={i} fill={d.color} />)}</Pie><Tooltip formatter={(v,n)=>[`${v}%`,n]} /></PieChart>
-          </ResponsiveContainer>
-          {categories.map(cat=>(
-            <div key={cat.key} style={{ marginBottom:5 }}>
-              <div onClick={()=>setExpanded(e=>({...e,[cat.key]:!e[cat.key]}))}
-                style={{ display:"flex",alignItems:"center",gap:9,cursor:"pointer",padding:"5px 7px",borderRadius:7,background:expanded[cat.key]?"#1e293b":"transparent" }}>
-                <div style={{ width:9,height:9,borderRadius:2,background:cat.color,flexShrink:0 }} />
-                <span style={{ color:"#e2e8f0",fontSize:12,flex:1 }}>{cat.label}</span>
-                <div style={{ width:80,background:"#1e293b",borderRadius:3,height:4 }}><div style={{ width:`${cat.share}%`,background:cat.color,borderRadius:3,height:"100%" }} /></div>
-                <span style={{ color:"#94a3b8",fontSize:11,width:28,textAlign:"right" }}>{cat.share}%</span>
-                <span style={{ color:"#f1f5f9",fontSize:11,fontFamily:"'DM Mono',monospace",width:52,textAlign:"right" }}>${cat.value}</span>
-              </div>
-              {expanded[cat.key]&&<div style={{ marginLeft:22,padding:"5px 10px",background:"#0a0f1a",borderRadius:7,fontSize:11,color:"#64748b" }}>{cat.key==="fert"?`Blended: $${cat.value}/ha → Sep.: $${Math.round(cat.value*0.95)}/ha`:`Standard allocation for ${crop.toLowerCase()} in ${region}.`}</div>}
-            </div>
-          ))}
-        </div>
-        <div className="card">
-          <h3 className="card-title">Margin Sensitivity to Fertilizer Price</h3>
-          <p style={{ color:"#475569",fontSize:11,marginBottom:10 }}>{crop} · {region}</p>
-          <ResponsiveContainer width="100%" height={200}>
-            <AreaChart data={sensData}>
-              <defs>
-                <linearGradient id="gbFill" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#64748b" stopOpacity={0.3}/><stop offset="95%" stopColor="#64748b" stopOpacity={0}/></linearGradient>
-                <linearGradient id="gsFill" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.3}/><stop offset="95%" stopColor="#0ea5e9" stopOpacity={0}/></linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="price" tick={{ fill:"#64748b",fontSize:10 }} />
-              <YAxis tick={{ fill:"#64748b",fontSize:10 }} />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend wrapperStyle={{ fontSize:11 }} />
-              <ReferenceLine y={0} stroke="#334155" strokeDasharray="4 4" />
-              <Area type="monotone" dataKey="Blended"   stroke="#64748b" fill="url(#gbFill)" strokeWidth={2} />
-              <Area type="monotone" dataKey="Separated" stroke="#0ea5e9" fill="url(#gsFill)" strokeWidth={2} />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function AgronomyPage({ data, region, crop }) {
-  const base=data.find(d=>d.region===region&&d.crop===crop&&d.strategy==="Blended (MAP)");
-  const ph=base?.soil_ph??6.5;
-  const phData=Array.from({length:30},(_,i)=>{const p=5.0+i*0.15;return{ph:p.toFixed(1),"MAP/DAP":Math.max(0,6.5-Math.abs(p-6.2)*1.8+(p>7.0?-(p-7.0)*2:0)),"TSP Sep.":Math.max(0,7.0-Math.abs(p-6.5)*1.2+(p>7.5?-(p-7.5)*1.5:0)),"Optimized":Math.max(0,7.5-Math.abs(p-6.8)*1.0)};});
-  const pRateData=Array.from({length:10},(_,i)=>{const r=i*20+20;return{rate:r,"MAP/DAP":Math.min(8,3+Math.sqrt(r)*0.65),"TSP Sep.":Math.min(9,3.2+Math.sqrt(r)*0.72),"Optimized":Math.min(9.5,3.4+Math.sqrt(r)*0.78)};});
-  const omData=Array.from({length:8},(_,i)=>{const om=0.5+i*0.5;return{om:om.toFixed(1),"P Eff. MAP":Math.min(85,40+om*18),"P Eff. TSP":Math.min(92,45+om*20)};});
-  return (
-    <div style={{ display:"flex",flexDirection:"column",gap:18 }}>
-      <div className="card">
-        <h3 className="card-title">Annual Nutrient Consumption — France (t nutrient)</h3>
-        <p style={{color:"#475569",fontSize:11,marginBottom:10}}>2017–2023 · Source: Agreste / French Ministry of Agriculture</p>
-        <ResponsiveContainer width="100%" height={195}>
-          <LineChart data={CONSUMPTION_DATA} margin={{left:10,right:20}}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b"/>
-            <XAxis dataKey="year" tick={{fill:"#64748b",fontSize:9}}/>
-            <YAxis tick={{fill:"#64748b",fontSize:9}} tickFormatter={v=>(v/1000).toFixed(0)+"k"} label={{value:"t nutrient",angle:-90,position:"insideLeft",fill:"#64748b",fontSize:9,offset:6}}/>
-            <Tooltip content={<CustomTooltip/>} formatter={v=>[v.toLocaleString()+" t",""]}/>
-            <Legend wrapperStyle={{fontSize:10}}/>
-            <Line type="monotone" dataKey="N"    name="N (t)"    stroke="#0ea5e9" strokeWidth={2} dot={{r:3}}/>
-            <Line type="monotone" dataKey="P2O5" name="P2O5 (t)" stroke="#10b981" strokeWidth={2} dot={{r:3}}/>
-            <Line type="monotone" dataKey="K2O"  name="K2O (t)"  stroke="#f59e0b" strokeWidth={2} dot={{r:3}}/>
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-      {base&&(
-        <div style={{ display:"flex",gap:12,flexWrap:"wrap" }}>
-          {[{label:"Crop",val:crop,color:"#0ea5e9"},{label:"Region",val:region,color:"#a78bfa"},{label:"Soil pH",val:ph,color:"#f59e0b"},{label:"Org. Matter",val:base.om+"%",color:"#10b981"}].map((item,i)=>(
-            <div key={i} style={{ background:"linear-gradient(135deg,#0f172a,#0a1020)",border:`1px solid ${item.color}25`,borderRadius:12,padding:"12px 16px",flex:1,minWidth:90 }}>
-              <p style={{ color:"#64748b",fontSize:10,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:4 }}>{item.label}</p>
-              <p style={{ color:item.color,fontSize:17,fontWeight:700,fontFamily:"'DM Mono',monospace" }}>{item.val}</p>
-            </div>
-          ))}
+          <button onClick={()=>setSimPhase("allocate")}
+            style={{ alignSelf:"flex-end", display:"flex", alignItems:"center", gap:10, background:"#0ea5e915", border:"1px solid #0ea5e940", color:"#0ea5e9", borderRadius:10, padding:"12px 28px", fontSize:13, fontWeight:700, cursor:"pointer" }}>
+            Set Mathieu's budget
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
         </div>
       )}
-      <div className="chart-grid-2">
-        <div className="card">
-          <h3 className="card-title">Yield vs Soil pH</h3>
-          <p style={{ color:"#475569",fontSize:11,marginBottom:10 }}>Separation advantage highest at pH &gt; 7.5</p>
-          <ResponsiveContainer width="100%" height={175}>
-            <LineChart data={phData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="ph" tick={{ fill:"#64748b",fontSize:9 }} />
-              <YAxis tick={{ fill:"#64748b",fontSize:9 }} />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend wrapperStyle={{ fontSize:9 }} />
-              <ReferenceLine x={String(ph.toFixed(1))} stroke="#f59e0b80" strokeDasharray="4 4" label={{ value:"↑ now",fill:"#f59e0b",fontSize:9 }} />
-              {["MAP/DAP","TSP Sep.","Optimized"].map((k,i)=><Line key={k} type="monotone" dataKey={k} stroke={Object.values(STRATEGY_COLORS)[i]} strokeWidth={2} dot={false} />)}
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="card">
-          <h3 className="card-title">Yield vs P Rate</h3>
-          <p style={{ color:"#475569",fontSize:11,marginBottom:10 }}>Separation shifts the plateau upward</p>
-          <ResponsiveContainer width="100%" height={175}>
-            <LineChart data={pRateData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="rate" tick={{ fill:"#64748b",fontSize:9 }} />
-              <YAxis tick={{ fill:"#64748b",fontSize:9 }} />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend wrapperStyle={{ fontSize:9 }} />
-              {["MAP/DAP","TSP Sep.","Optimized"].map((k,i)=><Line key={k} type="monotone" dataKey={k} stroke={Object.values(STRATEGY_COLORS)[i]} strokeWidth={2} dot={false} />)}
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="card">
-          <h3 className="card-title">P Efficiency vs Organic Matter</h3>
-          <p style={{ color:"#475569",fontSize:11,marginBottom:10 }}>Gap narrows above 2.5% OM</p>
-          <ResponsiveContainer width="100%" height={175}>
-            <AreaChart data={omData}>
-              <defs>
-                <linearGradient id="mapFill" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#64748b" stopOpacity={0.4}/><stop offset="95%" stopColor="#64748b" stopOpacity={0}/></linearGradient>
-                <linearGradient id="tspFill" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.4}/><stop offset="95%" stopColor="#0ea5e9" stopOpacity={0}/></linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="om" tick={{ fill:"#64748b",fontSize:9 }} />
-              <YAxis tick={{ fill:"#64748b",fontSize:9 }} />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend wrapperStyle={{ fontSize:9 }} />
-              <Area type="monotone" dataKey="P Eff. MAP" stroke="#64748b" fill="url(#mapFill)" strokeWidth={2} />
-              <Area type="monotone" dataKey="P Eff. TSP" stroke="#0ea5e9" fill="url(#tspFill)" strokeWidth={2} />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="card">
-          <h3 className="card-title">Biochemical Mechanisms</h3>
-          {[
-            {title:"P Fixation in Calcareous Soils",body:"At pH > 7.5, Ca²⁺ precipitates MAP phosphate within hours. TSP maintains a lower pH microzone, delaying fixation.",accent:"#f59e0b",icon:"🧲"},
-            {title:"NH₄⁺ Interference in Blends",  body:"MAP/DAP release N and P simultaneously. High NH₄⁺ suppresses root P uptake. Separation removes this competition.",accent:"#a78bfa",icon:"⚗️"},
-            {title:"Placement & Timing",            body:"Banded TSP subsurface puts P directly in the root zone. Broadcast MAP loses 15–35% to surface fixation.",accent:"#0ea5e9",icon:"📍"},
-          ].map((item,i)=>(
-            <div key={i} style={{ borderLeft:`3px solid ${item.accent}`,paddingLeft:11,marginBottom:13,paddingTop:2 }}>
-              <div style={{ display:"flex",alignItems:"center",gap:6,marginBottom:3 }}><span style={{ fontSize:13 }}>{item.icon}</span><p style={{ color:item.accent,fontSize:11,fontWeight:700 }}>{item.title}</p></div>
-              <p style={{ color:"#64748b",fontSize:11,lineHeight:1.6 }}>{item.body}</p>
+
+      {/* ── PHASE: ALLOCATE ────────────────────────────────────────────────── */}
+      {simPhase === "allocate" && (
+        <div style={{ display:"flex", flexDirection:"column", gap:20, animation:"simReveal 0.5s ease both" }}>
+          <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:14, padding:"24px 28px" }}>
+            <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, marginBottom:8 }}>Step 2 of 3 — Allocate Mathieu's budget</p>
+            <p style={{ color:"#f1f5f9", fontSize:16, fontWeight:700, marginBottom:6 }}>How should Mathieu distribute his €{budget.toLocaleString()}/ha?</p>
+            <p style={{ color:"#64748b", fontSize:13, lineHeight:1.8 }}>
+              The four input categories each carry a different elasticity in the production model. Move the sliders to change how Mathieu allocates his budget. Watch what the model predicts will happen to his output and income.
+            </p>
+          </div>
+
+          {/* Budget total slider */}
+          <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"20px 24px" }}>
+            <div style={{ display:"flex", justifyContent:"space-between", marginBottom:10 }}>
+              <span style={{ color:"#94a3b8", fontSize:12, fontWeight:600 }}>Total budget per hectare</span>
+              <span style={{ color:"#f1f5f9", fontSize:16, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>€{budget.toLocaleString()}/ha</span>
             </div>
-          ))}
+            <input type="range" min={400} max={2500} step={50} value={budget} onChange={e=>setBudget(Number(e.target.value))}
+              className="alloc-slider" style={{ width:"100%", accentColor:"#0ea5e9", cursor:"pointer" }}/>
+            <div style={{ display:"flex", justifyContent:"space-between", marginTop:4 }}>
+              <span style={{ color:"#334155", fontSize:10 }}>€400 — minimal</span>
+              <span style={{ color:"#334155", fontSize:10 }}>€2,500 — intensive</span>
+            </div>
+          </div>
+
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
+            {/* Sliders */}
+            <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"22px 24px", display:"flex", flexDirection:"column", gap:20 }}>
+              <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", fontWeight:700, margin:0 }}>Allocation — drag to redistribute</p>
+
+              {Object.entries(alloc).map(([key, val]) => {
+                const euros = budget * val;
+                const elast1 = MODEL1.elasticities[key];
+                const elast2 = MODEL2.elasticities[key];
+                const col = allocColors[key];
+                return (
+                  <div key={key}>
+                    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-end", marginBottom:8 }}>
+                      <div>
+                        <p style={{ color:"#e2e8f0", fontSize:12, fontWeight:600, margin:0 }}>{allocLabels[key]}</p>
+                        <p style={{ color:"#64748b", fontSize:10, margin:"2px 0 0" }}>
+                          Output elasticity: <span style={{ color:col, fontWeight:700 }}>{elast1.coef.toFixed(3)}</span>{elast1.sig}{" "}·{" "}
+                          Income elasticity: <span style={{ color:elast2.coef>=0?"#10b981":"#f43f5e", fontWeight:700 }}>{elast2.coef.toFixed(3)}</span>{elast2.sig}
+                        </p>
+                      </div>
+                      <span style={{ color:col, fontSize:15, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>€{euros.toFixed(0)}</span>
+                    </div>
+                    <input type="range" min={0.01} max={0.90} step={0.01} value={val}
+                      onChange={e=>updateAlloc(key, Number(e.target.value))}
+                      className="alloc-slider"
+                      style={{ width:"100%", accentColor:col, cursor:"pointer" }}/>
+                    <div style={{ height:4, background:"#1a2436", borderRadius:2, overflow:"hidden", marginTop:6 }}>
+                      <div style={{ height:"100%", width:`${val*100}%`, background:col, borderRadius:2, transition:"width 0.2s" }}/>
+                    </div>
+                  </div>
+                );
+              })}
+
+              {/* Stack viz */}
+              <div style={{ height:12, borderRadius:6, overflow:"hidden", display:"flex" }}>
+                {Object.entries(alloc).map(([k,v])=>(
+                  <div key={k} style={{ width:`${v*100}%`, background:allocColors[k], transition:"width 0.2s" }}/>
+                ))}
+              </div>
+              <div style={{ display:"flex", flexWrap:"wrap", gap:"4px 12px" }}>
+                {Object.entries(allocColors).map(([k,c])=>(
+                  <div key={k} style={{ display:"flex", alignItems:"center", gap:5 }}>
+                    <div style={{ width:8,height:8,borderRadius:2,background:c }}/>
+                    <span style={{ color:"#64748b", fontSize:10 }}>{allocLabels[k]} {(alloc[k]*100).toFixed(0)}%</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Live preview */}
+            <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+              <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"20px 22px", flex:1 }}>
+                <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", fontWeight:700, marginBottom:16 }}>Live model preview</p>
+
+                <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+                  <div style={{ background:"#060d1a", borderRadius:8, padding:"14px 16px", border:"1px solid #0ea5e920" }}>
+                    <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:6 }}>Model 1 — Predicted output</p>
+                    <p style={{ color:"#0ea5e9", fontSize:26, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>€{predictedOutput.toFixed(0)}<span style={{ fontSize:13, color:"#475569", fontWeight:400 }}> / ha</span></p>
+                    <p style={{ color:"#475569", fontSize:10, marginTop:4 }}>from inputs alone, before region and farm type</p>
+                  </div>
+                  <div style={{ background:"#060d1a", borderRadius:8, padding:"14px 16px", border:"1px solid #10b98120" }}>
+                    <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:6 }}>Model 2 — Predicted farm net income</p>
+                    <p style={{ color:predictedFNI>=0?"#10b981":"#f43f5e", fontSize:26, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>€{predictedFNI.toFixed(0)}<span style={{ fontSize:13, color:"#475569", fontWeight:400 }}> / ha</span></p>
+                    <p style={{ color:"#475569", fontSize:10, marginTop:4 }}>more spending ≠ more income automatically</p>
+                  </div>
+
+                  {/* Context effects */}
+                  <div style={{ background:"#060d1a", borderRadius:8, padding:"12px 14px", border:"1px solid #1a2436" }}>
+                    <p style={{ color:"#64748b", fontSize:10, marginBottom:6 }}>Context effects on Mathieu's output</p>
+                    <div style={{ display:"flex", gap:12 }}>
+                      <div style={{ flex:1 }}>
+                        <p style={{ color:"#475569", fontSize:9, marginBottom:2 }}>{simRegion}</p>
+                        <p style={{ color:regionFEPct1>=0?"#10b981":"#f43f5e", fontSize:12, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>{regionFEPct1>=0?"+":""}{regionFEPct1.toFixed(1)}%</p>
+                      </div>
+                      <div style={{ flex:1 }}>
+                        <p style={{ color:"#475569", fontSize:9, marginBottom:2 }}>{farmType}</p>
+                        <p style={{ color:ftFEPct1>=0?"#10b981":"#f43f5e", fontSize:12, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>{ftFEPct1>=0?"+":""}{ftFEPct1.toFixed(1)}%</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ background:"#080e18", border:"1px solid #f59e0b20", borderRadius:12, padding:"14px 16px" }}>
+                <p style={{ color:"#f59e0b", fontSize:11, fontWeight:700, marginBottom:6 }}>Mathieu's intuition check</p>
+                <p style={{ color:"#64748b", fontSize:12, lineHeight:1.7 }}>
+                  {spending.fertilisers / budget > 0.35
+                    ? `Mathieu is over-investing in fertilizers. The model gives fertilizer an elasticity of only ${MODEL1.elasticities.fertilisers.coef.toFixed(3)} on output — his intuition is overrating this lever.`
+                    : spending.intermediate / budget > 0.55
+                    ? `Good. Intermediate inputs dominate the production model at ${MODEL1.elasticities.intermediate.coef.toFixed(3)} elasticity. Mathieu's allocation is aligned with the data.`
+                    : spending.depreciation / budget < 0.10
+                    ? `Mathieu is under-investing in machinery. Depreciation carries a ${MODEL1.elasticities.depreciation.coef.toFixed(3)} output elasticity — skimping here costs him more than he thinks.`
+                    : `Mathieu's allocation looks balanced. The model will run when he's ready.`
+                  }
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <button onClick={runSim}
+            style={{ alignSelf:"flex-end", display:"flex", alignItems:"center", gap:10, background:"linear-gradient(135deg,#0ea5e920,#0ea5e910)", border:"1px solid #0ea5e950", color:"#0ea5e9", borderRadius:10, padding:"14px 32px", fontSize:14, fontWeight:700, cursor:"pointer" }}>
+            Run the models
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </button>
         </div>
-      </div>
+      )}
+
+      {/* ── PHASE: RUNNING ─────────────────────────────────────────────────── */}
+      {simPhase === "running" && (
+        <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:400, gap:24, animation:"simReveal 0.3s ease both" }}>
+          <div style={{ width:48, height:48, borderRadius:"50%", border:"2px solid #1a2436", borderTopColor:"#0ea5e9", animation:"simSpin 0.9s linear infinite" }}/>
+          <div style={{ textAlign:"center" }}>
+            <p style={{ color:"#f1f5f9", fontSize:16, fontWeight:700, marginBottom:8 }}>Running the models</p>
+            <p style={{ color:"#64748b", fontSize:13 }}>Applying coefficients from 864 degrees of freedom...</p>
+          </div>
+          <div style={{ width:300, height:4, background:"#1a2436", borderRadius:2, overflow:"hidden" }}>
+            <div style={{ height:"100%", background:"linear-gradient(90deg,#0ea5e9,#10b981)", borderRadius:2, animation:"progressFill 2s ease both" }}/>
+          </div>
+        </div>
+      )}
+
+      {/* ── PHASE: RESULT 1 — Output model ─────────────────────────────────── */}
+      {simPhase === "result1" && (
+        <div style={{ display:"flex", flexDirection:"column", gap:16, animation:"simReveal 0.5s ease both" }}>
+          <div style={{ background:"linear-gradient(135deg,#080e18,#060d14)", border:"1px solid #0ea5e930", borderRadius:14, padding:"28px 32px" }}>
+            <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, marginBottom:8 }}>Step 3a — Production model result</p>
+            <p style={{ color:"#f1f5f9", fontSize:18, fontWeight:700, marginBottom:6 }}>Does spending more produce more?</p>
+            <p style={{ color:"#64748b", fontSize:13, lineHeight:1.8 }}>
+              The model says yes — but not by much, and not proportionally. The chart below shows exactly how Mathieu's allocation translates into predicted output, and how much of the result is driven by his decisions versus his context.
+            </p>
+          </div>
+
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
+            {/* Output waterfall */}
+            <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"22px 24px" }}>
+              <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", fontWeight:700, marginBottom:16 }}>Output decomposition — €/ha</p>
+
+              {/* Contribution bars */}
+              {[
+                { label:"Intermediate inputs", val: MODEL1.elasticities.intermediate.coef * Math.log(Math.max(spending.intermediate,1)), color:"#a78bfa", note:`ε = ${MODEL1.elasticities.intermediate.coef.toFixed(3)}` },
+                { label:"Depreciation (machinery)", val: MODEL1.elasticities.depreciation.coef * Math.log(Math.max(spending.depreciation,1)), color:"#f59e0b", note:`ε = ${MODEL1.elasticities.depreciation.coef.toFixed(3)}` },
+                { label:"Fertilizers", val: MODEL1.elasticities.fertilisers.coef * Math.log(Math.max(spending.fertilisers,1)), color:"#0ea5e9", note:`ε = ${MODEL1.elasticities.fertilisers.coef.toFixed(3)}` },
+                { label:"Labour (wages)", val: MODEL1.elasticities.wages.coef * Math.log(Math.max(spending.wages,1)), color:"#10b981", note:`ε = ${MODEL1.elasticities.wages.coef.toFixed(3)}` },
+                { label:`Region: ${simRegion}`, val: regionFE1, color: regionFE1>=0?"#10b981":"#f43f5e", note: MODEL1.regionSig[simRegion]||"ns" },
+                { label:`Farm type: ${farmType}`, val: ftFE1, color: ftFE1>=0?"#10b981":"#f43f5e", note: MODEL1.farmingTypeSig[farmType]||"ns" },
+              ].map((item, i) => {
+                const maxAbsVal = 5;
+                const barPct = Math.min(Math.abs(item.val) / maxAbsVal * 100, 100);
+                return (
+                  <div key={i} style={{ marginBottom:12 }}>
+                    <div style={{ display:"flex", justifyContent:"space-between", marginBottom:4 }}>
+                      <div>
+                        <span style={{ color:"#e2e8f0", fontSize:11 }}>{item.label}</span>
+                        <span style={{ color:"#475569", fontSize:9, marginLeft:8 }}>{item.note}</span>
+                      </div>
+                      <span style={{ color:item.color, fontSize:11, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>{item.val>=0?"+":""}{item.val.toFixed(3)}</span>
+                    </div>
+                    <div style={{ height:6, background:"#1a2436", borderRadius:3, overflow:"hidden" }}>
+                      <div style={{ height:"100%", width:`${barPct}%`, background:item.color, borderRadius:3 }}/>
+                    </div>
+                  </div>
+                );
+              })}
+
+              <div style={{ marginTop:16, paddingTop:14, borderTop:"1px solid #1a2436", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                <span style={{ color:"#94a3b8", fontSize:12, fontWeight:600 }}>Predicted output (exp of sum)</span>
+                <span style={{ color:"#0ea5e9", fontSize:22, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>€{predictedOutput.toFixed(0)}<span style={{ fontSize:12, color:"#475569" }}>/ha</span></span>
+              </div>
+            </div>
+
+            {/* Elasticity comparison */}
+            <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+              <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"22px 24px" }}>
+                <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", fontWeight:700, marginBottom:14 }}>What the model says about each franc spent</p>
+                {Object.entries(MODEL1.elasticities).map(([k, el]) => (
+                  <div key={k} style={{ marginBottom:12 }}>
+                    <div style={{ display:"flex", justifyContent:"space-between", marginBottom:4 }}>
+                      <span style={{ color:"#e2e8f0", fontSize:11 }}>{el.label}</span>
+                      <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                        <span style={{ color:"#475569", fontSize:10, fontFamily:"'DM Mono',monospace" }}>ε =</span>
+                        <span style={{ color:allocColors[k], fontSize:13, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>{el.coef.toFixed(3)}</span>
+                        <span style={{ color:"#10b981", fontSize:9 }}>{el.sig}</span>
+                      </div>
+                    </div>
+                    <div style={{ height:5, background:"#1a2436", borderRadius:3, overflow:"hidden" }}>
+                      <div style={{ height:"100%", width:`${(el.coef/1)*100}%`, background:allocColors[k], borderRadius:3 }}/>
+                    </div>
+                    <p style={{ color:"#475569", fontSize:10, marginTop:3 }}>
+                      +1% spending → +{(el.coef*100).toFixed(1)}% output · Mathieu allocates {(alloc[k]*100).toFixed(0)}%
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Mathieu quote */}
+              <div style={{ background:"linear-gradient(135deg,#0a1628,#080e18)", border:"1px solid #0ea5e920", borderRadius:10, padding:"16px 18px" }}>
+                <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:8 }}>Mathieu's reaction</p>
+                <p style={{ color:"#94a3b8", fontSize:12, lineHeight:1.8, fontStyle:"italic" }}>
+                  {spending.fertilisers / budget > 0.35
+                    ? `"I always thought fertilizer was the main lever. These numbers tell me that everything I buy to run the farm — seeds, energy, contractor services — matters more than my fertilizer dose. That changes how I think."`
+                    : regionFEPct1 < -10
+                    ? `"The model shows my region costs me ${Math.abs(regionFEPct1).toFixed(1)}% of output before I even start. There's no allocation I can make that erases that. The land is what it is."`
+                    : `"If I put one percent more into intermediate inputs, I get ${(MODEL1.elasticities.intermediate.coef).toFixed(2)} percent more output. For fertilizer it's only ${(MODEL1.elasticities.fertilisers.coef).toFixed(2)}. I had those the wrong way round."`
+                  }
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <button onClick={()=>setSimPhase("result2")}
+            style={{ alignSelf:"flex-end", display:"flex", alignItems:"center", gap:10, background:"#10b98115", border:"1px solid #10b98140", color:"#10b981", borderRadius:10, padding:"12px 28px", fontSize:13, fontWeight:700, cursor:"pointer" }}>
+            Now check his income
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      )}
+
+      {/* ── PHASE: RESULT 2 — Income model ─────────────────────────────────── */}
+      {simPhase === "result2" && (
+        <div style={{ display:"flex", flexDirection:"column", gap:16, animation:"simReveal 0.5s ease both" }}>
+          <div style={{ background:"linear-gradient(135deg,#080e18,#060d14)", border:"1px solid #10b98130", borderRadius:14, padding:"28px 32px" }}>
+            <p style={{ color:"#10b981", fontSize:10, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, marginBottom:8 }}>Step 3b — Income model result</p>
+            <p style={{ color:"#f1f5f9", fontSize:18, fontWeight:700, marginBottom:6 }}>Does more output mean more income?</p>
+            <p style={{ color:"#64748b", fontSize:13, lineHeight:1.8 }}>
+              This is where Mathieu's hypothesis gets truly tested. Producing more is not the same as earning more. The income model uses the same inputs but estimates their effect on farm net income — and the story is different. Notice that depreciation now carries a <span style={{ color:"#f43f5e", fontWeight:600 }}>negative</span> elasticity of {MODEL2.elasticities.depreciation.coef.toFixed(3)}: spending more on machinery raises output but costs more than it earns back.
+            </p>
+          </div>
+
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
+            {/* Income decomposition */}
+            <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"22px 24px" }}>
+              <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", fontWeight:700, marginBottom:16 }}>Income elasticities vs output elasticities</p>
+              {Object.entries(MODEL2.elasticities).map(([k, el]) => {
+                const el1 = MODEL1.elasticities[k];
+                const delta = el.coef - el1.coef;
+                const col = allocColors[k];
+                return (
+                  <div key={k} style={{ marginBottom:14, paddingBottom:14, borderBottom:"1px solid #0f1929" }}>
+                    <p style={{ color:"#e2e8f0", fontSize:11, fontWeight:600, marginBottom:6 }}>{el.label}</p>
+                    <div style={{ display:"flex", gap:16, alignItems:"center" }}>
+                      <div style={{ flex:1 }}>
+                        <p style={{ color:"#64748b", fontSize:9, marginBottom:3 }}>Output elasticity (Model 1)</p>
+                        <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                          <div style={{ flex:1, height:5, background:"#1a2436", borderRadius:2, overflow:"hidden" }}>
+                            <div style={{ height:"100%", width:`${Math.abs(el1.coef)*100}%`, background:col, borderRadius:2 }}/>
+                          </div>
+                          <span style={{ color:col, fontSize:11, fontWeight:700, fontFamily:"'DM Mono',monospace", width:44 }}>{el1.coef.toFixed(3)}</span>
+                        </div>
+                      </div>
+                      <div style={{ flex:1 }}>
+                        <p style={{ color:"#64748b", fontSize:9, marginBottom:3 }}>Income elasticity (Model 2)</p>
+                        <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                          <div style={{ flex:1, height:5, background:"#1a2436", borderRadius:2, overflow:"hidden" }}>
+                            <div style={{ height:"100%", width:`${Math.abs(el.coef)*100}%`, background:el.coef>=0?col:"#f43f5e", borderRadius:2 }}/>
+                          </div>
+                          <span style={{ color:el.coef>=0?col:"#f43f5e", fontSize:11, fontWeight:700, fontFamily:"'DM Mono',monospace", width:44 }}>{el.coef.toFixed(3)}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <p style={{ color:delta>0?"#10b981":delta<-0.1?"#f43f5e":"#64748b", fontSize:10, marginTop:4 }}>
+                      {k==="depreciation"
+                        ? `Machinery raises output (+${el1.coef.toFixed(3)}) but costs more than it earns (${el.coef.toFixed(3)} on income). Net drag.`
+                        : k==="fertilisers"
+                        ? `Fertilizer has a stronger income effect (${el.coef.toFixed(3)}) than output effect (${el1.coef.toFixed(3)}). Profitable when used correctly.`
+                        : k==="intermediate"
+                        ? `Dominant in both models. The full input system is the engine.`
+                        : `Similar contribution across both models.`
+                      }
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Summary + replay */}
+            <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+              {/* Final verdict */}
+              <div style={{ background:"linear-gradient(135deg,#0a1f14,#080e18)", border:"1px solid #10b98130", borderRadius:12, padding:"22px 24px" }}>
+                <p style={{ color:"#10b981", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", fontWeight:700, marginBottom:14 }}>The verdict on Mathieu's hypothesis</p>
+                <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+                  <div style={{ display:"flex", gap:12, padding:"12px 14px", background:"#060d1a", borderRadius:8, borderLeft:"3px solid #10b981" }}>
+                    <div>
+                      <p style={{ color:"#f1f5f9", fontSize:12, fontWeight:600, marginBottom:3 }}>Spending more → producing more?</p>
+                      <p style={{ color:"#94a3b8", fontSize:11, lineHeight:1.65 }}>Partially yes. Intermediate inputs have the strongest effect at ε = {MODEL1.elasticities.intermediate.coef.toFixed(3)}. But Mathieu was overweighting fertilizer at ε = {MODEL1.elasticities.fertilisers.coef.toFixed(3)}.</p>
+                    </div>
+                  </div>
+                  <div style={{ display:"flex", gap:12, padding:"12px 14px", background:"#060d1a", borderRadius:8, borderLeft:"3px solid #f43f5e" }}>
+                    <div>
+                      <p style={{ color:"#f1f5f9", fontSize:12, fontWeight:600, marginBottom:3 }}>Producing more → earning more?</p>
+                      <p style={{ color:"#94a3b8", fontSize:11, lineHeight:1.65 }}>Not automatically. Depreciation actually has a negative income elasticity of {MODEL2.elasticities.depreciation.coef.toFixed(3)}. Machinery investment raises output but eats into profit. Geography also matters — {simRegion} carries a {regionFEPct2.toFixed(1)}% income effect that no allocation decision can override.</p>
+                    </div>
+                  </div>
+                  <div style={{ display:"flex", gap:12, padding:"12px 14px", background:"#060d1a", borderRadius:8, borderLeft:"3px solid #0ea5e9" }}>
+                    <div>
+                      <p style={{ color:"#f1f5f9", fontSize:12, fontWeight:600, marginBottom:3 }}>Predicted farm net income</p>
+                      <p style={{ color:predictedFNI>=0?"#10b981":"#f43f5e", fontSize:22, fontWeight:800, fontFamily:"'DM Mono',monospace", marginBottom:3 }}>€{predictedFNI.toFixed(0)}/ha</p>
+                      <p style={{ color:"#475569", fontSize:10 }}>R² = {MODEL2.rSquared} · Based on FADN France panel</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Replay options */}
+              <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"18px 20px" }}>
+                <p style={{ color:"#94a3b8", fontSize:11, fontWeight:600, marginBottom:12 }}>Try again with a different scenario</p>
+                <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+                  <button onClick={()=>setSimPhase("allocate")}
+                    style={{ display:"flex", alignItems:"center", gap:10, background:"#0ea5e910", border:"1px solid #0ea5e930", color:"#0ea5e9", borderRadius:8, padding:"10px 16px", fontSize:12, fontWeight:600, cursor:"pointer", textAlign:"left" }}>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.1"/></svg>
+                    Change allocation — same context
+                  </button>
+                  <button onClick={()=>{setSimPhase("context");}}
+                    style={{ display:"flex", alignItems:"center", gap:10, background:"#a78bfa10", border:"1px solid #a78bfa30", color:"#a78bfa", borderRadius:8, padding:"10px 16px", fontSize:12, fontWeight:600, cursor:"pointer", textAlign:"left" }}>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    Change region or farming type
+                  </button>
+                </div>
+              </div>
+
+              {/* Mathieu final quote */}
+              <div style={{ background:"#080e18", border:"1px solid #f59e0b20", borderRadius:10, padding:"14px 16px" }}>
+                <p style={{ color:"#f59e0b", fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:6 }}>Mathieu, after seeing the results</p>
+                <p style={{ color:"#94a3b8", fontSize:12, lineHeight:1.8, fontStyle:"italic" }}>
+                  "I spent thirty years thinking that more fertilizer meant more income. The model shows it is not that simple. My region, my crop system, my machinery costs — they shape the result as much as what I spread on the field. That is not what they taught me at agricultural college."
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-function InsightsPage({ data, region, crop }) {
-  const insights=generateInsights(data,region,crop);
-  const allCrops=[...new Set(data.map(d=>d.crop))];const allInsights=[...new Set(data.map(d=>d.region))].flatMap(r=>allCrops.filter(c=>data.some(d=>d.region===r&&d.crop===c)).map(c=>{
-    const b=data.find(d=>d.region===r&&d.crop===c&&d.strategy==="Blended (MAP)");
-    const s=data.find(d=>d.region===r&&d.crop===c&&d.strategy==="Separated (TSP+N)");
-    if(!b||!s) return null;
-    return {region:r,crop:c,delta:s.margin-b.margin,ph:b.soil_ph};
-  }).filter(Boolean));
-  const base=data.find(d=>d.region===region&&d.crop===crop&&d.strategy==="Blended (MAP)");
-  const sep=data.find(d=>d.region===region&&d.crop===crop&&d.strategy==="Separated (TSP+N)");
-  const radarData=base&&sep?[
-    {metric:"Yield",    blended:base.yield/0.1,  separated:sep.yield/0.1},
-    {metric:"Margin",   blended:base.margin/10,  separated:sep.margin/10},
-    {metric:"P Effic.", blended:60,              separated:80},
-    {metric:"Revenue",  blended:base.revenue/20, separated:sep.revenue/20},
-    {metric:"Cost Eff.",blended:50,              separated:70},
-  ]:[];
-  return (
-    <div style={{ display:"flex",flexDirection:"column",gap:18 }}>
-      <div className="chart-grid-2">
-        <div className="card" style={{ border:"1px solid #0ea5e930" }}>
-          <h3 style={{ color:"#0ea5e9",fontSize:11,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:14 }}>◈ Model Insights — {crop} · {region}</h3>
-          {insights.length?insights.map((ins,i)=>(
-            <div key={i} style={{ display:"flex",gap:10,marginBottom:11,padding:"9px 12px",background:"#0a0f1a",borderRadius:8,borderLeft:"2px solid #0ea5e940" }}>
-              <span style={{ color:"#0ea5e9",fontSize:13,marginTop:1,flexShrink:0 }}>→</span>
-              <p style={{ color:"#cbd5e1",fontSize:12,lineHeight:1.7,margin:0 }}>{ins}</p>
-            </div>
-          )):<p style={{ color:"#475569" }}>No data for selected context.</p>}
-        </div>
-        {radarData.length>0&&(
-          <div className="card">
-            <h3 className="card-title">Strategy Radar — {crop} · {region}</h3>
-            <ResponsiveContainer width="100%" height={230}>
-              <RadarChart data={radarData}>
-                <PolarGrid stroke="#1e293b" />
-                <PolarAngleAxis dataKey="metric" tick={{ fill:"#64748b",fontSize:10 }} />
-                <Radar name="Blended"   dataKey="blended"   stroke="#64748b" fill="#64748b" fillOpacity={0.2} strokeWidth={2} />
-                <Radar name="Separated" dataKey="separated" stroke="#0ea5e9" fill="#0ea5e9" fillOpacity={0.25} strokeWidth={2} />
-                <Legend wrapperStyle={{ fontSize:10 }} />
-                <Tooltip content={<CustomTooltip />} />
-              </RadarChart>
-            </ResponsiveContainer>
-          </div>
-        )}
-      </div>
-      <div className="card" style={{ overflow:"auto" }}>
-        <h3 className="card-title">Full Separation Benefit Matrix</h3>
-        <table style={{ width:"100%",borderCollapse:"collapse",fontSize:12,minWidth:360 }}>
-          <thead><tr style={{ borderBottom:"1px solid #1e293b" }}>{["Region","Crop","pH","Δ Margin","Verdict"].map((h,i)=><th key={i} style={{ padding:"8px 12px",textAlign:i>1?"right":"left",color:"#64748b",fontSize:10,textTransform:"uppercase",fontWeight:500,whiteSpace:"nowrap" }}>{h}</th>)}</tr></thead>
-          <tbody>{allInsights.sort((a,b)=>b.delta-a.delta).map((row,i)=>{const dc=row.delta>30?"#10b981":row.delta>0?"#0ea5e9":"#f43f5e";return(<tr key={i} style={{ borderBottom:"1px solid #0f1929",background:i%2===0?"#0a0f1a":"#0f172a" }}><td style={{ padding:"8px 12px",color:"#94a3b8" }}>{row.region}</td><td style={{ padding:"8px 12px",color:"#94a3b8" }}>{row.crop}</td><td style={{ padding:"8px 12px",textAlign:"right",color:"#64748b",fontFamily:"'DM Mono',monospace" }}>{row.ph}</td><td style={{ padding:"8px 12px",textAlign:"right",fontFamily:"'DM Mono',monospace",fontWeight:700,color:dc }}>{row.delta>0?"+":""}{row.delta}</td><td style={{ padding:"8px 12px",textAlign:"right" }}><span style={{ padding:"2px 8px",borderRadius:20,fontSize:10,background:dc+"20",color:dc,whiteSpace:"nowrap" }}>{row.delta>30?"STRONG":row.delta>0?"MARGINAL":"NEUTRAL"}</span></td></tr>);})}</tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
 
 // ─── MARKET INTELLIGENCE PAGES ────────────────────────────────────────────────
 function MIPlaceholder({ region }) {
@@ -2799,25 +3160,12 @@ export default function App() {
   const [hasEntered, setHasEntered] = useState(false);
   const [hubDone,    setHubDone]    = useState(false);
   const [section,    setSection]    = useState("quant");
-  const [quantPage,  setQuantPage]  = useState("overview");
   const [intelPage,  setIntelPage]  = useState("dynamics");
   const [region,     setRegion]     = useState("France");
-  const [crop,       setCrop]       = useState("Wheat");
   const [sidebarOpen,setSidebarOpen]= useState(false);
   const [countryOpen,setCountryOpen]= useState(false);
-  const [savedScenarios, setSavedScenarios] = useState([
-    { name:"Spain Wheat Baseline", region:"Spain",  crop:"Wheat" },
-    { name:"Brazil Maize High pH", region:"Brazil", crop:"Maize" },
-  ]);
-  const [scenarioName, setScenarioName] = useState("");
+  const [mathieuPhase, setMathieuPhase] = useState("intro");
 
-  const quantPages=[
-    {key:"overview",  label:"Overview",  short:"Overview" },
-    {key:"simulator", label:"Simulator", short:"Simulator"},
-    {key:"pl",        label:"P&L",       short:"P&L"      },
-    {key:"agronomy",  label:"Agronomy",  short:"Agronomy" },
-    {key:"insights",  label:"Insights",  short:"Insights" },
-  ];
   const intelPages=[
     {key:"dynamics",  label:"Fundamentals",         short:"Fundamentals"   },
     {key:"farmer",    label:"Farmer Behaviour",      short:"Farmer Behav."  },
@@ -2828,21 +3176,10 @@ export default function App() {
     {key:"regions",   label:"Regional Analysis",     short:"Regions"        },
   ];
 
-  const subPages   = section==="quant"?quantPages:intelPages;
-  const activePage = section==="quant"?quantPage:intelPage;
-  const setPage    = section==="quant"?setQuantPage:setIntelPage;
-  const isOverview = section==="quant"&&quantPage==="overview";
-  const availableCrops=[...new Set(SAMPLE_DATA.filter(d=>d.region===region).map(d=>d.crop))];
   const secColor   = section==="quant"?"#0ea5e9":section==="intel"?"#10b981":"#a78bfa";
 
-  const saveScenario=()=>{
-    if (!scenarioName) return;
-    setSavedScenarios(s=>[...s,{name:scenarioName,region,crop}]);
-    setScenarioName("");
-  };
-
   if (!hasEntered) return <LandingPage onEnter={() => setHasEntered(true)} />;
-  if (!hubDone) return <HubPage onChoose={s => { setSection(s); setHubDone(true); }} />;
+  if (!hubDone) return <HubPage onChoose={s => { setSection(s); setHubDone(true); setMathieuPhase("intro"); }} />;
 
   return (
     <div style={{ minHeight:"100vh",background:"#060d1a",color:"#e2e8f0",fontFamily:"'DM Sans','Segoe UI',sans-serif" }}>
@@ -2887,7 +3224,6 @@ export default function App() {
           </div>
         </div>
         <div style={{ display:"flex",gap:8,alignItems:"center" }}>
-          {/* Country selector dropdown */}
           {section!=="atlas"&&(
             <div style={{ position:"relative" }}>
               <button onClick={()=>setCountryOpen(o=>!o)}
@@ -2899,12 +3235,8 @@ export default function App() {
               {countryOpen&&(
                 <div style={{ position:"absolute",top:"calc(100% + 6px)",right:0,background:"#0f172a",border:"1px solid #1e293b",borderRadius:10,overflow:"hidden",zIndex:200,minWidth:180,boxShadow:"0 8px 24px #000a" }}>
                   <div style={{padding:"6px 0"}}>
-                    {[
-                      {code:"France", flag:"🇫🇷", active:true},
-                      {code:"India",  flag:"🇮🇳", active:false},
-                    ].map(c=>(
-                      <button key={c.code}
-                        onClick={()=>{ if(c.active){setRegion(c.code);setCountryOpen(false);} }}
+                    {[{code:"France",flag:"🇫🇷",active:true},{code:"India",flag:"🇮🇳",active:false}].map(c=>(
+                      <button key={c.code} onClick={()=>{if(c.active){setRegion(c.code);setCountryOpen(false);}}}
                         style={{ width:"100%",display:"flex",alignItems:"center",gap:10,padding:"9px 16px",background:"none",border:"none",cursor:c.active?"pointer":"not-allowed",textAlign:"left",opacity:c.active?1:0.5 }}
                         onMouseEnter={e=>{if(c.active)e.currentTarget.style.background="#1e293b";}}
                         onMouseLeave={e=>{e.currentTarget.style.background="none";}}>
@@ -2919,7 +3251,6 @@ export default function App() {
               )}
             </div>
           )}
-          {section==="quant"&&!isOverview&&<select value={crop} onChange={e=>setCrop(e.target.value)}>{availableCrops.map(c=><option key={c}>{c}</option>)}</select>}
           {section!=="atlas"&&<button onClick={()=>setSidebarOpen(o=>!o)} style={{ background:"#1e293b",border:"1px solid #334155",color:"#94a3b8",padding:"6px 10px",borderRadius:6,fontSize:18,cursor:"pointer",lineHeight:1 }}>☰</button>}
         </div>
       </div>
@@ -2933,18 +3264,8 @@ export default function App() {
             {key:"intel",full:"Market Intelligence",short:"Intel",color:"#10b981",
               icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M3 12h3m12 0h3M12 3v3m0 12v3m-6.4-2.4 2.1-2.1m8.6-8.6 2.1-2.1M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1"/></svg>},
           ].map(s=>(
-            <button key={s.key} onClick={()=>setSection(s.key)}
-              style={{
-                padding:"9px 20px",
-                background:section===s.key?s.color+"22":"#0f172a",
-                border:`1px solid ${section===s.key?s.color:s.color+"20"}`,
-                borderRadius:8,
-                color:section===s.key?s.color:"#475569",
-                fontSize:13,fontWeight:700,cursor:"pointer",
-                display:"flex",alignItems:"center",gap:8,whiteSpace:"nowrap",
-                transition:"all 0.15s",
-                boxShadow:section===s.key?`0 0 16px ${s.color}22`:"none",
-              }}>
+            <button key={s.key} onClick={()=>{setSection(s.key);if(s.key==="quant")setMathieuPhase("intro");}}
+              style={{ padding:"9px 20px", background:section===s.key?s.color+"22":"#0f172a", border:`1px solid ${section===s.key?s.color:s.color+"20"}`, borderRadius:8, color:section===s.key?s.color:"#475569", fontSize:13,fontWeight:700,cursor:"pointer", display:"flex",alignItems:"center",gap:8,whiteSpace:"nowrap", transition:"all 0.15s", boxShadow:section===s.key?`0 0 16px ${s.color}22`:"none" }}>
               <span style={{ display:"flex",alignItems:"center" }}>{s.icon}</span>
               <span className="sec-label-full">{s.full}</span>
               <span className="sec-label-short">{s.short}</span>
@@ -2952,17 +3273,7 @@ export default function App() {
           ))}
         </div>
         <button onClick={()=>setSection("atlas")}
-          style={{
-            padding:"9px 18px",
-            background:section==="atlas"?"#a78bfa22":"#0f172a",
-            border:`1px solid ${section==="atlas"?"#a78bfa":"#a78bfa20"}`,
-            borderRadius:8,
-            color:section==="atlas"?"#a78bfa":"#475569",
-            fontSize:13,fontWeight:700,cursor:"pointer",
-            display:"flex",alignItems:"center",gap:8,whiteSpace:"nowrap",
-            transition:"all 0.15s",
-            boxShadow:section==="atlas"?"0 0 16px #a78bfa22":"none",
-          }}>
+          style={{ padding:"9px 18px", background:section==="atlas"?"#a78bfa22":"#0f172a", border:`1px solid ${section==="atlas"?"#a78bfa":"#a78bfa20"}`, borderRadius:8, color:section==="atlas"?"#a78bfa":"#475569", fontSize:13,fontWeight:700,cursor:"pointer", display:"flex",alignItems:"center",gap:8,whiteSpace:"nowrap", transition:"all 0.15s", boxShadow:section==="atlas"?"0 0 16px #a78bfa22":"none" }}>
           <span style={{display:"flex",alignItems:"center"}}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z"/><path d="M12 2c-2.8 2.8-4 6-4 10s1.2 7.2 4 10"/><path d="M12 2c2.8 2.8 4 6 4 10s-1.2 7.2-4 10"/><path d="M2 12h20"/></svg>
           </span>
@@ -2975,25 +3286,44 @@ export default function App() {
 
       {section!=="atlas"&&(
         <>
-          <div className="subnav">
-            {subPages.map(p=>{
-              const active=activePage===p.key;
-              return <button key={p.key} onClick={()=>setPage(p.key)} style={{ padding:"8px 14px",background:"transparent",border:"none",borderBottom:active?`2px solid ${secColor}`:"2px solid transparent",color:active?secColor:"#64748b",fontSize:12,fontWeight:active?600:400,cursor:"pointer",whiteSpace:"nowrap" }}>{p.short}</button>;
-            })}
-          </div>
+          {/* Sub-nav only for intel */}
+          {section==="intel" && (
+            <div className="subnav">
+              {intelPages.map(p=>{
+                const active=intelPage===p.key;
+                return <button key={p.key} onClick={()=>setIntelPage(p.key)} style={{ padding:"8px 14px",background:"transparent",border:"none",borderBottom:active?`2px solid ${secColor}`:"2px solid transparent",color:active?secColor:"#64748b",fontSize:12,fontWeight:active?600:400,cursor:"pointer",whiteSpace:"nowrap" }}>{p.short}</button>;
+              })}
+            </div>
+          )}
           <div style={{ display:"flex",minHeight:"calc(100dvh - 130px)" }}>
             <div className="page-content" style={{ flex:1,padding:20,overflow:"auto",minWidth:0 }}>
-              <div style={{ display:"flex",alignItems:"center",gap:10,marginBottom:20,flexWrap:"wrap" }}>
-                <SectionBadge label={section==="quant"?"Quantitative Engine":"Market Intelligence"} color={secColor} />
-                <h1 style={{ fontSize:16,fontWeight:800,color:"#f1f5f9",letterSpacing:"-0.02em" }}>{subPages.find(p=>p.key===activePage)?.label}</h1>
-                <span style={{ color:"#64748b",fontSize:12 }}>{isOverview?`all crops · ${region}`:section==="intel"?region:`${crop} · ${region}`}</span>
-              </div>
+              {section==="intel" && (
+                <div style={{ display:"flex",alignItems:"center",gap:10,marginBottom:20,flexWrap:"wrap" }}>
+                  <SectionBadge label="Market Intelligence" color={secColor} />
+                  <h1 style={{ fontSize:16,fontWeight:800,color:"#f1f5f9",letterSpacing:"-0.02em" }}>{intelPages.find(p=>p.key===intelPage)?.label}</h1>
+                  <span style={{ color:"#64748b",fontSize:12 }}>{region}</span>
+                </div>
+              )}
 
-              {section==="quant"&&quantPage==="overview"  &&<OverviewPage  data={SAMPLE_DATA} region={region} />}
-              {section==="quant"&&quantPage==="simulator" &&<SimulatorPage data={SAMPLE_DATA} region={region} crop={crop} />}
-              {section==="quant"&&quantPage==="pl"        &&<PLPage        data={SAMPLE_DATA} region={region} crop={crop} />}
-              {section==="quant"&&quantPage==="agronomy"  &&<AgronomyPage  data={SAMPLE_DATA} region={region} crop={crop} />}
-              {section==="quant"&&quantPage==="insights"  &&<InsightsPage  data={SAMPLE_DATA} region={region} crop={crop} />}
+              {/* Quant = Mathieu experience */}
+              {section==="quant" && mathieuPhase==="intro" && (
+                <MathieuIntroPage region={region} onEnterFarm={()=>setMathieuPhase("farm")} />
+              )}
+              {section==="quant" && mathieuPhase==="farm" && (
+                <>
+                  <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:20 }}>
+                    <button onClick={()=>setMathieuPhase("intro")} style={{ display:"flex",alignItems:"center",gap:6,background:"transparent",border:"none",color:"#64748b",fontSize:12,cursor:"pointer",padding:0 }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                      Back to Mathieu
+                    </button>
+                    <div style={{width:1,height:14,background:"#1e293b"}}/>
+                    <SectionBadge label="Quantitative Engine" color="#0ea5e9" />
+                    <span style={{ color:"#f1f5f9",fontSize:14,fontWeight:700 }}>Mathieu's Farm Simulation</span>
+                    <span style={{ color:"#64748b",fontSize:12 }}>{region}</span>
+                  </div>
+                  <MathieuFarmPage region={region} />
+                </>
+              )}
 
               {section==="intel"&&intelPage==="dynamics"  &&<MIMarketDynamicsPage region={region} />}
               {section==="intel"&&intelPage==="farmer"    &&<MIFarmerBehaviorPage region={region} />}
@@ -3007,22 +3337,8 @@ export default function App() {
             <div className={`sidebar-overlay ${sidebarOpen?"open":""}`} onClick={()=>setSidebarOpen(false)} />
             <div className={`app-sidebar ${sidebarOpen?"open":""}`}>
               <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14 }}>
-                <h3 style={{ color:"#64748b",fontSize:10,textTransform:"uppercase",letterSpacing:"0.1em" }}>Saved Scenarios</h3>
+                <h3 style={{ color:"#64748b",fontSize:10,textTransform:"uppercase",letterSpacing:"0.1em" }}>Navigation</h3>
                 <button onClick={()=>setSidebarOpen(false)} style={{ background:"transparent",border:"none",color:"#94a3b8",fontSize:16,cursor:"pointer" }}>✕</button>
-              </div>
-              {savedScenarios.map((s,i)=>(
-                <div key={i} onClick={()=>{setRegion(s.region);setCrop(s.crop);setSidebarOpen(false);}}
-                  style={{ padding:"8px 10px",borderRadius:6,marginBottom:6,cursor:"pointer",background:region===s.region&&crop===s.crop?"#1e293b":"transparent",border:"1px solid transparent" }}
-                  onMouseEnter={e=>e.currentTarget.style.borderColor="#334155"}
-                  onMouseLeave={e=>e.currentTarget.style.borderColor="transparent"}>
-                  <p style={{ color:"#94a3b8",fontSize:12,fontWeight:500 }}>{s.name}</p>
-                  <p style={{ color:"#94a3b8",fontSize:10,marginTop:2 }}>{s.crop} · {s.region}</p>
-                </div>
-              ))}
-              <div style={{ marginTop:14,borderTop:"1px solid #1e293b",paddingTop:14 }}>
-                <input value={scenarioName} onChange={e=>setScenarioName(e.target.value)} placeholder="Scenario name..."
-                  style={{ width:"100%",background:"#1e293b",border:"1px solid #334155",borderRadius:6,padding:"6px 8px",color:"#e2e8f0",fontSize:12,marginBottom:8,outline:"none" }} />
-                <button onClick={saveScenario} style={{ width:"100%",background:"#0ea5e910",border:"1px solid #0ea5e940",color:"#0ea5e9",padding:"7px",borderRadius:6,fontSize:12,cursor:"pointer" }}>+ Save Current</button>
               </div>
               <div style={{ marginTop:16,borderTop:"1px solid #1e293b",paddingTop:14 }}>
                 <button onClick={()=>{setSection("atlas");setSidebarOpen(false);}} style={{ width:"100%",background:"#a78bfa10",border:"1px solid #a78bfa30",color:"#a78bfa",padding:"8px",borderRadius:8,fontSize:12,cursor:"pointer" }}>◈ Open ATLAS</button>
