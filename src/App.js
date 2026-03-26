@@ -1375,62 +1375,58 @@ function MIFarmerBehaviorPage({ region }) {
 // Model 2: log_fni_per_ha   ~ inputs + factor(Region) + factor(farming_type) + factor(Year)
 
 const MODEL1 = {
-  intercept: 0.435989,
+  // Source: log-log OLS trained on FADN France panel (df_model_profit, n=909)
+  // Reference categories: region = Île-de-France, farming_type = (1) Fieldcrops, year = 2014
+  intercept: 0.436,
+  rSquared:  0.993,
   elasticities: {
-    fertilisers:   { coef: 0.079490, se: 0.012384, sig: "***", label: "Fertilizers" },
-    wages:         { coef: 0.070174, se: 0.007653, sig: "***", label: "Labour" },
-    depreciation:  { coef: 0.104566, se: 0.020773, sig: "***", label: "Depreciation" },
-    intermediate:  { coef: 0.818163, se: 0.020677, sig: "***", label: "Intermediate inputs" },
+    fertilisers:  { coef: 0.0795, se: 0.0124, sig: "***", label: "Fertilizers" },
+    wages:        { coef: 0.0702, se: 0.0077, sig: "***", label: "Labour" },
+    depreciation: { coef: 0.1046, se: 0.0208, sig: "***", label: "Machinery" },
+    intermediate: { coef: 0.8182, se: 0.0207, sig: "***", label: "Seeds & crop protection" },
   },
   regions: {
-    "Champagne-Ardenne":          0.000000, // reference
-    "Picardie":                   0.001749,
-    "Haute-Normandie":           -0.028750,
-    "Centre":                    -0.086309,
-    "Basse-Normandie":           -0.017096,
-    "Bourgogne":                  0.004091,
-    "Nord-Pas-de-Calais":        -0.033862,
-    "Lorraine":                  -0.028002,
-    "Alsace":                    -0.034643,
-    "Franche-Comté":              0.010878,
-    "Pays de la Loire":          -0.055964,
-    "Bretagne":                   0.001932,
-    "Poitou-Charentes":          -0.062178,
-    "Aquitaine":                 -0.172144,
-    "Midi-Pyrénées":             -0.098734,
-    "Limousin":                  -0.038942,
-    "Rhône-Alpes":               -0.061287,
-    "Auvergne":                  -0.025612,
-    "Languedoc-Roussillon":      -0.128978,
-    "Provence-Alpes-Côte d'Azur": -0.081352,
-    "Corse":                     -0.102003,
-  },
-  regionSig: {
-    "Centre":"**","Poitou-Charentes":"*","Aquitaine":"***","Midi-Pyrénées":"**",
-    "Rhône-Alpes":"*","Languedoc-Roussillon":"***","Provence-Alpes-Côte d'Azur":"**","Corse":"**",
+    "Île-de-France":                     0,
+    "(131) Champagne-Ardenne":           0.0291,
+    "(132) Picardie":                    0.0017,
+    "(133) Haute-Normandie":            -0.0288,
+    "(134) Centre":                     -0.0863,
+    "(135) Basse-Normandie":            -0.0171,
+    "(136) Bourgogne":                   0.0041,
+    "(141) Nord-Pas-de-Calais":         -0.0339,
+    "(151) Lorraine":                   -0.0280,
+    "(152) Alsace":                     -0.0346,
+    "(153) Franche-Comté":               0.0109,
+    "(162) Pays de la Loire":           -0.0560,
+    "(163) Bretagne":                    0.0019,
+    "(164) Poitou-Charentes":           -0.0622,
+    "(182) Aquitaine":                  -0.1721,
+    "(183) Midi-Pyrénées":              -0.0987,
+    "(184) Limousin":                   -0.0389,
+    "(192) Rhône-Alpes":                -0.0613,
+    "(193) Auvergne":                   -0.0256,
+    "(201) Languedoc-Roussillon":       -0.1290,
+    "(203) Provence-Alpes-Côte d'Azur": -0.0814,
+    "(204) Corse":                      -0.1020,
+    "(205) Guadeloupe":                 -0.1536,
+    "(206) Martinique":                 -0.0010,
+    "(207) La Réunion":                 -0.1631,
   },
   farmingTypes: {
-    "Cereals & field crops":     0.000000, // reference (type 1)
-    "Horticulture":              0.034287,
-    "Wine":                      0.332818,
-    "Other permanent crops":     0.197452,
-    "Milk":                      0.004924,
-    "Other grazing livestock":  -0.017115,
-    "Granivores":               -0.004129,
-    "Mixed":                    -0.254951,
-  },
-  farmingTypeSig: {
-    "Wine":"***","Other permanent crops":"***","Mixed":"**",
+    "(1) Fieldcrops":              0,
+    "(2) Horticulture":            0.0239,
+    "(3) Wine":                    0.3328,
+    "(4) Other permanent crops":   0.1975,
+    "(5) Milk":                    0.0049,
+    "(6) Other grazing livestock": -0.0171,
+    "(7) Granivores":              -0.0041,
+    "(8) Mixed":                   -0.0303,
   },
   years: {
-    2014: 0.000000, // reference
-    2015: 0.029098, 2016: 0.029144, 2017: 0.034014, 2018: 0.026501,
-    2019: 0.024309, 2020: 0.005613, 2021: 0.040371, 2022: 0.032308, 2023: -0.053000,
+    2014: 0, 2015: 0.0171, 2016: 0.0291, 2017: 0.0340,
+    2018: 0.0265, 2019: 0.0243, 2020: 0.0056,
+    2021: 0.0404, 2022: 0.0323, 2023: -0.0530,
   },
-  yearSig: {
-    2016:"*",2017:"**",2018:"*",2019:"*",2021:"**",2022:"*",2023:"***",
-  },
-  rSquared: 0.993,
 };
 
 // const MODEL2 = {
@@ -1602,24 +1598,18 @@ function MathieuIntroPage({ region, onEnterFarm }) {
 // ─── MATHIEU FARM SIMULATION ──────────────────────────────────────────────────
 function MathieuFarmPage({ region }) {
 
-  // ── BASELINE: what Mathieu spent yesterday ──────────────────────────────────
-  const [baseline, setBaseline] = useState({
-    fertilisers:  357,   // €/ha — FADN France cereals reference
-    wages:        130,
-    depreciation: 239,
-    intermediate: 257,
-  });
+  const REGION_KEYS    = Object.keys(MODEL1.regions);
+  const FARMTYPE_KEYS  = Object.keys(MODEL1.farmingTypes);
+  const YEAR_KEYS      = Object.keys(MODEL1.years).map(Number).sort((a,b)=>b-a);
 
-  // ── CURRENT: what he plans to spend today ───────────────────────────────────
-  const [current, setCurrent] = useState({
-    fertilisers:  357,
-    wages:        130,
-    depreciation: 239,
-    intermediate: 257,
-  });
+  // Context selectors — wired into the full prediction equation
+  const [simRegion,   setSimRegion]   = useState("(131) Champagne-Ardenne");
+  const [simFarmType, setSimFarmType] = useState("(1) Fieldcrops");
+  const [simYear,     setSimYear]     = useState(2020);
 
-  // Which input the user is actively editing (highlights the row)
-  // Which scenario panel is shown: "baseline" | "current"
+  // Baseline & current spending
+  const [baseline, setBaseline] = useState({ fertilisers:357, wages:130, depreciation:239, intermediate:257 });
+  const [current,  setCurrent]  = useState({ fertilisers:357, wages:130, depreciation:239, intermediate:257 });
   const [editMode, setEditMode] = useState("current");
 
   if (region !== "France") return (
@@ -1628,154 +1618,208 @@ function MathieuFarmPage({ region }) {
     </div>
   );
 
-  // ── INTERNAL CALCULATOR ─────────────────────────────────────────────────────
-  // For each input, compute the % change from baseline to current.
-  // Then apply the log-log elasticity: ΔlogY = β * Δlog(X) = β * log(X_new/X_old)
-  // Predicted output given a spending vector:
-  const calcLogOutput = (sp) =>
+  // ── Full prediction: inputs + region FE + farmtype FE + year FE ─────────────
+  const predict = (sp) => Math.exp(
     MODEL1.intercept
     + MODEL1.elasticities.fertilisers.coef  * Math.log(Math.max(sp.fertilisers,  1))
     + MODEL1.elasticities.wages.coef         * Math.log(Math.max(sp.wages,         1))
     + MODEL1.elasticities.depreciation.coef  * Math.log(Math.max(sp.depreciation, 1))
-    + MODEL1.elasticities.intermediate.coef  * Math.log(Math.max(sp.intermediate, 1));
+    + MODEL1.elasticities.intermediate.coef  * Math.log(Math.max(sp.intermediate, 1))
+    + (MODEL1.regions[simRegion]        || 0)
+    + (MODEL1.farmingTypes[simFarmType] || 0)
+    + (MODEL1.years[simYear]            || 0)
+  );
 
-  const baselineOutput = Math.exp(calcLogOutput(baseline));
-  const currentOutput  = Math.exp(calcLogOutput(current));
-  const outputDelta    = currentOutput - baselineOutput;
-  const outputDeltaPct = ((currentOutput - baselineOutput) / baselineOutput) * 100;
+  const baselineOutput  = predict(baseline);
+  const currentOutput   = predict(current);
+  const outputDelta     = currentOutput - baselineOutput;
+  const outputDeltaPct  = baselineOutput > 0 ? ((currentOutput - baselineOutput) / baselineOutput) * 100 : 0;
 
-  // Per-input: what % change in spending, and what does that contribute to output change?
   const inputKeys = ["fertilisers", "wages", "depreciation", "intermediate"];
+
   const pctChanges = {};
-  const outputContribs = {}; // log-log marginal contribution of each input's change
+  const outputContribs = {};
   inputKeys.forEach(k => {
-    const pct = baseline[k] > 0 ? ((current[k] - baseline[k]) / baseline[k]) * 100 : 0;
-    pctChanges[k] = pct;
-    // Δlog(output) attributable to input k = β_k * (log(current_k) - log(baseline_k))
+    pctChanges[k]    = baseline[k] > 0 ? ((current[k] - baseline[k]) / baseline[k]) * 100 : 0;
     outputContribs[k] = MODEL1.elasticities[k].coef * Math.log(Math.max(current[k],1) / Math.max(baseline[k],1));
   });
   const totalLogOutputChange = Object.values(outputContribs).reduce((s,v)=>s+v,0);
 
   const CONFIG = {
-    fertilisers:  { label:"Fertilizers",            color:"#0ea5e9", min:50,  max:900,  step:10 },
-    wages:        { label:"Labour",                  color:"#10b981", min:20,  max:600,  step:10 },
-    depreciation: { label:"Machinery",               color:"#f59e0b", min:50,  max:800,  step:10 },
-    intermediate: { label:"Seeds & crop protection", color:"#a78bfa", min:50,  max:800,  step:10 },
+    fertilisers:  { label:"Fertilizers",            color:"#0ea5e9", min:50,  max:900, step:10 },
+    wages:        { label:"Labour",                  color:"#10b981", min:20,  max:600, step:10 },
+    depreciation: { label:"Machinery",               color:"#f59e0b", min:50,  max:800, step:10 },
+    intermediate: { label:"Seeds & crop protection", color:"#a78bfa", min:50,  max:800, step:10 },
   };
 
   const updateSpending = (mode, key, val) => {
-    if (mode === "baseline") setBaseline(p => ({ ...p, [key]: Number(val) }));
-    else setCurrent(p => ({ ...p, [key]: Number(val) }));
+    if (mode === "baseline") setBaseline(p => ({...p, [key]: Number(val)}));
+    else setCurrent(p => ({...p, [key]: Number(val)}));
   };
 
-  const resetCurrentToBaseline = () => setCurrent({...baseline});
+  // Fixed effect impact display
+  const regionPct   = ((MODEL1.regions[simRegion]        || 0) * 100).toFixed(1);
+  const farmtypePct = ((MODEL1.farmingTypes[simFarmType] || 0) * 100).toFixed(1);
+  const yearPct     = ((MODEL1.years[simYear]            || 0) * 100).toFixed(1);
 
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:28 }}>
       <style>{`
         @keyframes resultReveal { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes deltaGlow { 0%{opacity:0.5} 50%{opacity:1} 100%{opacity:0.5} }
-        .spending-row { transition:background 0.15s,border-color 0.15s; }
-        .spending-row:hover { border-color:rgba(255,255,255,0.15) !important; }
-        .spending-row.active { border-color:rgba(255,255,255,0.22) !important; background:#0d1626 !important; }
+        .barn-slot { transition:border-color 0.15s; }
+        input[type=range] { height:4px; }
+        .fe-select { background:#0a1020; border:1px solid #1a2436; color:#e2e8f0; borderRadius:6px; padding:5px 8px; fontSize:12px; cursor:pointer; outline:none; }
+        .fe-select:focus { border-color:#0ea5e960; }
       `}</style>
 
-      {/* ── SECTION 1: THE MODEL FRAMEWORK ────────────────────────────────────── */}
+      {/* ── SECTION 1: THE MODEL FRAMEWORK ──────────────────────────────────── */}
       <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:16, overflow:"hidden" }}>
-        <div style={{ padding:"22px 28px 18px", borderBottom:"1px solid #1a2436" }}>
-          <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.16em", fontWeight:700, margin:0, marginBottom:6 }}>The statistical framework</p>
-          <p style={{ color:"#f1f5f9", fontSize:16, fontWeight:700, letterSpacing:"-0.02em", margin:0 }}>Different models answer different questions.</p>
+        <div style={{ padding:"20px 28px 16px", borderBottom:"1px solid #1a2436" }}>
+          <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.16em", fontWeight:700, margin:0, marginBottom:5 }}>The statistical framework</p>
+          <p style={{ color:"#f1f5f9", fontSize:15, fontWeight:700, letterSpacing:"-0.02em", margin:0 }}>Log-log production model — trained on 909 French farms (FADN)</p>
         </div>
 
-        {/* Model 1: log-log */}
-        <div style={{ padding:"22px 28px", borderBottom:"1px solid #1a2436" }}>
-          <div style={{ display:"flex", alignItems:"flex-start", gap:16, marginBottom:14 }}>
-            <div style={{ width:36, height:36, borderRadius:9, background:"#0ea5e915", border:"1px solid #0ea5e930", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, marginTop:2 }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            </div>
-            <div style={{ flex:1 }}>
-              <p style={{ color:"#0ea5e9", fontSize:12, fontWeight:700, margin:0, marginBottom:4 }}>Model in use — Log-Log Production Model</p>
-              <p style={{ color:"#94a3b8", fontSize:11, margin:0, marginBottom:12, fontFamily:"'DM Mono',monospace" }}>
-                log(output/ha) = α + β₁·log(fertilizers) + β₂·log(labour) + β₃·log(machinery) + β₄·log(seeds) + region FE + farmtype FE
-              </p>
-              <p style={{ color:"#cbd5e1", fontSize:12, lineHeight:1.8, margin:0 }}>
-                This model answers the question: <em>if Mathieu increases spending on an input by 1%, how much does his output per hectare increase?</em> Because both sides are in logs, the coefficient β is a pure elasticity — a scale-free percentage-to-percentage relationship. It does not matter whether Mathieu is spending €100 or €800; the ratio is constant.
-              </p>
-            </div>
-          </div>
+        <div style={{ padding:"20px 28px", borderBottom:"1px solid #1a2436" }}>
+          <p style={{ color:"#94a3b8", fontSize:11, fontFamily:"'DM Mono',monospace", marginBottom:12 }}>
+            log(output/ha) = α + β₁·log(fertilizers) + β₂·log(labour) + β₃·log(machinery) + β₄·log(seeds) + region FE + farmtype FE + year FE
+          </p>
+          <p style={{ color:"#cbd5e1", fontSize:12, lineHeight:1.8, margin:0 }}>
+            Because both sides are in logs, each β is an elasticity — the percentage increase in output for a 1% increase in spending on that input, holding everything else constant. The fixed effects capture structural differences across regions, farm types, and years that are unrelated to spending choices.
+          </p>
+        </div>
 
-          {/* Elasticities table */}
-          <div style={{ background:"#060d1a", borderRadius:10, border:"1px solid #1a2436", overflow:"hidden" }}>
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 110px 110px 180px", padding:"8px 14px", borderBottom:"1px solid #1a2436" }}>
-              <span style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em" }}>Input</span>
-              <span style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em" }}>Elasticity (β)</span>
-              <span style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em" }}>Significance</span>
-              <span style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em" }}>Reading</span>
+        {/* Elasticities table */}
+        <div style={{ padding:"0 28px 20px" }}>
+          <div style={{ background:"#060d1a", borderRadius:10, border:"1px solid #1a2436", overflow:"hidden", marginTop:16 }}>
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 100px 80px 1fr", padding:"8px 14px", borderBottom:"1px solid #1a2436", gap:8 }}>
+              {["Input","Elasticity β","Sig.","What it means"].map(h => (
+                <span key={h} style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em" }}>{h}</span>
+              ))}
             </div>
             {inputKeys.map(k => {
               const e = MODEL1.elasticities[k];
               const cfg = CONFIG[k];
               return (
-                <div key={k} style={{ display:"grid", gridTemplateColumns:"1fr 110px 110px 180px", padding:"10px 14px", borderBottom:"1px solid #0d1520", alignItems:"center" }}>
+                <div key={k} style={{ display:"grid", gridTemplateColumns:"1fr 100px 80px 1fr", padding:"10px 14px", borderBottom:"1px solid #0d1520", gap:8, alignItems:"center" }}>
                   <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-                    <div style={{ width:6, height:6, borderRadius:2, background:cfg.color }}/>
+                    <div style={{ width:6, height:6, borderRadius:2, background:cfg.color, flexShrink:0 }}/>
                     <span style={{ color:"#e2e8f0", fontSize:12 }}>{cfg.label}</span>
                   </div>
-                  <span style={{ color:cfg.color, fontSize:13, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>+{(e.coef*100).toFixed(1)}%</span>
+                  <span style={{ color:cfg.color, fontSize:13, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>+{(e.coef*100).toFixed(2)}%</span>
                   <span style={{ color:"#10b981", fontSize:11, fontFamily:"'DM Mono',monospace" }}>{e.sig}</span>
-                  <span style={{ color:"#94a3b8", fontSize:11 }}>+1% spend → +{(e.coef*100).toFixed(1)}% output</span>
+                  <span style={{ color:"#94a3b8", fontSize:11 }}>+1% spend → +{(e.coef*100).toFixed(2)}% output</span>
                 </div>
               );
             })}
           </div>
+          <p style={{ color:"#94a3b8", fontSize:11, lineHeight:1.7, marginTop:12 }}>
+            Seeds & crop protection dominates with an elasticity of <span style={{ color:"#a78bfa", fontWeight:700 }}>+{(MODEL1.elasticities.intermediate.coef*100).toFixed(1)}%</span> — 
+            roughly {(MODEL1.elasticities.intermediate.coef / MODEL1.elasticities.fertilisers.coef).toFixed(0)}× stronger than fertilizer. 
+            Machinery raises output but its income effect is negative (more tractor, less profit at the margin). R² = {MODEL1.rSquared}.
+          </p>
         </div>
 
-        {/* Model 2: placeholder */}
-        <div style={{ padding:"18px 28px", background:"#060a12" }}>
-          <div style={{ display:"flex", alignItems:"center", gap:14 }}>
-            <div style={{ width:36, height:36, borderRadius:9, background:"#1a263a", border:"1px dashed #2a3a50", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#475569" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        {/* Model 2 placeholder */}
+        <div style={{ padding:"14px 28px", background:"#060a12", borderTop:"1px solid #1a2436" }}>
+          <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+            <div style={{ width:28, height:28, borderRadius:7, background:"#1a263a", border:"1px dashed #2a3a50", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#475569" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             </div>
-            <div>
-              <p style={{ color:"#475569", fontSize:12, fontWeight:700, margin:0, marginBottom:3 }}>Second model — coming once data distribution is confirmed</p>
-              <p style={{ color:"#334155", fontSize:11, lineHeight:1.7, margin:0 }}>
-                A different functional form will answer a different question: given an exact spending level in euros, what is the predicted output in absolute terms? The specification depends on the shape of the residuals once the log-log model has been fitted. Once the distribution is confirmed, this slot will be filled.
+            <p style={{ color:"#334155", fontSize:11, lineHeight:1.6, margin:0 }}>
+              A second model will be added once the residual distribution is confirmed — it will answer the absolute prediction question directly.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* ── SECTION 2: CONTEXT SELECTORS ─────────────────────────────────────── */}
+      <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:14, padding:"20px 24px" }}>
+        <p style={{ color:"#f1f5f9", fontSize:13, fontWeight:700, marginBottom:4 }}>Step 1 — Set Mathieu's context</p>
+        <p style={{ color:"#94a3b8", fontSize:12, lineHeight:1.7, marginBottom:16 }}>
+          The model controls for region, farming type and year because structural differences between farms are not due to spending choices. A wine farm in Provence and a cereal farm in Champagne spending the same amounts will produce very different outputs. Set Mathieu's context first so the fixed effects are applied correctly to his prediction.
+        </p>
+
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:14 }}>
+
+          {/* Region */}
+          <div>
+            <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>Region</p>
+            <select value={simRegion} onChange={e=>setSimRegion(e.target.value)}
+              style={{ width:"100%", background:"#060d1a", border:"1px solid #1a2436", color:"#e2e8f0", borderRadius:8, padding:"8px 10px", fontSize:12, cursor:"pointer", outline:"none", maxWidth:"none" }}>
+              {REGION_KEYS.map(r => <option key={r} value={r}>{r}</option>)}
+            </select>
+            <div style={{ marginTop:8, padding:"8px 10px", background:"#060d1a", border:"1px solid #1a2436", borderRadius:8 }}>
+              <p style={{ color:"#94a3b8", fontSize:10, margin:0, marginBottom:2 }}>Region fixed effect</p>
+              <p style={{ color: Number(regionPct) >= 0 ? "#10b981" : "#f43f5e", fontSize:13, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>
+                {Number(regionPct) >= 0 ? "+" : ""}{regionPct}% vs reference
+              </p>
+              <p style={{ color:"#475569", fontSize:10, margin:"2px 0 0" }}>vs Île-de-France</p>
+            </div>
+          </div>
+
+          {/* Farming type */}
+          <div>
+            <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>Farming type</p>
+            <select value={simFarmType} onChange={e=>setSimFarmType(e.target.value)}
+              style={{ width:"100%", background:"#060d1a", border:"1px solid #1a2436", color:"#e2e8f0", borderRadius:8, padding:"8px 10px", fontSize:12, cursor:"pointer", outline:"none", maxWidth:"none" }}>
+              {FARMTYPE_KEYS.map(t => <option key={t} value={t}>{t}</option>)}
+            </select>
+            <div style={{ marginTop:8, padding:"8px 10px", background:"#060d1a", border:"1px solid #1a2436", borderRadius:8 }}>
+              <p style={{ color:"#94a3b8", fontSize:10, margin:0, marginBottom:2 }}>Farm type fixed effect</p>
+              <p style={{ color: Number(farmtypePct) >= 0 ? "#10b981" : "#f43f5e", fontSize:13, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>
+                {Number(farmtypePct) >= 0 ? "+" : ""}{farmtypePct}% vs reference
+              </p>
+              <p style={{ color:"#475569", fontSize:10, margin:"2px 0 0" }}>vs (1) Fieldcrops</p>
+            </div>
+          </div>
+
+          {/* Year */}
+          <div>
+            <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>Year</p>
+            <select value={simYear} onChange={e=>setSimYear(Number(e.target.value))}
+              style={{ width:"100%", background:"#060d1a", border:"1px solid #1a2436", color:"#e2e8f0", borderRadius:8, padding:"8px 10px", fontSize:12, cursor:"pointer", outline:"none", maxWidth:"none" }}>
+              {YEAR_KEYS.map(y => <option key={y} value={y}>{y}</option>)}
+            </select>
+            <div style={{ marginTop:8, padding:"8px 10px", background:"#060d1a", border:"1px solid #1a2436", borderRadius:8 }}>
+              <p style={{ color:"#94a3b8", fontSize:10, margin:0, marginBottom:2 }}>Year fixed effect</p>
+              <p style={{ color: Number(yearPct) >= 0 ? "#10b981" : "#f43f5e", fontSize:13, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>
+                {Number(yearPct) >= 0 ? "+" : ""}{yearPct}% vs 2014
+              </p>
+              <p style={{ color:"#475569", fontSize:10, margin:"2px 0 0" }}>
+                {simYear === 2023 ? "Difficult year — structural penalty" : simYear === 2021 ? "Strong year" : "vs 2014 reference"}
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ── SECTION 2: BASELINE vs CURRENT SPENDING ───────────────────────────── */}
+      {/* ── SECTION 3: BASELINE vs CURRENT ───────────────────────────────────── */}
       <div>
-        <div style={{ marginBottom:16 }}>
-          <p style={{ color:"#f1f5f9", fontSize:14, fontWeight:700, margin:0, marginBottom:4 }}>The exercise: yesterday vs today.</p>
-          <p style={{ color:"#94a3b8", fontSize:12, lineHeight:1.75, margin:0 }}>
-            Set what Mathieu spent yesterday as the baseline. Then set what he plans to spend today. The calculator will take the percentage difference on each input, apply the log-log elasticities, and show you the predicted change in output.
-          </p>
-        </div>
+        <p style={{ color:"#f1f5f9", fontSize:13, fontWeight:700, marginBottom:4 }}>Step 2 — Set spending: yesterday vs today</p>
+        <p style={{ color:"#94a3b8", fontSize:12, lineHeight:1.75, marginBottom:16 }}>
+          Set what Mathieu spent yesterday as the baseline, then adjust what he plans to spend today. The model applies the log-log elasticities to the percentage difference between the two and predicts how much output changes.
+        </p>
 
-        {/* Tab switcher */}
-        <div style={{ display:"flex", gap:8, marginBottom:16 }}>
-          {[{id:"baseline",label:"Yesterday — Baseline",color:"#64748b"},{id:"current",label:"Today — New Allocation",color:"#0ea5e9"}].map(tab => (
+        <div style={{ display:"flex", gap:8, marginBottom:14 }}>
+          {[{id:"baseline",label:"Yesterday — Baseline",color:"#64748b"},{id:"current",label:"Today — New allocation",color:"#0ea5e9"}].map(tab => (
             <button key={tab.id} onClick={()=>setEditMode(tab.id)}
-              style={{ padding:"8px 18px", borderRadius:8, border:`1px solid ${editMode===tab.id ? tab.color+"60" : "#1a2436"}`,
+              style={{ padding:"7px 16px", borderRadius:8, border:`1px solid ${editMode===tab.id ? tab.color+"60" : "#1a2436"}`,
                 background: editMode===tab.id ? tab.color+"15" : "transparent",
                 color: editMode===tab.id ? tab.color : "#94a3b8",
                 fontSize:12, fontWeight:700, cursor:"pointer" }}>
               {tab.label}
             </button>
           ))}
-          <button onClick={resetCurrentToBaseline}
-            style={{ padding:"8px 14px", borderRadius:8, border:"1px solid #1a2436", background:"transparent", color:"#94a3b8", fontSize:11, cursor:"pointer", marginLeft:"auto" }}>
+          <button onClick={()=>setCurrent({...baseline})}
+            style={{ padding:"7px 14px", borderRadius:8, border:"1px solid #1a2436", background:"transparent", color:"#94a3b8", fontSize:11, cursor:"pointer", marginLeft:"auto" }}>
             Reset today → baseline
           </button>
         </div>
 
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
-          {/* Baseline panel */}
-          <div style={{ background:"#080e18", border:`1px solid ${editMode==="baseline" ? "#64748b40" : "#1a2436"}`, borderRadius:14, padding:"18px 20px", opacity: editMode==="current" ? 0.7 : 1, transition:"opacity 0.2s" }}>
-            <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:700, marginBottom:14 }}>Yesterday — Baseline spending</p>
+          {/* Baseline */}
+          <div style={{ background:"#080e18", border:`1px solid ${editMode==="baseline"?"#64748b40":"#1a2436"}`, borderRadius:14, padding:"18px 20px", opacity:editMode==="current"?0.65:1, transition:"opacity 0.2s" }}>
+            <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:700, marginBottom:14 }}>Yesterday — Baseline</p>
             <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
               {inputKeys.map(k => {
                 const cfg = CONFIG[k];
@@ -1783,13 +1827,12 @@ function MathieuFarmPage({ region }) {
                   <div key={k}>
                     <div style={{ display:"flex", justifyContent:"space-between", marginBottom:5 }}>
                       <div style={{ display:"flex", alignItems:"center", gap:7 }}>
-                        <div style={{ width:6, height:6, borderRadius:2, background:cfg.color }}/>
+                        <div style={{ width:5, height:5, borderRadius:2, background:cfg.color }}/>
                         <span style={{ color:"#e2e8f0", fontSize:12 }}>{cfg.label}</span>
                       </div>
                       <span style={{ color:cfg.color, fontSize:13, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>€{baseline[k]}</span>
                     </div>
-                    <input type="range" min={cfg.min} max={cfg.max} step={cfg.step}
-                      value={baseline[k]}
+                    <input type="range" min={cfg.min} max={cfg.max} step={cfg.step} value={baseline[k]}
                       onChange={e => updateSpending("baseline", k, e.target.value)}
                       style={{ width:"100%", accentColor:cfg.color, cursor:"pointer" }}/>
                   </div>
@@ -1798,19 +1841,19 @@ function MathieuFarmPage({ region }) {
             </div>
             <div style={{ marginTop:14, paddingTop:12, borderTop:"1px solid #1a2436" }}>
               <div style={{ display:"flex", justifyContent:"space-between" }}>
-                <span style={{ color:"#94a3b8", fontSize:11 }}>Total baseline spend</span>
-                <span style={{ color:"#e2e8f0", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>€{Object.values(baseline).reduce((s,v)=>s+v,0).toLocaleString()}/ha</span>
+                <span style={{ color:"#94a3b8", fontSize:11 }}>Total spend</span>
+                <span style={{ color:"#e2e8f0", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>€{Object.values(baseline).reduce((s,v)=>s+v,0)}/ha</span>
               </div>
               <div style={{ display:"flex", justifyContent:"space-between", marginTop:4 }}>
-                <span style={{ color:"#94a3b8", fontSize:11 }}>Predicted baseline output</span>
+                <span style={{ color:"#94a3b8", fontSize:11 }}>Predicted output</span>
                 <span style={{ color:"#0ea5e9", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>€{baselineOutput.toFixed(0)}/ha</span>
               </div>
             </div>
           </div>
 
-          {/* Current panel */}
-          <div style={{ background:"#080e18", border:`1px solid ${editMode==="current" ? "#0ea5e940" : "#1a2436"}`, borderRadius:14, padding:"18px 20px", opacity: editMode==="baseline" ? 0.7 : 1, transition:"opacity 0.2s" }}>
-            <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:700, marginBottom:14 }}>Today — New spending</p>
+          {/* Current */}
+          <div style={{ background:"#080e18", border:`1px solid ${editMode==="current"?"#0ea5e940":"#1a2436"}`, borderRadius:14, padding:"18px 20px", opacity:editMode==="baseline"?0.65:1, transition:"opacity 0.2s" }}>
+            <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:700, marginBottom:14 }}>Today — New allocation</p>
             <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
               {inputKeys.map(k => {
                 const cfg = CONFIG[k];
@@ -1819,7 +1862,7 @@ function MathieuFarmPage({ region }) {
                   <div key={k}>
                     <div style={{ display:"flex", justifyContent:"space-between", marginBottom:5 }}>
                       <div style={{ display:"flex", alignItems:"center", gap:7 }}>
-                        <div style={{ width:6, height:6, borderRadius:2, background:cfg.color }}/>
+                        <div style={{ width:5, height:5, borderRadius:2, background:cfg.color }}/>
                         <span style={{ color:"#e2e8f0", fontSize:12 }}>{cfg.label}</span>
                       </div>
                       <div style={{ display:"flex", alignItems:"center", gap:8 }}>
@@ -1831,20 +1874,14 @@ function MathieuFarmPage({ region }) {
                         <span style={{ color:cfg.color, fontSize:13, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>€{current[k]}</span>
                       </div>
                     </div>
-                    <input type="range" min={cfg.min} max={cfg.max} step={cfg.step}
-                      value={current[k]}
+                    <input type="range" min={cfg.min} max={cfg.max} step={cfg.step} value={current[k]}
                       onChange={e => updateSpending("current", k, e.target.value)}
                       style={{ width:"100%", accentColor:cfg.color, cursor:"pointer" }}/>
-                    {/* Delta bar — shows direction and magnitude of change */}
                     <div style={{ height:3, background:"#1a2436", borderRadius:2, overflow:"hidden", marginTop:4, position:"relative" }}>
-                      <div style={{
-                        position:"absolute",
-                        height:"100%",
+                      <div style={{ position:"absolute", height:"100%",
                         left: chg >= 0 ? "50%" : `${Math.max(0, 50 + chg/2)}%`,
                         width: `${Math.min(50, Math.abs(chg)/2)}%`,
-                        background: chg > 0 ? "#10b981" : "#f43f5e",
-                        borderRadius:2, transition:"all 0.2s"
-                      }}/>
+                        background: chg > 0 ? "#10b981" : "#f43f5e", borderRadius:2, transition:"all 0.2s" }}/>
                       <div style={{ position:"absolute", left:"50%", top:0, width:1, height:"100%", background:"#334155" }}/>
                     </div>
                   </div>
@@ -1853,11 +1890,11 @@ function MathieuFarmPage({ region }) {
             </div>
             <div style={{ marginTop:14, paddingTop:12, borderTop:"1px solid #1a2436" }}>
               <div style={{ display:"flex", justifyContent:"space-between" }}>
-                <span style={{ color:"#94a3b8", fontSize:11 }}>Total new spend</span>
-                <span style={{ color:"#e2e8f0", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>€{Object.values(current).reduce((s,v)=>s+v,0).toLocaleString()}/ha</span>
+                <span style={{ color:"#94a3b8", fontSize:11 }}>Total spend</span>
+                <span style={{ color:"#e2e8f0", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>€{Object.values(current).reduce((s,v)=>s+v,0)}/ha</span>
               </div>
               <div style={{ display:"flex", justifyContent:"space-between", marginTop:4 }}>
-                <span style={{ color:"#94a3b8", fontSize:11 }}>Predicted new output</span>
+                <span style={{ color:"#94a3b8", fontSize:11 }}>Predicted output</span>
                 <span style={{ color:"#0ea5e9", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>€{currentOutput.toFixed(0)}/ha</span>
               </div>
             </div>
@@ -1865,47 +1902,44 @@ function MathieuFarmPage({ region }) {
         </div>
       </div>
 
-      {/* ── SECTION 3: RESULTS PANEL ──────────────────────────────────────────── */}
+      {/* ── SECTION 4: RESULTS ───────────────────────────────────────────────── */}
       <div style={{ background:"linear-gradient(135deg,#060d18,#080e14)", border:"1px solid #1a2436", borderRadius:16, overflow:"hidden" }}>
-        <div style={{ padding:"20px 28px", borderBottom:"1px solid #1a2436" }}>
-          <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, margin:0 }}>Model output — what the log-log calculator predicts</p>
+        <div style={{ padding:"18px 28px", borderBottom:"1px solid #1a2436" }}>
+          <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, margin:0 }}>
+            Model output — {simRegion} · {simFarmType} · {simYear}
+          </p>
         </div>
 
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:0 }}>
-          {/* Baseline output */}
           <div style={{ padding:"20px 24px", borderRight:"1px solid #1a2436" }}>
             <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>Baseline output</p>
             <p style={{ color:"#e2e8f0", fontSize:28, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0, lineHeight:1 }}>
               €{baselineOutput.toFixed(0)}<span style={{ fontSize:12, color:"#94a3b8", fontWeight:400 }}>/ha</span>
             </p>
-            <p style={{ color:"#94a3b8", fontSize:10, marginTop:6 }}>at yesterday's allocation</p>
+            <p style={{ color:"#94a3b8", fontSize:10, marginTop:6 }}>at yesterday's spending</p>
           </div>
-
-          {/* New output */}
           <div style={{ padding:"20px 24px", borderRight:"1px solid #1a2436" }}>
             <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>Predicted new output</p>
             <p style={{ color:"#0ea5e9", fontSize:28, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0, lineHeight:1 }}>
               €{currentOutput.toFixed(0)}<span style={{ fontSize:12, color:"#94a3b8", fontWeight:400 }}>/ha</span>
             </p>
-            <p style={{ color:"#94a3b8", fontSize:10, marginTop:6 }}>at today's allocation</p>
+            <p style={{ color:"#94a3b8", fontSize:10, marginTop:6 }}>at today's spending</p>
           </div>
-
-          {/* Delta */}
           <div style={{ padding:"20px 24px" }}>
             <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>Change</p>
-            <p style={{ color: outputDelta >= 0 ? "#10b981" : "#f43f5e", fontSize:28, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0, lineHeight:1 }}>
-              {outputDelta >= 0 ? "+" : ""}€{Math.abs(outputDelta).toFixed(0)}<span style={{ fontSize:12, color:"#94a3b8", fontWeight:400 }}>/ha</span>
+            <p style={{ color:outputDelta>=0?"#10b981":"#f43f5e", fontSize:28, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0, lineHeight:1 }}>
+              {outputDelta>=0?"+":""}€{Math.abs(outputDelta).toFixed(0)}<span style={{ fontSize:12, color:"#94a3b8", fontWeight:400 }}>/ha</span>
             </p>
-            <p style={{ color: outputDelta >= 0 ? "#10b981" : "#f43f5e", fontSize:11, fontWeight:700, marginTop:6, fontFamily:"'DM Mono',monospace" }}>
-              {outputDeltaPct >= 0 ? "+" : ""}{outputDeltaPct.toFixed(2)}% vs baseline
+            <p style={{ color:outputDelta>=0?"#10b981":"#f43f5e", fontSize:11, fontWeight:700, marginTop:6, fontFamily:"'DM Mono',monospace" }}>
+              {outputDeltaPct>=0?"+":""}{outputDeltaPct.toFixed(2)}% vs baseline
             </p>
           </div>
         </div>
 
-        {/* Per-input breakdown of the output change */}
-        <div style={{ padding:"18px 28px", borderTop:"1px solid #1a2436" }}>
-          <p style={{ color:"#e2e8f0", fontSize:11, fontWeight:700, marginBottom:12 }}>How each input contributed to the output change</p>
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:12 }}>
+        {/* Per-input contribution breakdown */}
+        <div style={{ padding:"16px 28px", borderTop:"1px solid #1a2436" }}>
+          <p style={{ color:"#e2e8f0", fontSize:11, fontWeight:700, marginBottom:12 }}>Contribution of each input to the output change</p>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:10 }}>
             {inputKeys.map(k => {
               const cfg = CONFIG[k];
               const chg = pctChanges[k];
@@ -1913,20 +1947,18 @@ function MathieuFarmPage({ region }) {
               const pctOfTotal = totalLogOutputChange !== 0 ? (contrib / Math.abs(totalLogOutputChange)) * 100 : 0;
               return (
                 <div key={k} style={{ background:"#060d1a", borderRadius:10, padding:"12px 14px", border:`1px solid ${cfg.color}20` }}>
-                  <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:8 }}>
-                    <div style={{ width:6, height:6, borderRadius:2, background:cfg.color }}/>
+                  <div style={{ display:"flex", alignItems:"center", gap:5, marginBottom:7 }}>
+                    <div style={{ width:5, height:5, borderRadius:2, background:cfg.color }}/>
                     <span style={{ color:"#e2e8f0", fontSize:11, fontWeight:600 }}>{cfg.label}</span>
                   </div>
-                  <p style={{ color:chg===0?"#475569":chg>0?"#10b981":"#f43f5e", fontSize:11, fontFamily:"'DM Mono',monospace", margin:0, marginBottom:4 }}>
-                    Spending {chg===0?"unchanged":chg>0?"↑":"↓"} {chg===0?"":Math.abs(chg).toFixed(1)+"%"}
+                  <p style={{ color:chg===0?"#475569":chg>0?"#10b981":"#f43f5e", fontSize:11, fontFamily:"'DM Mono',monospace", margin:0, marginBottom:3 }}>
+                    {chg===0 ? "unchanged" : (chg>0?"↑ ":"↓ ") + Math.abs(chg).toFixed(1)+"%"}
                   </p>
                   <p style={{ color:contrib===0?"#475569":contrib>0?cfg.color:"#f43f5e", fontSize:13, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>
-                    {contrib===0 ? "no change" : (contrib>0?"+":"")}{ (contrib*100).toFixed(2)}% log pts
+                    {contrib===0 ? "—" : (contrib>0?"+":"")+((contrib)*100).toFixed(2)+"% log pts"}
                   </p>
                   {totalLogOutputChange !== 0 && contrib !== 0 && (
-                    <p style={{ color:"#94a3b8", fontSize:10, margin:"4px 0 0" }}>
-                      {Math.abs(pctOfTotal).toFixed(0)}% of total shift
-                    </p>
+                    <p style={{ color:"#94a3b8", fontSize:10, margin:"3px 0 0" }}>{Math.abs(pctOfTotal).toFixed(0)}% of total shift</p>
                   )}
                 </div>
               );
@@ -1935,74 +1967,84 @@ function MathieuFarmPage({ region }) {
         </div>
       </div>
 
-      {/* ── SECTION 4: LIVE INTERPRETATION ───────────────────────────────────── */}
+      {/* ── SECTION 5: INTERPRETATION ────────────────────────────────────────── */}
       <div style={{ background:"linear-gradient(135deg,#0a1628,#060d18)", border:"1px solid #0ea5e920", borderRadius:14, padding:"22px 28px" }}>
         <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.16em", fontWeight:700, marginBottom:18 }}>
-          Interpretation — reading Mathieu's choices
+          Interpretation — Mathieu's choices, read by the model
         </p>
 
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
 
-          {/* Overall shift */}
+          {/* Context sentence */}
+          <div style={{ paddingLeft:16, borderLeft:"3px solid #0ea5e9" }}>
+            <p style={{ color:"#e2e8f0", fontSize:13, lineHeight:1.85, margin:0 }}>
+              Mathieu farms in <span style={{ color:"#0ea5e9", fontWeight:700 }}>{simRegion}</span> as a{" "}
+              <span style={{ color:"#0ea5e9", fontWeight:700 }}>{simFarmType}</span> operation in <span style={{ color:"#0ea5e9", fontWeight:700 }}>{simYear}</span>.
+              His region carries a structural output adjustment of{" "}
+              <span style={{ color:Number(regionPct)>=0?"#10b981":"#f43f5e", fontWeight:700 }}>{Number(regionPct)>=0?"+":""}{regionPct}%</span>{" "}
+              versus the Île-de-France reference, and his farming type adds a further{" "}
+              <span style={{ color:Number(farmtypePct)>=0?"#10b981":"#f43f5e", fontWeight:700 }}>{Number(farmtypePct)>=0?"+":""}{farmtypePct}%</span>.
+              These are baked into both the baseline and the new prediction — they do not change with spending decisions.
+            </p>
+          </div>
+
+          {/* Overall output shift */}
           <div style={{ paddingLeft:16, borderLeft:`3px solid ${outputDelta>=0?"#10b981":"#f43f5e"}` }}>
             <p style={{ color:"#e2e8f0", fontSize:13, lineHeight:1.85, margin:0 }}>
-              Moving from his baseline allocation to today's, Mathieu's total input spend{" "}
+              Moving from yesterday's allocation to today's, his total input spend{" "}
               {Object.values(current).reduce((s,v)=>s+v,0) > Object.values(baseline).reduce((s,v)=>s+v,0)
-                ? <span style={{ color:"#10b981", fontWeight:700 }}>increases by €{(Object.values(current).reduce((s,v)=>s+v,0) - Object.values(baseline).reduce((s,v)=>s+v,0)).toLocaleString()}/ha</span>
+                ? <span style={{ color:"#10b981", fontWeight:700 }}>increases by €{(Object.values(current).reduce((s,v)=>s+v,0)-Object.values(baseline).reduce((s,v)=>s+v,0))}/ha</span>
                 : Object.values(current).reduce((s,v)=>s+v,0) < Object.values(baseline).reduce((s,v)=>s+v,0)
-                ? <span style={{ color:"#f43f5e", fontWeight:700 }}>decreases by €{(Object.values(baseline).reduce((s,v)=>s+v,0) - Object.values(current).reduce((s,v)=>s+v,0)).toLocaleString()}/ha</span>
+                ? <span style={{ color:"#f43f5e", fontWeight:700 }}>decreases by €{(Object.values(baseline).reduce((s,v)=>s+v,0)-Object.values(current).reduce((s,v)=>s+v,0))}/ha</span>
                 : <span style={{ color:"#94a3b8", fontWeight:700 }}>stays the same</span>
               }.{" "}
-              The log-log model predicts his output per hectare will{" "}
+              The model predicts output will{" "}
               {outputDelta >= 0
-                ? <><span style={{ color:"#10b981", fontWeight:700 }}>increase by €{outputDelta.toFixed(0)}</span>, a gain of <span style={{ color:"#10b981", fontWeight:700 }}>+{outputDeltaPct.toFixed(2)}%</span> over his baseline of €{baselineOutput.toFixed(0)}/ha.</>
-                : <><span style={{ color:"#f43f5e", fontWeight:700 }}>fall by €{Math.abs(outputDelta).toFixed(0)}</span>, a loss of <span style={{ color:"#f43f5e", fontWeight:700 }}>{outputDeltaPct.toFixed(2)}%</span> from his baseline of €{baselineOutput.toFixed(0)}/ha.</>
+                ? <><span style={{ color:"#10b981", fontWeight:700 }}>increase by €{outputDelta.toFixed(0)}/ha</span>, a gain of <span style={{ color:"#10b981", fontWeight:700 }}>+{outputDeltaPct.toFixed(2)}%</span> over his baseline of €{baselineOutput.toFixed(0)}/ha.</>
+                : <><span style={{ color:"#f43f5e", fontWeight:700 }}>fall by €{Math.abs(outputDelta).toFixed(0)}/ha</span>, a loss of <span style={{ color:"#f43f5e", fontWeight:700 }}>{outputDeltaPct.toFixed(2)}%</span> from his baseline of €{baselineOutput.toFixed(0)}/ha.</>
               }
             </p>
           </div>
 
-          {/* Biggest driver of the change */}
+          {/* Biggest input driver */}
           {(() => {
-            const sorted = inputKeys.filter(k => outputContribs[k] !== 0).sort((a,b) => Math.abs(outputContribs[b]) - Math.abs(outputContribs[a]));
+            const sorted = inputKeys.filter(k=>outputContribs[k]!==0).sort((a,b)=>Math.abs(outputContribs[b])-Math.abs(outputContribs[a]));
             if (sorted.length === 0) return (
               <div style={{ paddingLeft:16, borderLeft:"3px solid #1a2436" }}>
-                <p style={{ color:"#94a3b8", fontSize:13, lineHeight:1.85, margin:0 }}>Mathieu has not changed any of his input levels yet. Adjust the sliders above to see the model respond.</p>
+                <p style={{ color:"#94a3b8", fontSize:13, lineHeight:1.85, margin:0 }}>Mathieu has not changed any spending levels yet. Move the sliders above to see the model respond.</p>
               </div>
             );
             const top = sorted[0];
             const cfg = CONFIG[top];
-            const e = MODEL1.elasticities[top].coef;
             const chg = pctChanges[top];
             return (
               <div style={{ paddingLeft:16, borderLeft:`3px solid ${cfg.color}` }}>
                 <p style={{ color:"#e2e8f0", fontSize:13, lineHeight:1.85, margin:0 }}>
-                  The single biggest driver of this output change is{" "}
-                  <span style={{ color:cfg.color, fontWeight:700 }}>{cfg.label}</span>, where Mathieu{" "}
+                  The biggest driver of this shift is <span style={{ color:cfg.color, fontWeight:700 }}>{cfg.label}</span>, where Mathieu{" "}
                   {chg > 0
                     ? <><span style={{ color:"#10b981", fontWeight:700 }}>increased spending by {chg.toFixed(1)}%</span> (from €{baseline[top]} to €{current[top]}/ha)</>
-                    : <><span style={{ color:"#f43f5e", fontWeight:700 }}>reduced spending by {Math.abs(chg).toFixed(1)}%</span> (from €{baseline[top]} to €{current[top]}/ha)</>
+                    : <><span style={{ color:"#f43f5e", fontWeight:700 }}>cut spending by {Math.abs(chg).toFixed(1)}%</span> (from €{baseline[top]} to €{current[top]}/ha)</>
                   }.{" "}
-                  With an output elasticity of <span style={{ color:cfg.color, fontWeight:700 }}>{(e*100).toFixed(1)}%</span>, that {chg>0?"increase":"cut"} alone accounts for{" "}
-                  <span style={{ color:cfg.color, fontWeight:700 }}>
-                    {Math.abs(outputContribs[top]/totalLogOutputChange*100).toFixed(0)}% of the total output shift
-                  </span>.
+                  With an output elasticity of <span style={{ color:cfg.color, fontWeight:700 }}>{(MODEL1.elasticities[top].coef*100).toFixed(1)}%</span>,
+                  that {chg>0?"increase":"cut"} alone accounts for{" "}
+                  <span style={{ color:cfg.color, fontWeight:700 }}>{Math.abs(outputContribs[top]/totalLogOutputChange*100).toFixed(0)}% of the total output shift</span>.
                 </p>
               </div>
             );
           })()}
 
-          {/* Seeds vs fertilizer tension */}
+          {/* Structural tension */}
           <div style={{ paddingLeft:16, borderLeft:"3px solid #a78bfa" }}>
             <p style={{ color:"#e2e8f0", fontSize:13, lineHeight:1.85, margin:0 }}>
-              Across both allocations, the input with the strongest structural leverage on output remains{" "}
-              <span style={{ color:"#a78bfa", fontWeight:700 }}>seeds and crop protection</span> (elasticity{" "}
-              <span style={{ color:"#a78bfa", fontWeight:700 }}>+{(MODEL1.elasticities.intermediate.coef*100).toFixed(1)}%</span>),
-              roughly {(MODEL1.elasticities.intermediate.coef / MODEL1.elasticities.fertilisers.coef).toFixed(0)}x more sensitive than fertilizer.
-              Mathieu is currently spending <span style={{ color:"#a78bfa", fontWeight:700 }}>€{current.intermediate}/ha</span> there
-              versus <span style={{ color:"#0ea5e9", fontWeight:700 }}>€{current.fertilisers}/ha</span> on fertilizer.
+              Regardless of how he allocates, seeds and crop protection remains the structurally dominant input with an elasticity of{" "}
+              <span style={{ color:"#a78bfa", fontWeight:700 }}>+{(MODEL1.elasticities.intermediate.coef*100).toFixed(1)}%</span> — 
+              {(MODEL1.elasticities.intermediate.coef/MODEL1.elasticities.fertilisers.coef).toFixed(0)}× more powerful than fertilizer.
+              Mathieu is currently spending <span style={{ color:"#a78bfa", fontWeight:700 }}>€{current.intermediate}/ha</span> on seeds versus{" "}
+              <span style={{ color:"#0ea5e9", fontWeight:700 }}>€{current.fertilisers}/ha</span> on fertilizer.
               {(current.fertilisers / current.intermediate) > (MODEL1.elasticities.fertilisers.coef / MODEL1.elasticities.intermediate.coef)
-                ? " Given the relative elasticities, his fertilizer share is disproportionately high."
-                : " His allocation is broadly consistent with the relative elasticities."}
+                ? " Given the relative elasticities, his fertilizer share is disproportionately high relative to what drives output."
+                : " His allocation is broadly consistent with the relative elasticities."
+              }
             </p>
           </div>
 
@@ -2011,7 +2053,6 @@ function MathieuFarmPage({ region }) {
     </div>
   );
 }
-
 
 
 // ─── MARKET INTELLIGENCE PAGES ────────────────────────────────────────────────
