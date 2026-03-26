@@ -3,57 +3,17 @@ import ATLASPage from "./ATLAS";
 import {
   BarChart, Bar, LineChart, Line, RadarChart, Radar, PolarGrid, PolarAngleAxis,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  ReferenceLine, Area, AreaChart, Cell, PieChart, Pie
+  ReferenceLine, Cell, PieChart, Pie
 } from "recharts";
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
-const SAMPLE_DATA = [
-  { region:"Spain",     crop:"Wheat",  soil_ph:7.8, om:1.2, strategy:"Blended (MAP)",     yield:4.2,  fert_cost:310, op_cost:820,  revenue:1050, margin:230 },
-  { region:"Spain",     crop:"Wheat",  soil_ph:7.8, om:1.2, strategy:"Separated (TSP+N)", yield:4.55, fert_cost:295, op_cost:875,  revenue:1137, margin:262 },
-  { region:"Spain",     crop:"Wheat",  soil_ph:7.8, om:1.2, strategy:"Optimized",         yield:4.7,  fert_cost:285, op_cost:860,  revenue:1175, margin:315 },
-  { region:"France",    crop:"Wheat",  soil_ph:6.5, om:2.1, strategy:"Blended (MAP)",     yield:7.1,  fert_cost:340, op_cost:980,  revenue:1775, margin:795 },
-  { region:"France",    crop:"Wheat",  soil_ph:6.5, om:2.1, strategy:"Separated (TSP+N)", yield:7.2,  fert_cost:330, op_cost:1030, revenue:1800, margin:770 },
-  { region:"France",    crop:"Wheat",  soil_ph:6.5, om:2.1, strategy:"Optimized",         yield:7.4,  fert_cost:320, op_cost:1010, revenue:1850, margin:840 },
-  { region:"Brazil",    crop:"Maize",  soil_ph:5.4, om:2.8, strategy:"Blended (MAP)",     yield:7.8,  fert_cost:420, op_cost:1100, revenue:1248, margin:148 },
-  { region:"Brazil",    crop:"Maize",  soil_ph:5.4, om:2.8, strategy:"Separated (TSP+N)", yield:8.6,  fert_cost:400, op_cost:1170, revenue:1376, margin:206 },
-  { region:"Brazil",    crop:"Maize",  soil_ph:5.4, om:2.8, strategy:"Optimized",         yield:9.1,  fert_cost:390, op_cost:1150, revenue:1456, margin:306 },
-  { region:"Australia", crop:"Wheat",  soil_ph:6.1, om:1.5, strategy:"Blended (MAP)",     yield:3.8,  fert_cost:280, op_cost:760,  revenue:950,  margin:190 },
-  { region:"Australia", crop:"Wheat",  soil_ph:6.1, om:1.5, strategy:"Separated (TSP+N)", yield:4.0,  fert_cost:270, op_cost:810,  revenue:1000, margin:190 },
-  { region:"Australia", crop:"Wheat",  soil_ph:6.1, om:1.5, strategy:"Optimized",         yield:4.2,  fert_cost:265, op_cost:795,  revenue:1050, margin:255 },
-  { region:"Morocco",   crop:"Wheat",  soil_ph:8.1, om:0.8, strategy:"Blended (MAP)",     yield:2.9,  fert_cost:260, op_cost:620,  revenue:725,  margin:105 },
-  { region:"Morocco",   crop:"Wheat",  soil_ph:8.1, om:0.8, strategy:"Separated (TSP+N)", yield:3.3,  fert_cost:245, op_cost:675,  revenue:825,  margin:150 },
-  { region:"Morocco",   crop:"Wheat",  soil_ph:8.1, om:0.8, strategy:"Optimized",         yield:3.5,  fert_cost:240, op_cost:658,  revenue:875,  margin:217 },
-  { region:"Spain",     crop:"Olives", soil_ph:7.5, om:1.0, strategy:"Blended (MAP)",     yield:3.1,  fert_cost:290, op_cost:1100, revenue:1550, margin:450 },
-  { region:"Spain",     crop:"Olives", soil_ph:7.5, om:1.0, strategy:"Separated (TSP+N)", yield:3.3,  fert_cost:275, op_cost:1155, revenue:1650, margin:495 },
-  { region:"Spain",     crop:"Olives", soil_ph:7.5, om:1.0, strategy:"Optimized",         yield:3.5,  fert_cost:265, op_cost:1135, revenue:1750, margin:615 },
-];
 
-// Active regions (data available). Turkey listed as coming soon in the selector.
-const REGIONS = ["France"];
-const STRATEGY_COLORS = { "Blended (MAP)":"#64748b", "Separated (TSP+N)":"#0ea5e9", "Optimized":"#10b981" };
 
 // ─── EXCEL DATA (Farmer Analytics factsheets v5 — France) ────────────────────
 const YEARS       = [2017,2018,2019,2020,2021,2022,2023];
-const PM_SEASONS  = ["16-17","17-18","18-19","19-20","20-21","21-22","22-23"];
 
-const CONSUMPTION_DATA = YEARS.map((y,i) => ({
-  year: y,
-  N:    [2242700,2248277,2140000,2130000,1880000,1780000,1719000][i],
-  P2O5: [444000,420423,440000,410000,450000,350000,226000][i],
-  K2O:  [427000,451365,460000,470000,530000,410000,224000][i],
-}));
 
-const PM_COLORS = { "DAP/MAP":"#0ea5e9","NPK/NP":"#a78bfa","PK":"#f59e0b","TSP":"#10b981","Other P":"#64748b","Organomineral":"#818cf8" };
 
-const PRODUCT_MIX_DATA = PM_SEASONS.map((s,i) => ({
-  season:s,
-  "DAP/MAP":[121,135,142,148,136,72,55][i],
-  "NPK/NP":[96,98,97,103,111,103,66.4][i],
-  "PK":[64,79,80,71,83,74,43.1][i],
-  "TSP":[88,98,77,63,83,54,25][i],
-  "Other P":[29,32,32,29,34,39,32.5][i],
-  "Organomineral":[4,3,3,3,3,4,4][i],
-}));
 
 const REGIONAL_DATA = {
   "Île-de-France":{
@@ -445,8 +405,6 @@ const MARKET_INTEL = {
 };
 
 // ─── UTILITY ─────────────────────────────────────────────────────────────────
-function fmt(n, prefix="$") { if (n===undefined||n===null) return "—"; return `${prefix}${Number(n).toFixed(0)}`; }
-function pct(n) { return `${Number(n).toFixed(1)}%`; }
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active||!payload?.length) return null;
@@ -458,24 +416,6 @@ const CustomTooltip = ({ active, payload, label }) => {
   );
 };
 
-function generateInsights(data, region, crop) {
-  const filtered = data.filter(d=>d.region===region&&d.crop===crop);
-  if (!filtered.length) return [];
-  const base=filtered.find(d=>d.strategy==="Blended (MAP)");
-  const sep=filtered.find(d=>d.strategy==="Separated (TSP+N)");
-  const opt=filtered.find(d=>d.strategy==="Optimized");
-  if (!base||!sep) return [];
-  const ph=base.soil_ph, md=sep.margin-base.margin, yg=((sep.yield-base.yield)/base.yield*100).toFixed(1), eoc=sep.op_cost-base.op_cost, bey=(eoc/(base.revenue/base.yield)).toFixed(2);
-  const ins=[];
-  if (ph>7.5) ins.push(`In calcareous soils (pH ${ph}), P fixation is high — separation improves net margin by ~$${md}/ha.`);
-  else if (ph<6.0) ins.push(`Acidic soils (pH ${ph}) show strong response to TSP separation — a ${yg}% yield gain modeled.`);
-  else ins.push(`Moderate pH (${ph}) limits the soil-driven case — still net positive at $${md}/ha.`);
-  ins.push(`Separation requires $${eoc}/ha extra operational cost. Break-even at ${bey} t/ha yield gain.`);
-  if (md>0) ins.push(`Separation increases profit per hectare once all incremental costs are included.`);
-  else ins.push(`Separation is margin-neutral here. Lower pass costs or higher prices would tip the balance.`);
-  if (opt) ins.push(`Optimized program: $${(opt.margin-base.margin).toFixed(0)}/ha above baseline.`);
-  return ins;
-}
 
 // ─── SHARED COMPONENTS ───────────────────────────────────────────────────────
 function KPICard({ label, value, sub, accent }) {
@@ -1561,7 +1501,6 @@ const MODEL2 = {
 // Act 3: Income reality check
 
 function MathieuIntroPage({ region, onEnterFarm }) {
-  const [hov, setHov] = useState(false);
 
   if (region !== "France") return (
     <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:400, gap:20 }}>
@@ -1673,10 +1612,8 @@ function MathieuFarmPage({ region }) {
   const [simPhase, setSimPhase]   = useState("context"); // context | allocate | running | result1 | result2
   const [farmType, setFarmType]   = useState("Cereals & field crops");
   const [simRegion, setSimRegion] = useState("Champagne-Ardenne");
-  const [budget, setBudget]       = useState(1000); // €/ha total budget
+  const [budget, setBudget]       = useState(1000);
   const [alloc, setAlloc]         = useState({ fertilisers:0.25, wages:0.15, depreciation:0.20, intermediate:0.40 });
-  const [running, setRunning]     = useState(false);
-  const [revealed, setRevealed]   = useState(false);
 
   if (region !== "France") return (
     <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:400, gap:16 }}>
@@ -1732,12 +1669,6 @@ function MathieuFarmPage({ region }) {
 
   const allocColors = { fertilisers:"#0ea5e9", wages:"#10b981", depreciation:"#f59e0b", intermediate:"#a78bfa" };
   const allocLabels = { fertilisers:"Fertilizers", wages:"Labour", depreciation:"Machinery / Depreciation", intermediate:"Intermediate inputs" };
-  const allocIcons = {
-    fertilisers:"M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z",
-    wages:"M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2",
-    depreciation:"M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z",
-    intermediate:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
-  };
 
   const regionFEPct1 = (Math.exp(regionFE1)-1)*100;
   const regionFEPct2 = (Math.exp(regionFE2)-1)*100;
@@ -1748,9 +1679,8 @@ function MathieuFarmPage({ region }) {
   const REGIONS_LIST = Object.keys(MODEL1.regions);
 
   const runSim = () => {
-    setRunning(true);
     setSimPhase("running");
-    setTimeout(() => { setSimPhase("result1"); setRunning(false); }, 2200);
+    setTimeout(() => { setSimPhase("result1"); }, 2200);
   };
 
   return (
@@ -1764,7 +1694,7 @@ function MathieuFarmPage({ region }) {
 
       {/* Back button + breadcrumb */}
       {simPhase !== "context" && (
-        <button onClick={()=>{setSimPhase("context");setRevealed(false);}}
+        <button onClick={()=>setSimPhase("context")}
           style={{ display:"flex",alignItems:"center",gap:8,background:"transparent",border:"none",color:"#64748b",fontSize:12,cursor:"pointer",padding:0,width:"fit-content" }}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
           Back to context selection
