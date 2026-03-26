@@ -1515,11 +1515,12 @@ function MathieuIntroPage({ region, onEnterFarm }) {
       <style>{`
         @keyframes mFadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
         @keyframes mPulse  { 0%,100%{opacity:0.6} 50%{opacity:1} }
-        .mathieu-farm-btn:hover { transform:translateY(-4px) !important; box-shadow:0 24px 60px rgba(14,165,233,0.18) !important; border-color:rgba(14,165,233,0.6) !important; }
+        .mathieu-farm-btn { transition:all 0.25s ease !important; }
+        .mathieu-farm-btn:hover { transform:translateY(-4px) !important; box-shadow:0 24px 60px rgba(14,165,233,0.20) !important; border-color:rgba(14,165,233,0.55) !important; }
         .mathieu-farm-btn:hover .farm-enter-label { color:#f1f5f9 !important; }
       `}</style>
 
-      {/* Hero — split layout: text left, portrait right */}
+      {/* Hero */}
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:0, minHeight:480, background:"linear-gradient(135deg,#04080f 60%,#060d1a)", borderRadius:16, overflow:"hidden", border:"1px solid #1a2436", marginBottom:24 }}>
 
         {/* Left: text */}
@@ -1530,42 +1531,38 @@ function MathieuIntroPage({ region, onEnterFarm }) {
               Meet <span style={{ fontWeight:800, color:"#f1f5f9" }}>Mathieu.</span>
             </h1>
           </div>
-
           <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
             <p style={{ color:"#94a3b8", fontSize:14, lineHeight:1.85, margin:0 }}>
               Mathieu is a cereal farmer in northern France. He manages 120 hectares of wheat and barley, watches his costs carefully, and every spring faces the same question: should he spend more on his inputs, or hold back?
             </p>
             <p style={{ color:"#94a3b8", fontSize:14, lineHeight:1.85, margin:0 }}>
-              His intuition has always been simple. Spend more on fertilizers, get more yield. Get more yield, earn more. It feels obvious. It's what his father did, and his father's father before him.
+              His intuition has always been simple. Spend more on fertilizers, get more yield. Get more yield, earn more. It feels obvious. It is what his father did, and his father's father before him.
             </p>
             <p style={{ color:"#cbd5e1", fontSize:14, lineHeight:1.85, margin:0, fontStyle:"italic", borderLeft:"2px solid #0ea5e940", paddingLeft:16 }}>
               "If I invest more in my fields, I should harvest more. And if I harvest more, I should earn more."
             </p>
             <p style={{ color:"#94a3b8", fontSize:14, lineHeight:1.85, margin:0 }}>
-              That belief guides almost every decision Mathieu makes. But it is a hypothesis, not a fact. And we have spent the last year testing it with data from thousands of farms just like his.
+              That belief guides almost every decision Mathieu makes. But it is a hypothesis, not a fact. We spent the last year testing it with data from thousands of farms just like his.
             </p>
           </div>
-
           <div style={{ display:"flex", alignItems:"center", gap:10, paddingTop:8 }}>
             <div style={{ width:8, height:8, borderRadius:"50%", background:"#10b981", boxShadow:"0 0 8px #10b981", animation:"mPulse 2s ease infinite" }}/>
             <p style={{ color:"#64748b", fontSize:11, margin:0 }}>Based on FADN France panel data · log-log OLS production and income models</p>
           </div>
         </div>
 
-        {/* Right: portrait placeholder */}
-        <div style={{ position:"relative", background:"linear-gradient(135deg,#060d1a,#0a1520)", display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden" }}>
-          {/* Decorative grain */}
-          <div style={{ position:"absolute", inset:0, backgroundImage:"radial-gradient(circle at 30% 40%, rgba(14,165,233,0.06) 0%, transparent 60%), radial-gradient(circle at 70% 70%, rgba(16,185,129,0.04) 0%, transparent 50%)" }}/>
-          {/* Portrait placeholder */}
-          <div style={{ position:"relative", zIndex:1, display:"flex", flexDirection:"column", alignItems:"center", gap:16 }}>
-            <div style={{ width:200, height:240, borderRadius:12, background:"linear-gradient(160deg,#0f1f2e,#0a1420)", border:"1px dashed #1e3040", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:8 }}>
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1e3a4a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-              </svg>
-              <p style={{ color:"#1e3a4a", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em" }}>Mathieu's portrait</p>
-              <p style={{ color:"#152535", fontSize:9 }}>Replace with .png or .jpg</p>
-            </div>
-            <p style={{ color:"#334155", fontSize:11, textAlign:"center" }}>Mathieu · Céréalier · Champagne-Ardenne</p>
+        {/* Right: real portrait */}
+        <div style={{ position:"relative", overflow:"hidden", display:"flex", alignItems:"stretch" }}>
+          <img
+            src="/farmer.png"
+            alt="Mathieu, céréalier"
+            style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top", display:"block" }}
+            onError={e => { e.target.style.display="none"; e.target.parentNode.style.background="#060d1a"; }}
+          />
+          {/* Bottom gradient overlay for smooth blend */}
+          <div style={{ position:"absolute", bottom:0, left:0, right:0, height:80, background:"linear-gradient(to top,#04080f,transparent)", pointerEvents:"none" }}/>
+          <div style={{ position:"absolute", bottom:16, left:0, right:0, textAlign:"center" }}>
+            <span style={{ color:"rgba(255,255,255,0.4)", fontSize:11, letterSpacing:"0.1em" }}>Mathieu · Céréalier · Champagne-Ardenne</span>
           </div>
         </div>
       </div>
@@ -1574,29 +1571,27 @@ function MathieuIntroPage({ region, onEnterFarm }) {
       <div
         className="mathieu-farm-btn"
         onClick={onEnterFarm}
-        style={{ background:"linear-gradient(135deg,#060d1a,#04080f)", border:"1px solid rgba(14,165,233,0.25)", borderRadius:16, overflow:"hidden", cursor:"pointer", transition:"all 0.25s ease", position:"relative", animation:"mFadeUp 0.7s 0.3s ease both", opacity:0 }}>
+        style={{ background:"#04080f", border:"1px solid rgba(14,165,233,0.25)", borderRadius:16, overflow:"hidden", cursor:"pointer", position:"relative", animation:"mFadeUp 0.7s 0.3s ease both", opacity:0 }}>
 
-        {/* Farm image placeholder */}
-        <div style={{ height:220, background:"linear-gradient(160deg,#040810,#060f1a,#041018)", position:"relative", display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden" }}>
-          <div style={{ position:"absolute", inset:0, backgroundImage:"linear-gradient(rgba(14,165,233,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(14,165,233,0.03) 1px,transparent 1px)", backgroundSize:"40px 40px" }}/>
-          <div style={{ position:"absolute", bottom:0, left:0, right:0, height:"60%", background:"linear-gradient(to top,#060d1a,transparent)" }}/>
-          <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:10, position:"relative", zIndex:1 }}>
-            <div style={{ width:"100%", maxWidth:340, height:140, borderRadius:8, background:"linear-gradient(160deg,#060f18,#0a1828)", border:"1px dashed #1e3040", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:8 }}>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1e3040" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
-              </svg>
-              <p style={{ color:"#1e3040", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em" }}>Farm photograph</p>
-              <p style={{ color:"#152535", fontSize:9 }}>Replace with .png or .jpg</p>
-            </div>
+        {/* Farm photo */}
+        <div style={{ height:240, position:"relative", overflow:"hidden" }}>
+          <img
+            src="/farm.jpg"
+            alt="Mathieu's farm"
+            style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center", display:"block" }}
+            onError={e => { e.target.style.display="none"; }}
+          />
+          <div style={{ position:"absolute", inset:0, background:"linear-gradient(to bottom,transparent 40%,rgba(4,8,15,0.85))" }}/>
+          <div style={{ position:"absolute", bottom:24, left:36 }}>
+            <p style={{ color:"rgba(255,255,255,0.5)", fontSize:10, textTransform:"uppercase", letterSpacing:"0.14em", margin:0 }}>Begin the simulation</p>
           </div>
         </div>
 
-        {/* CTA */}
-        <div style={{ padding:"28px 36px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+        {/* CTA strip */}
+        <div style={{ padding:"24px 36px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
           <div>
-            <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.14em", marginBottom:8 }}>Begin the simulation</p>
             <p className="farm-enter-label" style={{ color:"#94a3b8", fontSize:20, fontWeight:700, letterSpacing:"-0.02em", margin:0, transition:"color 0.2s" }}>Enter Mathieu's Farm</p>
-            <p style={{ color:"#475569", fontSize:12, marginTop:6 }}>Choose your context, allocate your budget, run the models.</p>
+            <p style={{ color:"#475569", fontSize:12, marginTop:6 }}>Allocate his budget, run the models, read the results.</p>
           </div>
           <div style={{ width:52, height:52, borderRadius:"50%", background:"rgba(14,165,233,0.08)", border:"1px solid rgba(14,165,233,0.2)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -1609,11 +1604,8 @@ function MathieuIntroPage({ region, onEnterFarm }) {
 
 // ─── MATHIEU FARM SIMULATION ──────────────────────────────────────────────────
 function MathieuFarmPage({ region }) {
-  const [simPhase, setSimPhase]   = useState("context"); // context | allocate | running | result1 | result2
-  const [farmType, setFarmType]   = useState("Cereals & field crops");
-  const [simRegion, setSimRegion] = useState("Champagne-Ardenne");
-  const [budget, setBudget]       = useState(1000);
-  const [alloc, setAlloc]         = useState({ fertilisers:0.25, wages:0.15, depreciation:0.20, intermediate:0.40 });
+  const [budget, setBudget] = useState(1000);
+  const [alloc, setAlloc]   = useState({ fertilisers:0.25, wages:0.15, depreciation:0.20, intermediate:0.40 });
 
   if (region !== "France") return (
     <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:400, gap:16 }}>
@@ -1621,7 +1613,6 @@ function MathieuFarmPage({ region }) {
     </div>
   );
 
-  // Derived spending from allocation
   const spending = {
     fertilisers:  budget * alloc.fertilisers,
     wages:        budget * alloc.wages,
@@ -1629,527 +1620,246 @@ function MathieuFarmPage({ region }) {
     intermediate: budget * alloc.intermediate,
   };
 
-  // Model 1 prediction: log_output = intercept + sum(elasticity * log_spending) + region_fe + farmtype_fe
   const logOutput = MODEL1.intercept
     + MODEL1.elasticities.fertilisers.coef  * Math.log(Math.max(spending.fertilisers,  1))
     + MODEL1.elasticities.wages.coef         * Math.log(Math.max(spending.wages,         1))
     + MODEL1.elasticities.depreciation.coef  * Math.log(Math.max(spending.depreciation, 1))
-    + MODEL1.elasticities.intermediate.coef  * Math.log(Math.max(spending.intermediate, 1))
-    + (MODEL1.regions[simRegion] || 0)
-    + (MODEL1.farmingTypes[farmType] || 0);
-  const predictedOutput = Math.exp(logOutput); // €/ha output
+    + MODEL1.elasticities.intermediate.coef  * Math.log(Math.max(spending.intermediate, 1));
+  const predictedOutput = Math.exp(logOutput);
 
-  // Model 2 prediction: log_fni = intercept + ...
   const logFNI = MODEL2.intercept
     + MODEL2.elasticities.fertilisers.coef  * Math.log(Math.max(spending.fertilisers,  1))
     + MODEL2.elasticities.wages.coef         * Math.log(Math.max(spending.wages,         1))
     + MODEL2.elasticities.depreciation.coef  * Math.log(Math.max(spending.depreciation, 1))
-    + MODEL2.elasticities.intermediate.coef  * Math.log(Math.max(spending.intermediate, 1))
-    + (MODEL2.regions[simRegion] || 0)
-    + (MODEL2.farmingTypes[farmType] || 0);
-  const predictedFNI = Math.exp(logFNI); // €/ha farm net income
-
-  const regionFE1 = MODEL1.regions[simRegion] || 0;
-  const regionFE2 = MODEL2.regions[simRegion] || 0;
-  const ftFE1 = MODEL1.farmingTypes[farmType] || 0;
-  const ftFE2 = MODEL2.farmingTypes[farmType] || 0;
+    + MODEL2.elasticities.intermediate.coef  * Math.log(Math.max(spending.intermediate, 1));
+  const predictedFNI = Math.exp(logFNI);
 
   const updateAlloc = (key, val) => {
-    const rest = 1 - val;
-    const others = Object.keys(alloc).filter(k=>k!==key);
-    const sumOthers = others.reduce((s,k)=>s+alloc[k],0);
-    const newAlloc = { ...alloc, [key]: val };
-    others.forEach(k => { newAlloc[k] = sumOthers > 0 ? (alloc[k]/sumOthers)*rest : rest/others.length; });
-    // Clamp
-    Object.keys(newAlloc).forEach(k => { newAlloc[k] = Math.max(0.01, Math.min(0.9, newAlloc[k])); });
-    const total = Object.values(newAlloc).reduce((s,v)=>s+v,0);
-    Object.keys(newAlloc).forEach(k => { newAlloc[k] = newAlloc[k]/total; });
+    const clamped = Math.max(0.01, Math.min(0.90, val));
+    const rest = 1 - clamped;
+    const others = Object.keys(alloc).filter(k => k !== key);
+    const sumOthers = others.reduce((s, k) => s + alloc[k], 0);
+    const newAlloc = { ...alloc, [key]: clamped };
+    others.forEach(k => {
+      newAlloc[k] = sumOthers > 0 ? (alloc[k] / sumOthers) * rest : rest / others.length;
+    });
+    const total = Object.values(newAlloc).reduce((s, v) => s + v, 0);
+    Object.keys(newAlloc).forEach(k => { newAlloc[k] = newAlloc[k] / total; });
     setAlloc(newAlloc);
   };
 
-  const allocColors = { fertilisers:"#0ea5e9", wages:"#10b981", depreciation:"#f59e0b", intermediate:"#a78bfa" };
-  const allocLabels = { fertilisers:"Fertilizers", wages:"Labour", depreciation:"Machinery / Depreciation", intermediate:"Intermediate inputs" };
-
-  const regionFEPct1 = (Math.exp(regionFE1)-1)*100;
-  const regionFEPct2 = (Math.exp(regionFE2)-1)*100;
-  const ftFEPct1 = (Math.exp(ftFE1)-1)*100;
-  const ftFEPct2 = (Math.exp(ftFE2)-1)*100;
-
-  const FARMING_TYPES = ["Cereals & field crops","Horticulture","Wine","Other permanent crops","Milk","Other grazing livestock","Granivores","Mixed"];
-  const REGIONS_LIST = Object.keys(MODEL1.regions);
-
-  const runSim = () => {
-    setSimPhase("running");
-    setTimeout(() => { setSimPhase("result1"); }, 2200);
+  const CONFIG = {
+    fertilisers:  { label:"Fertilizers",           color:"#0ea5e9", e1: MODEL1.elasticities.fertilisers.coef,  e2: MODEL2.elasticities.fertilisers.coef,
+      icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/></svg> },
+    wages:        { label:"Labour",                 color:"#10b981", e1: MODEL1.elasticities.wages.coef,         e2: MODEL2.elasticities.wages.coef,
+      icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> },
+    depreciation: { label:"Machinery",              color:"#f59e0b", e1: MODEL1.elasticities.depreciation.coef,  e2: MODEL2.elasticities.depreciation.coef,
+      icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg> },
+    intermediate: { label:"Seeds & crop protection",color:"#a78bfa", e1: MODEL1.elasticities.intermediate.coef,  e2: MODEL2.elasticities.intermediate.coef,
+      icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22V12M12 12C12 7 17 3 17 3s0 5-5 9zM12 12C12 7 7 3 7 3s0 5 5 9z"/><path d="M5 21c0-4 3-7 7-7s7 3 7 7"/></svg> },
   };
+
+  // Interpretation sentences — values only change, structure stays fixed
+  // Interpretation values — fixed template, only numbers change
+  const fertPct1 = (MODEL1.elasticities.fertilisers.coef * 100).toFixed(1);
+  const intPct1  = (MODEL1.elasticities.intermediate.coef * 100).toFixed(1);
+  const depPct2  = (MODEL2.elasticities.depreciation.coef * 100).toFixed(1);
+  const fertPct2 = (MODEL2.elasticities.fertilisers.coef * 100).toFixed(1);
+  const fertEuros = spending.fertilisers.toFixed(0);
+  const intEuros  = spending.intermediate.toFixed(0);
+  const depEuros  = spending.depreciation.toFixed(0);
 
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
       <style>{`
-        @keyframes simSpin { to{transform:rotate(360deg)} }
-        @keyframes simReveal { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes progressFill { from{width:0%} to{width:100%} }
-        .alloc-slider::-webkit-slider-thumb { width:18px;height:18px;border-radius:50%;cursor:pointer; }
+        @keyframes barnFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+        @keyframes tokenPop  { from{transform:scale(0.85);opacity:0} to{transform:scale(1);opacity:1} }
+        @keyframes resultReveal { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+        .input-token { cursor:grab; user-select:none; transition:transform 0.15s,box-shadow 0.15s; }
+        .input-token:hover { transform:translateY(-3px) scale(1.04) !important; }
+        .input-token:active { cursor:grabbing; transform:scale(0.97) !important; }
+        .barn-slot { transition:background 0.15s,border-color 0.15s; }
+        .barn-slot.drag-over { background:rgba(14,165,233,0.12) !important; border-color:rgba(14,165,233,0.5) !important; }
       `}</style>
 
-      {/* Back button + breadcrumb */}
-      {simPhase !== "context" && (
-        <button onClick={()=>setSimPhase("context")}
-          style={{ display:"flex",alignItems:"center",gap:8,background:"transparent",border:"none",color:"#64748b",fontSize:12,cursor:"pointer",padding:0,width:"fit-content" }}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-          Back to context selection
-        </button>
-      )}
-
-      {/* ── PHASE: CONTEXT ─────────────────────────────────────────────────── */}
-      {simPhase === "context" && (
-        <div style={{ display:"flex", flexDirection:"column", gap:24, animation:"simReveal 0.5s ease both" }}>
-          <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:14, padding:"28px 32px" }}>
-            <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, marginBottom:12 }}>Step 1 of 3 — Set Mathieu's context</p>
-            <p style={{ color:"#f1f5f9", fontSize:17, fontWeight:700, marginBottom:6, letterSpacing:"-0.02em" }}>Where does Mathieu farm, and what does he grow?</p>
-            <p style={{ color:"#64748b", fontSize:13, lineHeight:1.8 }}>
-              The model controls for region and farming type because they shape what the same spending can produce. Two farms spending identically can end up with very different outputs depending on their soil, climate, and crop system. Choose Mathieu's context before he makes any investment decisions.
-            </p>
+      {/* Total budget slider — top bar */}
+      <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"18px 24px", display:"flex", alignItems:"center", gap:20 }}>
+        <div style={{ flex:1 }}>
+          <div style={{ display:"flex", justifyContent:"space-between", marginBottom:8 }}>
+            <span style={{ color:"#94a3b8", fontSize:12, fontWeight:600 }}>Mathieu's total input budget per hectare</span>
+            <span style={{ color:"#f1f5f9", fontSize:18, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>€{budget.toLocaleString()}<span style={{ color:"#475569", fontSize:12, fontWeight:400 }}>/ha</span></span>
           </div>
-
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
-            {/* Region */}
-            <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"22px 24px" }}>
-              <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", fontWeight:700, marginBottom:14 }}>Region</p>
-              <div style={{ display:"flex", flexDirection:"column", gap:4, maxHeight:280, overflowY:"auto" }}>
-                {REGIONS_LIST.map(r => {
-                  const fe = MODEL1.regions[r] || 0;
-                  const pct = (Math.exp(fe)-1)*100;
-                  const sig = MODEL1.regionSig[r] || "";
-                  const isRef = r === "Champagne-Ardenne";
-                  return (
-                    <button key={r} onClick={()=>setSimRegion(r)}
-                      style={{ display:"flex", alignItems:"center", gap:10, padding:"8px 12px", borderRadius:8, cursor:"pointer", textAlign:"left",
-                        background:simRegion===r?"#0a1628":"transparent",
-                        border:`1px solid ${simRegion===r?"#0ea5e940":"transparent"}`,
-                        transition:"all 0.12s" }}
-                      onMouseEnter={e=>{if(simRegion!==r)e.currentTarget.style.background="#0a1020";}}
-                      onMouseLeave={e=>{if(simRegion!==r)e.currentTarget.style.background="transparent";}}>
-                      <span style={{ flex:1, color:simRegion===r?"#f1f5f9":"#94a3b8", fontSize:11 }}>{r}</span>
-                      {isRef
-                        ? <span style={{ color:"#475569", fontSize:9, fontStyle:"italic" }}>reference</span>
-                        : <span style={{ color:pct>=0?"#10b981":"#f43f5e", fontSize:10, fontFamily:"'DM Mono',monospace", fontWeight:600 }}>
-                            {pct>=0?"+":""}{pct.toFixed(1)}% {sig}
-                          </span>
-                      }
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Farming type */}
-            <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"22px 24px" }}>
-              <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", fontWeight:700, marginBottom:14 }}>Farming type</p>
-              <div style={{ display:"flex", flexDirection:"column", gap:4 }}>
-                {FARMING_TYPES.map(ft => {
-                  const fe = MODEL1.farmingTypes[ft] || 0;
-                  const pct = (Math.exp(fe)-1)*100;
-                  const sig = MODEL1.farmingTypeSig[ft] || "";
-                  const isRef = ft === "Cereals & field crops";
-                  return (
-                    <button key={ft} onClick={()=>setFarmType(ft)}
-                      style={{ display:"flex", alignItems:"center", gap:10, padding:"8px 12px", borderRadius:8, cursor:"pointer", textAlign:"left",
-                        background:farmType===ft?"#0a1628":"transparent",
-                        border:`1px solid ${farmType===ft?"#a78bfa40":"transparent"}`,
-                        transition:"all 0.12s" }}
-                      onMouseEnter={e=>{if(farmType!==ft)e.currentTarget.style.background="#0a1020";}}
-                      onMouseLeave={e=>{if(farmType!==ft)e.currentTarget.style.background="transparent";}}>
-                      <span style={{ flex:1, color:farmType===ft?"#f1f5f9":"#94a3b8", fontSize:11 }}>{ft}</span>
-                      {isRef
-                        ? <span style={{ color:"#475569", fontSize:9, fontStyle:"italic" }}>reference</span>
-                        : <span style={{ color:pct>=0?"#10b981":"#f43f5e", fontSize:10, fontFamily:"'DM Mono',monospace", fontWeight:600 }}>
-                            {pct>=0?"+":""}{pct.toFixed(1)}% {sig}
-                          </span>
-                      }
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Context summary */}
-              <div style={{ marginTop:16, padding:"12px 14px", background:"#060d1a", borderRadius:10, border:"1px solid #1a2436" }}>
-                <p style={{ color:"#64748b", fontSize:10, marginBottom:6 }}>Mathieu's structural context vs reference</p>
-                <p style={{ color:"#0ea5e9", fontSize:11, margin:0 }}>
-                  Region: <span style={{ color:regionFEPct1>=0?"#10b981":"#f43f5e", fontWeight:700 }}>{regionFEPct1>=0?"+":""}{regionFEPct1.toFixed(1)}%</span> on output,{" "}
-                  <span style={{ color:regionFEPct2>=0?"#10b981":"#f43f5e", fontWeight:700 }}>{regionFEPct2>=0?"+":""}{regionFEPct2.toFixed(1)}%</span> on income
-                </p>
-                <p style={{ color:"#0ea5e9", fontSize:11, margin:"4px 0 0" }}>
-                  Farm type: <span style={{ color:ftFEPct1>=0?"#10b981":"#f43f5e", fontWeight:700 }}>{ftFEPct1>=0?"+":""}{ftFEPct1.toFixed(1)}%</span> on output,{" "}
-                  <span style={{ color:ftFEPct2>=0?"#10b981":"#f43f5e", fontWeight:700 }}>{ftFEPct2>=0?"+":""}{ftFEPct2.toFixed(1)}%</span> on income
-                </p>
-              </div>
-            </div>
+          <input type="range" min={300} max={2500} step={50} value={budget} onChange={e=>setBudget(Number(e.target.value))}
+            style={{ width:"100%", accentColor:"#0ea5e9", cursor:"pointer" }}/>
+          <div style={{ display:"flex", justifyContent:"space-between", marginTop:4 }}>
+            <span style={{ color:"#334155", fontSize:10 }}>€300 — minimal</span>
+            <span style={{ color:"#334155", fontSize:10 }}>€2,500 — intensive</span>
           </div>
-
-          <button onClick={()=>setSimPhase("allocate")}
-            style={{ alignSelf:"flex-end", display:"flex", alignItems:"center", gap:10, background:"#0ea5e915", border:"1px solid #0ea5e940", color:"#0ea5e9", borderRadius:10, padding:"12px 28px", fontSize:13, fontWeight:700, cursor:"pointer" }}>
-            Set Mathieu's budget
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </button>
         </div>
-      )}
+      </div>
 
-      {/* ── PHASE: ALLOCATE ────────────────────────────────────────────────── */}
-      {simPhase === "allocate" && (
-        <div style={{ display:"flex", flexDirection:"column", gap:20, animation:"simReveal 0.5s ease both" }}>
-          <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:14, padding:"24px 28px" }}>
-            <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, marginBottom:8 }}>Step 2 of 3 — Allocate Mathieu's budget</p>
-            <p style={{ color:"#f1f5f9", fontSize:16, fontWeight:700, marginBottom:6 }}>How should Mathieu distribute his €{budget.toLocaleString()}/ha?</p>
-            <p style={{ color:"#64748b", fontSize:13, lineHeight:1.8 }}>
-              The four input categories each carry a different elasticity in the production model. Move the sliders to change how Mathieu allocates his budget. Watch what the model predicts will happen to his output and income.
-            </p>
+      {/* Main game area */}
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 380px", gap:16, alignItems:"start" }}>
+
+        {/* LEFT: The barn */}
+        <div style={{ background:"linear-gradient(160deg,#060d1a,#04080f)", border:"1px solid #1a2436", borderRadius:16, overflow:"hidden" }}>
+
+          {/* Barn roof / header */}
+          <div style={{ background:"linear-gradient(135deg,#0a1628,#060d1a)", padding:"20px 24px 16px", borderBottom:"1px solid #1a2436", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+            <div>
+              <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, margin:0, marginBottom:4 }}>Mathieu's barn — drag to allocate</p>
+              <p style={{ color:"#475569", fontSize:12, margin:0 }}>Move the slider on each input to decide how much Mathieu spends.</p>
+            </div>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0ea5e930" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
           </div>
 
-          {/* Budget total slider */}
-          <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"20px 24px" }}>
-            <div style={{ display:"flex", justifyContent:"space-between", marginBottom:10 }}>
-              <span style={{ color:"#94a3b8", fontSize:12, fontWeight:600 }}>Total budget per hectare</span>
-              <span style={{ color:"#f1f5f9", fontSize:16, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>€{budget.toLocaleString()}/ha</span>
-            </div>
-            <input type="range" min={400} max={2500} step={50} value={budget} onChange={e=>setBudget(Number(e.target.value))}
-              className="alloc-slider" style={{ width:"100%", accentColor:"#0ea5e9", cursor:"pointer" }}/>
-            <div style={{ display:"flex", justifyContent:"space-between", marginTop:4 }}>
-              <span style={{ color:"#334155", fontSize:10 }}>€400 — minimal</span>
-              <span style={{ color:"#334155", fontSize:10 }}>€2,500 — intensive</span>
-            </div>
-          </div>
+          {/* Input slots inside the barn */}
+          <div style={{ padding:"20px 24px", display:"flex", flexDirection:"column", gap:16 }}>
+            {Object.entries(CONFIG).map(([key, cfg]) => {
+              const euros = spending[key];
+              const sharePct = (alloc[key] * 100).toFixed(0);
+              const outputEffect = cfg.e1 * 100;
+              const incomeEffect = cfg.e2 * 100;
 
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
-            {/* Sliders */}
-            <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"22px 24px", display:"flex", flexDirection:"column", gap:20 }}>
-              <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", fontWeight:700, margin:0 }}>Allocation — drag to redistribute</p>
-
-              {Object.entries(alloc).map(([key, val]) => {
-                const euros = budget * val;
-                const elast1 = MODEL1.elasticities[key];
-                const elast2 = MODEL2.elasticities[key];
-                const col = allocColors[key];
-                return (
-                  <div key={key}>
-                    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-end", marginBottom:8 }}>
-                      <div>
-                        <p style={{ color:"#e2e8f0", fontSize:12, fontWeight:600, margin:0 }}>{allocLabels[key]}</p>
-                        <p style={{ color:"#64748b", fontSize:10, margin:"2px 0 0" }}>
-                          Output elasticity: <span style={{ color:col, fontWeight:700 }}>{elast1.coef.toFixed(3)}</span>{elast1.sig}{" "}·{" "}
-                          Income elasticity: <span style={{ color:elast2.coef>=0?"#10b981":"#f43f5e", fontWeight:700 }}>{elast2.coef.toFixed(3)}</span>{elast2.sig}
-                        </p>
-                      </div>
-                      <span style={{ color:col, fontSize:15, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>€{euros.toFixed(0)}</span>
+              return (
+                <div key={key} className="barn-slot" style={{ background:"#0a1020", border:`1px solid ${cfg.color}20`, borderRadius:12, padding:"16px 18px" }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:12 }}>
+                    {/* Token icon */}
+                    <div style={{ width:44, height:44, borderRadius:10, background:`${cfg.color}15`, border:`1px solid ${cfg.color}30`, display:"flex", alignItems:"center", justifyContent:"center", color:cfg.color, flexShrink:0 }}>
+                      {cfg.icon}
                     </div>
-                    <input type="range" min={0.01} max={0.90} step={0.01} value={val}
-                      onChange={e=>updateAlloc(key, Number(e.target.value))}
-                      className="alloc-slider"
-                      style={{ width:"100%", accentColor:col, cursor:"pointer" }}/>
-                    <div style={{ height:4, background:"#1a2436", borderRadius:2, overflow:"hidden", marginTop:6 }}>
-                      <div style={{ height:"100%", width:`${val*100}%`, background:col, borderRadius:2, transition:"width 0.2s" }}/>
+                    {/* Label + spend */}
+                    <div style={{ flex:1, minWidth:0 }}>
+                      <p style={{ color:"#f1f5f9", fontSize:13, fontWeight:600, margin:0 }}>{cfg.label}</p>
+                      <p style={{ color:"#475569", fontSize:11, margin:"2px 0 0" }}>
+                        Output effect: <span style={{ color:cfg.color, fontWeight:700 }}>+{outputEffect.toFixed(1)}%</span> per 1% more spent
+                        {incomeEffect < 0 && <span style={{ color:"#f43f5e" }}> · Income: {incomeEffect.toFixed(1)}%</span>}
+                      </p>
+                    </div>
+                    {/* Spend display */}
+                    <div style={{ textAlign:"right", flexShrink:0 }}>
+                      <p style={{ color:cfg.color, fontSize:17, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>€{euros.toFixed(0)}</p>
+                      <p style={{ color:"#475569", fontSize:10, margin:0 }}>{sharePct}% of budget</p>
                     </div>
                   </div>
-                );
-              })}
 
-              {/* Stack viz */}
-              <div style={{ height:12, borderRadius:6, overflow:"hidden", display:"flex" }}>
-                {Object.entries(alloc).map(([k,v])=>(
-                  <div key={k} style={{ width:`${v*100}%`, background:allocColors[k], transition:"width 0.2s" }}/>
-                ))}
-              </div>
-              <div style={{ display:"flex", flexWrap:"wrap", gap:"4px 12px" }}>
-                {Object.entries(allocColors).map(([k,c])=>(
-                  <div key={k} style={{ display:"flex", alignItems:"center", gap:5 }}>
-                    <div style={{ width:8,height:8,borderRadius:2,background:c }}/>
-                    <span style={{ color:"#64748b", fontSize:10 }}>{allocLabels[k]} {(alloc[k]*100).toFixed(0)}%</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Live preview */}
-            <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-              <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"20px 22px", flex:1 }}>
-                <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", fontWeight:700, marginBottom:16 }}>Live model preview</p>
-
-                <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-                  <div style={{ background:"#060d1a", borderRadius:8, padding:"14px 16px", border:"1px solid #0ea5e920" }}>
-                    <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:6 }}>Model 1 — Predicted output</p>
-                    <p style={{ color:"#0ea5e9", fontSize:26, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>€{predictedOutput.toFixed(0)}<span style={{ fontSize:13, color:"#475569", fontWeight:400 }}> / ha</span></p>
-                    <p style={{ color:"#475569", fontSize:10, marginTop:4 }}>from inputs alone, before region and farm type</p>
-                  </div>
-                  <div style={{ background:"#060d1a", borderRadius:8, padding:"14px 16px", border:"1px solid #10b98120" }}>
-                    <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:6 }}>Model 2 — Predicted farm net income</p>
-                    <p style={{ color:predictedFNI>=0?"#10b981":"#f43f5e", fontSize:26, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>€{predictedFNI.toFixed(0)}<span style={{ fontSize:13, color:"#475569", fontWeight:400 }}> / ha</span></p>
-                    <p style={{ color:"#475569", fontSize:10, marginTop:4 }}>more spending ≠ more income automatically</p>
-                  </div>
-
-                  {/* Context effects */}
-                  <div style={{ background:"#060d1a", borderRadius:8, padding:"12px 14px", border:"1px solid #1a2436" }}>
-                    <p style={{ color:"#64748b", fontSize:10, marginBottom:6 }}>Context effects on Mathieu's output</p>
-                    <div style={{ display:"flex", gap:12 }}>
-                      <div style={{ flex:1 }}>
-                        <p style={{ color:"#475569", fontSize:9, marginBottom:2 }}>{simRegion}</p>
-                        <p style={{ color:regionFEPct1>=0?"#10b981":"#f43f5e", fontSize:12, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>{regionFEPct1>=0?"+":""}{regionFEPct1.toFixed(1)}%</p>
-                      </div>
-                      <div style={{ flex:1 }}>
-                        <p style={{ color:"#475569", fontSize:9, marginBottom:2 }}>{farmType}</p>
-                        <p style={{ color:ftFEPct1>=0?"#10b981":"#f43f5e", fontSize:12, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>{ftFEPct1>=0?"+":""}{ftFEPct1.toFixed(1)}%</p>
-                      </div>
-                    </div>
+                  {/* Slider */}
+                  <input
+                    type="range" min={0.02} max={0.88} step={0.01}
+                    value={alloc[key]}
+                    onChange={e => updateAlloc(key, Number(e.target.value))}
+                    style={{ width:"100%", accentColor:cfg.color, cursor:"pointer" }}
+                  />
+                  {/* Bar fill visualization */}
+                  <div style={{ height:4, background:"#1a2436", borderRadius:2, overflow:"hidden", marginTop:6 }}>
+                    <div style={{ height:"100%", width:`${alloc[key]*100}%`, background:cfg.color, borderRadius:2, transition:"width 0.2s" }}/>
                   </div>
                 </div>
-              </div>
+              );
+            })}
 
-              <div style={{ background:"#080e18", border:"1px solid #f59e0b20", borderRadius:12, padding:"14px 16px" }}>
-                <p style={{ color:"#f59e0b", fontSize:11, fontWeight:700, marginBottom:6 }}>Mathieu's intuition check</p>
-                <p style={{ color:"#64748b", fontSize:12, lineHeight:1.7 }}>
-                  {spending.fertilisers / budget > 0.35
-                    ? `Mathieu is over-investing in fertilizers. The model gives fertilizer an elasticity of only ${MODEL1.elasticities.fertilisers.coef.toFixed(3)} on output — his intuition is overrating this lever.`
-                    : spending.intermediate / budget > 0.55
-                    ? `Good. Intermediate inputs dominate the production model at ${MODEL1.elasticities.intermediate.coef.toFixed(3)} elasticity. Mathieu's allocation is aligned with the data.`
-                    : spending.depreciation / budget < 0.10
-                    ? `Mathieu is under-investing in machinery. Depreciation carries a ${MODEL1.elasticities.depreciation.coef.toFixed(3)} output elasticity — skimping here costs him more than he thinks.`
-                    : `Mathieu's allocation looks balanced. The model will run when he's ready.`
-                  }
-                </p>
-              </div>
+            {/* Budget stack bar */}
+            <div style={{ height:8, borderRadius:4, overflow:"hidden", display:"flex", marginTop:4 }}>
+              {Object.entries(CONFIG).map(([k,c]) => (
+                <div key={k} title={`${c.label}: ${(alloc[k]*100).toFixed(0)}%`} style={{ width:`${alloc[k]*100}%`, background:c.color, transition:"width 0.2s" }}/>
+              ))}
+            </div>
+            <div style={{ display:"flex", flexWrap:"wrap", gap:"4px 14px" }}>
+              {Object.entries(CONFIG).map(([k,c]) => (
+                <div key={k} style={{ display:"flex", alignItems:"center", gap:5 }}>
+                  <div style={{ width:7, height:7, borderRadius:2, background:c.color }}/>
+                  <span style={{ color:"#64748b", fontSize:10 }}>{c.label} {(alloc[k]*100).toFixed(0)}%</span>
+                </div>
+              ))}
             </div>
           </div>
-
-          <button onClick={runSim}
-            style={{ alignSelf:"flex-end", display:"flex", alignItems:"center", gap:10, background:"linear-gradient(135deg,#0ea5e920,#0ea5e910)", border:"1px solid #0ea5e950", color:"#0ea5e9", borderRadius:10, padding:"14px 32px", fontSize:14, fontWeight:700, cursor:"pointer" }}>
-            Run the models
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          </button>
         </div>
-      )}
 
-      {/* ── PHASE: RUNNING ─────────────────────────────────────────────────── */}
-      {simPhase === "running" && (
-        <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:400, gap:24, animation:"simReveal 0.3s ease both" }}>
-          <div style={{ width:48, height:48, borderRadius:"50%", border:"2px solid #1a2436", borderTopColor:"#0ea5e9", animation:"simSpin 0.9s linear infinite" }}/>
-          <div style={{ textAlign:"center" }}>
-            <p style={{ color:"#f1f5f9", fontSize:16, fontWeight:700, marginBottom:8 }}>Running the models</p>
-            <p style={{ color:"#64748b", fontSize:13 }}>Applying coefficients from 864 degrees of freedom...</p>
-          </div>
-          <div style={{ width:300, height:4, background:"#1a2436", borderRadius:2, overflow:"hidden" }}>
-            <div style={{ height:"100%", background:"linear-gradient(90deg,#0ea5e9,#10b981)", borderRadius:2, animation:"progressFill 2s ease both" }}/>
-          </div>
-        </div>
-      )}
+        {/* RIGHT: Live results panel */}
+        <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
 
-      {/* ── PHASE: RESULT 1 — Output model ─────────────────────────────────── */}
-      {simPhase === "result1" && (
-        <div style={{ display:"flex", flexDirection:"column", gap:16, animation:"simReveal 0.5s ease both" }}>
-          <div style={{ background:"linear-gradient(135deg,#080e18,#060d14)", border:"1px solid #0ea5e930", borderRadius:14, padding:"28px 32px" }}>
-            <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, marginBottom:8 }}>Step 3a — Production model result</p>
-            <p style={{ color:"#f1f5f9", fontSize:18, fontWeight:700, marginBottom:6 }}>Does spending more produce more?</p>
-            <p style={{ color:"#64748b", fontSize:13, lineHeight:1.8 }}>
-              The model says yes — but not by much, and not proportionally. The chart below shows exactly how Mathieu's allocation translates into predicted output, and how much of the result is driven by his decisions versus his context.
+          {/* Output card */}
+          <div style={{ background:"linear-gradient(135deg,#080e18,#060d14)", border:"1px solid #0ea5e930", borderRadius:14, padding:"20px 22px", animation:"resultReveal 0.4s ease both" }}>
+            <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:6 }}>Predicted output</p>
+            <p style={{ color:"#0ea5e9", fontSize:32, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0, lineHeight:1 }}>
+              €{predictedOutput.toFixed(0)}
+              <span style={{ fontSize:13, color:"#475569", fontWeight:400 }}>/ha</span>
             </p>
+            <p style={{ color:"#475569", fontSize:10, marginTop:6 }}>Model 1 · R² = {MODEL1.rSquared}</p>
           </div>
 
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
-            {/* Output waterfall */}
-            <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"22px 24px" }}>
-              <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", fontWeight:700, marginBottom:16 }}>Output decomposition — €/ha</p>
-
-              {/* Contribution bars */}
-              {[
-                { label:"Intermediate inputs", val: MODEL1.elasticities.intermediate.coef * Math.log(Math.max(spending.intermediate,1)), color:"#a78bfa", note:`ε = ${MODEL1.elasticities.intermediate.coef.toFixed(3)}` },
-                { label:"Depreciation (machinery)", val: MODEL1.elasticities.depreciation.coef * Math.log(Math.max(spending.depreciation,1)), color:"#f59e0b", note:`ε = ${MODEL1.elasticities.depreciation.coef.toFixed(3)}` },
-                { label:"Fertilizers", val: MODEL1.elasticities.fertilisers.coef * Math.log(Math.max(spending.fertilisers,1)), color:"#0ea5e9", note:`ε = ${MODEL1.elasticities.fertilisers.coef.toFixed(3)}` },
-                { label:"Labour (wages)", val: MODEL1.elasticities.wages.coef * Math.log(Math.max(spending.wages,1)), color:"#10b981", note:`ε = ${MODEL1.elasticities.wages.coef.toFixed(3)}` },
-                { label:`Region: ${simRegion}`, val: regionFE1, color: regionFE1>=0?"#10b981":"#f43f5e", note: MODEL1.regionSig[simRegion]||"ns" },
-                { label:`Farm type: ${farmType}`, val: ftFE1, color: ftFE1>=0?"#10b981":"#f43f5e", note: MODEL1.farmingTypeSig[farmType]||"ns" },
-              ].map((item, i) => {
-                const maxAbsVal = 5;
-                const barPct = Math.min(Math.abs(item.val) / maxAbsVal * 100, 100);
-                return (
-                  <div key={i} style={{ marginBottom:12 }}>
-                    <div style={{ display:"flex", justifyContent:"space-between", marginBottom:4 }}>
-                      <div>
-                        <span style={{ color:"#e2e8f0", fontSize:11 }}>{item.label}</span>
-                        <span style={{ color:"#475569", fontSize:9, marginLeft:8 }}>{item.note}</span>
-                      </div>
-                      <span style={{ color:item.color, fontSize:11, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>{item.val>=0?"+":""}{item.val.toFixed(3)}</span>
-                    </div>
-                    <div style={{ height:6, background:"#1a2436", borderRadius:3, overflow:"hidden" }}>
-                      <div style={{ height:"100%", width:`${barPct}%`, background:item.color, borderRadius:3 }}/>
-                    </div>
-                  </div>
-                );
-              })}
-
-              <div style={{ marginTop:16, paddingTop:14, borderTop:"1px solid #1a2436", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                <span style={{ color:"#94a3b8", fontSize:12, fontWeight:600 }}>Predicted output (exp of sum)</span>
-                <span style={{ color:"#0ea5e9", fontSize:22, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>€{predictedOutput.toFixed(0)}<span style={{ fontSize:12, color:"#475569" }}>/ha</span></span>
-              </div>
-            </div>
-
-            {/* Elasticity comparison */}
-            <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-              <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"22px 24px" }}>
-                <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", fontWeight:700, marginBottom:14 }}>What the model says about each franc spent</p>
-                {Object.entries(MODEL1.elasticities).map(([k, el]) => (
-                  <div key={k} style={{ marginBottom:12 }}>
-                    <div style={{ display:"flex", justifyContent:"space-between", marginBottom:4 }}>
-                      <span style={{ color:"#e2e8f0", fontSize:11 }}>{el.label}</span>
-                      <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-                        <span style={{ color:"#475569", fontSize:10, fontFamily:"'DM Mono',monospace" }}>ε =</span>
-                        <span style={{ color:allocColors[k], fontSize:13, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>{el.coef.toFixed(3)}</span>
-                        <span style={{ color:"#10b981", fontSize:9 }}>{el.sig}</span>
-                      </div>
-                    </div>
-                    <div style={{ height:5, background:"#1a2436", borderRadius:3, overflow:"hidden" }}>
-                      <div style={{ height:"100%", width:`${(el.coef/1)*100}%`, background:allocColors[k], borderRadius:3 }}/>
-                    </div>
-                    <p style={{ color:"#475569", fontSize:10, marginTop:3 }}>
-                      +1% spending → +{(el.coef*100).toFixed(1)}% output · Mathieu allocates {(alloc[k]*100).toFixed(0)}%
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              {/* Mathieu quote */}
-              <div style={{ background:"linear-gradient(135deg,#0a1628,#080e18)", border:"1px solid #0ea5e920", borderRadius:10, padding:"16px 18px" }}>
-                <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:8 }}>Mathieu's reaction</p>
-                <p style={{ color:"#94a3b8", fontSize:12, lineHeight:1.8, fontStyle:"italic" }}>
-                  {spending.fertilisers / budget > 0.35
-                    ? `"I always thought fertilizer was the main lever. These numbers tell me that everything I buy to run the farm — seeds, energy, contractor services — matters more than my fertilizer dose. That changes how I think."`
-                    : regionFEPct1 < -10
-                    ? `"The model shows my region costs me ${Math.abs(regionFEPct1).toFixed(1)}% of output before I even start. There's no allocation I can make that erases that. The land is what it is."`
-                    : `"If I put one percent more into intermediate inputs, I get ${(MODEL1.elasticities.intermediate.coef).toFixed(2)} percent more output. For fertilizer it's only ${(MODEL1.elasticities.fertilisers.coef).toFixed(2)}. I had those the wrong way round."`
-                  }
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <button onClick={()=>setSimPhase("result2")}
-            style={{ alignSelf:"flex-end", display:"flex", alignItems:"center", gap:10, background:"#10b98115", border:"1px solid #10b98140", color:"#10b981", borderRadius:10, padding:"12px 28px", fontSize:13, fontWeight:700, cursor:"pointer" }}>
-            Now check his income
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </button>
-        </div>
-      )}
-
-      {/* ── PHASE: RESULT 2 — Income model ─────────────────────────────────── */}
-      {simPhase === "result2" && (
-        <div style={{ display:"flex", flexDirection:"column", gap:16, animation:"simReveal 0.5s ease both" }}>
-          <div style={{ background:"linear-gradient(135deg,#080e18,#060d14)", border:"1px solid #10b98130", borderRadius:14, padding:"28px 32px" }}>
-            <p style={{ color:"#10b981", fontSize:10, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, marginBottom:8 }}>Step 3b — Income model result</p>
-            <p style={{ color:"#f1f5f9", fontSize:18, fontWeight:700, marginBottom:6 }}>Does more output mean more income?</p>
-            <p style={{ color:"#64748b", fontSize:13, lineHeight:1.8 }}>
-              This is where Mathieu's hypothesis gets truly tested. Producing more is not the same as earning more. The income model uses the same inputs but estimates their effect on farm net income — and the story is different. Notice that depreciation now carries a <span style={{ color:"#f43f5e", fontWeight:600 }}>negative</span> elasticity of {MODEL2.elasticities.depreciation.coef.toFixed(3)}: spending more on machinery raises output but costs more than it earns back.
+          {/* Income card */}
+          <div style={{ background:"linear-gradient(135deg,#080e18,#060d14)", border:`1px solid ${predictedFNI>=0?"#10b98130":"#f43f5e30"}`, borderRadius:14, padding:"20px 22px", animation:"resultReveal 0.4s 0.1s ease both" }}>
+            <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:6 }}>Predicted farm net income</p>
+            <p style={{ color:predictedFNI>=0?"#10b981":"#f43f5e", fontSize:32, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0, lineHeight:1 }}>
+              €{predictedFNI.toFixed(0)}
+              <span style={{ fontSize:13, color:"#475569", fontWeight:400 }}>/ha</span>
             </p>
+            <p style={{ color:"#475569", fontSize:10, marginTop:6 }}>Model 2 · R² = {MODEL2.rSquared}</p>
           </div>
 
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
-            {/* Income decomposition */}
-            <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"22px 24px" }}>
-              <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", fontWeight:700, marginBottom:16 }}>Income elasticities vs output elasticities</p>
-              {Object.entries(MODEL2.elasticities).map(([k, el]) => {
-                const el1 = MODEL1.elasticities[k];
-                const delta = el.coef - el1.coef;
-                const col = allocColors[k];
-                return (
-                  <div key={k} style={{ marginBottom:14, paddingBottom:14, borderBottom:"1px solid #0f1929" }}>
-                    <p style={{ color:"#e2e8f0", fontSize:11, fontWeight:600, marginBottom:6 }}>{el.label}</p>
-                    <div style={{ display:"flex", gap:16, alignItems:"center" }}>
-                      <div style={{ flex:1 }}>
-                        <p style={{ color:"#64748b", fontSize:9, marginBottom:3 }}>Output elasticity (Model 1)</p>
-                        <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-                          <div style={{ flex:1, height:5, background:"#1a2436", borderRadius:2, overflow:"hidden" }}>
-                            <div style={{ height:"100%", width:`${Math.abs(el1.coef)*100}%`, background:col, borderRadius:2 }}/>
-                          </div>
-                          <span style={{ color:col, fontSize:11, fontWeight:700, fontFamily:"'DM Mono',monospace", width:44 }}>{el1.coef.toFixed(3)}</span>
-                        </div>
-                      </div>
-                      <div style={{ flex:1 }}>
-                        <p style={{ color:"#64748b", fontSize:9, marginBottom:3 }}>Income elasticity (Model 2)</p>
-                        <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-                          <div style={{ flex:1, height:5, background:"#1a2436", borderRadius:2, overflow:"hidden" }}>
-                            <div style={{ height:"100%", width:`${Math.abs(el.coef)*100}%`, background:el.coef>=0?col:"#f43f5e", borderRadius:2 }}/>
-                          </div>
-                          <span style={{ color:el.coef>=0?col:"#f43f5e", fontSize:11, fontWeight:700, fontFamily:"'DM Mono',monospace", width:44 }}>{el.coef.toFixed(3)}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <p style={{ color:delta>0?"#10b981":delta<-0.1?"#f43f5e":"#64748b", fontSize:10, marginTop:4 }}>
-                      {k==="depreciation"
-                        ? `Machinery raises output (+${el1.coef.toFixed(3)}) but costs more than it earns (${el.coef.toFixed(3)} on income). Net drag.`
-                        : k==="fertilisers"
-                        ? `Fertilizer has a stronger income effect (${el.coef.toFixed(3)}) than output effect (${el1.coef.toFixed(3)}). Profitable when used correctly.`
-                        : k==="intermediate"
-                        ? `Dominant in both models. The full input system is the engine.`
-                        : `Similar contribution across both models.`
-                      }
-                    </p>
+          {/* Per-input contribution bars */}
+          <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"16px 18px" }}>
+            <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", fontWeight:700, marginBottom:12 }}>Output contribution by input</p>
+            {Object.entries(CONFIG).map(([key, cfg]) => {
+              const contrib = cfg.e1 * Math.log(Math.max(spending[key], 1));
+              const maxContrib = MODEL1.elasticities.intermediate.coef * Math.log(Math.max(spending.intermediate, 1));
+              const barW = maxContrib > 0 ? Math.min((contrib / maxContrib) * 100, 100) : 0;
+              return (
+                <div key={key} style={{ marginBottom:8 }}>
+                  <div style={{ display:"flex", justifyContent:"space-between", marginBottom:3 }}>
+                    <span style={{ color:"#94a3b8", fontSize:11 }}>{cfg.label}</span>
+                    <span style={{ color:cfg.color, fontSize:11, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>{contrib.toFixed(3)}</span>
                   </div>
-                );
-              })}
-            </div>
-
-            {/* Summary + replay */}
-            <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-              {/* Final verdict */}
-              <div style={{ background:"linear-gradient(135deg,#0a1f14,#080e18)", border:"1px solid #10b98130", borderRadius:12, padding:"22px 24px" }}>
-                <p style={{ color:"#10b981", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", fontWeight:700, marginBottom:14 }}>The verdict on Mathieu's hypothesis</p>
-                <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
-                  <div style={{ display:"flex", gap:12, padding:"12px 14px", background:"#060d1a", borderRadius:8, borderLeft:"3px solid #10b981" }}>
-                    <div>
-                      <p style={{ color:"#f1f5f9", fontSize:12, fontWeight:600, marginBottom:3 }}>Spending more → producing more?</p>
-                      <p style={{ color:"#94a3b8", fontSize:11, lineHeight:1.65 }}>Partially yes. Intermediate inputs have the strongest effect at ε = {MODEL1.elasticities.intermediate.coef.toFixed(3)}. But Mathieu was overweighting fertilizer at ε = {MODEL1.elasticities.fertilisers.coef.toFixed(3)}.</p>
-                    </div>
-                  </div>
-                  <div style={{ display:"flex", gap:12, padding:"12px 14px", background:"#060d1a", borderRadius:8, borderLeft:"3px solid #f43f5e" }}>
-                    <div>
-                      <p style={{ color:"#f1f5f9", fontSize:12, fontWeight:600, marginBottom:3 }}>Producing more → earning more?</p>
-                      <p style={{ color:"#94a3b8", fontSize:11, lineHeight:1.65 }}>Not automatically. Depreciation actually has a negative income elasticity of {MODEL2.elasticities.depreciation.coef.toFixed(3)}. Machinery investment raises output but eats into profit. Geography also matters — {simRegion} carries a {regionFEPct2.toFixed(1)}% income effect that no allocation decision can override.</p>
-                    </div>
-                  </div>
-                  <div style={{ display:"flex", gap:12, padding:"12px 14px", background:"#060d1a", borderRadius:8, borderLeft:"3px solid #0ea5e9" }}>
-                    <div>
-                      <p style={{ color:"#f1f5f9", fontSize:12, fontWeight:600, marginBottom:3 }}>Predicted farm net income</p>
-                      <p style={{ color:predictedFNI>=0?"#10b981":"#f43f5e", fontSize:22, fontWeight:800, fontFamily:"'DM Mono',monospace", marginBottom:3 }}>€{predictedFNI.toFixed(0)}/ha</p>
-                      <p style={{ color:"#475569", fontSize:10 }}>R² = {MODEL2.rSquared} · Based on FADN France panel</p>
-                    </div>
+                  <div style={{ height:4, background:"#1a2436", borderRadius:2, overflow:"hidden" }}>
+                    <div style={{ height:"100%", width:`${barW}%`, background:cfg.color, borderRadius:2, transition:"width 0.25s" }}/>
                   </div>
                 </div>
-              </div>
-
-              {/* Replay options */}
-              <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"18px 20px" }}>
-                <p style={{ color:"#94a3b8", fontSize:11, fontWeight:600, marginBottom:12 }}>Try again with a different scenario</p>
-                <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
-                  <button onClick={()=>setSimPhase("allocate")}
-                    style={{ display:"flex", alignItems:"center", gap:10, background:"#0ea5e910", border:"1px solid #0ea5e930", color:"#0ea5e9", borderRadius:8, padding:"10px 16px", fontSize:12, fontWeight:600, cursor:"pointer", textAlign:"left" }}>
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.1"/></svg>
-                    Change allocation — same context
-                  </button>
-                  <button onClick={()=>{setSimPhase("context");}}
-                    style={{ display:"flex", alignItems:"center", gap:10, background:"#a78bfa10", border:"1px solid #a78bfa30", color:"#a78bfa", borderRadius:8, padding:"10px 16px", fontSize:12, fontWeight:600, cursor:"pointer", textAlign:"left" }}>
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                    Change region or farming type
-                  </button>
-                </div>
-              </div>
-
-              {/* Mathieu final quote */}
-              <div style={{ background:"#080e18", border:"1px solid #f59e0b20", borderRadius:10, padding:"14px 16px" }}>
-                <p style={{ color:"#f59e0b", fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:6 }}>Mathieu, after seeing the results</p>
-                <p style={{ color:"#94a3b8", fontSize:12, lineHeight:1.8, fontStyle:"italic" }}>
-                  "I spent thirty years thinking that more fertilizer meant more income. The model shows it is not that simple. My region, my crop system, my machinery costs — they shape the result as much as what I spread on the field. That is not what they taught me at agricultural college."
-                </p>
-              </div>
-            </div>
+              );
+            })}
           </div>
         </div>
-      )}
+      </div>
+
+      {/* INTERPRETATION BLOCK — fixed template, only values change */}
+      <div style={{ background:"linear-gradient(135deg,#0a1628,#060d18)", border:"1px solid #0ea5e925", borderRadius:14, padding:"22px 28px" }}>
+        <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.16em", fontWeight:700, marginBottom:16 }}>
+          Interpretation
+        </p>
+
+        <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+          <p style={{ color:"#cbd5e1", fontSize:13, lineHeight:1.85, margin:0 }}>
+            Whenever Mathieu increases his fertilizer spending by 1%, the model predicts his output per hectare rises by{" "}
+            <span style={{ color:"#0ea5e9", fontWeight:700 }}>{fertPct1}%</span>.
+            At his current allocation of <span style={{ color:"#0ea5e9", fontWeight:700 }}>€{fertEuros}/ha</span>, that is a relatively modest return — fertilizer is not the dominant lever his intuition suggests.
+          </p>
+
+          <p style={{ color:"#cbd5e1", fontSize:13, lineHeight:1.85, margin:0 }}>
+            The biggest driver of output is intermediate inputs — seeds, crop protection, and operating costs. A 1% increase there lifts output by{" "}
+            <span style={{ color:"#a78bfa", fontWeight:700 }}>{intPct1}%</span>,
+            nearly {(MODEL1.elasticities.intermediate.coef / MODEL1.elasticities.fertilisers.coef).toFixed(0)} times the effect of fertilizer. Mathieu currently spends{" "}
+            <span style={{ color:"#a78bfa", fontWeight:700 }}>€{intEuros}/ha</span> on this category.
+          </p>
+
+          <p style={{ color:"#cbd5e1", fontSize:13, lineHeight:1.85, margin:0 }}>
+            The income picture is more complicated. Machinery spending — captured through depreciation — has a{" "}
+            <span style={{ color:"#f43f5e", fontWeight:700 }}>negative</span> income elasticity of{" "}
+            <span style={{ color:"#f43f5e", fontWeight:700 }}>{depPct2}%</span>.
+            This means that when Mathieu spends more on machinery (currently{" "}
+            <span style={{ color:"#f59e0b", fontWeight:700 }}>€{depEuros}/ha</span>),
+            his output does increase — but not enough to offset the cost. The machine works. It just does not pay for itself at the margin.
+          </p>
+
+          <p style={{ color:"#cbd5e1", fontSize:13, lineHeight:1.85, margin:0 }}>
+            Fertilizer, however, has a positive income elasticity of{" "}
+            <span style={{ color:"#0ea5e9", fontWeight:700 }}>+{fertPct2}%</span>.
+            So while fertilizer is a weak output lever, it is a profitable one — each franc spent on it returns more to income than it costs. This is the core tension in Mathieu's decision: the input that feels most powerful agronomically is not the one the data says is most profitable.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
