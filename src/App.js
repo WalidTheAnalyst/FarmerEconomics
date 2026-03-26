@@ -334,14 +334,14 @@ const MARKET_INTEL = {
       { name:"PK",      val2022:74,  val2023:43, color:"#f59e0b" },
       { name:"DAP/MAP", val2022:72,  val2023:55, color:"#0ea5e9" },
       { name:"TSP",     val2022:54,  val2023:25, color:"#10b981" },
-      { name:"Other P", val2022:39,  val2023:33, color:"#64748b" },
+      { name:"Other P", val2022:39,  val2023:33, color:"#94a3b8" },
     ],
     importOrigin:[
       { name:"Morocco", value:69.4, color:"#10b981" },
       { name:"Russia",  value:13.0, color:"#f87171" },
       { name:"Egypt",   value:11.5, color:"#f59e0b" },
-      { name:"Tunisia", value:2.0,  color:"#64748b" },
-      { name:"Other",   value:1.0,  color:"#334155" },
+      { name:"Tunisia", value:2.0,  color:"#94a3b8" },
+      { name:"Other",   value:1.0,  color:"#94a3b8" },
     ],
     dynamics:[
       { type:"risk",     icon:"📉", label:"Consumption decline",         text:"P2O5 use fell ~44% from 2017 to 2023. Only ~50% of parcels receive mineral P — a structural agronomic gap versus Comifer recommendations." },
@@ -380,9 +380,9 @@ const MARKET_INTEL = {
       ],
       // Histogram data — farm count by size band (Agreste 2020)
       farmSizeHistogram:[
-        { range:"<5 ha",    farms:58, pct:15, fertVolPct:2,  color:"#334155" },
-        { range:"5–20 ha",  farms:89, pct:23, fertVolPct:6,  color:"#475569" },
-        { range:"20–50 ha", farms:70, pct:18, fertVolPct:12, color:"#64748b" },
+        { range:"<5 ha",    farms:58, pct:15, fertVolPct:2,  color:"#94a3b8" },
+        { range:"5–20 ha",  farms:89, pct:23, fertVolPct:6,  color:"#c8d3e0" },
+        { range:"20–50 ha", farms:70, pct:18, fertVolPct:12, color:"#94a3b8" },
         { range:"50–100 ha",farms:62, pct:16, fertVolPct:18, color:"#0ea5e9" },
         { range:"100–200 ha",farms:55,pct:14, fertVolPct:24, color:"#818cf8" },
         { range:">200 ha",  farms:56, pct:14, fertVolPct:38, color:"#10b981" },
@@ -422,7 +422,7 @@ function KPICard({ label, value, sub, accent }) {
   return (
     <div style={{ background:"linear-gradient(135deg,#0f172a,#0a1020)", border:`1px solid ${accent}25`, borderRadius:14, padding:"16px 18px", flex:1, minWidth:120, position:"relative", overflow:"hidden" }}>
       <div style={{ position:"absolute", top:-15, right:-15, width:60, height:60, borderRadius:"50%", background:accent+"08" }} />
-      <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:6 }}>{label}</p>
+      <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:6 }}>{label}</p>
       <p style={{ color:accent, fontSize:22, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>{value}</p>
       {sub && <p style={{ color:"#94a3b8", fontSize:11, marginTop:4 }}>{sub}</p>}
     </div>
@@ -456,7 +456,7 @@ function AnimBar({ label, val2022, val2023, maxVal, color }) {
     <div style={{ marginBottom:13 }}>
       <div style={{ display:"flex", justifyContent:"space-between", marginBottom:4 }}>
         <span style={{ color:"#94a3b8", fontSize:12, fontWeight:500 }}>{label}</span>
-        <span style={{ color:"#64748b", fontSize:11, fontFamily:"'DM Mono',monospace" }}>
+        <span style={{ color:"#94a3b8", fontSize:11, fontFamily:"'DM Mono',monospace" }}>
           {val2022} → <span style={{ color:isDown?"#f43f5e":"#10b981", fontWeight:700 }}>{val2023}</span>
           <span style={{ color:isDown?"#f43f5e80":"#10b98180", fontSize:10, marginLeft:3 }}>{isDown?"▼":"▲"}</span>
         </span>
@@ -707,7 +707,7 @@ function RegionalPage(){
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
             <div>
               <h3 className="card-title" style={{marginBottom:1}}>France — {metricLabel[metric]} · {activeCrop} · 2023</h3>
-              <p style={{color:"#64748b",fontSize:10}}>Click a region to see its time series →</p>
+              <p style={{color:"#94a3b8",fontSize:10}}>Click a region to see its time series →</p>
             </div>
             {selectedRegion&&<span style={{background:metricColor[metric]+"20",border:`1px solid ${metricColor[metric]}40`,borderRadius:8,padding:"3px 10px",color:metricColor[metric],fontSize:11,fontWeight:700}}>{selectedRegion.substring(0,16)}</span>}
           </div>
@@ -727,7 +727,7 @@ function RegionalPage(){
         <div style={{display:"flex",flexDirection:"column",gap:14}}>
           <div className="card" style={{border:`1px solid ${metricColor[metric]}30`}}>
             <h3 className="card-title" style={{color:metricColor[metric]}}>{activeCrop} — {metricLabel[metric]} ({metricUnit[metric]}) · {selectedRegion}</h3>
-            <p style={{color:"#64748b",fontSize:10,marginBottom:10}}>2017–2023 · Source: Agreste / Ministry of Agriculture</p>
+            <p style={{color:"#94a3b8",fontSize:10,marginBottom:10}}>2017–2023 · Source: Agreste / Ministry of Agriculture</p>
             <ResponsiveContainer width="100%" height={185}>
               <BarChart data={chartData} margin={{left:10,right:10}}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false}/>
@@ -804,7 +804,7 @@ function MIFarmerBehaviorPage({ region }) {
     { label:"Agronomists / Technical advisors", pct:26, color:"#0ea5e9", detail:"Cooperative agronomists overlap heavily with the cooperative channel — they are the technical gatekeepers within the coop structure. Winning their recommendation is the single most scalable commercial lever available to OCP in France." },
     { label:"Own decision", pct:18, color:"#a78bfa", detail:"Only 18% of French farmers decide alone — concentrated in large farms (>200ha), Consolidators and Precision Pioneers. These farmers can be approached directly and respond to agronomic data and bulk commercial terms." },
     { label:"Peer farmers", pct:15, color:"#f59e0b", detail:"Peer influence operates through local agricultural networks and field day observations. Reference farms producing visible yield results create pull-through demand in their local coop zone." },
-    { label:"Traders", pct:10, color:"#64748b", detail:"Traders matter for commodity NPK. For differentiated P products like TSP, their influence is limited — they lack the agronomic credibility to recommend a separation program." },
+    { label:"Traders", pct:10, color:"#94a3b8", detail:"Traders matter for commodity NPK. For differentiated P products like TSP, their influence is limited — they lack the agronomic credibility to recommend a separation program." },
   ];
 
   const p2o5Chart = FARMER_PERSONAS.map(p=>({name:p.nickname.replace("The ",""),value:p.p2o5KgHa,fill:p.color}));
@@ -819,7 +819,7 @@ function MIFarmerBehaviorPage({ region }) {
   if (!topic) return (
     <div style={{ display:"flex", flexDirection:"column", gap:40, paddingTop:8 }}>
       <div>
-        <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.16em", fontWeight:600, marginBottom:12 }}>Farmer Behaviour · {region}</p>
+        <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.16em", fontWeight:600, marginBottom:12 }}>Farmer Behaviour · {region}</p>
         <h2 style={{ color:"#f1f5f9", fontSize:26, fontWeight:700, letterSpacing:"-0.025em", lineHeight:1.25, margin:0 }}>What do you want to know about the farmer?</h2>
       </div>
 
@@ -864,13 +864,13 @@ function MIFarmerBehaviorPage({ region }) {
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:20 }}>
               <span style={{ color:card.color, fontSize:11, fontWeight:700, letterSpacing:"0.06em", fontFamily:"'DM Mono',monospace" }}>{card.num}</span>
               {!card.available
-                ? <span style={{background:"#1e293b",color:"#64748b",fontSize:9,fontWeight:600,padding:"2px 8px",borderRadius:4,letterSpacing:"0.06em"}}>COMING SOON</span>
+                ? <span style={{background:"#1e293b",color:"#94a3b8",fontSize:9,fontWeight:600,padding:"2px 8px",borderRadius:4,letterSpacing:"0.06em"}}>COMING SOON</span>
                 : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={card.color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               }
             </div>
             <p style={{ color:card.color, fontSize:11, textTransform:"uppercase", letterSpacing:"0.1em", fontWeight:600, marginBottom:10 }}>{card.title}</p>
             <p style={{ color:"#94a3b8", fontSize:13, lineHeight:1.7, marginBottom:20, flex:1 }}>{card.desc}</p>
-            <p style={{ color:"#475569", fontSize:10, borderTop:"1px solid #1a2436", paddingTop:14, marginTop:"auto" }}>{card.src}</p>
+            <p style={{ color:"#c8d3e0", fontSize:10, borderTop:"1px solid #1a2436", paddingTop:14, marginTop:"auto" }}>{card.src}</p>
           </button>
         ))}
       </div>
@@ -881,13 +881,13 @@ function MIFarmerBehaviorPage({ region }) {
   if (topic==="archetypes") return (
     <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
       <div style={{ display:"flex", alignItems:"center", gap:14 }}>
-        <button onClick={()=>setTopic(null)} style={{ background:"transparent",border:"none",color:"#64748b",fontSize:12,cursor:"pointer",display:"flex",alignItems:"center",gap:6,padding:0 }}>
+        <button onClick={()=>setTopic(null)} style={{ background:"transparent",border:"none",color:"#94a3b8",fontSize:12,cursor:"pointer",display:"flex",alignItems:"center",gap:6,padding:0 }}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
           Back
         </button>
         <div style={{width:1,height:14,background:"#1e293b"}}/>
         <p style={{ color:"#a78bfa", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:600, margin:0 }}>Farmer Archetypes · France · 6 profiles</p>
-        <p style={{ color:"#475569", fontSize:10, margin:0 }}>Agreste 2020 × McKinsey European Farmer Survey 2024 × FADN</p>
+        <p style={{ color:"#c8d3e0", fontSize:10, margin:0 }}>Agreste 2020 × McKinsey European Farmer Survey 2024 × FADN</p>
       </div>
 
       <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
@@ -918,7 +918,7 @@ function MIFarmerBehaviorPage({ region }) {
           <div className="chart-grid-2">
             <div className="card">
               <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:4 }}>P2O5 Applied by Archetype (kg/ha)</p>
-              <p style={{ color:"#64748b", fontSize:11, marginBottom:10 }}>vs Comifer recommendation: 55 kg/ha</p>
+              <p style={{ color:"#94a3b8", fontSize:11, marginBottom:10 }}>vs Comifer recommendation: 55 kg/ha</p>
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={p2o5Chart} layout="vertical" margin={{ left:90, right:20 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" horizontal={false}/>
@@ -959,14 +959,14 @@ function MIFarmerBehaviorPage({ region }) {
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
                   <div>
                     <p style={{ color:p.color, fontSize:13, fontWeight:700, margin:"0 0 2px" }}>{p.nickname}</p>
-                    <p style={{ color:"#64748b", fontSize:10, fontStyle:"italic", margin:0 }}>{p.tagline}</p>
+                    <p style={{ color:"#94a3b8", fontSize:10, fontStyle:"italic", margin:0 }}>{p.tagline}</p>
                   </div>
                   <p style={{ color:p.color, fontSize:19, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>{p.share}%</p>
                 </div>
                 <p style={{ color:"#94a3b8", fontSize:11, lineHeight:1.65, marginBottom:10 }}>{p.description.slice(0,105)}…</p>
                 <div style={{ display:"flex", justifyContent:"space-between", borderTop:"1px solid #1a2436", paddingTop:10 }}>
-                  <span style={{ color:"#64748b", fontSize:10 }}>P applied: <span style={{ color:p.color, fontFamily:"'DM Mono',monospace" }}>{p.p2o5KgHa} kg/ha</span></span>
-                  <span style={{ color:"#64748b", fontSize:10 }}>€{p.fertSpend}/ha</span>
+                  <span style={{ color:"#94a3b8", fontSize:10 }}>P applied: <span style={{ color:p.color, fontFamily:"'DM Mono',monospace" }}>{p.p2o5KgHa} kg/ha</span></span>
+                  <span style={{ color:"#94a3b8", fontSize:10 }}>€{p.fertSpend}/ha</span>
                 </div>
               </div>
             ))}
@@ -987,7 +987,7 @@ function MIFarmerBehaviorPage({ region }) {
                 <p style={{ color:"#cbd5e1", fontSize:12, lineHeight:1.8, margin:0 }}>{persona.description}</p>
               </div>
               <div style={{ background:"#060d1a", border:`1px solid ${persona.color}20`, borderRadius:10, padding:"14px 18px", minWidth:200 }}>
-                <p style={{ color:"#64748b", fontSize:9, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:8 }}>OCP Opportunity</p>
+                <p style={{ color:"#94a3b8", fontSize:9, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:8 }}>OCP Opportunity</p>
                 <p style={{ color:"#e2e8f0", fontSize:11, lineHeight:1.75 }}>{persona.ocpOpportunity}</p>
               </div>
             </div>
@@ -1011,7 +1011,7 @@ function MIFarmerBehaviorPage({ region }) {
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:6 }}>
                   {[["Farm size",persona.farmSize],["Age range",persona.age],["Region",persona.region],["Tenure",persona.tenure],["Structure",persona.structure],["Channel",persona.channel]].map(([k,v])=>(
                     <div key={k} style={{ background:"#0a0f1a", borderRadius:6, padding:"8px 10px" }}>
-                      <p style={{ color:"#64748b", fontSize:9, textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:2 }}>{k}</p>
+                      <p style={{ color:"#94a3b8", fontSize:9, textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:2 }}>{k}</p>
                       <p style={{ color:"#e2e8f0", fontSize:11, fontWeight:500 }}>{v}</p>
                     </div>
                   ))}
@@ -1027,9 +1027,9 @@ function MIFarmerBehaviorPage({ region }) {
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(155px,1fr))", gap:8 }}>
             {persona.stats.map((s,i)=>(
               <div key={i} style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:8, padding:"12px" }}>
-                <p style={{ color:"#64748b", fontSize:9, textTransform:"uppercase", letterSpacing:"0.07em", marginBottom:4 }}>{s.label}</p>
+                <p style={{ color:"#94a3b8", fontSize:9, textTransform:"uppercase", letterSpacing:"0.07em", marginBottom:4 }}>{s.label}</p>
                 <p style={{ color:persona.color, fontSize:15, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>{s.value}</p>
-                <p style={{ color:"#64748b", fontSize:9, marginTop:3 }}>{s.note}</p>
+                <p style={{ color:"#94a3b8", fontSize:9, marginTop:3 }}>{s.note}</p>
               </div>
             ))}
           </div>
@@ -1056,13 +1056,13 @@ function MIFarmerBehaviorPage({ region }) {
         {/* Back + breadcrumb */}
         <div style={{ display:"flex", alignItems:"center", gap:14 }}>
           <button onClick={()=>{setTopic(null);setDriverStep("overview");setActiveDriver(null);}}
-            style={{ background:"transparent",border:"none",color:"#64748b",fontSize:12,cursor:"pointer",display:"flex",alignItems:"center",gap:6,padding:0 }}>
+            style={{ background:"transparent",border:"none",color:"#94a3b8",fontSize:12,cursor:"pointer",display:"flex",alignItems:"center",gap:6,padding:0 }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
             Back
           </button>
           <div style={{width:1,height:14,background:"#1e293b"}}/>
           <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:600, margin:0 }}>Farmer Decision Drivers · France</p>
-          <p style={{ color:"#475569", fontSize:10, margin:0 }}>Source: Simon-Kucher × OCP Nutricrops Voice of Customer</p>
+          <p style={{ color:"#c8d3e0", fontSize:10, margin:0 }}>Source: Simon-Kucher × OCP Nutricrops Voice of Customer</p>
         </div>
 
         {/* Step navigator */}
@@ -1132,7 +1132,7 @@ function MIFarmerBehaviorPage({ region }) {
                       onMouseEnter={e=>{if(!isActive)e.currentTarget.style.background="#0a1020";}}
                       onMouseLeave={e=>{if(!isActive)e.currentTarget.style.background="transparent";}}>
 
-                      <span style={{ color:"#475569", fontSize:10, width:18, flexShrink:0, fontFamily:"'DM Mono',monospace", fontWeight:700 }}>#{i+1}</span>
+                      <span style={{ color:"#c8d3e0", fontSize:10, width:18, flexShrink:0, fontFamily:"'DM Mono',monospace", fontWeight:700 }}>#{i+1}</span>
 
                       <div style={{ flex:1, minWidth:0 }}>
                         <p style={{ color:"#e2e8f0", fontSize:12, fontWeight:500, margin:0 }}>{d.label}</p>
@@ -1157,7 +1157,7 @@ function MIFarmerBehaviorPage({ region }) {
                         <div style={{ display:"flex", gap:8, alignItems:"flex-start" }}>
                           <div style={{ width:3, height:"100%", minHeight:40, background:d.accentColor, borderRadius:2, flexShrink:0, alignSelf:"stretch" }}/>
                           <div>
-                            <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:600, marginBottom:4 }}>OCP implication</p>
+                            <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:600, marginBottom:4 }}>OCP implication</p>
                             <p style={{ color:"#cbd5e1", fontSize:12, lineHeight:1.75 }}>{d.ocpAngle}</p>
                           </div>
                         </div>
@@ -1185,7 +1185,7 @@ function MIFarmerBehaviorPage({ region }) {
           <div style={{ display:"flex", gap:14 }}>
             {/* Sidebar selector */}
             <div style={{ width:220, flexShrink:0, display:"flex", flexDirection:"column", gap:2 }}>
-              <p style={{ color:"#64748b", fontSize:9, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8, fontWeight:600 }}>Select a driver</p>
+              <p style={{ color:"#94a3b8", fontSize:9, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8, fontWeight:600 }}>Select a driver</p>
               {sortedDrivers.map((d,i)=>{
                 const isActive = activeDriver===d.id;
                 return (
@@ -1208,7 +1208,7 @@ function MIFarmerBehaviorPage({ region }) {
             <div style={{ flex:1, minWidth:0 }}>
               {!activeDriver ? (
                 <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"40px", display:"flex", alignItems:"center", justifyContent:"center", minHeight:300 }}>
-                  <p style={{ color:"#475569", fontSize:13 }}>Select a driver from the list to explore its details.</p>
+                  <p style={{ color:"#c8d3e0", fontSize:13 }}>Select a driver from the list to explore its details.</p>
                 </div>
               ) : (()=>{
                 const d = DECISION_DRIVERS.find(x=>x.id===activeDriver);
@@ -1221,21 +1221,21 @@ function MIFarmerBehaviorPage({ region }) {
                 return (
                   <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
                     <div style={{ background:"#080e18", border:`1px solid ${d.accentColor}25`, borderRadius:12, padding:"24px" }}>
-                      <p style={{ color:"#64748b", fontSize:9, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>{d.group}</p>
+                      <p style={{ color:"#94a3b8", fontSize:9, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>{d.group}</p>
                       <h3 style={{ color:"#f1f5f9", fontSize:17, fontWeight:700, margin:"0 0 16px", letterSpacing:"-0.02em" }}>{d.label}</h3>
                       <p style={{ color:"#94a3b8", fontSize:13, lineHeight:1.8, margin:0 }}>{d.insight}</p>
                     </div>
 
                     <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
                       <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:10, padding:"20px" }}>
-                        <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:12 }}>Importance score</p>
-                        <p style={{ color:d.accentColor, fontSize:32, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"0 0 12px" }}>{d.surveyScore}<span style={{ fontSize:14, color:"#475569", fontWeight:400 }}> / 5</span></p>
+                        <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:12 }}>Importance score</p>
+                        <p style={{ color:d.accentColor, fontSize:32, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"0 0 12px" }}>{d.surveyScore}<span style={{ fontSize:14, color:"#c8d3e0", fontWeight:400 }}> / 5</span></p>
                         <div style={{ height:6, background:"#1a2436", borderRadius:3, overflow:"hidden" }}>
                           <div style={{ height:"100%", width:`${importancePct}%`, background:d.accentColor, borderRadius:3 }}/>
                         </div>
                       </div>
                       <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:10, padding:"20px" }}>
-                        <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:12 }}>WTP for premium</p>
+                        <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:12 }}>WTP for premium</p>
                         {d.wtpPremium ? (
                           <>
                             <p style={{ color:wtpBandColor, fontSize:32, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"0 0 4px" }}>{d.wtpPremium}%</p>
@@ -1245,13 +1245,13 @@ function MIFarmerBehaviorPage({ region }) {
                             </div>
                           </>
                         ) : (
-                          <p style={{ color:"#475569", fontSize:13, marginTop:6 }}>Not measured — price sensitivity tracked separately.</p>
+                          <p style={{ color:"#c8d3e0", fontSize:13, marginTop:6 }}>Not measured — price sensitivity tracked separately.</p>
                         )}
                       </div>
                     </div>
 
                     <div style={{ background:"#080e18", border:`1px solid ${d.accentColor}20`, borderLeft:`3px solid ${d.accentColor}`, borderRadius:"0 10px 10px 0", padding:"18px 20px" }}>
-                      <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:8 }}>OCP commercial implication</p>
+                      <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:8 }}>OCP commercial implication</p>
                       <p style={{ color:"#f1f5f9", fontSize:13, lineHeight:1.8, margin:0 }}>{d.ocpAngle}</p>
                     </div>
                   </div>
@@ -1273,7 +1273,7 @@ function MIFarmerBehaviorPage({ region }) {
               </p>
             </div>
 
-            <p style={{ color:"#64748b", fontSize:11, margin:0 }}>Click an influencer to see the commercial implication for OCP.</p>
+            <p style={{ color:"#94a3b8", fontSize:11, margin:0 }}>Click an influencer to see the commercial implication for OCP.</p>
 
             <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
               {INFLUENCERS.map((inf,i)=>{
@@ -1353,7 +1353,7 @@ function MIFarmerBehaviorPage({ region }) {
                       {i<arr.length-1&&<div style={{flex:1,height:1,background:"#10b98120",margin:"0 8px"}}/>}
                     </div>
                     <p style={{ color:"#f1f5f9", fontSize:11, fontWeight:600, marginBottom:4 }}>{s.label}</p>
-                    <p style={{ color:"#64748b", fontSize:11, lineHeight:1.6 }}>{s.desc}</p>
+                    <p style={{ color:"#94a3b8", fontSize:11, lineHeight:1.6 }}>{s.desc}</p>
                   </div>
                 ))}
               </div>
@@ -1505,8 +1505,8 @@ function MathieuIntroPage({ region, onEnterFarm }) {
   if (region !== "France") return (
     <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:400, gap:20 }}>
       <div style={{ fontSize:48, opacity:0.3 }}>🌏</div>
-      <p style={{ color:"#475569", fontSize:16, fontWeight:500 }}>Mathieu's story is specific to France.</p>
-      <p style={{ color:"#334155", fontSize:13 }}>Select France in the country selector to begin.</p>
+      <p style={{ color:"#c8d3e0", fontSize:16, fontWeight:500 }}>Mathieu's story is specific to France.</p>
+      <p style={{ color:"#94a3b8", fontSize:13 }}>Select France in the country selector to begin.</p>
     </div>
   );
 
@@ -1547,22 +1547,19 @@ function MathieuIntroPage({ region, onEnterFarm }) {
           </div>
           <div style={{ display:"flex", alignItems:"center", gap:10, paddingTop:8 }}>
             <div style={{ width:8, height:8, borderRadius:"50%", background:"#10b981", boxShadow:"0 0 8px #10b981", animation:"mPulse 2s ease infinite" }}/>
-            <p style={{ color:"#64748b", fontSize:11, margin:0 }}>Based on FADN France panel data · log-log OLS production and income models</p>
+            <p style={{ color:"#94a3b8", fontSize:11, margin:0 }}>Based on FADN France panel data · log-log OLS production and income models</p>
           </div>
         </div>
 
-        {/* Right: real portrait */}
-        <div style={{ position:"relative", overflow:"hidden", display:"flex", alignItems:"stretch" }}>
-          <img
-            src="/farmer.png"
-            alt="Mathieu, céréalier"
-            style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top", display:"block" }}
-            onError={e => { e.target.style.display="none"; e.target.parentNode.style.background="#060d1a"; }}
+        {/* Right: real portrait — flush, no frame */}
+        <div style={{ position:"relative", overflow:"hidden", minHeight:480 }}>
+          <img src="/farmer.png" alt="Mathieu, céréalier"
+            style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }}
+            onError={e => { e.target.style.display="none"; }}
           />
-          {/* Bottom gradient overlay for smooth blend */}
-          <div style={{ position:"absolute", bottom:0, left:0, right:0, height:80, background:"linear-gradient(to top,#04080f,transparent)", pointerEvents:"none" }}/>
+          <div style={{ position:"absolute", bottom:0, left:0, right:0, height:100, background:"linear-gradient(to top,#04080f,transparent)", pointerEvents:"none" }}/>
           <div style={{ position:"absolute", bottom:16, left:0, right:0, textAlign:"center" }}>
-            <span style={{ color:"rgba(255,255,255,0.4)", fontSize:11, letterSpacing:"0.1em" }}>Mathieu · Céréalier · Champagne-Ardenne</span>
+            <span style={{ color:"rgba(255,255,255,0.5)", fontSize:11, letterSpacing:"0.1em" }}>Mathieu · Céréalier · Champagne-Ardenne</span>
           </div>
         </div>
       </div>
@@ -1591,7 +1588,7 @@ function MathieuIntroPage({ region, onEnterFarm }) {
         <div style={{ padding:"24px 36px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
           <div>
             <p className="farm-enter-label" style={{ color:"#94a3b8", fontSize:20, fontWeight:700, letterSpacing:"-0.02em", margin:0, transition:"color 0.2s" }}>Enter Mathieu's Farm</p>
-            <p style={{ color:"#475569", fontSize:12, marginTop:6 }}>Allocate his budget, run the models, read the results.</p>
+            <p style={{ color:"#c8d3e0", fontSize:12, marginTop:6 }}>Allocate his budget, run the models, read the results.</p>
           </div>
           <div style={{ width:52, height:52, borderRadius:"50%", background:"rgba(14,165,233,0.08)", border:"1px solid rgba(14,165,233,0.2)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -1606,10 +1603,12 @@ function MathieuIntroPage({ region, onEnterFarm }) {
 function MathieuFarmPage({ region }) {
   const [budget, setBudget] = useState(1000);
   const [alloc, setAlloc]   = useState({ fertilisers:0.25, wages:0.15, depreciation:0.20, intermediate:0.40 });
+  const [prevAlloc, setPrevAlloc] = useState(null);
+  const [prevBudget, setPrevBudget] = useState(null);
 
   if (region !== "France") return (
     <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:400, gap:16 }}>
-      <p style={{ color:"#475569", fontSize:15 }}>This simulation is only available for France.</p>
+      <p style={{ color:"#94a3b8", fontSize:15 }}>This simulation is only available for France.</p>
     </div>
   );
 
@@ -1619,245 +1618,347 @@ function MathieuFarmPage({ region }) {
     depreciation: budget * alloc.depreciation,
     intermediate: budget * alloc.intermediate,
   };
+  const prevSpending = prevAlloc && prevBudget ? {
+    fertilisers:  prevBudget * prevAlloc.fertilisers,
+    wages:        prevBudget * prevAlloc.wages,
+    depreciation: prevBudget * prevAlloc.depreciation,
+    intermediate: prevBudget * prevAlloc.intermediate,
+  } : spending;
 
-  const logOutput = MODEL1.intercept
-    + MODEL1.elasticities.fertilisers.coef  * Math.log(Math.max(spending.fertilisers,  1))
-    + MODEL1.elasticities.wages.coef         * Math.log(Math.max(spending.wages,         1))
-    + MODEL1.elasticities.depreciation.coef  * Math.log(Math.max(spending.depreciation, 1))
-    + MODEL1.elasticities.intermediate.coef  * Math.log(Math.max(spending.intermediate, 1));
-  const predictedOutput = Math.exp(logOutput);
+  const calcOutput = (sp) => Math.exp(
+    MODEL1.intercept
+    + MODEL1.elasticities.fertilisers.coef  * Math.log(Math.max(sp.fertilisers,  1))
+    + MODEL1.elasticities.wages.coef         * Math.log(Math.max(sp.wages,         1))
+    + MODEL1.elasticities.depreciation.coef  * Math.log(Math.max(sp.depreciation, 1))
+    + MODEL1.elasticities.intermediate.coef  * Math.log(Math.max(sp.intermediate, 1))
+  );
+  const calcFNI = (sp) => Math.exp(
+    MODEL2.intercept
+    + MODEL2.elasticities.fertilisers.coef  * Math.log(Math.max(sp.fertilisers,  1))
+    + MODEL2.elasticities.wages.coef         * Math.log(Math.max(sp.wages,         1))
+    + MODEL2.elasticities.depreciation.coef  * Math.log(Math.max(sp.depreciation, 1))
+    + MODEL2.elasticities.intermediate.coef  * Math.log(Math.max(sp.intermediate, 1))
+  );
 
-  const logFNI = MODEL2.intercept
-    + MODEL2.elasticities.fertilisers.coef  * Math.log(Math.max(spending.fertilisers,  1))
-    + MODEL2.elasticities.wages.coef         * Math.log(Math.max(spending.wages,         1))
-    + MODEL2.elasticities.depreciation.coef  * Math.log(Math.max(spending.depreciation, 1))
-    + MODEL2.elasticities.intermediate.coef  * Math.log(Math.max(spending.intermediate, 1));
-  const predictedFNI = Math.exp(logFNI);
+  const predictedOutput = calcOutput(spending);
+  const predictedFNI    = calcFNI(spending);
+  const prevOutput      = calcOutput(prevSpending);
+  const prevFNI         = calcFNI(prevSpending);
+
+  const outputDelta = predictedOutput - prevOutput;
+  const fniDelta    = predictedFNI - prevFNI;
 
   const updateAlloc = (key, val) => {
-    const clamped = Math.max(0.01, Math.min(0.90, val));
+    setPrevAlloc({...alloc}); setPrevBudget(budget);
+    const clamped = Math.max(0.02, Math.min(0.88, val));
     const rest = 1 - clamped;
     const others = Object.keys(alloc).filter(k => k !== key);
     const sumOthers = others.reduce((s, k) => s + alloc[k], 0);
     const newAlloc = { ...alloc, [key]: clamped };
-    others.forEach(k => {
-      newAlloc[k] = sumOthers > 0 ? (alloc[k] / sumOthers) * rest : rest / others.length;
-    });
+    others.forEach(k => { newAlloc[k] = sumOthers > 0 ? (alloc[k] / sumOthers) * rest : rest / others.length; });
     const total = Object.values(newAlloc).reduce((s, v) => s + v, 0);
     Object.keys(newAlloc).forEach(k => { newAlloc[k] = newAlloc[k] / total; });
     setAlloc(newAlloc);
   };
+  const updateBudget = (val) => { setPrevAlloc({...alloc}); setPrevBudget(budget); setBudget(val); };
 
   const CONFIG = {
-    fertilisers:  { label:"Fertilizers",           color:"#0ea5e9", e1: MODEL1.elasticities.fertilisers.coef,  e2: MODEL2.elasticities.fertilisers.coef,
-      icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/></svg> },
-    wages:        { label:"Labour",                 color:"#10b981", e1: MODEL1.elasticities.wages.coef,         e2: MODEL2.elasticities.wages.coef,
-      icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> },
-    depreciation: { label:"Machinery",              color:"#f59e0b", e1: MODEL1.elasticities.depreciation.coef,  e2: MODEL2.elasticities.depreciation.coef,
-      icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg> },
-    intermediate: { label:"Seeds & crop protection",color:"#a78bfa", e1: MODEL1.elasticities.intermediate.coef,  e2: MODEL2.elasticities.intermediate.coef,
-      icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22V12M12 12C12 7 17 3 17 3s0 5-5 9zM12 12C12 7 7 3 7 3s0 5 5 9z"/><path d="M5 21c0-4 3-7 7-7s7 3 7 7"/></svg> },
+    fertilisers:  { label:"Fertilizers",            color:"#0ea5e9", e1: MODEL1.elasticities.fertilisers.coef,  e2: MODEL2.elasticities.fertilisers.coef,
+      icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/></svg> },
+    wages:        { label:"Labour",                  color:"#10b981", e1: MODEL1.elasticities.wages.coef,         e2: MODEL2.elasticities.wages.coef,
+      icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> },
+    depreciation: { label:"Machinery",               color:"#f59e0b", e1: MODEL1.elasticities.depreciation.coef,  e2: MODEL2.elasticities.depreciation.coef,
+      icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg> },
+    intermediate: { label:"Seeds & crop protection", color:"#a78bfa", e1: MODEL1.elasticities.intermediate.coef,  e2: MODEL2.elasticities.intermediate.coef,
+      icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22V12M12 12C12 7 17 3 17 3s0 5-5 9zM12 12C12 7 7 3 7 3s0 5 5 9z"/><path d="M5 21c0-4 3-7 7-7s7 3 7 7"/></svg> },
   };
 
-  // Interpretation sentences — values only change, structure stays fixed
-  // Interpretation values — fixed template, only numbers change
-  const fertPct1 = (MODEL1.elasticities.fertilisers.coef * 100).toFixed(1);
-  const intPct1  = (MODEL1.elasticities.intermediate.coef * 100).toFixed(1);
-  const depPct2  = (MODEL2.elasticities.depreciation.coef * 100).toFixed(1);
-  const fertPct2 = (MODEL2.elasticities.fertilisers.coef * 100).toFixed(1);
-  const fertEuros = spending.fertilisers.toFixed(0);
-  const intEuros  = spending.intermediate.toFixed(0);
-  const depEuros  = spending.depreciation.toFixed(0);
+  // Dominant input by current spending contribution to output
+  const contribs = Object.entries(CONFIG).map(([k,c]) => ({ k, v: c.e1 * Math.log(Math.max(spending[k],1)) }));
+  const topOutput = contribs.sort((a,b)=>b.v-a.v)[0].k;
+  // Input with most over-spend relative to its elasticity (diminishing returns)
+  const overSpent = Object.entries(CONFIG).sort((a,b)=>(alloc[b[0]]/b[1].e1)-(alloc[a[0]]/a[1].e1))[0][0];
+  const underSpent = Object.entries(CONFIG).sort((a,b)=>(alloc[a[0]]/a[1].e1)-(alloc[b[0]]/b[1].e1))[0][0];
+  const biggestIncomeGain = Object.entries(CONFIG).sort((a,b)=>b[1].e2-a[1].e2)[0][0];
+  const biggestIncomeDrag = Object.entries(CONFIG).sort((a,b)=>a[1].e2-b[1].e2)[0][0];
+
+  const fmt = (n) => n >= 0 ? `+€${n.toFixed(0)}` : `-€${Math.abs(n).toFixed(0)}`;
+  const fmtPct = (n) => n >= 0 ? `+${n.toFixed(1)}%` : `${n.toFixed(1)}%`;
 
   return (
-    <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
+    <div style={{ display:"flex", flexDirection:"column", gap:24 }}>
       <style>{`
-        @keyframes barnFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
-        @keyframes tokenPop  { from{transform:scale(0.85);opacity:0} to{transform:scale(1);opacity:1} }
-        @keyframes resultReveal { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-        .input-token { cursor:grab; user-select:none; transition:transform 0.15s,box-shadow 0.15s; }
-        .input-token:hover { transform:translateY(-3px) scale(1.04) !important; }
-        .input-token:active { cursor:grabbing; transform:scale(0.97) !important; }
-        .barn-slot { transition:background 0.15s,border-color 0.15s; }
-        .barn-slot.drag-over { background:rgba(14,165,233,0.12) !important; border-color:rgba(14,165,233,0.5) !important; }
+        @keyframes resultReveal { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes deltaFlash { 0%{opacity:0;transform:translateY(-6px)} 30%{opacity:1;transform:translateY(0)} 80%{opacity:1} 100%{opacity:0} }
+        .barn-slot { transition:border-color 0.15s; }
+        .barn-slot:focus-within { border-color:rgba(255,255,255,0.2) !important; }
+        input[type=range] { height:4px; }
       `}</style>
 
-      {/* Total budget slider — top bar */}
-      <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"18px 24px", display:"flex", alignItems:"center", gap:20 }}>
-        <div style={{ flex:1 }}>
-          <div style={{ display:"flex", justifyContent:"space-between", marginBottom:8 }}>
-            <span style={{ color:"#94a3b8", fontSize:12, fontWeight:600 }}>Mathieu's total input budget per hectare</span>
-            <span style={{ color:"#f1f5f9", fontSize:18, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>€{budget.toLocaleString()}<span style={{ color:"#475569", fontSize:12, fontWeight:400 }}>/ha</span></span>
+      {/* ── SECTION 1: THE TWO MODELS ────────────────────────────────────────── */}
+      <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:16, overflow:"hidden" }}>
+        <div style={{ padding:"22px 28px 18px", borderBottom:"1px solid #1a2436" }}>
+          <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.16em", fontWeight:700, margin:0, marginBottom:6 }}>The statistical framework</p>
+          <p style={{ color:"#f1f5f9", fontSize:16, fontWeight:700, letterSpacing:"-0.02em", margin:0 }}>Two models. One question. A surprising answer.</p>
+        </div>
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:0 }}>
+
+          {/* Model 1 */}
+          <div style={{ padding:"22px 28px", borderRight:"1px solid #1a2436" }}>
+            <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:14 }}>
+              <div style={{ width:32, height:32, borderRadius:8, background:"#0ea5e915", border:"1px solid #0ea5e930", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              </div>
+              <div>
+                <p style={{ color:"#0ea5e9", fontSize:11, fontWeight:700, margin:0 }}>Model 1 — Production</p>
+                <p style={{ color:"#94a3b8", fontSize:10, margin:0 }}>R² = {MODEL1.rSquared} · 864 obs.</p>
+              </div>
+            </div>
+            <p style={{ color:"#cbd5e1", fontSize:12, lineHeight:1.8, marginBottom:14 }}>
+              This model estimates how a 1% increase in each input category changes Mathieu's output per hectare. It answers the first half of his hypothesis: <em>does spending more produce more?</em>
+            </p>
+            <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+              {Object.entries(CONFIG).map(([k,c]) => (
+                <div key={k} style={{ display:"flex", alignItems:"center", gap:8 }}>
+                  <div style={{ width:6, height:6, borderRadius:2, background:c.color, flexShrink:0 }}/>
+                  <span style={{ color:"#e2e8f0", fontSize:11, flex:1 }}>{c.label}</span>
+                  <span style={{ color:c.color, fontSize:12, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>+{(c.e1*100).toFixed(1)}%</span>
+                  <span style={{ color:"#94a3b8", fontSize:10 }}>output per 1% more</span>
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop:14, padding:"10px 12px", background:"#060d1a", borderRadius:8, border:"1px solid #0ea5e920" }}>
+              <p style={{ color:"#94a3b8", fontSize:11, lineHeight:1.7, margin:0 }}>
+                The dominant driver is <span style={{ color:"#a78bfa", fontWeight:700 }}>seeds and crop protection</span> at {(MODEL1.elasticities.intermediate.coef*100).toFixed(1)}% — nearly {(MODEL1.elasticities.intermediate.coef/MODEL1.elasticities.fertilisers.coef).toFixed(0)}x more powerful than fertilizer. Mathieu has been overrating the wrong input.
+              </p>
+            </div>
           </div>
-          <input type="range" min={300} max={2500} step={50} value={budget} onChange={e=>setBudget(Number(e.target.value))}
-            style={{ width:"100%", accentColor:"#0ea5e9", cursor:"pointer" }}/>
-          <div style={{ display:"flex", justifyContent:"space-between", marginTop:4 }}>
-            <span style={{ color:"#334155", fontSize:10 }}>€300 — minimal</span>
-            <span style={{ color:"#334155", fontSize:10 }}>€2,500 — intensive</span>
+
+          {/* Model 2 */}
+          <div style={{ padding:"22px 28px" }}>
+            <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:14 }}>
+              <div style={{ width:32, height:32, borderRadius:8, background:"#10b98115", border:"1px solid #10b98130", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </div>
+              <div>
+                <p style={{ color:"#10b981", fontSize:11, fontWeight:700, margin:0 }}>Model 2 — Farm Net Income</p>
+                <p style={{ color:"#94a3b8", fontSize:10, margin:0 }}>R² = {MODEL2.rSquared} · 864 obs.</p>
+              </div>
+            </div>
+            <p style={{ color:"#cbd5e1", fontSize:12, lineHeight:1.8, marginBottom:14 }}>
+              This model asks the harder question: does more spending actually make Mathieu <em>richer</em>? It estimates the net income effect of each input — after all costs are accounted for.
+            </p>
+            <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+              {Object.entries(CONFIG).map(([k,c]) => {
+                const e2 = c.e2;
+                const col = e2 >= 0 ? c.color : "#f43f5e";
+                return (
+                  <div key={k} style={{ display:"flex", alignItems:"center", gap:8 }}>
+                    <div style={{ width:6, height:6, borderRadius:2, background:col, flexShrink:0 }}/>
+                    <span style={{ color:"#e2e8f0", fontSize:11, flex:1 }}>{c.label}</span>
+                    <span style={{ color:col, fontSize:12, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>{e2>=0?"+":""}{(e2*100).toFixed(1)}%</span>
+                    <span style={{ color:"#94a3b8", fontSize:10 }}>income per 1% more</span>
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ marginTop:14, padding:"10px 12px", background:"#060d1a", borderRadius:8, border:"1px solid #f43f5e20" }}>
+              <p style={{ color:"#94a3b8", fontSize:11, lineHeight:1.7, margin:0 }}>
+                <span style={{ color:"#f43f5e", fontWeight:700 }}>Machinery has a negative income elasticity</span> of {(MODEL2.elasticities.depreciation.coef*100).toFixed(1)}%. Spending more on equipment raises output — but costs more than it earns. More tractor, less profit.
+              </p>
+            </div>
           </div>
+        </div>
+
+        {/* The link between models */}
+        <div style={{ padding:"16px 28px", borderTop:"1px solid #1a2436", background:"linear-gradient(135deg,#060d18,#080e14)", display:"flex", alignItems:"center", gap:16 }}>
+          <div style={{ flexShrink:0 }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          </div>
+          <p style={{ color:"#cbd5e1", fontSize:12, lineHeight:1.75, margin:0 }}>
+            <span style={{ color:"#f59e0b", fontWeight:700 }}>The link between the two models</span> is the core of Mathieu's problem. The input that most powerfully drives output (seeds and crop protection, elasticity {(MODEL1.elasticities.intermediate.coef).toFixed(3)}) is also the one that most powerfully drives income (elasticity {(MODEL2.elasticities.intermediate.coef).toFixed(3)}). But machinery — which does raise output — destroys income at the margin. Mathieu's intuition collapses the two models into one. They are not the same.
+          </p>
         </div>
       </div>
 
-      {/* Main game area */}
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 380px", gap:16, alignItems:"start" }}>
+      {/* ── SECTION 2: INTERACTIVE EXERCISE ─────────────────────────────────── */}
+      <div>
+        <p style={{ color:"#f1f5f9", fontSize:14, fontWeight:700, marginBottom:4 }}>Now put yourself in Mathieu's position.</p>
+        <p style={{ color:"#94a3b8", fontSize:12, lineHeight:1.7, marginBottom:16 }}>
+          You have a fixed budget per hectare. Decide how to split it across the four input categories. The models calculate what happens to output and income in real time — and the interpretation below tells you what your choices mean.
+        </p>
 
-        {/* LEFT: The barn */}
-        <div style={{ background:"linear-gradient(160deg,#060d1a,#04080f)", border:"1px solid #1a2436", borderRadius:16, overflow:"hidden" }}>
-
-          {/* Barn roof / header */}
-          <div style={{ background:"linear-gradient(135deg,#0a1628,#060d1a)", padding:"20px 24px 16px", borderBottom:"1px solid #1a2436", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-            <div>
-              <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, margin:0, marginBottom:4 }}>Mathieu's barn — drag to allocate</p>
-              <p style={{ color:"#475569", fontSize:12, margin:0 }}>Move the slider on each input to decide how much Mathieu spends.</p>
-            </div>
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0ea5e930" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-              <polyline points="9 22 9 12 15 12 15 22"/>
-            </svg>
+        {/* Budget slider */}
+        <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"16px 22px", marginBottom:16 }}>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
+            <span style={{ color:"#e2e8f0", fontSize:13, fontWeight:600 }}>Total budget per hectare</span>
+            <span style={{ color:"#f1f5f9", fontSize:20, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>€{budget.toLocaleString()}<span style={{ color:"#94a3b8", fontSize:12, fontWeight:400 }}>/ha</span></span>
           </div>
+          <input type="range" min={300} max={2500} step={50} value={budget}
+            onChange={e=>updateBudget(Number(e.target.value))}
+            style={{ width:"100%", accentColor:"#0ea5e9", cursor:"pointer" }}/>
+          <div style={{ display:"flex", justifyContent:"space-between", marginTop:4 }}>
+            <span style={{ color:"#94a3b8", fontSize:10 }}>€300 — minimal farm</span>
+            <span style={{ color:"#94a3b8", fontSize:10 }}>€2,500 — intensive</span>
+          </div>
+        </div>
 
-          {/* Input slots inside the barn */}
-          <div style={{ padding:"20px 24px", display:"flex", flexDirection:"column", gap:16 }}>
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 320px", gap:16, alignItems:"start" }}>
+
+          {/* Left: input sliders */}
+          <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
             {Object.entries(CONFIG).map(([key, cfg]) => {
               const euros = spending[key];
               const sharePct = (alloc[key] * 100).toFixed(0);
-              const outputEffect = cfg.e1 * 100;
-              const incomeEffect = cfg.e2 * 100;
+              const e2col = cfg.e2 >= 0 ? cfg.color : "#f43f5e";
 
               return (
-                <div key={key} className="barn-slot" style={{ background:"#0a1020", border:`1px solid ${cfg.color}20`, borderRadius:12, padding:"16px 18px" }}>
-                  <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:12 }}>
-                    {/* Token icon */}
-                    <div style={{ width:44, height:44, borderRadius:10, background:`${cfg.color}15`, border:`1px solid ${cfg.color}30`, display:"flex", alignItems:"center", justifyContent:"center", color:cfg.color, flexShrink:0 }}>
+                <div key={key} className="barn-slot" style={{ background:"#080e18", border:`1px solid ${cfg.color}22`, borderRadius:12, padding:"14px 18px" }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:10 }}>
+                    <div style={{ width:40, height:40, borderRadius:9, background:`${cfg.color}15`, border:`1px solid ${cfg.color}28`, display:"flex", alignItems:"center", justifyContent:"center", color:cfg.color, flexShrink:0 }}>
                       {cfg.icon}
                     </div>
-                    {/* Label + spend */}
-                    <div style={{ flex:1, minWidth:0 }}>
+                    <div style={{ flex:1 }}>
                       <p style={{ color:"#f1f5f9", fontSize:13, fontWeight:600, margin:0 }}>{cfg.label}</p>
-                      <p style={{ color:"#475569", fontSize:11, margin:"2px 0 0" }}>
-                        Output effect: <span style={{ color:cfg.color, fontWeight:700 }}>+{outputEffect.toFixed(1)}%</span> per 1% more spent
-                        {incomeEffect < 0 && <span style={{ color:"#f43f5e" }}> · Income: {incomeEffect.toFixed(1)}%</span>}
+                      <p style={{ color:"#94a3b8", fontSize:10, margin:"2px 0 0" }}>
+                        Output: <span style={{ color:cfg.color, fontWeight:700 }}>+{(cfg.e1*100).toFixed(1)}%</span> per 1% more
+                        <span style={{ margin:"0 6px", color:"#1e293b" }}>·</span>
+                        Income: <span style={{ color:e2col, fontWeight:700 }}>{cfg.e2>=0?"+":""}{(cfg.e2*100).toFixed(1)}%</span> per 1% more
                       </p>
                     </div>
-                    {/* Spend display */}
                     <div style={{ textAlign:"right", flexShrink:0 }}>
-                      <p style={{ color:cfg.color, fontSize:17, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>€{euros.toFixed(0)}</p>
-                      <p style={{ color:"#475569", fontSize:10, margin:0 }}>{sharePct}% of budget</p>
+                      <p style={{ color:cfg.color, fontSize:18, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>€{euros.toFixed(0)}</p>
+                      <p style={{ color:"#94a3b8", fontSize:10, margin:0 }}>{sharePct}% of budget</p>
                     </div>
                   </div>
-
-                  {/* Slider */}
-                  <input
-                    type="range" min={0.02} max={0.88} step={0.01}
-                    value={alloc[key]}
+                  <input type="range" min={0.02} max={0.88} step={0.01} value={alloc[key]}
                     onChange={e => updateAlloc(key, Number(e.target.value))}
-                    style={{ width:"100%", accentColor:cfg.color, cursor:"pointer" }}
-                  />
-                  {/* Bar fill visualization */}
-                  <div style={{ height:4, background:"#1a2436", borderRadius:2, overflow:"hidden", marginTop:6 }}>
-                    <div style={{ height:"100%", width:`${alloc[key]*100}%`, background:cfg.color, borderRadius:2, transition:"width 0.2s" }}/>
+                    style={{ width:"100%", accentColor:cfg.color, cursor:"pointer" }}/>
+                  <div style={{ height:3, background:"#1a2436", borderRadius:2, overflow:"hidden", marginTop:6 }}>
+                    <div style={{ height:"100%", width:`${alloc[key]*100}%`, background:cfg.color, borderRadius:2, transition:"width 0.18s" }}/>
                   </div>
                 </div>
               );
             })}
 
-            {/* Budget stack bar */}
-            <div style={{ height:8, borderRadius:4, overflow:"hidden", display:"flex", marginTop:4 }}>
+            {/* Stack bar */}
+            <div style={{ height:6, borderRadius:3, overflow:"hidden", display:"flex" }}>
               {Object.entries(CONFIG).map(([k,c]) => (
-                <div key={k} title={`${c.label}: ${(alloc[k]*100).toFixed(0)}%`} style={{ width:`${alloc[k]*100}%`, background:c.color, transition:"width 0.2s" }}/>
-              ))}
-            </div>
-            <div style={{ display:"flex", flexWrap:"wrap", gap:"4px 14px" }}>
-              {Object.entries(CONFIG).map(([k,c]) => (
-                <div key={k} style={{ display:"flex", alignItems:"center", gap:5 }}>
-                  <div style={{ width:7, height:7, borderRadius:2, background:c.color }}/>
-                  <span style={{ color:"#64748b", fontSize:10 }}>{c.label} {(alloc[k]*100).toFixed(0)}%</span>
-                </div>
+                <div key={k} style={{ width:`${alloc[k]*100}%`, background:c.color, transition:"width 0.18s" }}/>
               ))}
             </div>
           </div>
-        </div>
 
-        {/* RIGHT: Live results panel */}
-        <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+          {/* Right: live results */}
+          <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+            <div style={{ background:"linear-gradient(135deg,#060d18,#080e14)", border:"1px solid #0ea5e928", borderRadius:12, padding:"18px 20px" }}>
+              <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>Model 1 — Predicted output</p>
+              <p style={{ color:"#0ea5e9", fontSize:30, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0, lineHeight:1 }}>
+                €{predictedOutput.toFixed(0)}<span style={{ fontSize:12, color:"#94a3b8", fontWeight:400 }}>/ha</span>
+              </p>
+              {outputDelta !== 0 && (
+                <p style={{ color:outputDelta>0?"#10b981":"#f43f5e", fontSize:11, fontWeight:700, marginTop:6, fontFamily:"'DM Mono',monospace" }}>
+                  {fmt(outputDelta)} vs previous allocation
+                </p>
+              )}
+            </div>
 
-          {/* Output card */}
-          <div style={{ background:"linear-gradient(135deg,#080e18,#060d14)", border:"1px solid #0ea5e930", borderRadius:14, padding:"20px 22px", animation:"resultReveal 0.4s ease both" }}>
-            <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:6 }}>Predicted output</p>
-            <p style={{ color:"#0ea5e9", fontSize:32, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0, lineHeight:1 }}>
-              €{predictedOutput.toFixed(0)}
-              <span style={{ fontSize:13, color:"#475569", fontWeight:400 }}>/ha</span>
-            </p>
-            <p style={{ color:"#475569", fontSize:10, marginTop:6 }}>Model 1 · R² = {MODEL1.rSquared}</p>
-          </div>
+            <div style={{ background:"linear-gradient(135deg,#060d18,#080e14)", border:`1px solid ${predictedFNI>=0?"#10b98128":"#f43f5e28"}`, borderRadius:12, padding:"18px 20px" }}>
+              <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>Model 2 — Farm net income</p>
+              <p style={{ color:predictedFNI>=0?"#10b981":"#f43f5e", fontSize:30, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0, lineHeight:1 }}>
+                €{predictedFNI.toFixed(0)}<span style={{ fontSize:12, color:"#94a3b8", fontWeight:400 }}>/ha</span>
+              </p>
+              {fniDelta !== 0 && (
+                <p style={{ color:fniDelta>0?"#10b981":"#f43f5e", fontSize:11, fontWeight:700, marginTop:6, fontFamily:"'DM Mono',monospace" }}>
+                  {fmt(fniDelta)} vs previous allocation
+                </p>
+              )}
+            </div>
 
-          {/* Income card */}
-          <div style={{ background:"linear-gradient(135deg,#080e18,#060d14)", border:`1px solid ${predictedFNI>=0?"#10b98130":"#f43f5e30"}`, borderRadius:14, padding:"20px 22px", animation:"resultReveal 0.4s 0.1s ease both" }}>
-            <p style={{ color:"#64748b", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:6 }}>Predicted farm net income</p>
-            <p style={{ color:predictedFNI>=0?"#10b981":"#f43f5e", fontSize:32, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0, lineHeight:1 }}>
-              €{predictedFNI.toFixed(0)}
-              <span style={{ fontSize:13, color:"#475569", fontWeight:400 }}>/ha</span>
-            </p>
-            <p style={{ color:"#475569", fontSize:10, marginTop:6 }}>Model 2 · R² = {MODEL2.rSquared}</p>
-          </div>
-
-          {/* Per-input contribution bars */}
-          <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"16px 18px" }}>
-            <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", fontWeight:700, marginBottom:12 }}>Output contribution by input</p>
-            {Object.entries(CONFIG).map(([key, cfg]) => {
-              const contrib = cfg.e1 * Math.log(Math.max(spending[key], 1));
-              const maxContrib = MODEL1.elasticities.intermediate.coef * Math.log(Math.max(spending.intermediate, 1));
-              const barW = maxContrib > 0 ? Math.min((contrib / maxContrib) * 100, 100) : 0;
-              return (
-                <div key={key} style={{ marginBottom:8 }}>
-                  <div style={{ display:"flex", justifyContent:"space-between", marginBottom:3 }}>
-                    <span style={{ color:"#94a3b8", fontSize:11 }}>{cfg.label}</span>
-                    <span style={{ color:cfg.color, fontSize:11, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>{contrib.toFixed(3)}</span>
+            {/* Output contribution breakdown */}
+            <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"14px 16px" }}>
+              <p style={{ color:"#e2e8f0", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", fontWeight:700, marginBottom:10 }}>What's driving Mathieu's output</p>
+              {Object.entries(CONFIG).map(([key, cfg]) => {
+                const contrib = cfg.e1 * Math.log(Math.max(spending[key], 1));
+                const total = Object.entries(CONFIG).reduce((s,[k,c]) => s + c.e1*Math.log(Math.max(spending[k],1)), 0);
+                const sharePct2 = total > 0 ? (contrib/total*100).toFixed(0) : 0;
+                return (
+                  <div key={key} style={{ marginBottom:7 }}>
+                    <div style={{ display:"flex", justifyContent:"space-between", marginBottom:2 }}>
+                      <span style={{ color:"#e2e8f0", fontSize:11 }}>{cfg.label}</span>
+                      <span style={{ color:cfg.color, fontSize:11, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>{sharePct2}%</span>
+                    </div>
+                    <div style={{ height:4, background:"#1a2436", borderRadius:2, overflow:"hidden" }}>
+                      <div style={{ height:"100%", width:`${sharePct2}%`, background:cfg.color, borderRadius:2, transition:"width 0.2s" }}/>
+                    </div>
                   </div>
-                  <div style={{ height:4, background:"#1a2436", borderRadius:2, overflow:"hidden" }}>
-                    <div style={{ height:"100%", width:`${barW}%`, background:cfg.color, borderRadius:2, transition:"width 0.25s" }}/>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* INTERPRETATION BLOCK — fixed template, only values change */}
-      <div style={{ background:"linear-gradient(135deg,#0a1628,#060d18)", border:"1px solid #0ea5e925", borderRadius:14, padding:"22px 28px" }}>
-        <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.16em", fontWeight:700, marginBottom:16 }}>
-          Interpretation
+      {/* ── SECTION 3: LIVE INTERPRETATION ──────────────────────────────────── */}
+      <div style={{ background:"linear-gradient(135deg,#0a1628,#060d18)", border:"1px solid #0ea5e920", borderRadius:14, padding:"22px 28px" }}>
+        <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.16em", fontWeight:700, marginBottom:18 }}>
+          Interpretation — based on Mathieu's current allocation
         </p>
 
-        <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-          <p style={{ color:"#cbd5e1", fontSize:13, lineHeight:1.85, margin:0 }}>
-            Whenever Mathieu increases his fertilizer spending by 1%, the model predicts his output per hectare rises by{" "}
-            <span style={{ color:"#0ea5e9", fontWeight:700 }}>{fertPct1}%</span>.
-            At his current allocation of <span style={{ color:"#0ea5e9", fontWeight:700 }}>€{fertEuros}/ha</span>, that is a relatively modest return — fertilizer is not the dominant lever his intuition suggests.
-          </p>
+        <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
 
-          <p style={{ color:"#cbd5e1", fontSize:13, lineHeight:1.85, margin:0 }}>
-            The biggest driver of output is intermediate inputs — seeds, crop protection, and operating costs. A 1% increase there lifts output by{" "}
-            <span style={{ color:"#a78bfa", fontWeight:700 }}>{intPct1}%</span>,
-            nearly {(MODEL1.elasticities.intermediate.coef / MODEL1.elasticities.fertilisers.coef).toFixed(0)} times the effect of fertilizer. Mathieu currently spends{" "}
-            <span style={{ color:"#a78bfa", fontWeight:700 }}>€{intEuros}/ha</span> on this category.
-          </p>
+          {/* Sentence 1 — what dominates output right now */}
+          <div style={{ paddingLeft:16, borderLeft:`3px solid ${CONFIG[topOutput].color}` }}>
+            <p style={{ color:"#e2e8f0", fontSize:13, lineHeight:1.85, margin:0 }}>
+              With his current allocation, <span style={{ color:CONFIG[topOutput].color, fontWeight:700 }}>{CONFIG[topOutput].label}</span> is contributing the most to Mathieu's output —
+              representing <span style={{ color:CONFIG[topOutput].color, fontWeight:700 }}>
+                {(CONFIG[topOutput].e1 * Math.log(Math.max(spending[topOutput],1)) /
+                  Object.entries(CONFIG).reduce((s,[k,c])=>s+c.e1*Math.log(Math.max(spending[k],1)),0) * 100).toFixed(0)}%
+              </span> of the total input-driven output effect.
+              He is spending <span style={{ color:CONFIG[topOutput].color, fontWeight:700 }}>€{spending[topOutput].toFixed(0)}/ha</span> on it,
+              which carries an output elasticity of <span style={{ color:CONFIG[topOutput].color, fontWeight:700 }}>+{(CONFIG[topOutput].e1*100).toFixed(1)}%</span>.
+              That means each additional percent he allocates here raises his output by that much.
+            </p>
+          </div>
 
-          <p style={{ color:"#cbd5e1", fontSize:13, lineHeight:1.85, margin:0 }}>
-            The income picture is more complicated. Machinery spending — captured through depreciation — has a{" "}
-            <span style={{ color:"#f43f5e", fontWeight:700 }}>negative</span> income elasticity of{" "}
-            <span style={{ color:"#f43f5e", fontWeight:700 }}>{depPct2}%</span>.
-            This means that when Mathieu spends more on machinery (currently{" "}
-            <span style={{ color:"#f59e0b", fontWeight:700 }}>€{depEuros}/ha</span>),
-            his output does increase — but not enough to offset the cost. The machine works. It just does not pay for itself at the margin.
-          </p>
+          {/* Sentence 2 — over/under allocation signal */}
+          <div style={{ paddingLeft:16, borderLeft:`3px solid ${CONFIG[overSpent].color}` }}>
+            <p style={{ color:"#e2e8f0", fontSize:13, lineHeight:1.85, margin:0 }}>
+              Looking at the ratio of spending to elasticity, Mathieu is relatively over-invested in{" "}
+              <span style={{ color:CONFIG[overSpent].color, fontWeight:700 }}>{CONFIG[overSpent].label}</span> (€{spending[overSpent].toFixed(0)}/ha for an elasticity of {(CONFIG[overSpent].e1*100).toFixed(1)}%) and
+              under-invested in <span style={{ color:CONFIG[underSpent].color, fontWeight:700 }}>{CONFIG[underSpent].label}</span> (€{spending[underSpent].toFixed(0)}/ha for an elasticity of {(CONFIG[underSpent].e1*100).toFixed(1)}%).
+              The data suggests redistributing toward <span style={{ color:CONFIG[underSpent].color, fontWeight:700 }}>{CONFIG[underSpent].label}</span> would improve output efficiency.
+            </p>
+          </div>
 
-          <p style={{ color:"#cbd5e1", fontSize:13, lineHeight:1.85, margin:0 }}>
-            Fertilizer, however, has a positive income elasticity of{" "}
-            <span style={{ color:"#0ea5e9", fontWeight:700 }}>+{fertPct2}%</span>.
-            So while fertilizer is a weak output lever, it is a profitable one — each franc spent on it returns more to income than it costs. This is the core tension in Mathieu's decision: the input that feels most powerful agronomically is not the one the data says is most profitable.
-          </p>
+          {/* Sentence 3 — income vs output tension */}
+          <div style={{ paddingLeft:16, borderLeft:"3px solid #f43f5e" }}>
+            <p style={{ color:"#e2e8f0", fontSize:13, lineHeight:1.85, margin:0 }}>
+              On income, the picture changes. Machinery currently costs Mathieu{" "}
+              <span style={{ color:"#f43f5e", fontWeight:700 }}>€{spending.depreciation.toFixed(0)}/ha</span>.
+              Despite having a positive output effect (+{(MODEL1.elasticities.depreciation.coef*100).toFixed(1)}%), it carries a{" "}
+              <span style={{ color:"#f43f5e", fontWeight:700 }}>negative income elasticity of {(MODEL2.elasticities.depreciation.coef*100).toFixed(1)}%</span>.
+              This means his machinery investment raises what he produces but reduces what he takes home.
+              At the same time, <span style={{ color:CONFIG[biggestIncomeGain].color, fontWeight:700 }}>{CONFIG[biggestIncomeGain].label}</span>{" "}
+              is the strongest positive income lever (elasticity +{(CONFIG[biggestIncomeGain].e2*100).toFixed(1)}%), meaning more spending there actually improves his bottom line.
+            </p>
+          </div>
+
+          {/* Sentence 4 — model verdict on this allocation */}
+          <div style={{ paddingLeft:16, borderLeft:"3px solid #10b981", background:"rgba(16,185,129,0.04)", padding:"14px 14px 14px 16px", borderRadius:"0 8px 8px 0" }}>
+            <p style={{ color:"#e2e8f0", fontSize:13, lineHeight:1.85, margin:0 }}>
+              <span style={{ color:"#10b981", fontWeight:700 }}>The model verdict:</span>{" "}
+              With €{budget.toLocaleString()}/ha total, Mathieu's current allocation produces a predicted output of{" "}
+              <span style={{ color:"#0ea5e9", fontWeight:700 }}>€{predictedOutput.toFixed(0)}/ha</span> and a predicted farm net income of{" "}
+              <span style={{ color:predictedFNI>=0?"#10b981":"#f43f5e", fontWeight:700 }}>€{predictedFNI.toFixed(0)}/ha</span>.
+              {predictedFNI < predictedOutput * 0.1
+                ? " His costs are consuming most of his output. Rebalancing away from machinery toward seeds and crop protection is what the income model recommends."
+                : predictedFNI > 200
+                ? " His allocation is reasonably profitable. The main remaining tension is between his intuition around fertilizer and what the models actually show about its relative weakness."
+                : " There is room to improve. The models suggest the balance between output levers and income levers is not yet optimal."
+              }
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -1867,7 +1968,7 @@ function MathieuFarmPage({ region }) {
 
 // ─── MARKET INTELLIGENCE PAGES ────────────────────────────────────────────────
 function MIPlaceholder({ region }) {
-  return <div style={{ display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:300,gap:12 }}><p style={{ fontSize:40 }}>🌍</p><p style={{ fontSize:15,color:"#64748b" }}>No market intelligence data for {region}.</p><p style={{ fontSize:12,color:"#334155" }}>Available: {Object.keys(MARKET_INTEL).join(", ")}</p></div>;
+  return <div style={{ display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:300,gap:12 }}><p style={{ fontSize:40 }}>🌍</p><p style={{ fontSize:15,color:"#94a3b8" }}>No market intelligence data for {region}.</p><p style={{ fontSize:12,color:"#94a3b8" }}>Available: {Object.keys(MARKET_INTEL).join(", ")}</p></div>;
 }
 
 // ─── FARMER P&L PAGE ──────────────────────────────────────────────────────────
@@ -1985,10 +2086,10 @@ function MIFarmerPLPage() {
     { name:"Crop prot.",     value:d.costs.cropSpecific.cropProtection, color:"#f43f5e" },
     { name:"Land rent",      value:d.costs.otherOp.landRent,            color:"#f59e0b" },
     { name:"Labour",         value:d.costs.otherOp.labour,              color:"#10b981" },
-    { name:"Depreciation",   value:d.costs.otherOp.depreciation,        color:"#64748b" },
+    { name:"Depreciation",   value:d.costs.otherOp.depreciation,        color:"#94a3b8" },
     { name:"Energy",         value:d.costs.otherOp.energy,              color:"#a78bfa" },
     { name:"Livestock",      value:d.costs.livestockSpecific.total,     color:"#94a3b8" },
-    { name:"Financial",      value:d.costs.financial,                   color:"#334155" },
+    { name:"Financial",      value:d.costs.financial,                   color:"#94a3b8" },
   ].filter(x=>x.value>0);
 
   // P&L row component
@@ -2011,7 +2112,7 @@ function MIFarmerPLPage() {
           {!expandKey && indent===0 && <span style={{width:17,flexShrink:0}}/>}
           <span style={{ flex:1, fontSize:header?12:bold?12:11, fontWeight:header||bold?700:400, color:textColor, fontStyle:dimmed?"italic":"normal" }}>{label}</span>
           <span style={{ fontSize:bold||header?12:11, fontWeight:bold||header?700:500, fontFamily:"'DM Mono',monospace", color:valColor, width:96, textAlign:"right" }}>{displayVal}</span>
-          <span style={{ fontSize:10, color:"#64748b", width:46, textAlign:"right", fontFamily:"'DM Mono',monospace" }}>{pctRev(Math.abs(value))}</span>
+          <span style={{ fontSize:10, color:"#94a3b8", width:46, textAlign:"right", fontFamily:"'DM Mono',monospace" }}>{pctRev(Math.abs(value))}</span>
         </div>
         {expandKey && isOpen && children}
       </>
@@ -2020,7 +2121,7 @@ function MIFarmerPLPage() {
 
   const Divider = ({ label }) => (
     <div style={{ background:"#060d1a", padding:"4px 14px 3px", borderBottom:"1px solid #0d1829" }}>
-      <span style={{ color:"#64748b", fontSize:9, textTransform:"uppercase", letterSpacing:"0.1em" }}>{label}</span>
+      <span style={{ color:"#94a3b8", fontSize:9, textTransform:"uppercase", letterSpacing:"0.1em" }}>{label}</span>
     </div>
   );
 
@@ -2043,7 +2144,7 @@ function MIFarmerPLPage() {
             style={{ display:"flex", alignItems:"center", gap:7, padding:"9px 16px", borderRadius:10,
               border:`2px solid ${farmType===key?val.color:val.color+"28"}`,
               background:farmType===key?val.color+"18":"transparent",
-              color:farmType===key?val.color:"#64748b",
+              color:farmType===key?val.color:"#94a3b8",
               fontSize:12, fontWeight:farmType===key?700:400, cursor:"pointer", transition:"all 0.15s" }}>
             <span style={{fontSize:15}}>{val.emoji}</span> {key}
           </button>
@@ -2059,8 +2160,8 @@ function MIFarmerPLPage() {
           {label:"of which non-salaried",val:d.nonsalUta+" UTA"},
         ].map((item,i)=>(
           <div key={i}>
-            <p style={{ color:"#64748b", fontSize:9, textTransform:"uppercase", letterSpacing:"0.07em", marginBottom:2 }}>{item.label}</p>
-            <p style={{ color:"#64748b", fontSize:12, fontFamily:"'DM Mono',monospace" }}>{item.val}</p>
+            <p style={{ color:"#94a3b8", fontSize:9, textTransform:"uppercase", letterSpacing:"0.07em", marginBottom:2 }}>{item.label}</p>
+            <p style={{ color:"#94a3b8", fontSize:12, fontFamily:"'DM Mono',monospace" }}>{item.val}</p>
           </div>
         ))}
       </div>
@@ -2178,7 +2279,7 @@ function MIFarmerPLPage() {
       {/* Fertiliser in context */}
       <div style={{ background:`linear-gradient(135deg,#0e2535,#080e18)`, border:"1px solid #0ea5e930", borderRadius:12, padding:"16px 20px" }}>
         <p style={{ color:"#0ea5e9", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:8, fontWeight:700 }}>🧪 Fertilisers in context — {farmType} {d.emoji}</p>
-        <p style={{ color:"#64748b", fontSize:12, lineHeight:1.75 }}>
+        <p style={{ color:"#94a3b8", fontSize:12, lineHeight:1.75 }}>
           Fertilisers & soil amendments represent <span style={{ color:"#0ea5e9", fontWeight:700 }}>€{d.costs.cropSpecific.fertilisers}/ha</span> ({fertPct}% of total costs). Against total output of €{d.totalOutput.toLocaleString()}/ha, this represents {((d.costs.cropSpecific.fertilisers/d.totalOutput)*100).toFixed(1)}% of farm revenue — a relatively small share where agronomic improvements from P separation can generate a net positive return even at a modest yield uplift.
         </p>
       </div>
@@ -2218,7 +2319,7 @@ function MIMarketDynamicsPage({ region }) {
         {MACRO_KPIS.map((k,i)=>(
           <div key={i} style={{ background:"linear-gradient(135deg,#0f172a,#0a1020)",border:`1px solid ${k.accent}25`,borderRadius:14,padding:"16px 20px",flex:"1 1 150px",minWidth:140,position:"relative",overflow:"hidden" }}>
             <div style={{ position:"absolute",top:-12,right:-12,width:50,height:50,borderRadius:"50%",background:k.accent+"08" }}/>
-            <p style={{ color:"#64748b",fontSize:10,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:6 }}>{k.label}</p>
+            <p style={{ color:"#94a3b8",fontSize:10,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:6 }}>{k.label}</p>
             <p style={{ color:k.accent,fontSize:22,fontWeight:800,fontFamily:"'DM Mono',monospace",margin:0 }}>{k.value}</p>
             <p style={{ color:"#94a3b8",fontSize:11,marginTop:3 }}>{k.unit}</p>
             <span style={{ position:"absolute",bottom:10,right:12,color:k.accent+"60",fontSize:10,fontFamily:"'DM Mono',monospace" }}>{k.year}</span>
@@ -2230,14 +2331,14 @@ function MIMarketDynamicsPage({ region }) {
       <div className="chart-grid-2">
         <div className="card">
           <h3 className="card-title">P2O5 Consumption by Product — kt</h3>
-          <p style={{color:"#64748b",fontSize:10,marginBottom:10}}>2022 → 2023 · Source: Agreste / UNIFA</p>
+          <p style={{color:"#94a3b8",fontSize:10,marginBottom:10}}>2022 → 2023 · Source: Agreste / UNIFA</p>
           <div style={{ display:"flex",flexDirection:"column",gap:12,marginTop:4 }}>
             {intel.productMix.map((row,i)=><AnimBar key={i} label={row.name} val2022={row.val2022} val2023={row.val2023} maxVal={maxMix} color={row.color} />)}
           </div>
         </div>
         <div className="card">
           <h3 className="card-title">DAP/MAP Import Origin — kt P2O5</h3>
-          <p style={{color:"#64748b",fontSize:10,marginBottom:6}}>2024 · Source: UNIFA / French Customs</p>
+          <p style={{color:"#94a3b8",fontSize:10,marginBottom:6}}>2024 · Source: UNIFA / French Customs</p>
           <ResponsiveContainer width="100%" height={195}>
             <PieChart>
                 <Pie data={intel.importOrigin} cx="50%" cy="50%" outerRadius={78} dataKey="value"
@@ -2281,7 +2382,7 @@ function MIMarketDynamicsPage({ region }) {
             <div style={{ flexShrink:0, width:28, height:28, borderRadius:"50%", background:"#0ea5e920", border:"1px solid #0ea5e940", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, marginTop:2 }}>1</div>
             <div>
               <p style={{ color:"#e2e8f0", fontSize:14, fontWeight:600, marginBottom:6 }}>The soil is being mined — quietly, at scale</p>
-              <p style={{ color:"#64748b", fontSize:13, lineHeight:1.85, margin:0 }}>
+              <p style={{ color:"#94a3b8", fontSize:13, lineHeight:1.85, margin:0 }}>
                 Since 2021, P applications in France have fallen by roughly 29%. Today, <span style={{color:"#f1f5f9",fontWeight:600}}>only half of French parcels receive any mineral P at all</span>. Farmers are not replacing what crops take out. The agronomic gap versus Comifer recommendations is now 157 kt P₂O₅ — the equivalent of leaving an entire year's TSP import sitting in the ground unplanted.
               </p>
             </div>
@@ -2294,7 +2395,7 @@ function MIMarketDynamicsPage({ region }) {
             <div style={{ flexShrink:0, width:28, height:28, borderRadius:"50%", background:"#f59e0b20", border:"1px solid #f59e0b40", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, marginTop:2, color:"#f59e0b" }}>2</div>
             <div>
               <p style={{ color:"#e2e8f0", fontSize:14, fontWeight:600, marginBottom:6 }}>Prices broke the habit — and farmers didn't recover it</p>
-              <p style={{ color:"#64748b", fontSize:13, lineHeight:1.85, margin:0 }}>
+              <p style={{ color:"#94a3b8", fontSize:13, lineHeight:1.85, margin:0 }}>
                 The 2022 price spike created a scissors effect: input costs doubled while margins compressed. Farmers responded rationally — they <span style={{color:"#f1f5f9",fontWeight:600}}>protected nitrogen and cut P and K</span>. The problem is that this became a habit. Even as prices normalised, the behaviour stuck. P is now the first line item cut when budgets tighten.
               </p>
             </div>
@@ -2307,7 +2408,7 @@ function MIMarketDynamicsPage({ region }) {
             <div style={{ flexShrink:0, width:28, height:28, borderRadius:"50%", background:"#10b98120", border:"1px solid #10b98140", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, marginTop:2, color:"#10b981" }}>3</div>
             <div>
               <p style={{ color:"#e2e8f0", fontSize:14, fontWeight:600, marginBottom:6 }}>Who controls the market? Coops — and Morocco is well placed</p>
-              <p style={{ color:"#64748b", fontSize:13, lineHeight:1.85, margin:0 }}>
+              <p style={{ color:"#94a3b8", fontSize:13, lineHeight:1.85, margin:0 }}>
                 France produces no TSP or DAP domestically. Everything is imported. <span style={{color:"#10b981",fontWeight:600}}>Morocco (OCP) already holds ~62% of the DAP/MAP import market</span>. But the real gatekeepers are the large purchasing cooperatives — Inoxa, Axereal, InVivo — which control blending, warehousing and agronomy advice for ~70% of fertilizer volumes. Access without them is nearly impossible.
               </p>
             </div>
@@ -2320,7 +2421,7 @@ function MIMarketDynamicsPage({ region }) {
             <div style={{ flexShrink:0, width:28, height:28, borderRadius:"50%", background:"#a78bfa20", border:"1px solid #a78bfa40", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, marginTop:2, color:"#a78bfa" }}>4</div>
             <div>
               <p style={{ color:"#e2e8f0", fontSize:14, fontWeight:600, marginBottom:6 }}>The market is moving toward value — and regulation favours clean P</p>
-              <p style={{ color:"#64748b", fontSize:13, lineHeight:1.85, margin:0 }}>
+              <p style={{ color:"#94a3b8", fontSize:13, lineHeight:1.85, margin:0 }}>
                 Standard NPKs are losing share. Farmers and coops are shifting to NPK+ grades — blends with sulphur, micronutrients and biostimulants. At the same time, EU heavy metal and carbon regulations are tightening. <span style={{color:"#a78bfa",fontWeight:600}}>OCP's low-cadmium Moroccan P is structurally advantaged</span> — not as a marketing claim, but as a regulatory compliance asset for the next decade.
               </p>
             </div>
@@ -2347,7 +2448,7 @@ function MIMarketDynamicsPage({ region }) {
             <div style={{ padding:"20px 24px" }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
                 <p style={{ color:"#10b981", fontSize:12, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em" }}>Strategic recommendations — OCP Nutricrops · France</p>
-                <button onClick={()=>setRecoOpen(false)} style={{ background:"transparent", border:"1px solid #1e293b", color:"#475569", borderRadius:6, padding:"4px 12px", fontSize:11, cursor:"pointer" }}>← hide</button>
+                <button onClick={()=>setRecoOpen(false)} style={{ background:"transparent", border:"1px solid #1e293b", color:"#c8d3e0", borderRadius:6, padding:"4px 12px", fontSize:11, cursor:"pointer" }}>← hide</button>
               </div>
               <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))", gap:12 }}>
                 {RECOS.map((r,i)=>(
@@ -2428,12 +2529,12 @@ function MIFarmerBSPage() {
           style={{ display:"flex", alignItems:"center", padding:`${header||bold?"9px":"6px"} 14px`, background:bg, borderBottom:"1px solid #0d1829", cursor:expandKey?"pointer":"default", paddingLeft:14+indent*16 }}
           onMouseEnter={e=>{if(!bold&&!header)e.currentTarget.style.background="#0a1018";}}
           onMouseLeave={e=>{if(!bold&&!header)e.currentTarget.style.background=bg;}}>
-          {expandKey&&<span style={{color:"#64748b",fontSize:10,marginRight:7,width:10,flexShrink:0}}>{isOpen?"▼":"▶"}</span>}
-          {!expandKey&&indent>0&&<span style={{color:"#334155",marginRight:7,width:10,flexShrink:0}}>└</span>}
+          {expandKey&&<span style={{color:"#94a3b8",fontSize:10,marginRight:7,width:10,flexShrink:0}}>{isOpen?"▼":"▶"}</span>}
+          {!expandKey&&indent>0&&<span style={{color:"#94a3b8",marginRight:7,width:10,flexShrink:0}}>└</span>}
           {!expandKey&&indent===0&&<span style={{width:17,flexShrink:0}}/>}
           <span style={{ flex:1, fontSize:header?12:bold?12:11, fontWeight:header||bold?700:400, color:textColor }}>{label}</span>
           <span style={{ fontSize:bold||header?12:11, fontWeight:bold||header?700:500, fontFamily:"'DM Mono',monospace", color:valColor, width:96, textAlign:"right" }}>{fmtV(value)}</span>
-          <span style={{ fontSize:10, color:"#64748b", width:58, textAlign:"right", fontFamily:"'DM Mono',monospace" }}>{((value/d.assets.total)*100).toFixed(1)}%</span>
+          <span style={{ fontSize:10, color:"#94a3b8", width:58, textAlign:"right", fontFamily:"'DM Mono',monospace" }}>{((value/d.assets.total)*100).toFixed(1)}%</span>
         </div>
         {expandKey&&isOpen&&children}
       </>
@@ -2444,7 +2545,7 @@ function MIFarmerBSPage() {
     <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
       <div>
         <h2 style={{ color:"#f1f5f9", fontSize:17, fontWeight:800, marginBottom:3 }}>Farmer Balance Sheet — Average per farm · €/Ha <span style={{color:"#94a3b8",fontWeight:400,fontSize:13}}>(2024)</span></h2>
-        <p style={{ color:"#64748b", fontSize:11 }}>Source: FADN / RICA France · Cereals, general crops, market gardening and viticulture · Values in €/Ha</p>
+        <p style={{ color:"#94a3b8", fontSize:11 }}>Source: FADN / RICA France · Cereals, general crops, market gardening and viticulture · Values in €/Ha</p>
       </div>
       <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
         {Object.entries(BS_DATA).map(([key,val])=>(
@@ -2455,7 +2556,7 @@ function MIFarmerBSPage() {
         ))}
       </div>
       <div style={{ background:"#080e1a", border:"1px solid #1e293b", borderRadius:8, padding:"8px 14px" }}>
-        <span style={{ color:"#64748b", fontSize:11, fontStyle:"italic" }}>{d.note}</span>
+        <span style={{ color:"#94a3b8", fontSize:11, fontStyle:"italic" }}>{d.note}</span>
       </div>
       <div className="kpi-row">
         <KPICard label="Total Assets"  value={fmtV(d.assets.total)+"/ha"} sub="fixed + current assets" accent={d.color}/>
@@ -2467,7 +2568,7 @@ function MIFarmerBSPage() {
       {/* Balance sheet waterfall */}
       <div className="card">
         <p style={{ color:"#94a3b8", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:4 }}>Balance Sheet Structure — Assets vs Equity & Liabilities (€/Ha)</p>
-        <p style={{ color:"#64748b", fontSize:11, marginBottom:16 }}>Both sides of the balance sheet displayed proportionally to total assets.</p>
+        <p style={{ color:"#94a3b8", fontSize:11, marginBottom:16 }}>Both sides of the balance sheet displayed proportionally to total assets.</p>
         <div style={{ display:"flex", gap:16 }}>
           <div style={{ flex:1 }}>
             <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8, fontWeight:700 }}>Assets — {fmtV(d.assets.total)}</p>
@@ -2488,7 +2589,7 @@ function MIFarmerBSPage() {
                   <div style={{ height:"100%", width:`${pct}%`, background:item.color, borderRadius:3 }}/>
                 </div>
                 <span style={{ color:"#e2e8f0", fontSize:10, fontFamily:"'DM Mono',monospace", width:64, flexShrink:0 }}>{fmtV(item.val)}</span>
-                <span style={{ color:"#64748b", fontSize:9, width:30, flexShrink:0 }}>{pct.toFixed(0)}%</span>
+                <span style={{ color:"#94a3b8", fontSize:9, width:30, flexShrink:0 }}>{pct.toFixed(0)}%</span>
               </div>
             );})}
           </div>
@@ -2510,7 +2611,7 @@ function MIFarmerBSPage() {
                   <div style={{ height:"100%", width:`${pct}%`, background:item.color, borderRadius:3 }}/>
                 </div>
                 <span style={{ color:"#e2e8f0", fontSize:10, fontFamily:"'DM Mono',monospace", width:64, flexShrink:0 }}>{fmtV(item.val)}</span>
-                <span style={{ color:"#64748b", fontSize:9, width:30, flexShrink:0 }}>{pct.toFixed(0)}%</span>
+                <span style={{ color:"#94a3b8", fontSize:9, width:30, flexShrink:0 }}>{pct.toFixed(0)}%</span>
               </div>
             );})}
           </div>
@@ -2530,12 +2631,12 @@ function MIFarmerBSPage() {
       <div className="chart-grid-2">
         <div className="card">
           <p style={{ color:"#94a3b8", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:4 }}>Fixed Asset Breakdown (€/Ha)</p>
-          <p style={{ color:"#64748b", fontSize:11, marginBottom:12 }}>Long-term productive capital stock decomposition.</p>
+          <p style={{ color:"#94a3b8", fontSize:11, marginBottom:12 }}>Long-term productive capital stock decomposition.</p>
           {Object.entries(d.assets.fixed.items).map(([name,val],i)=>{ const pct=(val/d.assets.fixed.total)*100; return (
             <div key={i} style={{ marginBottom:8 }}>
               <div style={{ display:"flex", justifyContent:"space-between", marginBottom:3 }}>
                 <span style={{ color:"#e2e8f0", fontSize:11 }}>{name}</span>
-                <span style={{ color:d.color, fontSize:11, fontFamily:"'DM Mono',monospace", fontWeight:600 }}>{fmtV(val)} <span style={{ color:"#64748b", fontWeight:400 }}>({pct.toFixed(0)}%)</span></span>
+                <span style={{ color:d.color, fontSize:11, fontFamily:"'DM Mono',monospace", fontWeight:600 }}>{fmtV(val)} <span style={{ color:"#94a3b8", fontWeight:400 }}>({pct.toFixed(0)}%)</span></span>
               </div>
               <div style={{ height:5, background:"#1e293b", borderRadius:3, overflow:"hidden" }}>
                 <div style={{ height:"100%", width:`${pct}%`, background:d.color, borderRadius:3 }}/>
@@ -2545,12 +2646,12 @@ function MIFarmerBSPage() {
         </div>
         <div className="card">
           <p style={{ color:"#94a3b8", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:4 }}>Debt Maturity Profile (€/Ha)</p>
-          <p style={{ color:"#64748b", fontSize:11, marginBottom:12 }}>Decomposition of total debt by maturity — key indicator of refinancing risk and cash pressure.</p>
+          <p style={{ color:"#94a3b8", fontSize:11, marginBottom:12 }}>Decomposition of total debt by maturity — key indicator of refinancing risk and cash pressure.</p>
           {[
             {label:"Long & medium-term debt", val:d.debt.items["Long & medium-term debt"], color:"#f43f5e", note:"Structural — machinery, building & land loans (7–15yr)"},
             {label:"Short-term borrowings", val:d.debt.items["Short-term borrowings & other financial liabilities"], color:"#f59e0b", note:"Working capital lines — renewed annually"},
             {label:"Trade & other payables", val:d.debt.items["Trade & other payables"], color:"#a78bfa", note:"Deferred input payments — coops, seeds, fertilizers"},
-            {label:"Liability accruals", val:d.debt.items["Liability accruals"], color:"#64748b", note:"Accrued charges not yet settled"},
+            {label:"Liability accruals", val:d.debt.items["Liability accruals"], color:"#94a3b8", note:"Accrued charges not yet settled"},
           ].map((item,i)=>{ const pct=(item.val/d.debt.total)*100; return (
             <div key={i} style={{ marginBottom:10 }}>
               <div style={{ display:"flex", justifyContent:"space-between", marginBottom:3 }}>
@@ -2560,7 +2661,7 @@ function MIFarmerBSPage() {
               <div style={{ height:5, background:"#1e293b", borderRadius:3, overflow:"hidden", marginBottom:3 }}>
                 <div style={{ height:"100%", width:`${pct}%`, background:item.color, borderRadius:3 }}/>
               </div>
-              <p style={{ color:"#64748b", fontSize:10, margin:0 }}>{item.note}</p>
+              <p style={{ color:"#94a3b8", fontSize:10, margin:0 }}>{item.note}</p>
             </div>
           );})}
           <div style={{ marginTop:10, padding:"10px 12px", background:"#060d1a", border:"1px solid #1e293b", borderLeft:`3px solid #f43f5e`, borderRadius:"0 8px 8px 0" }}>
@@ -2579,11 +2680,11 @@ function MIFarmerBSPage() {
           <span style={{ width:96, textAlign:"right", color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em" }}>€ / ha</span>
           <span style={{ width:58, textAlign:"right", color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em" }}>% total</span>
         </div>
-        <div style={{padding:"5px 0 2px",background:"#060d1a",borderBottom:"1px solid #0d1829"}}><span style={{paddingLeft:14,color:"#64748b",fontSize:9,textTransform:"uppercase",letterSpacing:"0.1em"}}>Assets</span></div>
+        <div style={{padding:"5px 0 2px",background:"#060d1a",borderBottom:"1px solid #0d1829"}}><span style={{paddingLeft:14,color:"#94a3b8",fontSize:9,textTransform:"uppercase",letterSpacing:"0.1em"}}>Assets</span></div>
         <BSRow label="Fixed Assets" value={d.assets.fixed.total} bold expandKey="assets">{Object.entries(d.assets.fixed.items).map(([k,v],i)=><BSRow key={i} label={k} value={v} indent={1}/>)}</BSRow>
         <BSRow label="Current Assets" value={d.assets.current.total} bold expandKey="equity">{Object.entries(d.assets.current.items).map(([k,v],i)=><BSRow key={i} label={k} value={v} indent={1}/>)}</BSRow>
         <BSRow label="TOTAL ASSETS" value={d.assets.total} bold header color={d.color}/>
-        <div style={{padding:"5px 0 2px",background:"#060d1a",borderBottom:"1px solid #0d1829",marginTop:4}}><span style={{paddingLeft:14,color:"#64748b",fontSize:9,textTransform:"uppercase",letterSpacing:"0.1em"}}>Equity & Liabilities</span></div>
+        <div style={{padding:"5px 0 2px",background:"#060d1a",borderBottom:"1px solid #0d1829",marginTop:4}}><span style={{paddingLeft:14,color:"#94a3b8",fontSize:9,textTransform:"uppercase",letterSpacing:"0.1em"}}>Equity & Liabilities</span></div>
         <BSRow label="Equity" value={d.equity.total} bold expandKey="debt">{Object.entries(d.equity.items).map(([k,v],i)=><BSRow key={i} label={k} value={v} indent={1}/>)}</BSRow>
         <BSRow label="Total Debt" value={d.debt.total} bold color="#f43f5e">{Object.entries(d.debt.items).map(([k,v],i)=><BSRow key={i} label={k} value={v} indent={1}/>)}</BSRow>
         <BSRow label="TOTAL LIABILITIES & EQUITY" value={d.totalLE} bold header color={d.color}/>
@@ -2593,7 +2694,7 @@ function MIFarmerBSPage() {
       <div style={{ background:"#0a1020", border:"1px solid #1e293b", borderRadius:14, overflow:"hidden" }}>
         <div style={{ padding:"12px 16px 10px", background:"#060d1a", borderBottom:"1px solid #1e293b" }}>
           <p style={{ color:"#94a3b8", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, margin:0 }}>Key Financial Ratios</p>
-          <p style={{ color:"#64748b", fontSize:10, margin:"3px 0 0" }}>Click ⓘ for definition</p>
+          <p style={{ color:"#94a3b8", fontSize:10, margin:"3px 0 0" }}>Click ⓘ for definition</p>
         </div>
         <div style={{ padding:16, display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))", gap:12 }}>
           {[
@@ -2725,7 +2826,7 @@ function HubPage({ onChoose }) {
       </div>
 
       <p style={{ color:"#f1f5f9",fontSize:24,fontWeight:300,marginBottom:8,letterSpacing:"-0.01em",animation:"hubFade 0.6s 0.1s ease both",opacity:0 }}>Select your workspace</p>
-      <p style={{ color:"#64748b",fontSize:13,marginBottom:56,animation:"hubFade 0.6s 0.2s ease both",opacity:0 }}>France · Phosphorus Separation Intelligence</p>
+      <p style={{ color:"#94a3b8",fontSize:13,marginBottom:56,animation:"hubFade 0.6s 0.2s ease both",opacity:0 }}>France · Phosphorus Separation Intelligence</p>
 
       <div style={{ display:"flex", gap:16, flexWrap:"nowrap", justifyContent:"center", width:"100%", maxWidth:840 }}>
         {[
@@ -2784,7 +2885,7 @@ function HubPage({ onChoose }) {
               ))}
             </div>
 
-            <div style={{ display:"flex",alignItems:"center",gap:8,color:hov===card.key?card.color:"#475569",fontSize:12,fontWeight:600,transition:"color 0.2s",borderTop:"1px solid #1a2436",paddingTop:20 }}>
+            <div style={{ display:"flex",alignItems:"center",gap:8,color:hov===card.key?card.color:"#c8d3e0",fontSize:12,fontWeight:600,transition:"color 0.2s",borderTop:"1px solid #1a2436",paddingTop:20 }}>
               Enter workspace
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </div>
@@ -2860,7 +2961,7 @@ export default function App() {
           <div style={{ width:32,height:32,borderRadius:8,background:"linear-gradient(135deg,#0ea5e9,#0369a1)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:11,color:"#fff",letterSpacing:"-0.5px",fontFamily:"'DM Mono',monospace",boxShadow:"0 0 10px #0ea5e940",flexShrink:0 }}>SMO</div>
           <div>
             <span style={{ fontWeight:800,fontSize:14,letterSpacing:"-0.03em",color:"#f1f5f9" }}>PhosStratOS</span>
-            <span style={{ color:"#64748b",fontSize:11,marginLeft:8 }} className="sec-label-full">P Separation Intelligence</span>
+            <span style={{ color:"#94a3b8",fontSize:11,marginLeft:8 }} className="sec-label-full">P Separation Intelligence</span>
           </div>
         </div>
         <div style={{ display:"flex",gap:8,alignItems:"center" }}>
@@ -2870,7 +2971,7 @@ export default function App() {
                 style={{ display:"flex",alignItems:"center",gap:8,background:"#1e293b",border:"1px solid #0ea5e940",borderRadius:8,padding:"6px 12px",cursor:"pointer",color:"#e2e8f0",fontSize:13,fontWeight:600 }}>
                 <div style={{width:6,height:6,borderRadius:"50%",background:"#10b981",boxShadow:"0 0 6px #10b981",flexShrink:0}}/>
                 <span>{region}</span>
-                <span style={{color:"#64748b",fontSize:10,marginLeft:2}}>▾</span>
+                <span style={{color:"#94a3b8",fontSize:10,marginLeft:2}}>▾</span>
               </button>
               {countryOpen&&(
                 <div style={{ position:"absolute",top:"calc(100% + 6px)",right:0,background:"#0f172a",border:"1px solid #1e293b",borderRadius:10,overflow:"hidden",zIndex:200,minWidth:180,boxShadow:"0 8px 24px #000a" }}>
@@ -2905,7 +3006,7 @@ export default function App() {
               icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M3 12h3m12 0h3M12 3v3m0 12v3m-6.4-2.4 2.1-2.1m8.6-8.6 2.1-2.1M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1"/></svg>},
           ].map(s=>(
             <button key={s.key} onClick={()=>{setSection(s.key);if(s.key==="quant")setMathieuPhase("intro");}}
-              style={{ padding:"9px 20px", background:section===s.key?s.color+"22":"#0f172a", border:`1px solid ${section===s.key?s.color:s.color+"20"}`, borderRadius:8, color:section===s.key?s.color:"#475569", fontSize:13,fontWeight:700,cursor:"pointer", display:"flex",alignItems:"center",gap:8,whiteSpace:"nowrap", transition:"all 0.15s", boxShadow:section===s.key?`0 0 16px ${s.color}22`:"none" }}>
+              style={{ padding:"9px 20px", background:section===s.key?s.color+"22":"#0f172a", border:`1px solid ${section===s.key?s.color:s.color+"20"}`, borderRadius:8, color:section===s.key?s.color:"#c8d3e0", fontSize:13,fontWeight:700,cursor:"pointer", display:"flex",alignItems:"center",gap:8,whiteSpace:"nowrap", transition:"all 0.15s", boxShadow:section===s.key?`0 0 16px ${s.color}22`:"none" }}>
               <span style={{ display:"flex",alignItems:"center" }}>{s.icon}</span>
               <span className="sec-label-full">{s.full}</span>
               <span className="sec-label-short">{s.short}</span>
@@ -2941,7 +3042,7 @@ export default function App() {
                 <div style={{ display:"flex",alignItems:"center",gap:10,marginBottom:20,flexWrap:"wrap" }}>
                   <SectionBadge label="Market Intelligence" color={secColor} />
                   <h1 style={{ fontSize:16,fontWeight:800,color:"#f1f5f9",letterSpacing:"-0.02em" }}>{intelPages.find(p=>p.key===intelPage)?.label}</h1>
-                  <span style={{ color:"#64748b",fontSize:12 }}>{region}</span>
+                  <span style={{ color:"#94a3b8",fontSize:12 }}>{region}</span>
                 </div>
               )}
 
@@ -2952,14 +3053,14 @@ export default function App() {
               {section==="quant" && mathieuPhase==="farm" && (
                 <>
                   <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:20 }}>
-                    <button onClick={()=>setMathieuPhase("intro")} style={{ display:"flex",alignItems:"center",gap:6,background:"transparent",border:"none",color:"#64748b",fontSize:12,cursor:"pointer",padding:0 }}>
+                    <button onClick={()=>setMathieuPhase("intro")} style={{ display:"flex",alignItems:"center",gap:6,background:"transparent",border:"none",color:"#94a3b8",fontSize:12,cursor:"pointer",padding:0 }}>
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                       Back to Mathieu
                     </button>
                     <div style={{width:1,height:14,background:"#1e293b"}}/>
                     <SectionBadge label="Quantitative Engine" color="#0ea5e9" />
                     <span style={{ color:"#f1f5f9",fontSize:14,fontWeight:700 }}>Mathieu's Farm Simulation</span>
-                    <span style={{ color:"#64748b",fontSize:12 }}>{region}</span>
+                    <span style={{ color:"#94a3b8",fontSize:12 }}>{region}</span>
                   </div>
                   <MathieuFarmPage region={region} />
                 </>
@@ -2977,7 +3078,7 @@ export default function App() {
             <div className={`sidebar-overlay ${sidebarOpen?"open":""}`} onClick={()=>setSidebarOpen(false)} />
             <div className={`app-sidebar ${sidebarOpen?"open":""}`}>
               <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14 }}>
-                <h3 style={{ color:"#64748b",fontSize:10,textTransform:"uppercase",letterSpacing:"0.1em" }}>Navigation</h3>
+                <h3 style={{ color:"#94a3b8",fontSize:10,textTransform:"uppercase",letterSpacing:"0.1em" }}>Navigation</h3>
                 <button onClick={()=>setSidebarOpen(false)} style={{ background:"transparent",border:"none",color:"#94a3b8",fontSize:16,cursor:"pointer" }}>✕</button>
               </div>
               <div style={{ marginTop:16,borderTop:"1px solid #1e293b",paddingTop:14 }}>
