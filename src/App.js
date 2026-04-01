@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import ATLASPage from "./ATLAS";
 import {
   BarChart, Bar, LineChart, Line, RadarChart, Radar, PolarGrid, PolarAngleAxis,
@@ -1497,13 +1497,13 @@ function MathieuIntroPage({ region, onEnterFarm }) {
   const [step, setStep]   = useState(0);
   const [typed, setTyped] = useState("");
 
-  const LINES = [
+  const LINES = useMemo(() => [
     "Spring, Champagne-Ardenne. The fields are still cold.",
     "Mathieu has 120 hectares to run and one season to get it right.",
     "Every euro he spends on his farm is a bet.",
     "Some bets pay off. Some don't.",
     "You're here to find out which.",
-  ];
+  ], []);
 
   useEffect(() => {
     if (step >= LINES.length) return;
@@ -1597,7 +1597,6 @@ function MathieuFarmPage({ region }) {
 
   // ── Model coefficients (MODEL1) ──────────────────────────────────────────────
   const REGION_KEYS   = Object.keys(MODEL1.regions);
-  const FARMTYPE_KEYS = Object.keys(MODEL1.farmingTypes);
   const YEAR_KEYS     = Object.keys(MODEL1.years).map(Number).sort((a,b)=>b-a);
 
   const predict = (sp, ft) => Math.exp(
