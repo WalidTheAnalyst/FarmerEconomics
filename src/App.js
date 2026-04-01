@@ -3017,13 +3017,14 @@ function RegionSelectPage({ onSelect }) {
       </div>
 
       <div style={{ textAlign:"center", marginBottom:52, animation:"rFadeUp 0.6s ease both" }}>
-        <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.2em", fontWeight:700, marginBottom:14 }}>Select a market</p>
-        <h1 style={{ color:"#f1f5f9", fontSize:"clamp(20px,3vw,36px)", fontWeight:300, letterSpacing:"-0.02em", lineHeight:1.3, margin:0 }}>
-          Where are you working today?
+        <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.2em", fontWeight:700, marginBottom:14 }}>Farmer Economics</p>
+        <h1 style={{ color:"#f1f5f9", fontSize:"clamp(18px,2.8vw,32px)", fontWeight:300, letterSpacing:"-0.02em", lineHeight:1.4, margin:0 }}>
+          Which country would you like to<br/>
+          <span style={{ fontWeight:800 }}>explore farmer economics about?</span>
         </h1>
       </div>
 
-      <div style={{ display:"flex", gap:16, justifyContent:"center" }}>
+      <div style={{ display:"flex", gap:20, justifyContent:"center" }}>
         {REGIONS.map((r, i) => (
           <div key={r.code}
             className="rc"
@@ -3031,21 +3032,41 @@ function RegionSelectPage({ onSelect }) {
             onMouseEnter={() => r.available && setHov(r.code)}
             onMouseLeave={() => setHov(null)}
             style={{
-              background: hov===r.code ? `${r.color}12` : "#080e18",
+              background:"#080e18",
               border:`1px solid ${hov===r.code ? r.color+"60" : "#1a2436"}`,
-              borderRadius:16, padding:"32px 40px",
+              borderRadius:16, overflow:"hidden",
               cursor: r.available ? "pointer" : "default",
-              opacity: r.available ? 1 : 0.4,
+              opacity: r.available ? 1 : 0.35,
               animation:`rFadeUp 0.6s ${i*0.12+0.15}s ease both`,
-              textAlign:"center", minWidth:160,
-              boxShadow: hov===r.code ? `0 16px 40px ${r.color}12` : "none",
+              width:220,
+              boxShadow: hov===r.code ? `0 20px 50px ${r.color}18` : "none",
               position:"relative",
             }}>
+
             {!r.available && (
-              <div style={{ position:"absolute", top:10, right:12, background:"#f59e0b18", border:"1px solid #f59e0b30", borderRadius:10, padding:"2px 8px", color:"#f59e0b", fontSize:8, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase" }}>Soon</div>
+              <div style={{ position:"absolute", top:10, right:10, zIndex:2, background:"rgba(0,0,0,0.7)", border:"1px solid #f59e0b40", borderRadius:10, padding:"2px 8px", color:"#f59e0b", fontSize:8, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase" }}>Soon</div>
             )}
-            <span style={{ fontSize:48, display:"block", marginBottom:14, filter: r.available ? "none" : "grayscale(1)" }}>{r.flag}</span>
-            <p style={{ color: hov===r.code ? r.color : "#e2e8f0", fontSize:16, fontWeight:700, margin:0, transition:"color 0.2s" }}>{r.label}</p>
+
+            {/* Country photo */}
+            <div style={{ height:140, overflow:"hidden", position:"relative" }}>
+              <img
+                src={`/${r.code.toLowerCase()}.jpg`}
+                alt={r.label}
+                style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center", display:"block",
+                  filter: r.available ? (hov===r.code ? "brightness(1.1)" : "brightness(0.75)") : "grayscale(1) brightness(0.4)",
+                  transition:"filter 0.2s" }}
+                onError={e => { e.target.style.display="none"; }}
+              />
+              <div style={{ position:"absolute", inset:0, background: hov===r.code ? `linear-gradient(to bottom,transparent 40%,${r.color}30)` : "linear-gradient(to bottom,transparent 50%,rgba(4,8,15,0.7))" }}/>
+            </div>
+
+            {/* Label */}
+            <div style={{ padding:"16px 20px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+              <p style={{ color: hov===r.code ? r.color : "#e2e8f0", fontSize:15, fontWeight:700, margin:0, transition:"color 0.2s" }}>{r.label}</p>
+              {r.available && (
+                <svg style={{ color: hov===r.code ? r.color : "#334155", transition:"color 0.2s, transform 0.2s", transform: hov===r.code ? "translateX(3px)" : "none" }} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              )}
+            </div>
           </div>
         ))}
       </div>
