@@ -1498,11 +1498,11 @@ function MathieuIntroPage({ region, onEnterFarm }) {
   const [typed, setTyped] = useState("");
 
   const LINES = useMemo(() => [
-    "Spring, Champagne-Ardenne. The fields are still cold.",
-    "Mathieu has 120 hectares to run and one season to get it right.",
-    "Every euro he spends on his farm is a bet.",
-    "Some bets pay off. Some don't.",
-    "You're here to find out which.",
+    "Every year, French farmers face the same question.",
+    "Does spending more on their inputs actually pay off?",
+    "More fertilizer, better seeds, newer machinery — does any of it move the needle on yield and income?",
+    "The SMO Business Unit built a set of econometric models to answer exactly that.",
+    "Estimated on nearly a thousand real French farms, they quantify the link between what a farmer spends and what his land produces.",
   ], []);
 
   useEffect(() => {
@@ -1536,36 +1536,36 @@ function MathieuIntroPage({ region, onEnterFarm }) {
         @keyframes fadeIn { from{opacity:0} to{opacity:1} }
         @keyframes pulse  { 0%,100%{opacity:0.4} 50%{opacity:1} }
         .enter-btn { transition:all 0.25s; }
-        .enter-btn:hover { background:rgba(14,165,233,0.15) !important; border-color:rgba(14,165,233,0.8) !important; color:#fff !important; }
+        .enter-btn:hover { background:#38bdf8 !important; box-shadow:0 0 44px rgba(14,165,233,0.5) !important; }
       `}</style>
 
       {/* Atmospheric background */}
       <div style={{ position:"absolute", inset:0, backgroundImage:"linear-gradient(rgba(14,165,233,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(14,165,233,0.025) 1px,transparent 1px)", backgroundSize:"80px 80px", pointerEvents:"none" }}/>
       <div style={{ position:"absolute", bottom:0, left:0, right:0, height:"35%", background:"linear-gradient(to top,rgba(14,165,233,0.04),transparent)", pointerEvents:"none" }}/>
 
-      {/* Location badge */}
-      <div style={{ animation:"fadeIn 1s ease both", marginBottom:56, display:"flex", alignItems:"center", gap:10 }}>
+      {/* Badge */}
+      <div style={{ animation:"fadeIn 1s ease both", marginBottom:52, display:"flex", alignItems:"center", gap:10 }}>
         <div style={{ width:6, height:6, borderRadius:"50%", background:"#10b981", animation:"pulse 2s infinite" }}/>
-        <span style={{ color:"#475569", fontSize:11, letterSpacing:"0.18em", textTransform:"uppercase" }}>Champagne-Ardenne · France · Spring</span>
+        <span style={{ color:"#475569", fontSize:11, letterSpacing:"0.18em", textTransform:"uppercase" }}>SMO Business Unit · OCP Nutricrops · Farmer Economics</span>
       </div>
 
       {/* Typewriter area */}
-      <div style={{ maxWidth:540, textAlign:"center", padding:"0 32px", marginBottom:72 }}>
+      <div style={{ maxWidth:580, textAlign:"center", padding:"0 32px", marginBottom:72 }}>
         {LINES.slice(0, step).map((line, i) => (
-          <p key={i} style={{ color: i < step - 1 ? "#334155" : "#94a3b8", fontSize: i === 0 ? 13 : 13, lineHeight:2.2, margin:0, animation:"fadeIn 0.4s ease", letterSpacing:"0.02em" }}>{line}</p>
+          <p key={i} style={{ color: i < step - 1 ? "#1e3050" : "#64748b", fontSize:14, lineHeight:2.0, margin:0, animation:"fadeIn 0.4s ease", letterSpacing:"0.01em" }}>{line}</p>
         ))}
-        <p style={{ color:"#e2e8f0", fontSize:15, lineHeight:2.2, margin:0, letterSpacing:"0.01em" }}>
+        <p style={{ color:"#cbd5e1", fontSize:14, lineHeight:2.0, margin:0, letterSpacing:"0.01em" }}>
           {typed}
           <span style={{ animation:"pulse 1s infinite", display:"inline-block", marginLeft:2, color:"#0ea5e9" }}>|</span>
         </p>
       </div>
 
-      {/* Enter button — appears only after last line */}
+      {/* Enter button — bright, prominent, fade in */}
       {step >= LINES.length - 1 && typed === LINES[LINES.length - 1] && (
         <button
           className="enter-btn"
           onClick={onEnterFarm}
-          style={{ animation:"fadeIn 1s 0.3s ease both", opacity:0, background:"transparent", border:"1px solid rgba(14,165,233,0.35)", color:"rgba(14,165,233,0.8)", padding:"13px 44px", borderRadius:4, fontSize:12, fontWeight:600, letterSpacing:"0.14em", textTransform:"uppercase", cursor:"pointer" }}>
+          style={{ animation:"fadeIn 1.2s 0.2s ease both", opacity:0, background:"#0ea5e9", border:"none", color:"#ffffff", padding:"16px 52px", borderRadius:6, fontSize:13, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", cursor:"pointer", boxShadow:"0 0 32px rgba(14,165,233,0.35)" }}>
           Enter the farm →
         </button>
       )}
@@ -2997,126 +2997,58 @@ function RegionSelectPage({ onSelect }) {
   const [hov, setHov] = useState(null);
 
   const REGIONS = [
-    {
-      code: "France",
-      flag: "🇫🇷",
-      label: "France",
-      tagline: "Cereals, wine, cooperatives",
-      sub: "909 farms · FADN panel · 2014–2023",
-      color: "#0ea5e9",
-      available: true,
-      facts: ["5th largest agri. economy in the EU", "226 kt P₂O₅ consumed in 2023", "70% of fertilizer flows through coops"],
-    },
-    {
-      code: "India",
-      flag: "🇮🇳",
-      label: "India",
-      tagline: "Coming soon",
-      sub: "Data collection in progress",
-      color: "#f59e0b",
-      available: false,
-      facts: ["2nd largest agri. producer globally", "High P deficit in key growing states", "Subsidy-driven purchasing behaviour"],
-    },
+    { code:"France", flag:"🇫🇷", label:"France",  available:true,  color:"#0ea5e9" },
+    { code:"India",  flag:"🇮🇳", label:"India",   available:false, color:"#f59e0b" },
   ];
 
   return (
-    <div style={{ minHeight:"100vh", background:"#04080f", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", fontFamily:"'DM Sans','Segoe UI',sans-serif", position:"relative", overflow:"hidden", padding:"40px 24px" }}>
+    <div style={{ minHeight:"100vh", background:"#04080f", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", fontFamily:"'DM Sans','Segoe UI',sans-serif", position:"relative", overflow:"hidden" }}>
       <style>{`
-        @keyframes rFadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes rPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.04)} }
-        .region-card { transition:all 0.22s ease; }
-        .region-card:hover { transform:translateY(-6px) !important; }
+        @keyframes rFadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+        .rc { transition:all 0.2s ease; }
+        .rc:hover { transform:translateY(-4px) !important; }
       `}</style>
 
-      {/* Background grid */}
-      <div style={{ position:"absolute", inset:0, backgroundImage:"linear-gradient(rgba(14,165,233,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(14,165,233,0.03) 1px,transparent 1px)", backgroundSize:"60px 60px", pointerEvents:"none" }}/>
-      <div style={{ position:"absolute", width:600, height:600, borderRadius:"50%", background:"radial-gradient(circle,rgba(14,165,233,0.04) 0%,transparent 65%)", top:"50%", left:"50%", transform:"translate(-50%,-50%)", pointerEvents:"none" }}/>
+      <div style={{ position:"absolute", inset:0, backgroundImage:"linear-gradient(rgba(14,165,233,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(14,165,233,0.025) 1px,transparent 1px)", backgroundSize:"60px 60px", pointerEvents:"none" }}/>
 
-      {/* Logo */}
       <div style={{ position:"absolute", top:28, left:36, display:"flex", alignItems:"center", gap:10 }}>
         <div style={{ width:32, height:32, borderRadius:8, background:"linear-gradient(135deg,#0ea5e9,#0369a1)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:800, fontSize:11, color:"#fff", fontFamily:"'DM Mono',monospace" }}>SMO</div>
-        <span style={{ color:"rgba(255,255,255,0.15)", fontSize:11, letterSpacing:"0.12em", textTransform:"uppercase" }}>PhosStratOS · OCP Nutricrops</span>
+        <span style={{ color:"rgba(255,255,255,0.12)", fontSize:11, letterSpacing:"0.12em", textTransform:"uppercase" }}>PhosStratOS · OCP Nutricrops</span>
       </div>
 
-      {/* Headline */}
-      <div style={{ textAlign:"center", marginBottom:56, animation:"rFadeUp 0.7s ease both" }}>
-        <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.2em", fontWeight:700, marginBottom:16 }}>Mission briefing</p>
-        <h1 style={{ color:"#f1f5f9", fontSize:"clamp(22px,3.5vw,40px)", fontWeight:300, letterSpacing:"-0.02em", lineHeight:1.3, margin:0, marginBottom:12 }}>
-          Choose your territory,<br/>
-          <span style={{ fontWeight:800 }}>enter the field.</span>
+      <div style={{ textAlign:"center", marginBottom:52, animation:"rFadeUp 0.6s ease both" }}>
+        <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.2em", fontWeight:700, marginBottom:14 }}>Select a market</p>
+        <h1 style={{ color:"#f1f5f9", fontSize:"clamp(20px,3vw,36px)", fontWeight:300, letterSpacing:"-0.02em", lineHeight:1.3, margin:0 }}>
+          Where are you working today?
         </h1>
-        <p style={{ color:"rgba(255,255,255,0.3)", fontSize:14, fontWeight:300, margin:0 }}>
-          Select the country you want to explore. Each market has its own farmer intelligence and quantitative models.
-        </p>
       </div>
 
-      {/* Country cards */}
-      <div style={{ display:"flex", gap:20, flexWrap:"wrap", justifyContent:"center", width:"100%", maxWidth:780 }}>
+      <div style={{ display:"flex", gap:16, justifyContent:"center" }}>
         {REGIONS.map((r, i) => (
           <div key={r.code}
-            className="region-card"
+            className="rc"
             onClick={() => r.available && onSelect(r.code)}
             onMouseEnter={() => r.available && setHov(r.code)}
             onMouseLeave={() => setHov(null)}
             style={{
-              flex:"1 1 0", maxWidth:360, minWidth:280,
-              background: hov===r.code ? `linear-gradient(145deg,${r.color}14,#080e18 55%)` : "#080e18",
-              border:`1px solid ${hov===r.code ? r.color+"50" : r.available ? "#1a2436" : "#111827"}`,
-              borderRadius:20, padding:"36px 32px",
+              background: hov===r.code ? `${r.color}12` : "#080e18",
+              border:`1px solid ${hov===r.code ? r.color+"60" : "#1a2436"}`,
+              borderRadius:16, padding:"32px 40px",
               cursor: r.available ? "pointer" : "default",
-              opacity: r.available ? 1 : 0.5,
-              animation:`rFadeUp 0.7s ${i*0.15+0.2}s ease both`,
-              boxShadow: hov===r.code ? `0 24px 60px ${r.color}15` : "none",
-              position:"relative", overflow:"hidden",
+              opacity: r.available ? 1 : 0.4,
+              animation:`rFadeUp 0.6s ${i*0.12+0.15}s ease both`,
+              textAlign:"center", minWidth:160,
+              boxShadow: hov===r.code ? `0 16px 40px ${r.color}12` : "none",
+              position:"relative",
             }}>
-
-            {/* Coming soon badge */}
             {!r.available && (
-              <div style={{ position:"absolute", top:16, right:16, background:"#f59e0b20", border:"1px solid #f59e0b40", borderRadius:20, padding:"3px 10px", color:"#f59e0b", fontSize:9, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase" }}>
-                Coming soon
-              </div>
+              <div style={{ position:"absolute", top:10, right:12, background:"#f59e0b18", border:"1px solid #f59e0b30", borderRadius:10, padding:"2px 8px", color:"#f59e0b", fontSize:8, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase" }}>Soon</div>
             )}
-
-            {/* Flag + label */}
-            <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:24 }}>
-              <span style={{ fontSize:52, lineHeight:1, filter: r.available ? "none" : "grayscale(1)" }}>{r.flag}</span>
-              <div>
-                <p style={{ color:r.available ? r.color : "#475569", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:700, margin:0, marginBottom:4 }}>Market intelligence</p>
-                <p style={{ color:"#f1f5f9", fontSize:24, fontWeight:800, letterSpacing:"-0.02em", margin:0 }}>{r.label}</p>
-              </div>
-            </div>
-
-            {/* Tagline */}
-            <p style={{ color:"#94a3b8", fontSize:13, lineHeight:1.7, marginBottom:20 }}>{r.tagline}</p>
-
-            {/* Facts */}
-            <div style={{ display:"flex", flexDirection:"column", gap:7, marginBottom:28 }}>
-              {r.facts.map((f,j) => (
-                <div key={j} style={{ display:"flex", alignItems:"center", gap:10 }}>
-                  <div style={{ width:4, height:4, borderRadius:"50%", background:r.available ? r.color : "#334155", flexShrink:0 }}/>
-                  <span style={{ color:r.available ? "#94a3b8" : "#334155", fontSize:12 }}>{f}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Data source tag */}
-            <p style={{ color:"#334155", fontSize:10, borderTop:"1px solid #1a2436", paddingTop:14, marginTop:"auto" }}>{r.sub}</p>
-
-            {/* CTA arrow */}
-            {r.available && (
-              <div style={{ marginTop:16, display:"flex", alignItems:"center", gap:8, color:hov===r.code ? r.color : "#334155", fontSize:12, fontWeight:600, transition:"color 0.2s" }}>
-                Enter {r.label}
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </div>
-            )}
+            <span style={{ fontSize:48, display:"block", marginBottom:14, filter: r.available ? "none" : "grayscale(1)" }}>{r.flag}</span>
+            <p style={{ color: hov===r.code ? r.color : "#e2e8f0", fontSize:16, fontWeight:700, margin:0, transition:"color 0.2s" }}>{r.label}</p>
           </div>
         ))}
       </div>
-
-      {/* Footer note */}
-      <p style={{ position:"absolute", bottom:24, color:"rgba(255,255,255,0.12)", fontSize:11, letterSpacing:"0.1em", textTransform:"uppercase" }}>
-        FADN · Agreste · McKinsey Farmer Survey · OCP Field Intelligence
-      </p>
     </div>
   );
 }
