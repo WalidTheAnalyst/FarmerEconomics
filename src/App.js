@@ -1521,7 +1521,8 @@ function MathieuIntroPage({ region, onEnterFarm }) {
       }
     }, 28);
     return () => clearInterval(interval);
-  }, [step]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step, LINES]);
 
   if (region !== "France") return (
     <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:400, gap:20 }}>
