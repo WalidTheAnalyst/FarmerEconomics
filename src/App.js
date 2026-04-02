@@ -1498,11 +1498,11 @@ function MathieuIntroPage({ region, onEnterFarm }) {
   const [typed, setTyped] = useState("");
 
   const LINES = useMemo(() => [
-    "Every year, French farmers face the same question.",
-    "Does spending more on their inputs actually pay off?",
-    "More fertilizer, better seeds, newer machinery — does any of it move the needle on yield and income?",
+    "Every year, French farmers face a simple question:",
+    "Does higher spending on inputs translate into higher yields and income",
+    
     "The SMO Business Unit built a set of econometric models to answer exactly that.",
-    "Estimated on nearly a thousand real French farms, they quantify the link between what a farmer spends and what his land produces.",
+    "Based on data from nearly 1,000 French farms, these models quantify the relationship between input use and farm performance.",
   ], []);
 
   useEffect(() => {
