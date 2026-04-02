@@ -1499,7 +1499,7 @@ function MathieuIntroPage({ region, onEnterFarm }) {
 
   const LINES = useMemo(() => [
     "Every year, French farmers face a simple question:",
-    "Does higher spending on inputs translate into higher yields and income",
+    "Does higher spending on inputs translate into higher yields and income?",
     
     "The SMO Business Unit built a set of econometric models to answer exactly that.",
     "Based on data from nearly 1,000 French farms, these models quantify the relationship between input use and farm performance.",
