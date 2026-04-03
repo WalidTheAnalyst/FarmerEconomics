@@ -1715,10 +1715,8 @@ function MathieuFarmPage({ region }) {
   const marginDelta = marginNew - marginBase;
   const outputDelta = currentOutput - baselineOutput;
   const outputDeltaPct = ((outputDelta / baselineOutput) * 100);
-  const costDelta   = totalCostNew - totalCostBase;
   const marginDeltaPct = marginBase > 0 ? ((marginDelta / marginBase) * 100) : 0;
 
-  const fmtEur  = n => `€${Math.round(Math.abs(n)).toLocaleString()}`;
   const fmtSign = n => n >= 0 ? `+€${Math.round(n).toLocaleString()}` : `-€${Math.round(Math.abs(n)).toLocaleString()}`;
 
   const REGION_KEYS = Object.keys(MODEL1.regions);
