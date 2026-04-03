@@ -1803,7 +1803,6 @@ function MathieuFarmPage({ region }) {
   const margPct   = baselineMargin !== 0 ? (margDelta / Math.abs(baselineMargin) * 100) : 0;
 
   const fmtK  = n => n >= 0 ? `+€${Math.round(n).toLocaleString()}` : `-€${Math.round(Math.abs(n)).toLocaleString()}`;
-  const fmt   = n => `€${Math.round(Math.abs(n)).toLocaleString()}`;
   const fmtPct= n => `${n >= 0 ? "+" : ""}${n.toFixed(1)}%`;
 
   const REGION_KEYS   = Object.keys(MODEL1.regions);
