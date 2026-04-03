@@ -528,16 +528,16 @@ function LandingPage({ onEnter }) {
       <div style={{ position:"absolute", width:500, height:500, borderRadius:"50%", background:"radial-gradient(circle,rgba(14,165,233,0.06) 0%,transparent 70%)", top:"50%", left:"50%", transform:"translate(-50%,-50%)", pointerEvents:"none" }}/>
       {/* Logo */}
       <div style={{ position:"absolute", top:32, left:40, display:"flex", alignItems:"center", gap:12, opacity:vis?1:0, transition:"opacity 0.8s ease" }}>
-        <div style={{ width:36, height:36, borderRadius:10, background:"linear-gradient(135deg,#0ea5e9,#0369a1)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:800, fontSize:12, color:"#fff", fontFamily:"'DM Mono',monospace", boxShadow:"0 0 16px #0ea5e930" }}>SMO</div>
+        <div style={{ width:36, height:36, borderRadius:10, background:"linear-gradient(135deg,#0ea5e9,#0369a1)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:800, fontSize:12, color:"#fff", fontFamily:"'DM Mono',monospace", boxShadow:"0 0 16px #0ea5e930" }}>GMO</div>
         <span style={{ color:"rgba(255,255,255,0.15)", fontSize:12, letterSpacing:"0.15em", textTransform:"uppercase" }}>OCP Nutricrops · Phosphorus Intelligence</span>
       </div>
       {/* Content */}
       <div style={{ textAlign:"center", maxWidth:720, padding:"0 32px", zIndex:10 }}>
         <div style={{ opacity:vis?1:0, transform:vis?"none":"translateY(12px)", transition:"opacity 0.9s ease,transform 0.9s ease", marginBottom:24 }}>
-          <span style={{ background:"rgba(14,165,233,0.1)", border:"1px solid rgba(14,165,233,0.2)", borderRadius:20, padding:"5px 16px", color:"rgba(14,165,233,0.9)", fontSize:11, fontWeight:600, letterSpacing:"0.12em", textTransform:"uppercase" }}>SMO · OCP Nutricrops</span>
+          <span style={{ background:"rgba(14,165,233,0.1)", border:"1px solid rgba(14,165,233,0.2)", borderRadius:20, padding:"5px 16px", color:"rgba(14,165,233,0.9)", fontSize:11, fontWeight:600, letterSpacing:"0.12em", textTransform:"uppercase" }}>GMO · OCP Nutricrops</span>
         </div>
         <h1 style={{ opacity:vis?1:0, transform:vis?"none":"translateY(20px)", transition:"opacity 0.9s ease,transform 0.9s ease", fontSize:"clamp(26px,4vw,46px)", fontWeight:300, color:"rgba(255,255,255,0.92)", lineHeight:1.28, marginBottom:32, letterSpacing:"-0.02em" }}>
-          PhosStrat is SMO's quantitative<br/>
+          PhosStrat is GMO's quantitative<br/>
           <span style={{ fontWeight:700, color:"#f1f5f9" }}>platform to better understand</span><br/>
           <span style={{ color:"#0ea5e9", fontWeight:600 }}>the farmer.</span>
         </h1>
@@ -2247,7 +2247,7 @@ function MathieuFarmPage({ region }) {
               <p style={{ color:"#64748b", fontSize:11, margin:0 }}>{fert.label} · {nTiming.length} N stage{nTiming.length!==1?"s":""} · {secondary.length > 0 ? secondary.join("+") : "No secondary"} · {micro==="none"?"No micro":micro==="basic"?"Basic micro":"Full micro"}</p>
             </div>
             <div style={{ display:"flex", gap:6 }}>
-              <button onClick={()=>setCeoView(true)}  style={{ background:ceoView?"#0ea5e920":"transparent", border:`1px solid ${ceoView?"#0ea5e9":"#1a2436"}`, color:ceoView?"#0ea5e9":"#475569", borderRadius:6, padding:"5px 12px", fontSize:10, cursor:"pointer", fontWeight:ceoView?700:400 }}>CEO view</button>
+              <button onClick={()=>setCeoView(true)}  style={{ background:ceoView?"#0ea5e920":"transparent", border:`1px solid ${ceoView?"#0ea5e9":"#1a2436"}`, color:ceoView?"#0ea5e9":"#475569", borderRadius:6, padding:"5px 12px", fontSize:10, cursor:"pointer", fontWeight:ceoView?700:400 }}>General view</button>
               <button onClick={()=>setCeoView(false)} style={{ background:!ceoView?"#0ea5e920":"transparent", border:`1px solid ${!ceoView?"#0ea5e9":"#1a2436"}`, color:!ceoView?"#0ea5e9":"#475569", borderRadius:6, padding:"5px 12px", fontSize:10, cursor:"pointer", fontWeight:!ceoView?700:400 }}>Detailed</button>
             </div>
           </div>
@@ -3363,7 +3363,7 @@ function RegionSelectPage({ onSelect }) {
       <div style={{ position:"absolute", inset:0, backgroundImage:"linear-gradient(rgba(14,165,233,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(14,165,233,0.025) 1px,transparent 1px)", backgroundSize:"60px 60px", pointerEvents:"none" }}/>
 
       <div style={{ position:"absolute", top:28, left:36, display:"flex", alignItems:"center", gap:10 }}>
-        <div style={{ width:32, height:32, borderRadius:8, background:"linear-gradient(135deg,#0ea5e9,#0369a1)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:800, fontSize:11, color:"#fff", fontFamily:"'DM Mono',monospace" }}>SMO</div>
+        <div style={{ width:32, height:32, borderRadius:8, background:"linear-gradient(135deg,#0ea5e9,#0369a1)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:800, fontSize:11, color:"#fff", fontFamily:"'DM Mono',monospace" }}>GMO</div>
         <span style={{ color:"rgba(255,255,255,0.12)", fontSize:11, letterSpacing:"0.12em", textTransform:"uppercase" }}>PhosStratOS · OCP Nutricrops</span>
       </div>
 
@@ -3446,7 +3446,7 @@ function HubPage({ onChoose }) {
       <style>{`@keyframes hubFade{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}`}</style>
 
       <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:60, animation:"hubFade 0.6s ease both" }}>
-        <div style={{ width:40,height:40,borderRadius:10,background:"linear-gradient(135deg,#0ea5e9,#0369a1)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:12,color:"#fff",fontFamily:"'DM Mono',monospace",boxShadow:"0 0 20px #0ea5e940" }}>SMO</div>
+        <div style={{ width:40,height:40,borderRadius:10,background:"linear-gradient(135deg,#0ea5e9,#0369a1)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:12,color:"#fff",fontFamily:"'DM Mono',monospace",boxShadow:"0 0 20px #0ea5e940" }}>GMO</div>
         <div>
           <p style={{ color:"#f1f5f9",fontWeight:800,fontSize:17,letterSpacing:"-0.03em",margin:0 }}>PhosStratOS</p>
           <p style={{ color:"#94a3b8",fontSize:12,margin:0 }}>OCP Nutricrops · P Separation Intelligence</p>
@@ -3588,7 +3588,7 @@ export default function App() {
       {/* ── HEADER ── */}
       <div style={{ borderBottom:"1px solid #1e293b",padding:"0 16px",display:"flex",alignItems:"center",justifyContent:"space-between",height:50,background:"#0a0f1a",position:"sticky",top:0,zIndex:100 }}>
         <div style={{ display:"flex",alignItems:"center",gap:10 }}>
-          <div style={{ width:32,height:32,borderRadius:8,background:"linear-gradient(135deg,#0ea5e9,#0369a1)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:11,color:"#fff",letterSpacing:"-0.5px",fontFamily:"'DM Mono',monospace",boxShadow:"0 0 10px #0ea5e940",flexShrink:0 }}>SMO</div>
+          <div style={{ width:32,height:32,borderRadius:8,background:"linear-gradient(135deg,#0ea5e9,#0369a1)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:11,color:"#fff",letterSpacing:"-0.5px",fontFamily:"'DM Mono',monospace",boxShadow:"0 0 10px #0ea5e940",flexShrink:0 }}>GMO</div>
           <div>
             <span style={{ fontWeight:800,fontSize:14,letterSpacing:"-0.03em",color:"#f1f5f9" }}>PhosStratOS</span>
             <span style={{ color:"#94a3b8",fontSize:11,marginLeft:8 }} className="sec-label-full">P Separation Intelligence</span>
