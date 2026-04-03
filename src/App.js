@@ -1703,15 +1703,16 @@ function MathieuIntroPage({ region, onEnterFarm }) {
 
 // ─── MATHIEU FARM — P-doctrine fertilizer simulator ──────────────────────────
 function MathieuFarmPage({ region }) {
-  const [dragOver,    setDragOver]    = useState(false);
-  const [applied,     setApplied]     = useState(null);
-  const [animating,   setAnimating]   = useState(false);
-  const [scene,       setScene]       = useState("drop"); // drop | result | model
-  const [farmType,    setFarmType]    = useState("(1) Fieldcrops");
-  const [simRegion,   setSimRegion]   = useState("(131) Champagne-Ardenne");
-  const [simYear,     setSimYear]     = useState(2020);
-  const [dragging,    setDragging]    = useState(null);
-  const [expandFE,    setExpandFE]    = useState(false);
+  const [dragOver,   setDragOver]  = useState(false);
+  const [applied,    setApplied]   = useState(null);
+  const [animating,  setAnimating] = useState(false);
+  const [scene,      setScene]     = useState("drop");
+  const [farmType,   setFarmType]  = useState("(1) Fieldcrops");
+  const [simRegion,  setSimRegion] = useState("(131) Champagne-Ardenne");
+  const [simYear,    setSimYear]   = useState(2020);
+  const [dragging,   setDragging]  = useState(null);
+  const [expandFE,   setExpandFE]  = useState(false);
+  const [showCheck,  setShowCheck] = useState(false);
 
   if (region !== "France") return (
     <div style={{ display:"flex", alignItems:"center", justifyContent:"center", minHeight:400 }}>
@@ -1719,179 +1720,143 @@ function MathieuFarmPage({ region }) {
     </div>
   );
 
-  // ── Fertilizer product catalogue ─────────────────────────────────────────────
-  // Each product carries a P2O5 content, N content, and a cost index relative to TSP=100
-  // Yield multiplier is derived from the log-log model elasticities applied to P content
+  // ── Fertilizer catalogue ──────────────────────────────────────────────────────
   const FERTILIZERS = [
     {
-      id:"TSP",
-      label:"TSP",
-      full:"Triple Super Phosphate",
-      p2o5:46, n:0, k:0,
-      color:"#10b981",
-      costPerTonne: 320,
-      badge:"OCP Preferred",
-      badgeColor:"#10b981",
-      desc:"Pure phosphorus source. Maximises P efficiency with zero nitrogen interference.",
+      id:"TSP",   label:"TSP",         full:"Triple Super Phosphate",
+      p2o5:46, n:0,  k:0,  color:"#10b981", badge:"OCP Preferred", badgeColor:"#10b981",
+      timing:"Applied at planting. Zero N interference — pure P placement.",
+      agronomicNote:"Pre-sowing TSP maximises early root P uptake without locking timing to N schedules.",
       spending:{ fertilisers:357, wages:130, depreciation:239, intermediate:257 },
     },
     {
-      id:"MAP",
-      label:"MAP",
-      full:"Mono-Ammonium Phosphate",
-      p2o5:48, n:11, k:0,
-      color:"#0ea5e9",
-      costPerTonne: 380,
-      badge:"High P",
-      badgeColor:"#0ea5e9",
-      desc:"High phosphorus content with moderate nitrogen. Good starter fertilizer.",
+      id:"MAP",   label:"MAP",         full:"Mono-Ammonium Phosphate",
+      p2o5:48, n:11, k:0,  color:"#0ea5e9", badge:"High P",        badgeColor:"#0ea5e9",
+      timing:"Applied at planting. Starter N included — modest early boost.",
+      agronomicNote:"MAP's 11% N is useful as a starter but restricts P timing flexibility relative to TSP.",
       spending:{ fertilisers:390, wages:130, depreciation:239, intermediate:257 },
     },
     {
-      id:"NPS",
-      label:"NPS",
-      full:"Nitrogen Phosphorus Sulphur",
-      p2o5:20, n:24, k:0,
-      color:"#a78bfa",
-      costPerTonne: 340,
-      badge:"With Sulphur",
-      badgeColor:"#a78bfa",
-      desc:"Balanced NPK with sulphur for acidic soil improvement. Lower P concentration.",
+      id:"NPS",   label:"NPS",         full:"Nitrogen Phosphorus Sulphur",
+      p2o5:20, n:24, k:0,  color:"#a78bfa", badge:"With Sulphur",  badgeColor:"#a78bfa",
+      timing:"Applied at sowing. High N drives early canopy — lower P contribution.",
+      agronomicNote:"High sulphur is beneficial on acidic soils but the low P2O5 concentration requires higher doses to match TSP's phosphorus delivery.",
       spending:{ fertilisers:340, wages:130, depreciation:239, intermediate:257 },
     },
     {
-      id:"DAP",
-      label:"DAP",
-      full:"Di-Ammonium Phosphate",
-      p2o5:46, n:18, k:0,
-      color:"#f59e0b",
-      costPerTonne: 400,
-      badge:"High N+P",
-      badgeColor:"#f59e0b",
-      desc:"High N and P combined. Risk of nitrogen interference with P uptake.",
+      id:"DAP",   label:"DAP",         full:"Di-Ammonium Phosphate",
+      p2o5:46, n:18, k:0,  color:"#f59e0b", badge:"High N+P",      badgeColor:"#f59e0b",
+      timing:"Applied at planting. High N may delay P uptake at germination.",
+      agronomicNote:"DAP's high N (18%) can temporarily reduce P solubility at the seed zone — a known interaction that limits its efficiency relative to TSP.",
       spending:{ fertilisers:410, wages:130, depreciation:239, intermediate:257 },
     },
     {
-      id:"NPK1",
-      label:"NPK 15-15-15",
-      full:"Balanced NPK",
-      p2o5:15, n:15, k:15,
-      color:"#f43f5e",
-      costPerTonne: 360,
-      badge:"Blended",
-      badgeColor:"#f43f5e",
-      desc:"Equal N, P, K blend. Lower P concentration means more product per hectare needed.",
+      id:"NPK1",  label:"NPK 15-15-15", full:"Balanced NPK",
+      p2o5:15, n:15, k:15, color:"#f43f5e", badge:"Blended",        badgeColor:"#f43f5e",
+      timing:"Applied at sowing. Balanced but diluted P concentration.",
+      agronomicNote:"Equal N/P/K distribution means more product is needed per hectare to reach the same P dose as TSP — raising both cost and logistics.",
       spending:{ fertilisers:370, wages:135, depreciation:239, intermediate:265 },
     },
     {
-      id:"NPK2",
-      label:"NPK 10-10-10",
-      full:"Low-grade NPK",
-      p2o5:10, n:10, k:10,
-      color:"#64748b",
-      costPerTonne: 280,
-      badge:"Economy",
-      badgeColor:"#64748b",
-      desc:"Low-grade blend. Cheapest option but requires highest volume. Least P-efficient.",
+      id:"NPK2",  label:"NPK 10-10-10", full:"Low-grade NPK",
+      p2o5:10, n:10, k:10, color:"#64748b", badge:"Economy",        badgeColor:"#64748b",
+      timing:"Applied at sowing. Lowest P concentration — highest volume required.",
+      agronomicNote:"Economy blends sacrifice P efficiency for upfront cost. The volume needed to match TSP's agronomic impact typically eliminates the price advantage.",
       spending:{ fertilisers:310, wages:135, depreciation:239, intermediate:270 },
     },
     {
-      id:"NPK3",
-      label:"NPK 10-52-10",
-      full:"High-P NPK",
-      p2o5:52, n:10, k:10,
-      color:"#818cf8",
-      costPerTonne: 420,
-      badge:"High P Blend",
-      badgeColor:"#818cf8",
-      desc:"High phosphorus NPK. Strong P content but bundled N and K add cost.",
+      id:"NPK3",  label:"NPK 10-52-10", full:"High-P NPK",
+      p2o5:52, n:10, k:10, color:"#818cf8", badge:"High P Blend",   badgeColor:"#818cf8",
+      timing:"Applied at planting. Best P content in blend category — K adds cost.",
+      agronomicNote:"Highest P in a blend format. K is useful for root crops but adds cost without agronomic benefit for cereals — making TSP more efficient on wheat.",
       spending:{ fertilisers:430, wages:135, depreciation:239, intermediate:262 },
     },
   ];
 
-  // ── Model prediction ──────────────────────────────────────────────────────────
+  // ── Model ─────────────────────────────────────────────────────────────────────
   const predict = (sp) => Math.exp(
     MODEL1.intercept
     + MODEL1.elasticities.fertilisers.coef  * Math.log(Math.max(sp.fertilisers,  1))
     + MODEL1.elasticities.wages.coef         * Math.log(Math.max(sp.wages,         1))
     + MODEL1.elasticities.depreciation.coef  * Math.log(Math.max(sp.depreciation, 1))
     + MODEL1.elasticities.intermediate.coef  * Math.log(Math.max(sp.intermediate, 1))
-    + (MODEL1.regions[simRegion]              || 0)
-    + (MODEL1.farmingTypes[farmType]           || 0)
-    + (MODEL1.years[simYear]                  || 0)
+    + (MODEL1.regions[simRegion]  || 0)
+    + (MODEL1.farmingTypes[farmType] || 0)
+    + (MODEL1.years[simYear]     || 0)
   );
 
-  // Baseline = FADN average cereal farm
-  const BASELINE_SP = { fertilisers:357, wages:130, depreciation:239, intermediate:257 };
+  const BASELINE_SP    = { fertilisers:357, wages:130, depreciation:239, intermediate:257 };
   const baselineOutput = predict(BASELINE_SP);
+  const baselineCost   = Object.values(BASELINE_SP).reduce((s,v)=>s+v,0);
+  const baselineMargin = baselineOutput - baselineCost;
 
-  const fert = applied ? FERTILIZERS.find(f => f.id === applied) : null;
-  const currentSP = fert ? fert.spending : BASELINE_SP;
-  const currentOutput = predict(currentSP);
+  const fert        = applied ? FERTILIZERS.find(f=>f.id===applied) : null;
+  const currentSP   = fert ? fert.spending : BASELINE_SP;
+  const currentOut  = predict(currentSP);
+  const currentCost = Object.values(currentSP).reduce((s,v)=>s+v,0);
+  const currentMarg = currentOut - currentCost;
 
-  const totalCostBase = Object.values(BASELINE_SP).reduce((s,v)=>s+v,0);
-  const totalCostNew  = fert ? Object.values(fert.spending).reduce((s,v)=>s+v,0) : totalCostBase;
+  const outDelta  = currentOut  - baselineOutput;
+  const costDelta = currentCost - baselineCost;
+  const margDelta = currentMarg - baselineMargin;
+  const outPct    = baselineOutput > 0 ? (outDelta  / baselineOutput  * 100) : 0;
+  const margPct   = baselineMargin !== 0 ? (margDelta / Math.abs(baselineMargin) * 100) : 0;
 
-  // Gross margin proxy: output minus total input cost
-  const marginBase = baselineOutput - totalCostBase;
-  const marginNew  = currentOutput  - totalCostNew;
-  const marginDelta = marginNew - marginBase;
-  const outputDelta = currentOutput - baselineOutput;
-  const outputDeltaPct = ((outputDelta / baselineOutput) * 100);
-  const marginDeltaPct = marginBase > 0 ? ((marginDelta / marginBase) * 100) : 0;
+  const fmtK  = n => n >= 0 ? `+€${Math.round(n).toLocaleString()}` : `-€${Math.round(Math.abs(n)).toLocaleString()}`;
+  const fmt   = n => `€${Math.round(Math.abs(n)).toLocaleString()}`;
+  const fmtPct= n => `${n >= 0 ? "+" : ""}${n.toFixed(1)}%`;
 
-  const fmtSign = n => n >= 0 ? `+€${Math.round(n).toLocaleString()}` : `-€${Math.round(Math.abs(n)).toLocaleString()}`;
-
-  const REGION_KEYS = Object.keys(MODEL1.regions);
-  const YEAR_KEYS   = Object.keys(MODEL1.years).map(Number).sort((a,b)=>b-a);
+  const REGION_KEYS   = Object.keys(MODEL1.regions);
+  const YEAR_KEYS     = Object.keys(MODEL1.years).map(Number).sort((a,b)=>b-a);
   const FARMTYPE_KEYS = Object.keys(MODEL1.farmingTypes);
 
   // Drag handlers
-  const onDragStart = (id) => { setDragging(id); };
+  const onDragStart = (id) => setDragging(id);
   const onDragOver  = (e)  => { e.preventDefault(); setDragOver(true); };
-  const onDragLeave = ()   => { setDragOver(false); };
+  const onDragLeave = ()   => setDragOver(false);
   const onDrop      = (e)  => {
     e.preventDefault();
     setDragOver(false);
     if (!dragging) return;
     setAnimating(true);
     setTimeout(() => {
-      setApplied(dragging);
-      setAnimating(false);
-      setScene("result");
-    }, 600);
+      setShowCheck(true);
+      setTimeout(() => {
+        setApplied(dragging);
+        setAnimating(false);
+        setScene("result");
+      }, 800);
+    }, 400);
     setDragging(null);
   };
 
-  // ── SCENE: model ──────────────────────────────────────────────────────────────
+  // ── MODEL SCENE ───────────────────────────────────────────────────────────────
   if (scene === "model") return (
-    <div style={{ fontFamily:"'DM Sans',sans-serif", display:"flex", flexDirection:"column", gap:16 }}>
-      <div style={{ display:"flex", alignItems:"center", gap:12, paddingBottom:16, borderBottom:"1px solid #1a2436" }}>
+    <div style={{ fontFamily:"'DM Sans',sans-serif", display:"flex", flexDirection:"column", gap:20 }}>
+      <div style={{ display:"flex", alignItems:"center", gap:14, paddingBottom:16, borderBottom:"1px solid #1a2436" }}>
         <button onClick={()=>setScene(applied?"result":"drop")}
-          style={{ background:"transparent", border:"none", color:"#475569", cursor:"pointer", fontSize:12, display:"flex", alignItems:"center", gap:5, padding:0 }}>
+          style={{ background:"transparent", border:"none", color:"#64748b", cursor:"pointer", fontSize:12, display:"flex", alignItems:"center", gap:6, padding:0 }}>
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
           Back
         </button>
         <div style={{ width:1, height:14, background:"#1a2436" }}/>
         <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:600, margin:0 }}>Log-Log Production Model · FADN France · 909 farms</p>
       </div>
-
       <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:14, padding:"20px 24px" }}>
-        <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, marginBottom:8 }}>What the model does</p>
+        <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, marginBottom:10 }}>What the model does</p>
         <p style={{ color:"#cbd5e1", fontSize:13, lineHeight:1.85, marginBottom:16 }}>
-          Every result in this simulator comes from a single equation estimated on 909 real French farms. Both output and inputs are expressed as logarithms, so each coefficient is an elasticity: a 1% increase in spending on that input raises output by that percentage, regardless of farm size or baseline level.
+          Every result in this simulator comes from a single equation estimated on 909 real French farms. Both output and inputs are in logarithms, so each coefficient is an elasticity: a 1% increase in spending raises output by that exact percentage, at any farm size.
         </p>
         <div style={{ background:"#060d1a", borderRadius:8, padding:"12px 16px", fontFamily:"'DM Mono',monospace", color:"#94a3b8", fontSize:11, lineHeight:1.8 }}>
           log(output/ha) = α + β₁·log(fertilizers) + β₂·log(labour) + β₃·log(machinery) + β₄·log(seeds) + region FE + farmtype FE + year FE
         </div>
       </div>
-
       <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:14, overflow:"hidden" }}>
         <div style={{ padding:"14px 20px", borderBottom:"1px solid #1a2436", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
           <p style={{ color:"#f1f5f9", fontSize:13, fontWeight:700, margin:0 }}>Input elasticities</p>
           <div style={{ display:"flex", gap:6 }}>
-            <span style={{ background:"#10b98120", color:"#10b981", fontSize:9, fontWeight:700, padding:"3px 8px", borderRadius:10, border:"1px solid #10b98130" }}>R² = {MODEL1.rSquared}</span>
-            <span style={{ background:"#0ea5e920", color:"#0ea5e9", fontSize:9, fontWeight:700, padding:"3px 8px", borderRadius:10, border:"1px solid #0ea5e930" }}>n = 909</span>
+            <span style={{ background:"#10b98120", color:"#10b981", fontSize:9, fontWeight:700, padding:"3px 8px", borderRadius:10 }}>R² = {MODEL1.rSquared}</span>
+            <span style={{ background:"#0ea5e920", color:"#0ea5e9", fontSize:9, fontWeight:700, padding:"3px 8px", borderRadius:10 }}>n = 909</span>
           </div>
         </div>
         {[
@@ -1905,24 +1870,19 @@ function MathieuFarmPage({ region }) {
             <div key={k} style={{ padding:"13px 20px", borderBottom:"1px solid #0d1520", display:"flex", gap:14, alignItems:"flex-start" }}>
               <div style={{ background:`${color}15`, border:`1px solid ${color}30`, borderRadius:6, padding:"4px 10px", flexShrink:0, minWidth:68, textAlign:"center" }}>
                 <span style={{ color, fontSize:13, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>+{(e.coef*100).toFixed(2)}%</span>
-                <p style={{ color:"#10b981", fontSize:8, margin:"1px 0 0" }}>{e.sig}</p>
               </div>
-              <div>
-                <p style={{ color:"#e2e8f0", fontSize:12, fontWeight:600, margin:0, marginBottom:4 }}>{label}</p>
-                <p style={{ color:"#94a3b8", fontSize:11, lineHeight:1.75, margin:0 }}>
-                  A 1% increase in {label.toLowerCase()} spending raises output by <span style={{ color, fontWeight:700 }}>{(e.coef*100).toFixed(2)}%</span>.
-                  {k==="intermediate" && <span style={{ color:"#a78bfa" }}> The dominant lever — roughly 10× stronger than fertilizer.</span>}
-                  {k==="depreciation" && <span style={{ color:"#f59e0b" }}> Raises output but the income model shows negative returns at the margin.</span>}
-                </p>
-              </div>
+              <p style={{ color:"#cbd5e1", fontSize:12, lineHeight:1.75, margin:0 }}>
+                <strong style={{ color:"#f1f5f9" }}>{label}</strong> — a 1% increase in spending raises output by <span style={{ color, fontWeight:700 }}>{(e.coef*100).toFixed(2)}%</span>.
+                {k==="intermediate" && <span style={{ color:"#a78bfa" }}> Dominant lever — 10× stronger than fertilizer alone.</span>}
+                {k==="depreciation" && <span style={{ color:"#f59e0b" }}> Raises output, but the income model shows negative returns at the margin.</span>}
+              </p>
             </div>
           );
         })}
       </div>
-
       <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"14px 20px" }}>
         <button onClick={()=>setExpandFE(e=>!e)}
-          style={{ background:"transparent", border:"1px solid #1a2436", color:"#475569", borderRadius:6, padding:"6px 14px", fontSize:11, cursor:"pointer", marginBottom: expandFE?14:0 }}>
+          style={{ background:"transparent", border:"1px solid #1a2436", color:"#64748b", borderRadius:6, padding:"6px 14px", fontSize:11, cursor:"pointer", marginBottom:expandFE?14:0 }}>
           {expandFE?"Hide":"Show"} all fixed effect values
         </button>
         {expandFE && (
@@ -1936,7 +1896,7 @@ function MathieuFarmPage({ region }) {
                 <p style={{ color:"#475569", fontSize:9, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>{title}</p>
                 {items.map(([k,v]) => (
                   <div key={k} style={{ display:"flex", justifyContent:"space-between", marginBottom:4 }}>
-                    <span style={{ color:"#334155", fontSize:10 }}>{String(k).replace(/^\(\d+\)\s*/,"")}</span>
+                    <span style={{ color:"#475569", fontSize:10 }}>{String(k).replace(/^\(\d+\)\s*/,"")}</span>
                     <span style={{ color:v>=0?"#10b981":"#f43f5e", fontSize:10, fontFamily:"'DM Mono',monospace" }}>{v>=0?"+":""}{(v*100).toFixed(1)}%</span>
                   </div>
                 ))}
@@ -1945,178 +1905,180 @@ function MathieuFarmPage({ region }) {
           </div>
         )}
       </div>
-
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:10 }}>
-        {[
-          {label:"R²",          value:MODEL1.rSquared,   note:"Variance explained",             color:"#10b981"},
-          {label:"Observations",value:"909",             note:"Farm-year pairs · FADN France",  color:"#0ea5e9"},
-          {label:"Form",        value:"Log-Log OLS",     note:"Box-Cox confirmed · λ ≈ 0",      color:"#a78bfa"},
-          {label:"References",  value:"IDF · FC · 2014", note:"Île-de-France · Fieldcrops",    color:"#f59e0b"},
-        ].map((item,i) => (
-          <div key={i} style={{ background:"#080e18", border:`1px solid ${item.color}20`, borderRadius:10, padding:"14px" }}>
-            <p style={{ color:"#475569", fontSize:9, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:6 }}>{item.label}</p>
-            <p style={{ color:item.color, fontSize:16, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>{item.value}</p>
-            <p style={{ color:"#334155", fontSize:10, marginTop:4, lineHeight:1.5 }}>{item.note}</p>
-          </div>
-        ))}
-      </div>
     </div>
   );
 
-  // ── SCENE: drop ───────────────────────────────────────────────────────────────
-  // ── SCENE: result ─────────────────────────────────────────────────────────────
-  const isDropScene  = scene === "drop";
-  const isResultScene = scene === "result";
+  // ── DROP + RESULT SCENES ──────────────────────────────────────────────────────
+  const isResult = scene === "result";
+  const isDrop   = scene === "drop";
 
   return (
-    <div style={{ fontFamily:"'DM Sans',sans-serif", display:"flex", flexDirection:"column", gap:0, minHeight:"calc(100vh - 180px)" }}>
+    <div style={{ fontFamily:"'DM Sans',sans-serif", display:"flex", flexDirection:"column", gap:0 }}>
       <style>{`
-        @keyframes fadeUp   { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes pulse    { 0%,100%{opacity:0.5;transform:scale(1)} 50%{opacity:1;transform:scale(1.04)} }
-        @keyframes barGrow  { from{width:0} to{width:var(--w)} }
-        @keyframes glow     { 0%,100%{box-shadow:0 0 20px #10b98130} 50%{box-shadow:0 0 40px #10b98160} }
-        @keyframes shake    { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
-        @keyframes splash   { 0%{opacity:0;transform:scale(0.7)} 60%{opacity:1;transform:scale(1.06)} 100%{opacity:1;transform:scale(1)} }
-        @keyframes floatUp  { 0%{opacity:0;transform:translateY(20px)} 100%{opacity:1;transform:translateY(0)} }
+        @keyframes fadeUp    { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes scaleIn   { from{opacity:0;transform:scale(0.85)} to{opacity:1;transform:scale(1)} }
+        @keyframes checkPop  { 0%{transform:scale(0);opacity:0} 60%{transform:scale(1.25);opacity:1} 100%{transform:scale(1);opacity:1} }
+        @keyframes ringPulse { 0%{box-shadow:0 0 0 0 #10b98150} 70%{box-shadow:0 0 0 18px #10b98100} 100%{box-shadow:0 0 0 0 #10b98100} }
+        @keyframes barGrow   { from{width:0} to{width:var(--w)} }
+        @keyframes countUp   { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes glow      { 0%,100%{box-shadow:0 0 20px #10b98130} 50%{box-shadow:0 0 40px #10b98170} }
+        @keyframes splash    { 0%{opacity:0;transform:scale(0.7)} 60%{opacity:1;transform:scale(1.06)} 100%{opacity:1;transform:scale(1)} }
         .fert-card { transition:all 0.18s ease; cursor:grab; user-select:none; }
-        .fert-card:hover { transform:translateY(-4px) scale(1.02); }
-        .fert-card:active { cursor:grabbing; }
-        .drop-zone { transition:all 0.22s ease; }
-        .model-btn { transition:all 0.15s; }
-        .model-btn:hover { color:#f1f5f9 !important; border-color:#334155 !important; }
+        .fert-card:hover { transform:translateY(-5px) scale(1.03); }
+        .fert-card:active { cursor:grabbing; transform:scale(0.96); }
+        .drop-tgt { transition:all 0.2s ease; }
+        .try-btn:hover { background:#f1f5f9 !important; color:#04080f !important; transform:translateY(-2px) !important; }
       `}</style>
 
-      {/* ── HEADER STRIP ── */}
-      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", paddingBottom:18, borderBottom:"1px solid #1a2436", marginBottom:24, flexWrap:"wrap", gap:10 }}>
-        <div>
-          <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.16em", fontWeight:700, margin:0, marginBottom:4 }}>P Separation Simulator · France</p>
-          <h2 style={{ color:"#f1f5f9", fontSize:18, fontWeight:700, letterSpacing:"-0.02em", margin:0 }}>
-            {isDropScene ? "Which fertilizer does Mathieu apply this season?" : `Mathieu applied ${fert?.label} — here is the result`}
+      {/* ── CONTEXT BAR ── */}
+      <div style={{ display:"flex", alignItems:"center", gap:14, paddingBottom:16, borderBottom:"1px solid #1a2436", marginBottom:20, flexWrap:"wrap" }}>
+        <div style={{ flex:1 }}>
+          <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.16em", fontWeight:700, margin:0, marginBottom:3 }}>P Separation Simulator · France</p>
+          <h2 style={{ color:"#f1f5f9", fontSize:17, fontWeight:700, letterSpacing:"-0.02em", margin:0 }}>
+            {isDrop ? "Choose Mathieu's fertilizer treatment this season." : `Mathieu applied ${fert?.label}.`}
           </h2>
         </div>
         <div style={{ display:"flex", gap:8, alignItems:"center" }}>
-          {isResultScene && (
-            <button onClick={()=>{setApplied(null);setScene("drop");}}
-              style={{ background:"transparent", border:"1px solid #1a2436", color:"#475569", borderRadius:8, padding:"7px 16px", fontSize:11, cursor:"pointer", display:"flex", alignItems:"center", gap:6 }}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-              Try another
+          {isResult && (
+            <button
+              className="try-btn"
+              onClick={()=>{ setApplied(null); setScene("drop"); setShowCheck(false); }}
+              style={{ background:"transparent", border:"1.5px solid #e2e8f0", color:"#e2e8f0", borderRadius:8, padding:"10px 22px", fontSize:12, fontWeight:700, cursor:"pointer", letterSpacing:"0.04em", transition:"all 0.2s" }}>
+              ← Try another treatment
             </button>
           )}
-          <button className="model-btn" onClick={()=>setScene("model")}
-            style={{ background:"transparent", border:"1px solid #1a2436", color:"#334155", borderRadius:8, padding:"7px 16px", fontSize:11, cursor:"pointer" }}>
-            View model
+          <button onClick={()=>setScene("model")}
+            style={{ background:"transparent", border:"1px solid #1a2436", color:"#475569", borderRadius:8, padding:"10px 18px", fontSize:11, cursor:"pointer" }}>
+            Model details
           </button>
         </div>
       </div>
 
-      {/* ── CONTEXT SELECTORS (compact, always visible) ── */}
-      <div style={{ display:"flex", gap:12, marginBottom:20, flexWrap:"wrap", alignItems:"center" }}>
+      {/* ── CONTEXT SELECTORS ── */}
+      <div style={{ display:"flex", gap:14, marginBottom:22, flexWrap:"wrap", alignItems:"flex-end" }}>
         {[
-          {label:"Region", value:simRegion, onChange:setSimRegion, opts:REGION_KEYS, fmt:v=>v.replace(/^\(\d+\)\s*/,"")},
-          {label:"Farm type", value:farmType, onChange:setFarmType, opts:FARMTYPE_KEYS, fmt:v=>v.replace(/^\(\d+\)\s*/,"")},
-          {label:"Season", value:simYear, onChange:v=>setSimYear(Number(v)), opts:YEAR_KEYS, fmt:v=>String(v)},
+          {label:"Region",     value:simRegion, onChange:setSimRegion, opts:REGION_KEYS,   fmt:v=>v.replace(/^\(\d+\)\s*/,"")},
+          {label:"Farm type",  value:farmType,  onChange:setFarmType,  opts:FARMTYPE_KEYS, fmt:v=>v.replace(/^\(\d+\)\s*/,"")},
+          {label:"Season",     value:simYear,   onChange:v=>setSimYear(Number(v)), opts:YEAR_KEYS, fmt:v=>String(v)},
         ].map(({label,value,onChange,opts,fmt}) => (
-          <div key={label} style={{ display:"flex", flexDirection:"column", gap:4 }}>
-            <p style={{ color:"#334155", fontSize:9, textTransform:"uppercase", letterSpacing:"0.1em", margin:0 }}>{label}</p>
+          <div key={label} style={{ display:"flex", flexDirection:"column", gap:5 }}>
+            <p style={{ color:"#475569", fontSize:9, textTransform:"uppercase", letterSpacing:"0.12em", margin:0, fontWeight:600 }}>{label}</p>
             <select value={value} onChange={e=>onChange(e.target.value)}
-              style={{ background:"#080e18", border:"1px solid #1a2436", color:"#94a3b8", borderRadius:8, padding:"6px 10px", fontSize:11, cursor:"pointer", outline:"none", maxWidth:"none" }}>
+              style={{ background:"#080e18", border:"1px solid #1a2436", color:"#cbd5e1", borderRadius:8, padding:"8px 12px", fontSize:12, cursor:"pointer", outline:"none", maxWidth:"none" }}>
               {opts.map(o => <option key={o} value={o}>{fmt(o)}</option>)}
             </select>
           </div>
         ))}
-        <div style={{ marginLeft:"auto", padding:"6px 14px", background:"#060d1a", border:"1px solid #1a2436", borderRadius:8 }}>
-          <p style={{ color:"#334155", fontSize:9, textTransform:"uppercase", letterSpacing:"0.1em", margin:0, marginBottom:2 }}>Baseline output</p>
-          <p style={{ color:"#94a3b8", fontSize:12, fontWeight:700, fontFamily:"'DM Mono',monospace", margin:0 }}>€{Math.round(baselineOutput).toLocaleString()}/ha</p>
+        <div style={{ marginLeft:"auto", padding:"8px 16px", background:"#060d1a", border:"1px solid #1a2436", borderRadius:8 }}>
+          <p style={{ color:"#475569", fontSize:9, textTransform:"uppercase", letterSpacing:"0.1em", margin:0, marginBottom:3 }}>Baseline output</p>
+          <p style={{ color:"#cbd5e1", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace", margin:0 }}>€{Math.round(baselineOutput).toLocaleString()}/ha</p>
         </div>
       </div>
 
       {/* ── DROP SCENE ── */}
-      {isDropScene && (
-        <div style={{ display:"flex", flexDirection:"column", gap:20, animation:"fadeUp 0.4s ease" }}>
+      {isDrop && (
+        <div style={{ display:"flex", flexDirection:"column", gap:18, animation:"fadeUp 0.4s ease" }}>
 
           {/* Instruction */}
-          <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-            <div style={{ width:28, height:28, borderRadius:"50%", background:"#0ea5e920", border:"1px solid #0ea5e940", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, animation:"pulse 2s infinite" }}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-            </div>
-            <p style={{ color:"#94a3b8", fontSize:13, margin:0 }}>Drag your chosen fertilizer onto the field below to run the simulation.</p>
+          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+            <div style={{ width:7, height:7, borderRadius:"50%", background:"#0ea5e9", flexShrink:0 }}/>
+            <p style={{ color:"#94a3b8", fontSize:13, margin:0 }}>Drag a treatment onto Mathieu's field to see the economic impact.</p>
           </div>
 
           {/* Fertilizer cards */}
           <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:10 }}>
             {FERTILIZERS.map((f,i) => (
-              <div key={f.id}
-                className="fert-card"
+              <div key={f.id} className="fert-card"
                 draggable
                 onDragStart={()=>onDragStart(f.id)}
                 onDragEnd={()=>setDragging(null)}
                 style={{
                   background: dragging===f.id ? `${f.color}18` : "#080e18",
-                  border:`1.5px solid ${dragging===f.id ? f.color : f.color+"30"}`,
-                  borderRadius:14, padding:"16px 12px",
-                  textAlign:"center",
+                  border:`1.5px solid ${dragging===f.id ? f.color : f.color+"28"}`,
+                  borderRadius:14, padding:"14px 10px", textAlign:"center",
                   animation:`fadeUp 0.4s ${i*0.05}s ease both`,
-                  opacity: dragging && dragging!==f.id ? 0.45 : 1,
-                  boxShadow: dragging===f.id ? `0 8px 24px ${f.color}25` : "none",
+                  opacity: dragging && dragging!==f.id ? 0.38 : 1,
+                  boxShadow: dragging===f.id ? `0 12px 32px ${f.color}30` : "none",
                 }}>
-                {/* P2O5 visual ring */}
-                <div style={{ position:"relative", width:48, height:48, margin:"0 auto 10px" }}>
-                  <svg width="48" height="48" viewBox="0 0 48 48">
-                    <circle cx="24" cy="24" r="20" fill="none" stroke="#1a2436" strokeWidth="3"/>
-                    <circle cx="24" cy="24" r="20" fill="none" stroke={f.color} strokeWidth="3"
-                      strokeDasharray={`${(f.p2o5/100)*125.6} 125.6`}
-                      strokeLinecap="round" transform="rotate(-90 24 24)" opacity="0.8"/>
+                {/* P2O5 ring */}
+                <div style={{ position:"relative", width:46, height:46, margin:"0 auto 10px" }}>
+                  <svg width="46" height="46" viewBox="0 0 46 46">
+                    <circle cx="23" cy="23" r="19" fill="none" stroke="#1a2436" strokeWidth="3"/>
+                    <circle cx="23" cy="23" r="19" fill="none" stroke={f.color} strokeWidth="3"
+                      strokeDasharray={`${(f.p2o5/100)*119.4} 119.4`}
+                      strokeLinecap="round" transform="rotate(-90 23 23)" opacity="0.85"/>
                   </svg>
                   <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center" }}>
                     <span style={{ color:f.color, fontSize:11, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>{f.p2o5}</span>
                   </div>
                 </div>
-                <p style={{ color:f.color, fontSize:12, fontWeight:800, margin:0, marginBottom:3 }}>{f.label}</p>
-                <p style={{ color:"#475569", fontSize:9, margin:0, marginBottom:6, lineHeight:1.4 }}>{f.full}</p>
+                <p style={{ color:f.color, fontSize:11, fontWeight:800, margin:"0 0 2px" }}>{f.label}</p>
                 {f.badge && (
-                  <span style={{ background:f.badgeColor+"18", color:f.badgeColor, fontSize:8, fontWeight:700, padding:"2px 6px", borderRadius:8, border:`1px solid ${f.badgeColor}30` }}>
+                  <span style={{ background:f.badgeColor+"15", color:f.badgeColor, fontSize:8, fontWeight:700, padding:"2px 6px", borderRadius:6, border:`1px solid ${f.badgeColor}25` }}>
                     {f.badge}
                   </span>
                 )}
-                <p style={{ color:"#334155", fontSize:9, margin:"6px 0 0", fontFamily:"'DM Mono',monospace" }}>P₂O₅: {f.p2o5}%</p>
+                <p style={{ color:"#475569", fontSize:9, margin:"5px 0 0", fontFamily:"'DM Mono',monospace" }}>P₂O₅: {f.p2o5}%</p>
               </div>
             ))}
           </div>
 
           {/* Drop zone */}
           <div
-            className="drop-zone"
+            className="drop-tgt"
             onDragOver={onDragOver}
             onDragLeave={onDragLeave}
             onDrop={onDrop}
             style={{
               border:`2px dashed ${dragOver?"#10b981":"#1a2436"}`,
-              borderRadius:20,
+              borderRadius:18,
               background: dragOver ? "#041510" : "#04080f",
-              padding:"40px 24px",
+              padding:"44px 24px",
               textAlign:"center",
-              minHeight:160,
+              minHeight:155,
               display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:12,
               animation: dragOver ? "glow 1s infinite" : "none",
-              transition:"all 0.2s",
               position:"relative", overflow:"hidden",
             }}>
             {animating ? (
               <div style={{ animation:"splash 0.5s ease" }}>
-                <div style={{ width:60, height:60, borderRadius:"50%", background:"#10b98130", border:"2px solid #10b981", margin:"0 auto 12px", display:"flex", alignItems:"center", justifyContent:"center", animation:"glow 0.8s infinite" }}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                <div style={{
+                  width:64, height:64, borderRadius:"50%",
+                  background:"#10b98120", border:"2px solid #10b981",
+                  margin:"0 auto 14px",
+                  display:"flex", alignItems:"center", justifyContent:"center",
+                  animation: showCheck ? "ringPulse 0.8s ease" : "glow 0.8s infinite",
+                }}>
+                  {showCheck ? (
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"
+                      style={{ animation:"checkPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both" }}>
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                  ) : (
+                    <div style={{ width:20, height:20, borderRadius:"50%", border:"3px solid #10b981", borderTopColor:"transparent", animation:"spin 0.6s linear infinite" }}/>
+                  )}
                 </div>
-                <p style={{ color:"#10b981", fontSize:14, fontWeight:700 }}>Applying to field...</p>
+                <p style={{ color:"#10b981", fontSize:14, fontWeight:700 }}>
+                  {showCheck ? "Applied to field." : "Applying treatment..."}
+                </p>
               </div>
             ) : (
               <>
-                <div style={{ width:56, height:56, borderRadius:"50%", background: dragOver?"#10b98120":"#0a1020", border:`2px dashed ${dragOver?"#10b981":"#1e293b"}`, display:"flex", alignItems:"center", justifyContent:"center", transition:"all 0.2s" }}>
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={dragOver?"#10b981":"#334155"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg>
+                <div style={{
+                  width:54, height:54, borderRadius:"50%",
+                  background: dragOver ? "#10b98118" : "#0a1020",
+                  border:`2px dashed ${dragOver?"#10b981":"#1e293b"}`,
+                  display:"flex", alignItems:"center", justifyContent:"center",
+                  transition:"all 0.2s",
+                }}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={dragOver?"#10b981":"#334155"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/>
+                  </svg>
                 </div>
-                <p style={{ color: dragOver?"#10b981":"#334155", fontSize:13, fontWeight:600, margin:0, transition:"color 0.2s" }}>
-                  {dragOver ? "Release to apply to Mathieu's field" : "Drop fertilizer here"}
+                <p style={{ color: dragOver?"#10b981":"#475569", fontSize:14, fontWeight:600, margin:0, transition:"color 0.2s" }}>
+                  {dragOver ? "Release to apply" : "Drop treatment here"}
                 </p>
-                <p style={{ color:"#1e3050", fontSize:11, margin:0 }}>120 ha · {simRegion.replace(/^\(\d+\)\s*/,"")} · {simYear}</p>
+                <p style={{ color:"#1e3050", fontSize:11, margin:0 }}>Mathieu's field · 120 ha · {simRegion.replace(/^\(\d+\)\s*/,"")} · {simYear}</p>
               </>
             )}
           </div>
@@ -2124,144 +2086,169 @@ function MathieuFarmPage({ region }) {
       )}
 
       {/* ── RESULT SCENE ── */}
-      {isResultScene && fert && (
-        <div style={{ display:"flex", flexDirection:"column", gap:16, animation:"floatUp 0.5s ease" }}>
+      {isResult && fert && (
+        <div style={{ display:"flex", flexDirection:"column", gap:18, animation:"fadeUp 0.45s ease" }}>
 
-          {/* Applied badge */}
-          <div style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 16px", background:`${fert.color}10`, border:`1px solid ${fert.color}30`, borderRadius:12 }}>
-            <div style={{ width:10, height:10, borderRadius:"50%", background:fert.color, flexShrink:0 }}/>
-            <p style={{ color:fert.color, fontSize:13, fontWeight:700, margin:0 }}>{fert.full}</p>
-            <p style={{ color:"#475569", fontSize:12, margin:0 }}>{fert.desc}</p>
-            <div style={{ marginLeft:"auto", padding:"3px 10px", background:fert.badgeColor+"18", border:`1px solid ${fert.badgeColor}30`, borderRadius:8, color:fert.badgeColor, fontSize:10, fontWeight:700, whiteSpace:"nowrap" }}>
-              P₂O₅: {fert.p2o5}%
+          {/* Treatment header */}
+          <div style={{
+            display:"flex", alignItems:"center", gap:14,
+            padding:"14px 18px",
+            background:`linear-gradient(135deg,${fert.color}12,#080e18)`,
+            border:`1px solid ${fert.color}35`,
+            borderRadius:14,
+          }}>
+            {/* Check badge */}
+            <div style={{
+              width:40, height:40, borderRadius:"50%",
+              background:`${fert.color}20`, border:`2px solid ${fert.color}`,
+              display:"flex", alignItems:"center", justifyContent:"center",
+              flexShrink:0, animation:"checkPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both",
+            }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={fert.color} strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
             </div>
+            <div style={{ flex:1 }}>
+              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:4 }}>
+                <p style={{ color:fert.color, fontSize:15, fontWeight:800, margin:0 }}>{fert.full}</p>
+                <span style={{ background:fert.badgeColor+"18", color:fert.badgeColor, fontSize:9, fontWeight:700, padding:"2px 8px", borderRadius:6, border:`1px solid ${fert.badgeColor}30` }}>
+                  P₂O₅: {fert.p2o5}%
+                </span>
+              </div>
+              <p style={{ color:"#94a3b8", fontSize:12, margin:0 }}>{fert.timing}</p>
+            </div>
+            {/* Agronomic detail toggle */}
+            <details style={{ fontSize:11, color:"#475569", cursor:"pointer" }}>
+              <summary style={{ cursor:"pointer", color:"#475569", fontSize:11 }}>Why this matters</summary>
+              <p style={{ color:"#64748b", fontSize:11, lineHeight:1.7, margin:"8px 0 0", maxWidth:380 }}>{fert.agronomicNote}</p>
+            </details>
           </div>
 
-          {/* ── 4 KPI CARDS ── */}
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:12 }}>
+          {/* ── 3 BIG KPI CARDS ── */}
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:14 }}>
             {[
               {
                 label:"Output per hectare",
-                before: Math.round(baselineOutput),
-                after:  Math.round(currentOutput),
-                delta:  outputDeltaPct,
-                unit:"€/ha",
-                color:"#0ea5e9",
-                isGoodUp: true,
+                icon:"📈",
+                base:   Math.round(baselineOutput),
+                after:  Math.round(currentOut),
+                delta:  outDelta,
+                pct:    outPct,
+                color:  "#0ea5e9",
+                good:   outDelta >= 0,
               },
               {
                 label:"Input cost",
-                before: totalCostBase,
-                after:  totalCostNew,
-                delta:  ((totalCostNew-totalCostBase)/totalCostBase*100),
-                unit:"€/ha",
-                color:"#f59e0b",
-                isGoodUp: false,
+                icon:"💶",
+                base:   Math.round(baselineCost),
+                after:  Math.round(currentCost),
+                delta:  costDelta,
+                pct:    baselineCost > 0 ? costDelta/baselineCost*100 : 0,
+                color:  "#f59e0b",
+                good:   costDelta <= 0,
+                lowerIsBetter: true,
               },
               {
                 label:"Gross margin",
-                before: Math.round(marginBase),
-                after:  Math.round(marginNew),
-                delta:  marginDeltaPct,
-                unit:"€/ha",
-                color:"#10b981",
-                isGoodUp: true,
-              },
-              {
-                label:"P₂O₅ content",
-                before: 0,
-                after:  fert.p2o5,
-                delta:  null,
-                unit:"%",
-                color:fert.color,
-                isGoodUp: true,
-                noCompare: true,
+                icon:"💰",
+                base:   Math.round(baselineMargin),
+                after:  Math.round(currentMarg),
+                delta:  margDelta,
+                pct:    margPct,
+                color:  "#10b981",
+                good:   margDelta >= 0,
+                hero:   true,
               },
             ].map((kpi,i) => {
-              const isUp = kpi.delta > 0;
-              const isGood = kpi.isGoodUp ? isUp : !isUp;
-              const signColor = kpi.delta === null ? kpi.color : isGood ? "#10b981" : "#f43f5e";
-              return (
-                <div key={i} style={{ background:"#080e18", border:`1px solid ${kpi.color}20`, borderRadius:16, padding:"20px", animation:`floatUp 0.5s ${i*0.08}s ease both`, opacity:0 }}>
-                  <p style={{ color:"#475569", fontSize:9, textTransform:"uppercase", letterSpacing:"0.12em", marginBottom:12 }}>{kpi.label}</p>
+              const signColor = kpi.good ? "#10b981" : "#f43f5e";
+              const baseWidth = 52;
+              const afterWidth = kpi.after !== 0 && kpi.base !== 0
+                ? Math.min(96, Math.max(10, (kpi.after / Math.max(kpi.base, kpi.after)) * baseWidth * 1.2))
+                : baseWidth;
 
-                  {kpi.noCompare ? (
-                    <p style={{ color:kpi.color, fontSize:32, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0, lineHeight:1 }}>
-                      {kpi.after}<span style={{ fontSize:13, color:"#334155", fontWeight:400 }}>{kpi.unit}</span>
-                    </p>
-                  ) : (
-                    <>
-                      {/* Before bar */}
-                      <div style={{ marginBottom:10 }}>
-                        <div style={{ display:"flex", justifyContent:"space-between", marginBottom:4 }}>
-                          <span style={{ color:"#334155", fontSize:10 }}>Baseline</span>
-                          <span style={{ color:"#475569", fontSize:11, fontFamily:"'DM Mono',monospace", fontWeight:600 }}>€{kpi.before.toLocaleString()}</span>
-                        </div>
-                        <div style={{ height:5, background:"#1a2436", borderRadius:3 }}>
-                          <div style={{ height:"100%", width:"60%", background:"#1e3050", borderRadius:3 }}/>
-                        </div>
-                      </div>
-                      {/* After bar */}
-                      <div style={{ marginBottom:12 }}>
-                        <div style={{ display:"flex", justifyContent:"space-between", marginBottom:4 }}>
-                          <span style={{ color:kpi.color, fontSize:10, fontWeight:600 }}>{fert.label}</span>
-                          <span style={{ color:kpi.color, fontSize:13, fontFamily:"'DM Mono',monospace", fontWeight:800 }}>€{kpi.after.toLocaleString()}</span>
-                        </div>
-                        <div style={{ height:7, background:"#1a2436", borderRadius:3, overflow:"hidden" }}>
-                          <div style={{
-                            height:"100%",
-                            width: kpi.after > kpi.before ? `${Math.min(100, (kpi.after/kpi.before)*60)}%` : `${Math.min(100, (kpi.after/kpi.before)*60)}%`,
-                            background:`linear-gradient(90deg,${kpi.color},${kpi.color}aa)`,
-                            borderRadius:3,
-                            animation:"barGrow 0.8s ease",
-                            transition:"width 0.6s ease",
-                          }}/>
-                        </div>
-                      </div>
-                      {/* Delta */}
-                      <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-                        <span style={{ color:signColor, fontSize:14, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>
-                          {kpi.delta > 0 ? "+" : ""}{kpi.delta.toFixed(1)}%
-                        </span>
-                        <span style={{ color:signColor+"80", fontSize:10 }}>vs baseline</span>
-                      </div>
-                    </>
+              return (
+                <div key={i} style={{
+                  background: kpi.hero ? "linear-gradient(135deg,#041510,#080e18)" : "#080e18",
+                  border:`1.5px solid ${kpi.hero ? "#10b98140" : kpi.color+"20"}`,
+                  borderRadius:16, padding:"22px 20px",
+                  animation:`countUp 0.5s ${0.1+i*0.1}s ease both`, opacity:0,
+                  position:"relative", overflow:"hidden",
+                }}>
+                  {kpi.hero && (
+                    <div style={{ position:"absolute", top:-20, right:-20, width:80, height:80, borderRadius:"50%", background:"#10b98108", pointerEvents:"none" }}/>
                   )}
+                  <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:16 }}>
+                    <span style={{ fontSize:16 }}>{kpi.icon}</span>
+                    <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:600, margin:0 }}>{kpi.label}</p>
+                    {kpi.hero && <span style={{ background:"#10b98120", color:"#10b981", fontSize:8, fontWeight:700, padding:"2px 7px", borderRadius:6, marginLeft:"auto" }}>KEY</span>}
+                  </div>
+
+                  {/* Baseline row */}
+                  <div style={{ marginBottom:12 }}>
+                    <div style={{ display:"flex", justifyContent:"space-between", marginBottom:5 }}>
+                      <span style={{ color:"#475569", fontSize:11 }}>Baseline</span>
+                      <span style={{ color:"#475569", fontSize:12, fontFamily:"'DM Mono',monospace", fontWeight:600 }}>€{Math.abs(kpi.base).toLocaleString()}</span>
+                    </div>
+                    <div style={{ height:5, background:"#1a2436", borderRadius:3 }}>
+                      <div style={{ height:"100%", width:`${baseWidth}%`, background:"#1e3050", borderRadius:3 }}/>
+                    </div>
+                  </div>
+
+                  {/* After row */}
+                  <div style={{ marginBottom:16 }}>
+                    <div style={{ display:"flex", justifyContent:"space-between", marginBottom:5 }}>
+                      <span style={{ color:kpi.color, fontSize:11, fontWeight:700 }}>{fert.label}</span>
+                      <span style={{ color:kpi.color, fontSize:14, fontFamily:"'DM Mono',monospace", fontWeight:800 }}>€{Math.abs(kpi.after).toLocaleString()}</span>
+                    </div>
+                    <div style={{ height:7, background:"#1a2436", borderRadius:3, overflow:"hidden" }}>
+                      <div style={{ height:"100%", width:`${afterWidth}%`, background:`linear-gradient(90deg,${kpi.color},${kpi.color}99)`, borderRadius:3, animation:"barGrow 0.8s ease" }}/>
+                    </div>
+                  </div>
+
+                  {/* Delta */}
+                  <div style={{ display:"flex", alignItems:"baseline", gap:8, paddingTop:12, borderTop:`1px solid ${kpi.color}15` }}>
+                    <span style={{ color:signColor, fontSize: kpi.hero ? 22 : 18, fontWeight:800, fontFamily:"'DM Mono',monospace", lineHeight:1 }}>
+                      {fmtK(kpi.delta)}
+                    </span>
+                    <span style={{ color:signColor+"aa", fontSize:11, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>
+                      {fmtPct(kpi.pct)}
+                    </span>
+                  </div>
                 </div>
               );
             })}
           </div>
 
-          {/* ── VISUAL COMPARISON BAR ── */}
+          {/* ── VISUAL COMPARISON BARS ── */}
           <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:16, padding:"20px 24px" }}>
-            <p style={{ color:"#e2e8f0", fontSize:12, fontWeight:700, marginBottom:16 }}>Output vs margin — baseline compared to {fert.label}</p>
-            <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+            <p style={{ color:"#e2e8f0", fontSize:13, fontWeight:700, marginBottom:18 }}>
+              Baseline <span style={{ color:"#334155" }}>vs</span> {fert.label} — side by side
+            </p>
+            <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
               {[
-                { label:"Output", base:baselineOutput, current:currentOutput, color:"#0ea5e9", max:Math.max(baselineOutput,currentOutput)*1.15 },
-                { label:"Gross margin", base:marginBase, current:marginNew, color:"#10b981", max:Math.max(marginBase,marginNew,1)*1.15 },
-                { label:"Input cost", base:totalCostBase, current:totalCostNew, color:"#f59e0b", max:Math.max(totalCostBase,totalCostNew)*1.15 },
-              ].map(({label,base,current,color,max}) => {
-                const basePct  = Math.max(0, (base/max)*100);
-                const currPct  = Math.max(0, (current/max)*100);
-                const isUp = current > base;
+                { label:"Output /ha", base:baselineOutput, after:currentOut,  color:"#0ea5e9" },
+                { label:"Gross margin",base:baselineMargin, after:currentMarg, color:"#10b981" },
+                { label:"Input cost",  base:baselineCost,   after:currentCost, color:"#f59e0b" },
+              ].map(({label,base,after,color}) => {
+                const maxVal = Math.max(Math.abs(base), Math.abs(after)) * 1.12 || 1;
+                const bPct   = Math.max(0, (Math.abs(base)/maxVal)*100);
+                const aPct   = Math.max(0, (Math.abs(after)/maxVal)*100);
+                const up     = after >= base;
                 return (
                   <div key={label}>
-                    <div style={{ display:"flex", justifyContent:"space-between", marginBottom:5 }}>
-                      <span style={{ color:"#94a3b8", fontSize:11 }}>{label}</span>
-                      <span style={{ color:isUp?color:"#f43f5e", fontSize:11, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>
-                        {isUp?"+":""}{fmtSign(current-base)}
+                    <div style={{ display:"flex", justifyContent:"space-between", marginBottom:6 }}>
+                      <span style={{ color:"#cbd5e1", fontSize:12, fontWeight:600 }}>{label}</span>
+                      <span style={{ color:up?color:"#f43f5e", fontSize:12, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>
+                        {fmtK(after-base)}
                       </span>
                     </div>
-                    {/* Baseline bar */}
-                    <div style={{ marginBottom:4 }}>
-                      <div style={{ height:7, background:"#0a1020", borderRadius:3, overflow:"hidden", position:"relative" }}>
-                        <div style={{ position:"absolute", height:"100%", width:`${basePct}%`, background:"#1e3050", borderRadius:3 }}/>
-                        <div style={{ position:"absolute", height:"100%", width:`${currPct}%`, background:`linear-gradient(90deg,${color}cc,${color}66)`, borderRadius:3, animation:"barGrow 0.8s ease" }}/>
-                      </div>
+                    <div style={{ height:10, background:"#0a1020", borderRadius:4, overflow:"hidden", position:"relative", marginBottom:4 }}>
+                      <div style={{ position:"absolute", height:"100%", width:`${bPct}%`, background:"#1e3050", borderRadius:4 }}/>
+                      <div style={{ position:"absolute", height:"100%", width:`${aPct}%`, background:`linear-gradient(90deg,${color}cc,${color}55)`, borderRadius:4, animation:"barGrow 0.9s ease" }}/>
                     </div>
                     <div style={{ display:"flex", justifyContent:"space-between" }}>
-                      <span style={{ color:"#334155", fontSize:9, fontFamily:"'DM Mono',monospace" }}>Baseline: €{Math.round(base).toLocaleString()}</span>
-                      <span style={{ color, fontSize:9, fontFamily:"'DM Mono',monospace", fontWeight:600 }}>{fert.label}: €{Math.round(current).toLocaleString()}</span>
+                      <span style={{ color:"#334155", fontSize:10, fontFamily:"'DM Mono',monospace" }}>Baseline: €{Math.round(Math.abs(base)).toLocaleString()}</span>
+                      <span style={{ color, fontSize:10, fontFamily:"'DM Mono',monospace", fontWeight:600 }}>{fert.label}: €{Math.round(Math.abs(after)).toLocaleString()}</span>
                     </div>
                   </div>
                 );
@@ -2271,64 +2258,87 @@ function MathieuFarmPage({ region }) {
 
           {/* ── OCP INSIGHT ── */}
           {fert.id === "TSP" ? (
-            <div style={{ background:"linear-gradient(135deg,#041510,#060d18)", border:"1px solid #10b98140", borderRadius:14, padding:"18px 22px", display:"flex", gap:14, alignItems:"flex-start" }}>
-              <div style={{ width:36, height:36, borderRadius:10, background:"#10b98120", border:"1px solid #10b98130", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <div style={{ background:"linear-gradient(135deg,#041510,#060d18)", border:"1.5px solid #10b98145", borderRadius:14, padding:"18px 22px", display:"flex", gap:14 }}>
+              <div style={{ width:38, height:38, borderRadius:10, background:"#10b98118", border:"1px solid #10b98130", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
               </div>
               <div>
-                <p style={{ color:"#10b981", fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em", margin:0, marginBottom:6 }}>OCP P-Doctrine · TSP advantage confirmed</p>
-                <p style={{ color:"#94a3b8", fontSize:12, lineHeight:1.8, margin:0 }}>
-                  TSP delivers the highest P₂O₅ concentration at 46% with zero nitrogen interference. The separation strategy allows optimal P placement independent of N timing — driving the output and margin result you see above. At €{Math.round(marginNew).toLocaleString()}/ha gross margin, this is the P-doctrine case in numbers.
+                <p style={{ color:"#10b981", fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", margin:"0 0 6px" }}>OCP P-Doctrine · TSP advantage confirmed</p>
+                <p style={{ color:"#94a3b8", fontSize:12, lineHeight:1.85, margin:0 }}>
+                  TSP delivers 46% P₂O₅ with zero nitrogen present. The separation strategy allows Mathieu to apply phosphorus at exactly the right time, independent of his nitrogen schedule — the single most controllable lever in cereal agronomy. The margin result above reflects that flexibility.
                 </p>
               </div>
             </div>
           ) : (
-            <div style={{ background:"#080e18", border:`1px solid ${fert.color}25`, borderRadius:14, padding:"18px 22px", display:"flex", gap:14, alignItems:"flex-start" }}>
-              <div style={{ width:36, height:36, borderRadius:10, background:`${fert.color}15`, border:`1px solid ${fert.color}30`, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+            <div style={{ background:"#080e18", border:`1.5px solid ${fert.color}25`, borderRadius:14, padding:"18px 22px", display:"flex", gap:14 }}>
+              <div style={{ width:38, height:38, borderRadius:10, background:`${fert.color}12`, border:`1px solid ${fert.color}28`, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={fert.color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
               </div>
               <div>
-                <p style={{ color:fert.color, fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em", margin:0, marginBottom:6 }}>Comparison note</p>
-                <p style={{ color:"#94a3b8", fontSize:12, lineHeight:1.8, margin:0 }}>
-                  {fert.id === "NPK1" || fert.id === "NPK2" || fert.id === "NPK3"
-                    ? `Blended NPKs dilute phosphorus efficiency. At ${fert.p2o5}% P₂O₅, more product is needed per hectare to deliver the same agronomic effect as TSP. The bundled nitrogen and potassium add cost without improving the P story.`
-                    : fert.id === "DAP"
-                    ? `DAP's high nitrogen content (18%) creates interference risk with phosphorus uptake timing. The combined cost is higher than TSP while the agronomic P efficiency is compromised by the nitrogen-phosphorus interaction.`
-                    : `${fert.label} offers ${fert.p2o5}% P₂O₅. Compared to TSP's separated P application, the combined formulation limits flexibility in N and P timing — a structural constraint in precision agronomy programs.`
-                  }
-                </p>
+                <p style={{ color:fert.color, fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", margin:"0 0 6px" }}>Treatment note</p>
+                <p style={{ color:"#94a3b8", fontSize:12, lineHeight:1.85, margin:0 }}>{fert.agronomicNote}</p>
               </div>
             </div>
           )}
 
-          {/* Fertilizer comparison summary */}
+          {/* ── RANKING TABLE ── */}
           <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:14, overflow:"hidden" }}>
-            <div style={{ padding:"12px 18px", borderBottom:"1px solid #1a2436" }}>
-              <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", fontWeight:700, margin:0 }}>All products ranked by gross margin impact</p>
+            <div style={{ padding:"12px 18px", borderBottom:"1px solid #1a2436", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+              <p style={{ color:"#cbd5e1", fontSize:11, fontWeight:700, margin:0 }}>All treatments ranked by gross margin</p>
+              <p style={{ color:"#334155", fontSize:10, margin:0 }}>Click any row to switch</p>
             </div>
-            <div style={{ padding:"10px 0" }}>
-              {FERTILIZERS
-                .map(f => ({ ...f, m: predict(f.spending) - Object.values(f.spending).reduce((s,v)=>s+v,0) }))
-                .sort((a,b) => b.m - a.m)
-                .map((f, i) => {
-                  const isCurrent = f.id === fert.id;
-                  const mDelta = f.m - marginBase;
-                  return (
-                    <div key={f.id} onClick={()=>{setApplied(f.id);}}
-                      style={{ display:"flex", alignItems:"center", gap:14, padding:"9px 18px", cursor:"pointer", background:isCurrent?`${f.color}10`:"transparent", borderLeft:isCurrent?`3px solid ${f.color}`:"3px solid transparent", transition:"background 0.15s" }}
-                      onMouseEnter={e=>{if(!isCurrent)e.currentTarget.style.background="#0a1020";}}
-                      onMouseLeave={e=>{if(!isCurrent)e.currentTarget.style.background="transparent";}}>
-                      <span style={{ color:"#334155", fontSize:10, width:16, fontFamily:"'DM Mono',monospace", fontWeight:700 }}>#{i+1}</span>
-                      <div style={{ width:6, height:6, borderRadius:2, background:f.color, flexShrink:0 }}/>
-                      <span style={{ color:isCurrent?"#f1f5f9":"#94a3b8", fontSize:12, fontWeight:isCurrent?700:400, flex:1 }}>{f.label}</span>
-                      <span style={{ color:"#475569", fontSize:10, fontFamily:"'DM Mono',monospace", marginRight:8 }}>P₂O₅: {f.p2o5}%</span>
-                      <span style={{ color:mDelta>=0?"#10b981":"#f43f5e", fontSize:12, fontWeight:700, fontFamily:"'DM Mono',monospace", width:80, textAlign:"right" }}>
-                        {mDelta>=0?"+":""}{fmtSign(mDelta)}
-                      </span>
-                    </div>
-                  );
-                })}
-            </div>
+            {FERTILIZERS
+              .map(f => ({
+                ...f,
+                m:   predict(f.spending) - Object.values(f.spending).reduce((s,v)=>s+v,0),
+                out: predict(f.spending),
+              }))
+              .sort((a,b) => b.m - a.m)
+              .map((f,i) => {
+                const isCur  = f.id === fert.id;
+                const mDelta = f.m - baselineMargin;
+                return (
+                  <div key={f.id}
+                    onClick={()=>setApplied(f.id)}
+                    style={{
+                      display:"flex", alignItems:"center", gap:14, padding:"11px 18px",
+                      cursor:"pointer",
+                      background:isCur?`${f.color}10`:"transparent",
+                      borderLeft:`3px solid ${isCur?f.color:"transparent"}`,
+                      transition:"background 0.15s",
+                    }}
+                    onMouseEnter={e=>{if(!isCur)e.currentTarget.style.background="#0a1020";}}
+                    onMouseLeave={e=>{if(!isCur)e.currentTarget.style.background="transparent";}}>
+                    <span style={{ color:"#334155", fontSize:10, width:18, fontFamily:"'DM Mono',monospace", fontWeight:700 }}>#{i+1}</span>
+                    <div style={{ width:6, height:6, borderRadius:2, background:f.color, flexShrink:0 }}/>
+                    <span style={{ color:isCur?"#f1f5f9":"#94a3b8", fontSize:12, fontWeight:isCur?700:400, flex:1 }}>{f.label}</span>
+                    <span style={{ color:"#334155", fontSize:10, fontFamily:"'DM Mono',monospace" }}>P₂O₅: {f.p2o5}%</span>
+                    <span style={{ color:mDelta>=0?"#10b981":"#f43f5e", fontSize:12, fontWeight:700, fontFamily:"'DM Mono',monospace", width:88, textAlign:"right" }}>
+                      {fmtK(mDelta)}
+                    </span>
+                  </div>
+                );
+              })}
+          </div>
+
+          {/* ── PROMINENT CTA ── */}
+          <div style={{ display:"flex", justifyContent:"center", paddingTop:4 }}>
+            <button
+              className="try-btn"
+              onClick={()=>{ setApplied(null); setScene("drop"); setShowCheck(false); }}
+              style={{
+                background:"transparent",
+                border:"1.5px solid #e2e8f0",
+                color:"#e2e8f0",
+                padding:"14px 44px",
+                borderRadius:8,
+                fontSize:13, fontWeight:700,
+                cursor:"pointer",
+                letterSpacing:"0.06em",
+                transition:"all 0.2s",
+              }}>
+              ← Try a different treatment
+            </button>
           </div>
         </div>
       )}
