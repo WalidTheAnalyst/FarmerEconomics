@@ -1701,18 +1701,27 @@ function MathieuIntroPage({ region, onEnterFarm }) {
   );
 }
 
-// ─── MATHIEU FARM — P-doctrine fertilizer simulator ──────────────────────────
+// ─── MATHIEU FARM — multi-step strategy builder ──────────────────────────────
 function MathieuFarmPage({ region }) {
-  const [dragOver,   setDragOver]  = useState(false);
-  const [applied,    setApplied]   = useState(null);
-  const [animating,  setAnimating] = useState(false);
-  const [scene,      setScene]     = useState("drop");
-  const [farmType,   setFarmType]  = useState("(1) Fieldcrops");
-  const [simRegion,  setSimRegion] = useState("(131) Champagne-Ardenne");
-  const [simYear,    setSimYear]   = useState(2020);
-  const [dragging,   setDragging]  = useState(null);
-  const [expandFE,   setExpandFE]  = useState(false);
-  const [showCheck,  setShowCheck] = useState(false);
+  // ── Global state ─────────────────────────────────────────────────────────────
+  const [step,       setStep]       = useState(1); // 1=fertilizer 2=nitrogen 3=secondary 4=micro 5=results
+  const [dragOver,   setDragOver]   = useState(false);
+  const [dragging,   setDragging]   = useState(null);
+  const [animating,  setAnimating]  = useState(false);
+  const [showCheck,  setShowCheck]  = useState(false);
+  const [farmType,   setFarmType]   = useState("(1) Fieldcrops");
+  const [simRegion,  setSimRegion]  = useState("(131) Champagne-Ardenne");
+  const [simYear,    setSimYear]    = useState(2020);
+  const [expandFE,   setExpandFE]   = useState(false);
+  const [ceoView,    setCeoView]    = useState(true);
+  const [showModel,  setShowModel]  = useState(false);
+
+  // Strategy selections
+  const [baseFert,   setBaseFert]   = useState(null);
+  const [nTiming,    setNTiming]    = useState([]);
+  const [nQty,       setNQty]       = useState(80);   // kg/ha
+  const [secondary,  setSecondary]  = useState([]);
+  const [micro,      setMicro]      = useState("none"); // none | basic | targeted
 
   if (region !== "France") return (
     <div style={{ display:"flex", alignItems:"center", justifyContent:"center", minHeight:400 }}>
@@ -1720,248 +1729,223 @@ function MathieuFarmPage({ region }) {
     </div>
   );
 
-  // ── Fertilizer catalogue ──────────────────────────────────────────────────────
+  // ── Product catalogue ─────────────────────────────────────────────────────────
   const FERTILIZERS = [
-    {
-      id:"TSP",   label:"TSP",         full:"Triple Super Phosphate",
-      p2o5:46, n:0,  k:0,  color:"#10b981", badge:"OCP Preferred", badgeColor:"#10b981",
-      timing:"Applied at planting. Zero N interference — pure P placement.",
-      agronomicNote:"Pre-sowing TSP maximises early root P uptake without locking timing to N schedules.",
-      spending:{ fertilisers:357, wages:130, depreciation:239, intermediate:257 },
-    },
-    {
-      id:"MAP",   label:"MAP",         full:"Mono-Ammonium Phosphate",
-      p2o5:48, n:11, k:0,  color:"#0ea5e9", badge:"High P",        badgeColor:"#0ea5e9",
-      timing:"Applied at planting. Starter N included — modest early boost.",
-      agronomicNote:"MAP's 11% N is useful as a starter but restricts P timing flexibility relative to TSP.",
-      spending:{ fertilisers:390, wages:130, depreciation:239, intermediate:257 },
-    },
-    {
-      id:"NPS",   label:"NPS",         full:"Nitrogen Phosphorus Sulphur",
-      p2o5:20, n:24, k:0,  color:"#a78bfa", badge:"With Sulphur",  badgeColor:"#a78bfa",
-      timing:"Applied at sowing. High N drives early canopy — lower P contribution.",
-      agronomicNote:"High sulphur is beneficial on acidic soils but the low P2O5 concentration requires higher doses to match TSP's phosphorus delivery.",
-      spending:{ fertilisers:340, wages:130, depreciation:239, intermediate:257 },
-    },
-    {
-      id:"DAP",   label:"DAP",         full:"Di-Ammonium Phosphate",
-      p2o5:46, n:18, k:0,  color:"#f59e0b", badge:"High N+P",      badgeColor:"#f59e0b",
-      timing:"Applied at planting. High N may delay P uptake at germination.",
-      agronomicNote:"DAP's high N (18%) can temporarily reduce P solubility at the seed zone — a known interaction that limits its efficiency relative to TSP.",
-      spending:{ fertilisers:410, wages:130, depreciation:239, intermediate:257 },
-    },
-    {
-      id:"NPK1",  label:"NPK 15-15-15", full:"Balanced NPK",
-      p2o5:15, n:15, k:15, color:"#f43f5e", badge:"Blended",        badgeColor:"#f43f5e",
-      timing:"Applied at sowing. Balanced but diluted P concentration.",
-      agronomicNote:"Equal N/P/K distribution means more product is needed per hectare to reach the same P dose as TSP — raising both cost and logistics.",
-      spending:{ fertilisers:370, wages:135, depreciation:239, intermediate:265 },
-    },
-    {
-      id:"NPK2",  label:"NPK 10-10-10", full:"Low-grade NPK",
-      p2o5:10, n:10, k:10, color:"#64748b", badge:"Economy",        badgeColor:"#64748b",
-      timing:"Applied at sowing. Lowest P concentration — highest volume required.",
-      agronomicNote:"Economy blends sacrifice P efficiency for upfront cost. The volume needed to match TSP's agronomic impact typically eliminates the price advantage.",
-      spending:{ fertilisers:310, wages:135, depreciation:239, intermediate:270 },
-    },
-    {
-      id:"NPK3",  label:"NPK 10-52-10", full:"High-P NPK",
-      p2o5:52, n:10, k:10, color:"#818cf8", badge:"High P Blend",   badgeColor:"#818cf8",
-      timing:"Applied at planting. Best P content in blend category — K adds cost.",
-      agronomicNote:"Highest P in a blend format. K is useful for root crops but adds cost without agronomic benefit for cereals — making TSP more efficient on wheat.",
-      spending:{ fertilisers:430, wages:135, depreciation:239, intermediate:262 },
-    },
+    { id:"TSP",  label:"TSP",          full:"Triple Super Phosphate",    p2o5:46, n:0,  k:0,  color:"#10b981", badge:"OCP Preferred", badgeColor:"#10b981",
+      needsN:true, timing:"Pre-sowing. Zero N — pure P placement.",
+      agronomicNote:"TSP delivers concentrated phosphorus at planting without N interference. Nitrogen must be applied separately in staged doses.",
+      costPerKg:0.78, spending:{ fertilisers:357, wages:130, depreciation:239, intermediate:257 } },
+    { id:"MAP",  label:"MAP",          full:"Mono-Ammonium Phosphate",   p2o5:48, n:11, k:0,  color:"#0ea5e9", badge:"High P",        badgeColor:"#0ea5e9",
+      needsN:true, timing:"At planting. Starter N included.",
+      agronomicNote:"MAP's 11% N gives a starter boost but requires top-up N application at early growth. More P-efficient than DAP for cereals.",
+      costPerKg:0.90, spending:{ fertilisers:390, wages:130, depreciation:239, intermediate:257 } },
+    { id:"NPS",  label:"NPS",          full:"Nitrogen Phosphorus Sulphur", p2o5:20, n:24, k:0, color:"#a78bfa", badge:"With Sulphur", badgeColor:"#a78bfa",
+      needsN:true, timing:"At sowing. High N; lower P contribution.",
+      agronomicNote:"Beneficial on sulphur-deficient soils. Low P2O5 concentration requires higher application volumes.",
+      costPerKg:0.72, spending:{ fertilisers:340, wages:130, depreciation:239, intermediate:257 } },
+    { id:"DAP",  label:"DAP",          full:"Di-Ammonium Phosphate",     p2o5:46, n:18, k:0,  color:"#f59e0b", badge:"High N+P",     badgeColor:"#f59e0b",
+      needsN:true, timing:"At planting. High N may slow early P uptake.",
+      agronomicNote:"High N can temporarily reduce phosphorus solubility at the seed zone — a documented agronomic trade-off.",
+      costPerKg:0.95, spending:{ fertilisers:410, wages:130, depreciation:239, intermediate:257 } },
+    { id:"NPK1", label:"NPK 15-15-15", full:"Balanced NPK",             p2o5:15, n:15, k:15, color:"#f43f5e", badge:"Blended",       badgeColor:"#f43f5e",
+      needsN:false, timing:"At sowing. Balanced but diluted P.",
+      agronomicNote:"Equal nutrient distribution means more tonnes per hectare are needed to match TSP's P delivery — raising cost and logistics.",
+      costPerKg:0.62, spending:{ fertilisers:370, wages:135, depreciation:239, intermediate:265 } },
+    { id:"NPK2", label:"NPK 10-10-10", full:"Low-grade NPK",            p2o5:10, n:10, k:10, color:"#64748b", badge:"Economy",       badgeColor:"#64748b",
+      needsN:false, timing:"At sowing. Highest volume required.",
+      agronomicNote:"Economy blends require the highest application volumes. The cost of transport and spreading often exceeds the fertilizer price saving.",
+      costPerKg:0.48, spending:{ fertilisers:310, wages:135, depreciation:239, intermediate:270 } },
+    { id:"NPK3", label:"NPK 10-52-10", full:"High-P NPK",               p2o5:52, n:10, k:10, color:"#818cf8", badge:"High P Blend",  badgeColor:"#818cf8",
+      needsN:true, timing:"At planting. Best P in blend format.",
+      agronomicNote:"Highest P in a blended format. K adds cost without agronomic benefit on cereal soils — making pure TSP more cost-efficient per unit of P.",
+      costPerKg:1.02, spending:{ fertilisers:430, wages:135, depreciation:239, intermediate:262 } },
   ];
 
-  // ── Model ─────────────────────────────────────────────────────────────────────
+  const N_TIMINGS = [
+    { id:"planting",    label:"At planting",              note:"Quick baseline N" },
+    { id:"germination", label:"Germination / early growth",note:"Critical for tillering" },
+    { id:"vegetative",  label:"Vegetative stage",          note:"Drives biomass" },
+    { id:"flowering",   label:"Pre-flowering",             note:"Quality N — protein" },
+  ];
+  const SECONDARY = [
+    { id:"Ca", label:"Calcium (Ca)",  color:"#f1f5f9", note:"Soil structure, root growth" },
+    { id:"Mg", label:"Magnesium (Mg)",color:"#86efac", note:"Chlorophyll, photosynthesis" },
+    { id:"S",  label:"Sulphur (S)",   color:"#fde68a", note:"Protein synthesis, N efficiency" },
+  ];
+
+  const fert = baseFert ? FERTILIZERS.find(f=>f.id===baseFert) : null;
+
+  // ── Cost modelling ─────────────────────────────────────────────────────────────
+  const nTimingCost  = nTiming.length * 12;      // €/ha per N pass (labour + spreading)
+  const secondaryCost= secondary.length * 18;    // €/ha for secondary nutrients
+  const microCostMap = { none:0, basic:22, targeted:45 };
+  const microCost    = microCostMap[micro] || 0;
+  const extraPasses  = (fert?.needsN && nTiming.length > 0) ? nTiming.length * 8 : 0; // labour for extra passes
+
+  const totalExtraCost = nTimingCost + secondaryCost + microCost + extraPasses;
+
+  // ── Model prediction ──────────────────────────────────────────────────────────
   const predict = (sp) => Math.exp(
     MODEL1.intercept
-    + MODEL1.elasticities.fertilisers.coef  * Math.log(Math.max(sp.fertilisers,  1))
-    + MODEL1.elasticities.wages.coef         * Math.log(Math.max(sp.wages,         1))
-    + MODEL1.elasticities.depreciation.coef  * Math.log(Math.max(sp.depreciation, 1))
-    + MODEL1.elasticities.intermediate.coef  * Math.log(Math.max(sp.intermediate, 1))
-    + (MODEL1.regions[simRegion]  || 0)
+    + MODEL1.elasticities.fertilisers.coef  * Math.log(Math.max(sp.fertilisers, 1))
+    + MODEL1.elasticities.wages.coef         * Math.log(Math.max(sp.wages,        1))
+    + MODEL1.elasticities.depreciation.coef  * Math.log(Math.max(sp.depreciation,1))
+    + MODEL1.elasticities.intermediate.coef  * Math.log(Math.max(sp.intermediate,1))
+    + (MODEL1.regions[simRegion]   || 0)
     + (MODEL1.farmingTypes[farmType] || 0)
-    + (MODEL1.years[simYear]     || 0)
+    + (MODEL1.years[simYear]       || 0)
   );
 
-  const BASELINE_SP    = { fertilisers:357, wages:130, depreciation:239, intermediate:257 };
-  const baselineOutput = predict(BASELINE_SP);
-  const baselineCost   = Object.values(BASELINE_SP).reduce((s,v)=>s+v,0);
-  const baselineMargin = baselineOutput - baselineCost;
+  const BASE_SP         = { fertilisers:357, wages:130, depreciation:239, intermediate:257 };
+  const baseOutput      = predict(BASE_SP);
+  const baseCost        = Object.values(BASE_SP).reduce((s,v)=>s+v,0);
+  const baseMargin      = baseOutput - baseCost;
 
-  const fert        = applied ? FERTILIZERS.find(f=>f.id===applied) : null;
-  const currentSP   = fert ? fert.spending : BASELINE_SP;
-  const currentOut  = predict(currentSP);
-  const currentCost = Object.values(currentSP).reduce((s,v)=>s+v,0);
-  const currentMarg = currentOut - currentCost;
+  const stratSP         = fert ? { ...fert.spending } : BASE_SP;
+  const stratOutput     = predict(stratSP);
+  const stratCost       = Object.values(stratSP).reduce((s,v)=>s+v,0) + totalExtraCost;
+  const stratMargin     = stratOutput - stratCost;
 
-  const outDelta  = currentOut  - baselineOutput;
-  const costDelta = currentCost - baselineCost;
-  const margDelta = currentMarg - baselineMargin;
-  const outPct    = baselineOutput > 0 ? (outDelta  / baselineOutput  * 100) : 0;
-  const margPct   = baselineMargin !== 0 ? (margDelta / Math.abs(baselineMargin) * 100) : 0;
+  const outDelta        = stratOutput - baseOutput;
+  const costDelta       = stratCost   - baseCost;
+  const marginDelta     = stratMargin  - baseMargin;
+  const marginDeltaPct  = baseMargin !== 0 ? (marginDelta / Math.abs(baseMargin) * 100) : 0;
 
-  const fmtK  = n => n >= 0 ? `+€${Math.round(n).toLocaleString()}` : `-€${Math.round(Math.abs(n)).toLocaleString()}`;
-  const fmtPct= n => `${n >= 0 ? "+" : ""}${n.toFixed(1)}%`;
+  // Waterfall items
+  const waterfallItems = fert ? [
+    { label:"Baseline revenue",        value: baseOutput,            type:"base",    color:"#1e3a5f" },
+    { label:"Yield from P treatment",  value: Math.max(0, outDelta), type:"gain",    color:"#10b981" },
+    { label:"Primary fertilizer",      value:-Object.values(fert.spending).reduce((s,v)=>s+v,0), type:"cost", color:"#f43f5e" },
+    { label:"N applications",          value:-(nTimingCost+extraPasses), type:"cost", color:"#f59e0b" },
+    { label:"Secondary nutrients",     value:-secondaryCost,         type:"cost",    color:"#a78bfa" },
+    { label:"Micronutrients",          value:-microCost,             type:"cost",    color:"#818cf8" },
+    { label:"Net revenue",             value: stratOutput,           type:"result",  color:"#0ea5e9" },
+  ] : [];
 
   const REGION_KEYS   = Object.keys(MODEL1.regions);
   const YEAR_KEYS     = Object.keys(MODEL1.years).map(Number).sort((a,b)=>b-a);
   const FARMTYPE_KEYS = Object.keys(MODEL1.farmingTypes);
 
-  // Drag handlers
+  const fmtK  = n => n >= 0 ? `+€${Math.round(n).toLocaleString()}` : `-€${Math.round(Math.abs(n)).toLocaleString()}`;
+  const fmtAbs= n => `€${Math.round(Math.abs(n)).toLocaleString()}`;
+  const fmtPct= n => `${n >= 0 ? "+" : ""}${n.toFixed(1)}%`;
+
+  const resetAll = () => {
+    setStep(1); setBaseFert(null); setNTiming([]); setNQty(80);
+    setSecondary([]); setMicro("none"); setShowCheck(false);
+    setAnimating(false); setDragOver(false); setDragging(null);
+  };
+
+  const toggleN = (id) => setNTiming(prev => prev.includes(id) ? prev.filter(x=>x!==id) : [...prev, id]);
+  const toggleS = (id) => setSecondary(prev => prev.includes(id) ? prev.filter(x=>x!==id) : [...prev, id]);
+
+  // ── Drag handlers ─────────────────────────────────────────────────────────────
   const onDragStart = (id) => setDragging(id);
   const onDragOver  = (e)  => { e.preventDefault(); setDragOver(true); };
   const onDragLeave = ()   => setDragOver(false);
   const onDrop      = (e)  => {
-    e.preventDefault();
-    setDragOver(false);
+    e.preventDefault(); setDragOver(false);
     if (!dragging) return;
     setAnimating(true);
     setTimeout(() => {
       setShowCheck(true);
-      setTimeout(() => {
-        setApplied(dragging);
-        setAnimating(false);
-        setScene("result");
-      }, 800);
-    }, 400);
+      setTimeout(() => { setBaseFert(dragging); setAnimating(false); setStep(2); }, 700);
+    }, 350);
     setDragging(null);
   };
 
-  // ── MODEL SCENE ───────────────────────────────────────────────────────────────
-  if (scene === "model") return (
-    <div style={{ fontFamily:"'DM Sans',sans-serif", display:"flex", flexDirection:"column", gap:20 }}>
-      <div style={{ display:"flex", alignItems:"center", gap:14, paddingBottom:16, borderBottom:"1px solid #1a2436" }}>
-        <button onClick={()=>setScene(applied?"result":"drop")}
-          style={{ background:"transparent", border:"none", color:"#64748b", cursor:"pointer", fontSize:12, display:"flex", alignItems:"center", gap:6, padding:0 }}>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-          Back
-        </button>
-        <div style={{ width:1, height:14, background:"#1a2436" }}/>
-        <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:600, margin:0 }}>Log-Log Production Model · FADN France · 909 farms</p>
-      </div>
-      <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:14, padding:"20px 24px" }}>
-        <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, marginBottom:10 }}>What the model does</p>
-        <p style={{ color:"#cbd5e1", fontSize:13, lineHeight:1.85, marginBottom:16 }}>
-          Every result in this simulator comes from a single equation estimated on 909 real French farms. Both output and inputs are in logarithms, so each coefficient is an elasticity: a 1% increase in spending raises output by that exact percentage, at any farm size.
-        </p>
-        <div style={{ background:"#060d1a", borderRadius:8, padding:"12px 16px", fontFamily:"'DM Mono',monospace", color:"#94a3b8", fontSize:11, lineHeight:1.8 }}>
-          log(output/ha) = α + β₁·log(fertilizers) + β₂·log(labour) + β₃·log(machinery) + β₄·log(seeds) + region FE + farmtype FE + year FE
-        </div>
-      </div>
-      <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:14, overflow:"hidden" }}>
-        <div style={{ padding:"14px 20px", borderBottom:"1px solid #1a2436", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-          <p style={{ color:"#f1f5f9", fontSize:13, fontWeight:700, margin:0 }}>Input elasticities</p>
-          <div style={{ display:"flex", gap:6 }}>
-            <span style={{ background:"#10b98120", color:"#10b981", fontSize:9, fontWeight:700, padding:"3px 8px", borderRadius:10 }}>R² = {MODEL1.rSquared}</span>
-            <span style={{ background:"#0ea5e920", color:"#0ea5e9", fontSize:9, fontWeight:700, padding:"3px 8px", borderRadius:10 }}>n = 909</span>
-          </div>
-        </div>
-        {[
-          {k:"fertilisers",  label:"Fertilizers",            color:"#0ea5e9"},
-          {k:"wages",        label:"Labour",                  color:"#10b981"},
-          {k:"depreciation", label:"Machinery",               color:"#f59e0b"},
-          {k:"intermediate", label:"Seeds & crop protection", color:"#a78bfa"},
-        ].map(({k,label,color}) => {
-          const e = MODEL1.elasticities[k];
-          return (
-            <div key={k} style={{ padding:"13px 20px", borderBottom:"1px solid #0d1520", display:"flex", gap:14, alignItems:"flex-start" }}>
-              <div style={{ background:`${color}15`, border:`1px solid ${color}30`, borderRadius:6, padding:"4px 10px", flexShrink:0, minWidth:68, textAlign:"center" }}>
-                <span style={{ color, fontSize:13, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>+{(e.coef*100).toFixed(2)}%</span>
-              </div>
-              <p style={{ color:"#cbd5e1", fontSize:12, lineHeight:1.75, margin:0 }}>
-                <strong style={{ color:"#f1f5f9" }}>{label}</strong> — a 1% increase in spending raises output by <span style={{ color, fontWeight:700 }}>{(e.coef*100).toFixed(2)}%</span>.
-                {k==="intermediate" && <span style={{ color:"#a78bfa" }}> Dominant lever — 10× stronger than fertilizer alone.</span>}
-                {k==="depreciation" && <span style={{ color:"#f59e0b" }}> Raises output, but the income model shows negative returns at the margin.</span>}
-              </p>
-            </div>
-          );
-        })}
-      </div>
-      <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:12, padding:"14px 20px" }}>
-        <button onClick={()=>setExpandFE(e=>!e)}
-          style={{ background:"transparent", border:"1px solid #1a2436", color:"#64748b", borderRadius:6, padding:"6px 14px", fontSize:11, cursor:"pointer", marginBottom:expandFE?14:0 }}>
-          {expandFE?"Hide":"Show"} all fixed effect values
-        </button>
-        {expandFE && (
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:14 }}>
-            {[
-              {title:"Region effects (vs Île-de-France)", items:Object.entries(MODEL1.regions)},
-              {title:"Farm type effects (vs Fieldcrops)",  items:Object.entries(MODEL1.farmingTypes)},
-              {title:"Year effects (vs 2014)",             items:Object.entries(MODEL1.years)},
-            ].map(({title,items}) => (
-              <div key={title}>
-                <p style={{ color:"#475569", fontSize:9, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>{title}</p>
-                {items.map(([k,v]) => (
-                  <div key={k} style={{ display:"flex", justifyContent:"space-between", marginBottom:4 }}>
-                    <span style={{ color:"#475569", fontSize:10 }}>{String(k).replace(/^\(\d+\)\s*/,"")}</span>
-                    <span style={{ color:v>=0?"#10b981":"#f43f5e", fontSize:10, fontFamily:"'DM Mono',monospace" }}>{v>=0?"+":""}{(v*100).toFixed(1)}%</span>
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-
-  // ── DROP + RESULT SCENES ──────────────────────────────────────────────────────
-  const isResult = scene === "result";
-  const isDrop   = scene === "drop";
+  // ── Shared styles ─────────────────────────────────────────────────────────────
+  const S = {
+    card:  { background:"#080e18", border:"1px solid #1a2436", borderRadius:14, padding:"18px 20px" },
+    label: { color:"#94a3b8", fontSize:9, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:600 },
+    h2:    { color:"#f1f5f9", fontSize:17, fontWeight:700, letterSpacing:"-0.02em", margin:0 },
+  };
 
   return (
     <div style={{ fontFamily:"'DM Sans',sans-serif", display:"flex", flexDirection:"column", gap:0 }}>
       <style>{`
-        @keyframes fadeUp    { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes scaleIn   { from{opacity:0;transform:scale(0.85)} to{opacity:1;transform:scale(1)} }
-        @keyframes checkPop  { 0%{transform:scale(0);opacity:0} 60%{transform:scale(1.25);opacity:1} 100%{transform:scale(1);opacity:1} }
-        @keyframes ringPulse { 0%{box-shadow:0 0 0 0 #10b98150} 70%{box-shadow:0 0 0 18px #10b98100} 100%{box-shadow:0 0 0 0 #10b98100} }
-        @keyframes barGrow   { from{width:0} to{width:var(--w)} }
-        @keyframes countUp   { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes glow      { 0%,100%{box-shadow:0 0 20px #10b98130} 50%{box-shadow:0 0 40px #10b98170} }
-        @keyframes splash    { 0%{opacity:0;transform:scale(0.7)} 60%{opacity:1;transform:scale(1.06)} 100%{opacity:1;transform:scale(1)} }
+        @keyframes fadeUp   { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes scaleIn  { from{opacity:0;transform:scale(0.88)} to{opacity:1;transform:scale(1)} }
+        @keyframes checkPop { 0%{transform:scale(0);opacity:0} 60%{transform:scale(1.3)} 100%{transform:scale(1);opacity:1} }
+        @keyframes ringOut  { 0%{box-shadow:0 0 0 0 #10b98150} 70%{box-shadow:0 0 0 16px #10b98100} 100%{box-shadow:0 0 0 0 #10b98100} }
+        @keyframes barGrow  { from{width:0} to{width:var(--w)} }
+        @keyframes glow     { 0%,100%{box-shadow:0 0 18px #10b98130} 50%{box-shadow:0 0 36px #10b98170} }
+        @keyframes spin     { to{transform:rotate(360deg)} }
         .fert-card { transition:all 0.18s ease; cursor:grab; user-select:none; }
         .fert-card:hover { transform:translateY(-5px) scale(1.03); }
-        .fert-card:active { cursor:grabbing; transform:scale(0.96); }
-        .drop-tgt { transition:all 0.2s ease; }
-        .try-btn:hover { background:#f1f5f9 !important; color:#04080f !important; transform:translateY(-2px) !important; }
+        .fert-card:active { cursor:grabbing; }
+        .step-btn { transition:all 0.18s; }
+        .step-btn:hover { border-color:#0ea5e9 !important; color:#f1f5f9 !important; }
+        .next-btn { transition:all 0.18s; }
+        .next-btn:hover { background:#38bdf8 !important; transform:translateY(-1px); }
+        .try-btn:hover { background:#f1f5f9 !important; color:#04080f !important; transform:translateY(-2px); }
+        details summary { list-style:none; }
+        details summary::-webkit-details-marker { display:none; }
       `}</style>
 
-      {/* ── CONTEXT BAR ── */}
-      <div style={{ display:"flex", alignItems:"center", gap:14, paddingBottom:16, borderBottom:"1px solid #1a2436", marginBottom:20, flexWrap:"wrap" }}>
+      {/* ── PROGRESS BAR ── */}
+      <div style={{ display:"flex", alignItems:"center", gap:0, marginBottom:22, paddingBottom:18, borderBottom:"1px solid #1a2436" }}>
         <div style={{ flex:1 }}>
-          <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.16em", fontWeight:700, margin:0, marginBottom:3 }}>P Separation Simulator · France</p>
-          <h2 style={{ color:"#f1f5f9", fontSize:17, fontWeight:700, letterSpacing:"-0.02em", margin:0 }}>
-            {isDrop ? "Choose Mathieu's fertilizer treatment this season." : `Mathieu applied ${fert?.label}.`}
-          </h2>
+          <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.16em", fontWeight:700, margin:0, marginBottom:4 }}>P Separation Simulator · France</p>
+          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+            {[
+              { n:1, label:"Fertilizer" },
+              { n:2, label:"Nitrogen" },
+              { n:3, label:"Secondary" },
+              { n:4, label:"Micronutrients" },
+              { n:5, label:"Results" },
+            ].map((s,i,arr) => {
+              const done    = step > s.n;
+              const active  = step === s.n;
+              const color   = done||active ? "#0ea5e9" : "#1a2436";
+              return (
+                <div key={s.n} style={{ display:"flex", alignItems:"center", gap:8 }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:7 }}>
+                    <div style={{
+                      width:22, height:22, borderRadius:"50%",
+                      background: done ? "#0ea5e9" : active ? "#0ea5e920" : "#0a1020",
+                      border:`1.5px solid ${color}`,
+                      display:"flex", alignItems:"center", justifyContent:"center",
+                      flexShrink:0,
+                    }}>
+                      {done
+                        ? <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        : <span style={{ color: active?"#0ea5e9":"#334155", fontSize:10, fontWeight:700 }}>{s.n}</span>
+                      }
+                    </div>
+                    <span style={{ color: active?"#f1f5f9":done?"#0ea5e9":"#334155", fontSize:11, fontWeight:active?700:400, whiteSpace:"nowrap" }}>{s.label}</span>
+                  </div>
+                  {i < arr.length-1 && (
+                    <div style={{ width:28, height:1, background: done?"#0ea5e940":"#1a2436" }}/>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
-        <div style={{ display:"flex", gap:8, alignItems:"center" }}>
-          {isResult && (
-            <button
-              className="try-btn"
-              onClick={()=>{ setApplied(null); setScene("drop"); setShowCheck(false); }}
-              style={{ background:"transparent", border:"1.5px solid #e2e8f0", color:"#e2e8f0", borderRadius:8, padding:"10px 22px", fontSize:12, fontWeight:700, cursor:"pointer", letterSpacing:"0.04em", transition:"all 0.2s" }}>
-              ← Try another treatment
+        <div style={{ display:"flex", gap:8 }}>
+          {step > 1 && step < 5 && (
+            <button onClick={()=>setStep(s=>s-1)}
+              style={{ background:"transparent", border:"1px solid #1a2436", color:"#64748b", borderRadius:8, padding:"8px 16px", fontSize:11, cursor:"pointer" }}>
+              ← Back
             </button>
           )}
-          <button onClick={()=>setScene("model")}
-            style={{ background:"transparent", border:"1px solid #1a2436", color:"#475569", borderRadius:8, padding:"10px 18px", fontSize:11, cursor:"pointer" }}>
+          <button onClick={()=>setShowModel(m=>!m)}
+            style={{ background:"transparent", border:"1px solid #1a2436", color:"#475569", borderRadius:8, padding:"8px 16px", fontSize:11, cursor:"pointer" }}>
             Model details
           </button>
         </div>
       </div>
 
-      {/* ── CONTEXT SELECTORS ── */}
-      <div style={{ display:"flex", gap:14, marginBottom:22, flexWrap:"wrap", alignItems:"flex-end" }}>
+      {/* ── CONTEXT SELECTORS (always visible) ── */}
+      <div style={{ display:"flex", gap:14, marginBottom:20, flexWrap:"wrap", alignItems:"flex-end" }}>
         {[
-          {label:"Region",     value:simRegion, onChange:setSimRegion, opts:REGION_KEYS,   fmt:v=>v.replace(/^\(\d+\)\s*/,"")},
-          {label:"Farm type",  value:farmType,  onChange:setFarmType,  opts:FARMTYPE_KEYS, fmt:v=>v.replace(/^\(\d+\)\s*/,"")},
-          {label:"Season",     value:simYear,   onChange:v=>setSimYear(Number(v)), opts:YEAR_KEYS, fmt:v=>String(v)},
+          {label:"Region",    value:simRegion, onChange:setSimRegion, opts:REGION_KEYS,   fmt:v=>v.replace(/^\(\d+\)\s*/,"")},
+          {label:"Farm type", value:farmType,  onChange:setFarmType,  opts:FARMTYPE_KEYS, fmt:v=>v.replace(/^\(\d+\)\s*/,"")},
+          {label:"Season",    value:simYear,   onChange:v=>setSimYear(Number(v)), opts:YEAR_KEYS, fmt:v=>String(v)},
         ].map(({label,value,onChange,opts,fmt}) => (
           <div key={label} style={{ display:"flex", flexDirection:"column", gap:5 }}>
-            <p style={{ color:"#475569", fontSize:9, textTransform:"uppercase", letterSpacing:"0.12em", margin:0, fontWeight:600 }}>{label}</p>
+            <p style={{ ...S.label, margin:0 }}>{label}</p>
             <select value={value} onChange={e=>onChange(e.target.value)}
               style={{ background:"#080e18", border:"1px solid #1a2436", color:"#cbd5e1", borderRadius:8, padding:"8px 12px", fontSize:12, cursor:"pointer", outline:"none", maxWidth:"none" }}>
               {opts.map(o => <option key={o} value={o}>{fmt(o)}</option>)}
@@ -1969,26 +1953,25 @@ function MathieuFarmPage({ region }) {
           </div>
         ))}
         <div style={{ marginLeft:"auto", padding:"8px 16px", background:"#060d1a", border:"1px solid #1a2436", borderRadius:8 }}>
-          <p style={{ color:"#475569", fontSize:9, textTransform:"uppercase", letterSpacing:"0.1em", margin:0, marginBottom:3 }}>Baseline output</p>
-          <p style={{ color:"#cbd5e1", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace", margin:0 }}>€{Math.round(baselineOutput).toLocaleString()}/ha</p>
+          <p style={{ ...S.label, margin:0, marginBottom:3 }}>Baseline output</p>
+          <p style={{ color:"#cbd5e1", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace", margin:0 }}>{fmtAbs(baseOutput)}/ha</p>
         </div>
       </div>
 
-      {/* ── DROP SCENE ── */}
-      {isDrop && (
-        <div style={{ display:"flex", flexDirection:"column", gap:18, animation:"fadeUp 0.4s ease" }}>
-
-          {/* Instruction */}
-          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-            <div style={{ width:7, height:7, borderRadius:"50%", background:"#0ea5e9", flexShrink:0 }}/>
-            <p style={{ color:"#94a3b8", fontSize:13, margin:0 }}>Drag a treatment onto Mathieu's field to see the economic impact.</p>
+      {/* ══════════════════════════════════════════════════════════════════════════
+          STEP 1 — FERTILIZER SELECTION
+      ══════════════════════════════════════════════════════════════════════════ */}
+      {step === 1 && (
+        <div style={{ display:"flex", flexDirection:"column", gap:16, animation:"fadeUp 0.35s ease" }}>
+          <div>
+            <h2 style={{ ...S.h2, marginBottom:4 }}>Choose the base fertilizer treatment.</h2>
+            <p style={{ color:"#64748b", fontSize:12, margin:0 }}>Drag a product onto Mathieu's field. The remaining steps will complete the strategy.</p>
           </div>
 
-          {/* Fertilizer cards */}
+          {/* Cards */}
           <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:10 }}>
             {FERTILIZERS.map((f,i) => (
-              <div key={f.id} className="fert-card"
-                draggable
+              <div key={f.id} className="fert-card" draggable
                 onDragStart={()=>onDragStart(f.id)}
                 onDragEnd={()=>setDragging(null)}
                 style={{
@@ -1996,10 +1979,9 @@ function MathieuFarmPage({ region }) {
                   border:`1.5px solid ${dragging===f.id ? f.color : f.color+"28"}`,
                   borderRadius:14, padding:"14px 10px", textAlign:"center",
                   animation:`fadeUp 0.4s ${i*0.05}s ease both`,
-                  opacity: dragging && dragging!==f.id ? 0.38 : 1,
+                  opacity: dragging && dragging!==f.id ? 0.36 : 1,
                   boxShadow: dragging===f.id ? `0 12px 32px ${f.color}30` : "none",
                 }}>
-                {/* P2O5 ring */}
                 <div style={{ position:"relative", width:46, height:46, margin:"0 auto 10px" }}>
                   <svg width="46" height="46" viewBox="0 0 46 46">
                     <circle cx="23" cy="23" r="19" fill="none" stroke="#1a2436" strokeWidth="3"/>
@@ -2011,72 +1993,50 @@ function MathieuFarmPage({ region }) {
                     <span style={{ color:f.color, fontSize:11, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>{f.p2o5}</span>
                   </div>
                 </div>
-                <p style={{ color:f.color, fontSize:11, fontWeight:800, margin:"0 0 2px" }}>{f.label}</p>
+                <p style={{ color:f.color, fontSize:11, fontWeight:800, margin:"0 0 3px" }}>{f.label}</p>
                 {f.badge && (
                   <span style={{ background:f.badgeColor+"15", color:f.badgeColor, fontSize:8, fontWeight:700, padding:"2px 6px", borderRadius:6, border:`1px solid ${f.badgeColor}25` }}>
                     {f.badge}
                   </span>
                 )}
-                <p style={{ color:"#475569", fontSize:9, margin:"5px 0 0", fontFamily:"'DM Mono',monospace" }}>P₂O₅: {f.p2o5}%</p>
+                {f.needsN && (
+                  <p style={{ color:"#475569", fontSize:8, margin:"5px 0 0" }}>+ N required</p>
+                )}
+                <p style={{ color:"#334155", fontSize:9, margin:"4px 0 0", fontFamily:"'DM Mono',monospace" }}>P₂O₅ {f.p2o5}%</p>
               </div>
             ))}
           </div>
 
           {/* Drop zone */}
           <div
-            className="drop-tgt"
-            onDragOver={onDragOver}
-            onDragLeave={onDragLeave}
-            onDrop={onDrop}
+            onDragOver={onDragOver} onDragLeave={onDragLeave} onDrop={onDrop}
             style={{
               border:`2px dashed ${dragOver?"#10b981":"#1a2436"}`,
-              borderRadius:18,
-              background: dragOver ? "#041510" : "#04080f",
-              padding:"44px 24px",
-              textAlign:"center",
-              minHeight:155,
-              display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:12,
-              animation: dragOver ? "glow 1s infinite" : "none",
-              position:"relative", overflow:"hidden",
+              borderRadius:18, background: dragOver?"#041510":"#04080f",
+              padding:"42px 24px", textAlign:"center", minHeight:148,
+              display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:10,
+              animation: dragOver?"glow 1s infinite":"none", transition:"all 0.2s",
             }}>
             {animating ? (
-              <div style={{ animation:"splash 0.5s ease" }}>
+              <div style={{ animation:"scaleIn 0.4s ease" }}>
                 <div style={{
-                  width:64, height:64, borderRadius:"50%",
-                  background:"#10b98120", border:"2px solid #10b981",
-                  margin:"0 auto 14px",
-                  display:"flex", alignItems:"center", justifyContent:"center",
-                  animation: showCheck ? "ringPulse 0.8s ease" : "glow 0.8s infinite",
+                  width:60, height:60, borderRadius:"50%", background:"#10b98118", border:"2px solid #10b981",
+                  margin:"0 auto 12px", display:"flex", alignItems:"center", justifyContent:"center",
+                  animation: showCheck ? "ringOut 0.7s ease" : "none",
                 }}>
-                  {showCheck ? (
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"
-                      style={{ animation:"checkPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both" }}>
-                      <polyline points="20 6 9 17 4 12"/>
-                    </svg>
-                  ) : (
-                    <div style={{ width:20, height:20, borderRadius:"50%", border:"3px solid #10b981", borderTopColor:"transparent", animation:"spin 0.6s linear infinite" }}/>
-                  )}
+                  {showCheck
+                    ? <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" style={{ animation:"checkPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both" }}><polyline points="20 6 9 17 4 12"/></svg>
+                    : <div style={{ width:18, height:18, borderRadius:"50%", border:"3px solid #10b981", borderTopColor:"transparent", animation:"spin 0.6s linear infinite" }}/>
+                  }
                 </div>
-                <p style={{ color:"#10b981", fontSize:14, fontWeight:700 }}>
-                  {showCheck ? "Applied to field." : "Applying treatment..."}
-                </p>
+                <p style={{ color:"#10b981", fontSize:14, fontWeight:700, margin:0 }}>{showCheck?"Treatment applied.":"Applying..."}</p>
               </div>
             ) : (
               <>
-                <div style={{
-                  width:54, height:54, borderRadius:"50%",
-                  background: dragOver ? "#10b98118" : "#0a1020",
-                  border:`2px dashed ${dragOver?"#10b981":"#1e293b"}`,
-                  display:"flex", alignItems:"center", justifyContent:"center",
-                  transition:"all 0.2s",
-                }}>
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={dragOver?"#10b981":"#334155"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/>
-                  </svg>
+                <div style={{ width:52, height:52, borderRadius:"50%", background:dragOver?"#10b98118":"#0a1020", border:`2px dashed ${dragOver?"#10b981":"#1e293b"}`, display:"flex", alignItems:"center", justifyContent:"center", transition:"all 0.2s" }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={dragOver?"#10b981":"#334155"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg>
                 </div>
-                <p style={{ color: dragOver?"#10b981":"#475569", fontSize:14, fontWeight:600, margin:0, transition:"color 0.2s" }}>
-                  {dragOver ? "Release to apply" : "Drop treatment here"}
-                </p>
+                <p style={{ color:dragOver?"#10b981":"#475569", fontSize:14, fontWeight:600, margin:0, transition:"color 0.2s" }}>{dragOver?"Release to apply":"Drop treatment here"}</p>
                 <p style={{ color:"#1e3050", fontSize:11, margin:0 }}>Mathieu's field · 120 ha · {simRegion.replace(/^\(\d+\)\s*/,"")} · {simYear}</p>
               </>
             )}
@@ -2084,260 +2044,464 @@ function MathieuFarmPage({ region }) {
         </div>
       )}
 
-      {/* ── RESULT SCENE ── */}
-      {isResult && fert && (
-        <div style={{ display:"flex", flexDirection:"column", gap:18, animation:"fadeUp 0.45s ease" }}>
-
-          {/* Treatment header */}
-          <div style={{
-            display:"flex", alignItems:"center", gap:14,
-            padding:"14px 18px",
-            background:`linear-gradient(135deg,${fert.color}12,#080e18)`,
-            border:`1px solid ${fert.color}35`,
-            borderRadius:14,
-          }}>
-            {/* Check badge */}
-            <div style={{
-              width:40, height:40, borderRadius:"50%",
-              background:`${fert.color}20`, border:`2px solid ${fert.color}`,
-              display:"flex", alignItems:"center", justifyContent:"center",
-              flexShrink:0, animation:"checkPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both",
-            }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={fert.color} strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="20 6 9 17 4 12"/>
-              </svg>
+      {/* ══════════════════════════════════════════════════════════════════════════
+          STEP 2 — NITROGEN STRATEGY
+      ══════════════════════════════════════════════════════════════════════════ */}
+      {step === 2 && fert && (
+        <div style={{ display:"flex", flexDirection:"column", gap:18, animation:"fadeUp 0.35s ease" }}>
+          {/* Treatment badge */}
+          <div style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 16px", background:`${fert.color}10`, border:`1px solid ${fert.color}30`, borderRadius:12 }}>
+            <div style={{ width:36, height:36, borderRadius:"50%", background:`${fert.color}20`, border:`2px solid ${fert.color}`, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, animation:"checkPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both" }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={fert.color} strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
             <div style={{ flex:1 }}>
-              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:4 }}>
-                <p style={{ color:fert.color, fontSize:15, fontWeight:800, margin:0 }}>{fert.full}</p>
-                <span style={{ background:fert.badgeColor+"18", color:fert.badgeColor, fontSize:9, fontWeight:700, padding:"2px 8px", borderRadius:6, border:`1px solid ${fert.badgeColor}30` }}>
-                  P₂O₅: {fert.p2o5}%
-                </span>
-              </div>
-              <p style={{ color:"#94a3b8", fontSize:12, margin:0 }}>{fert.timing}</p>
+              <p style={{ color:fert.color, fontSize:14, fontWeight:800, margin:0 }}>{fert.full}</p>
+              <p style={{ color:"#64748b", fontSize:12, margin:0 }}>{fert.timing}</p>
             </div>
-            {/* Agronomic detail toggle */}
-            <details style={{ fontSize:11, color:"#475569", cursor:"pointer" }}>
-              <summary style={{ cursor:"pointer", color:"#475569", fontSize:11 }}>Why this matters</summary>
-              <p style={{ color:"#64748b", fontSize:11, lineHeight:1.7, margin:"8px 0 0", maxWidth:380 }}>{fert.agronomicNote}</p>
-            </details>
+            <span style={{ background:fert.badgeColor+"18", color:fert.badgeColor, fontSize:10, fontWeight:700, padding:"3px 10px", borderRadius:8, border:`1px solid ${fert.badgeColor}28` }}>P₂O₅ {fert.p2o5}%</span>
           </div>
 
-          {/* ── 3 BIG KPI CARDS ── */}
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:14 }}>
-            {[
-              {
-                label:"Output per hectare",
-                icon:"📈",
-                base:   Math.round(baselineOutput),
-                after:  Math.round(currentOut),
-                delta:  outDelta,
-                pct:    outPct,
-                color:  "#0ea5e9",
-                good:   outDelta >= 0,
-              },
-              {
-                label:"Input cost",
-                icon:"💶",
-                base:   Math.round(baselineCost),
-                after:  Math.round(currentCost),
-                delta:  costDelta,
-                pct:    baselineCost > 0 ? costDelta/baselineCost*100 : 0,
-                color:  "#f59e0b",
-                good:   costDelta <= 0,
-                lowerIsBetter: true,
-              },
-              {
-                label:"Gross margin",
-                icon:"💰",
-                base:   Math.round(baselineMargin),
-                after:  Math.round(currentMarg),
-                delta:  margDelta,
-                pct:    margPct,
-                color:  "#10b981",
-                good:   margDelta >= 0,
-                hero:   true,
-              },
-            ].map((kpi,i) => {
-              const signColor = kpi.good ? "#10b981" : "#f43f5e";
-              const baseWidth = 52;
-              const afterWidth = kpi.after !== 0 && kpi.base !== 0
-                ? Math.min(96, Math.max(10, (kpi.after / Math.max(kpi.base, kpi.after)) * baseWidth * 1.2))
-                : baseWidth;
+          <div style={{ ...S.card }}>
+            <p style={{ ...S.label, marginBottom:6 }}>Step 2 of 4</p>
+            <h2 style={{ ...S.h2, marginBottom:6 }}>When does Mathieu apply nitrogen?</h2>
+            {fert.needsN && (
+              <p style={{ color:"#94a3b8", fontSize:12, lineHeight:1.7, marginBottom:16 }}>
+                {fert.label} contains {fert.n}% N — {fert.n === 0 ? "no nitrogen at all" : "some starter nitrogen"}. {fert.n < 15 ? "Staged N applications will be required to support the crop through the full growing cycle." : "Supplementary N may still be needed depending on yield target."}
+              </p>
+            )}
 
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:18 }}>
+              {N_TIMINGS.map(t => {
+                const active = nTiming.includes(t.id);
+                return (
+                  <button key={t.id} className="step-btn" onClick={()=>toggleN(t.id)}
+                    style={{
+                      background: active ? "#0ea5e915" : "#060d1a",
+                      border:`1.5px solid ${active?"#0ea5e9":"#1a2436"}`,
+                      borderRadius:10, padding:"14px 16px", textAlign:"left", cursor:"pointer",
+                      display:"flex", alignItems:"center", gap:12,
+                    }}>
+                    <div style={{ width:18, height:18, borderRadius:4, background:active?"#0ea5e9":"transparent", border:`2px solid ${active?"#0ea5e9":"#334155"}`, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                      {active && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>}
+                    </div>
+                    <div>
+                      <p style={{ color:active?"#f1f5f9":"#94a3b8", fontSize:12, fontWeight:active?700:400, margin:0 }}>{t.label}</p>
+                      <p style={{ color:"#334155", fontSize:10, margin:0 }}>{t.note}</p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {nTiming.length > 0 && (
+              <div style={{ background:"#060d1a", borderRadius:10, padding:"14px 16px", display:"flex", alignItems:"center", gap:16 }}>
+                <div style={{ flex:1 }}>
+                  <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:6 }}>N dose per application</p>
+                  <input type="range" min={20} max={180} step={10} value={nQty} onChange={e=>setNQty(Number(e.target.value))}
+                    style={{ width:"100%", accentColor:"#0ea5e9" }}/>
+                  <div style={{ display:"flex", justifyContent:"space-between", marginTop:4 }}>
+                    <span style={{ color:"#334155", fontSize:10 }}>20 kg/ha</span>
+                    <span style={{ color:"#0ea5e9", fontSize:12, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>{nQty} kg/ha</span>
+                    <span style={{ color:"#334155", fontSize:10 }}>180 kg/ha</span>
+                  </div>
+                </div>
+                <div style={{ textAlign:"right" }}>
+                  <p style={{ color:"#475569", fontSize:10, margin:0 }}>Extra cost</p>
+                  <p style={{ color:"#f59e0b", fontSize:14, fontWeight:700, fontFamily:"'DM Mono',monospace", margin:0 }}>
+                    +€{nTimingCost + extraPasses}/ha
+                  </p>
+                  <p style={{ color:"#334155", fontSize:9, margin:0 }}>{nTiming.length} pass{nTiming.length>1?"es":""}</p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <button className="next-btn" onClick={()=>setStep(3)}
+            style={{ alignSelf:"flex-end", background:"#0ea5e9", border:"none", color:"#fff", padding:"12px 32px", borderRadius:8, fontSize:13, fontWeight:700, cursor:"pointer", letterSpacing:"0.04em" }}>
+            Next — Secondary nutrients →
+          </button>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════════════════
+          STEP 3 — SECONDARY MACRONUTRIENTS
+      ══════════════════════════════════════════════════════════════════════════ */}
+      {step === 3 && fert && (
+        <div style={{ display:"flex", flexDirection:"column", gap:18, animation:"fadeUp 0.35s ease" }}>
+          <div style={{ ...S.card }}>
+            <p style={{ ...S.label, marginBottom:6 }}>Step 3 of 4</p>
+            <h2 style={{ ...S.h2, marginBottom:6 }}>Include secondary nutrients?</h2>
+            <p style={{ color:"#94a3b8", fontSize:12, lineHeight:1.7, marginBottom:16 }}>
+              Secondary macronutrients are not required but can improve nutrient use efficiency and yield quality, particularly on soils with known deficiencies.
+            </p>
+            <div style={{ display:"flex", gap:10 }}>
+              {SECONDARY.map(s => {
+                const active = secondary.includes(s.id);
+                return (
+                  <button key={s.id} className="step-btn" onClick={()=>toggleS(s.id)}
+                    style={{
+                      flex:1, background: active ? "#0ea5e915" : "#060d1a",
+                      border:`1.5px solid ${active?"#0ea5e9":"#1a2436"}`,
+                      borderRadius:12, padding:"16px 14px", cursor:"pointer", textAlign:"left",
+                    }}>
+                    <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:8 }}>
+                      <span style={{ color:active?"#f1f5f9":"#94a3b8", fontSize:14, fontWeight:700 }}>{s.id}</span>
+                      <div style={{ width:16, height:16, borderRadius:3, background:active?"#0ea5e9":"transparent", border:`2px solid ${active?"#0ea5e9":"#334155"}`, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                        {active && <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>}
+                      </div>
+                    </div>
+                    <p style={{ color:active?"#cbd5e1":"#64748b", fontSize:12, margin:"0 0 4px", fontWeight:active?600:400 }}>{s.label}</p>
+                    <p style={{ color:"#334155", fontSize:10, margin:0 }}>{s.note}</p>
+                  </button>
+                );
+              })}
+            </div>
+            {secondary.length > 0 && (
+              <p style={{ color:"#f59e0b", fontSize:12, fontFamily:"'DM Mono',monospace", marginTop:12 }}>
+                +€{secondaryCost}/ha estimated cost for {secondary.length} secondary nutrient{secondary.length>1?"s":""}
+              </p>
+            )}
+          </div>
+          <button className="next-btn" onClick={()=>setStep(4)}
+            style={{ alignSelf:"flex-end", background:"#0ea5e9", border:"none", color:"#fff", padding:"12px 32px", borderRadius:8, fontSize:13, fontWeight:700, cursor:"pointer", letterSpacing:"0.04em" }}>
+            Next — Micronutrients →
+          </button>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════════════════
+          STEP 4 — MICRONUTRIENTS
+      ══════════════════════════════════════════════════════════════════════════ */}
+      {step === 4 && fert && (
+        <div style={{ display:"flex", flexDirection:"column", gap:18, animation:"fadeUp 0.35s ease" }}>
+          <div style={{ ...S.card }}>
+            <p style={{ ...S.label, marginBottom:6 }}>Step 4 of 4</p>
+            <h2 style={{ ...S.h2, marginBottom:6 }}>Optimise with micronutrients?</h2>
+            <p style={{ color:"#94a3b8", fontSize:12, lineHeight:1.7, marginBottom:16 }}>
+              Micronutrients address specific soil deficiencies that limit yield potential even when macro-nutrition is correct. Choose the level of precision.
+            </p>
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:12 }}>
+              {[
+                { id:"none",     label:"No micronutrients", cost:0,  desc:"Baseline approach. Suitable for well-balanced soils.", detail:"—", color:"#475569" },
+                { id:"basic",    label:"Basic package",     cost:22, desc:"Zn + B + Mn — the most common cereal deficiencies.", detail:"Zn · B · Mn", color:"#0ea5e9" },
+                { id:"targeted", label:"Full optimisation", cost:45, desc:"Zn, B, Fe, Mn, Cu + soil-specific correction.", detail:"Zn · B · Fe · Mn · Cu", color:"#10b981" },
+              ].map(opt => {
+                const active = micro === opt.id;
+                return (
+                  <button key={opt.id} className="step-btn" onClick={()=>setMicro(opt.id)}
+                    style={{
+                      background: active ? `${opt.color}12` : "#060d1a",
+                      border:`1.5px solid ${active?opt.color:"#1a2436"}`,
+                      borderRadius:14, padding:"18px 16px", cursor:"pointer", textAlign:"left",
+                      boxShadow: active ? `0 0 16px ${opt.color}20` : "none",
+                    }}>
+                    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
+                      <div style={{ width:18, height:18, borderRadius:"50%", background:active?opt.color:"transparent", border:`2px solid ${active?opt.color:"#334155"}`, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                        {active && <div style={{ width:7, height:7, borderRadius:"50%", background:"#fff" }}/>}
+                      </div>
+                      {opt.cost > 0 && <span style={{ color:active?opt.color:"#334155", fontSize:11, fontFamily:"'DM Mono',monospace", fontWeight:700 }}>+€{opt.cost}/ha</span>}
+                    </div>
+                    <p style={{ color:active?"#f1f5f9":"#94a3b8", fontSize:13, fontWeight:700, margin:"0 0 5px" }}>{opt.label}</p>
+                    <p style={{ color:active?"#94a3b8":"#475569", fontSize:11, lineHeight:1.6, margin:"0 0 8px" }}>{opt.desc}</p>
+                    {opt.detail !== "—" && (
+                      <p style={{ color:active?opt.color:"#334155", fontSize:10, fontFamily:"'DM Mono',monospace", margin:0 }}>{opt.detail}</p>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Strategy summary before confirmation */}
+          <div style={{ background:"#060d1a", border:"1px solid #1a2436", borderRadius:12, padding:"14px 18px" }}>
+            <p style={{ ...S.label, marginBottom:10 }}>Strategy summary</p>
+            <div style={{ display:"flex", gap:24, flexWrap:"wrap" }}>
+              <div><p style={{ color:"#475569", fontSize:10, margin:"0 0 2px" }}>Base fertilizer</p><p style={{ color:"#f1f5f9", fontSize:13, fontWeight:700, margin:0 }}>{fert.label}</p></div>
+              <div><p style={{ color:"#475569", fontSize:10, margin:"0 0 2px" }}>N applications</p><p style={{ color:"#f1f5f9", fontSize:13, fontWeight:700, margin:0 }}>{nTiming.length > 0 ? `${nTiming.length} stage${nTiming.length>1?"s":""}` : "None"}</p></div>
+              <div><p style={{ color:"#475569", fontSize:10, margin:"0 0 2px" }}>Secondary</p><p style={{ color:"#f1f5f9", fontSize:13, fontWeight:700, margin:0 }}>{secondary.length > 0 ? secondary.join(", ") : "None"}</p></div>
+              <div><p style={{ color:"#475569", fontSize:10, margin:"0 0 2px" }}>Micronutrients</p><p style={{ color:"#f1f5f9", fontSize:13, fontWeight:700, margin:0 }}>{micro === "none" ? "None" : micro === "basic" ? "Basic package" : "Full optimisation"}</p></div>
+              <div style={{ marginLeft:"auto" }}><p style={{ color:"#475569", fontSize:10, margin:"0 0 2px" }}>Total extra cost</p><p style={{ color:"#f43f5e", fontSize:14, fontWeight:700, fontFamily:"'DM Mono',monospace", margin:0 }}>+€{totalExtraCost}/ha</p></div>
+            </div>
+          </div>
+
+          <button className="next-btn" onClick={()=>setStep(5)}
+            style={{ alignSelf:"flex-end", background:"#10b981", border:"none", color:"#fff", padding:"14px 40px", borderRadius:8, fontSize:13, fontWeight:800, cursor:"pointer", letterSpacing:"0.06em" }}>
+            Confirm strategy →
+          </button>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════════════════
+          STEP 5 — FINANCIAL RESULTS
+      ══════════════════════════════════════════════════════════════════════════ */}
+      {step === 5 && fert && (
+        <div style={{ display:"flex", flexDirection:"column", gap:18, animation:"fadeUp 0.4s ease" }}>
+
+          {/* Confirmation header */}
+          <div style={{ display:"flex", alignItems:"center", gap:14, padding:"14px 18px", background:"linear-gradient(135deg,#041510,#080e18)", border:"1.5px solid #10b98135", borderRadius:14 }}>
+            <div style={{ width:40, height:40, borderRadius:"50%", background:"#10b98120", border:"2px solid #10b981", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, animation:"checkPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both" }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div style={{ flex:1 }}>
+              <p style={{ color:"#10b981", fontSize:13, fontWeight:700, margin:0 }}>Strategy confirmed — financial impact below</p>
+              <p style={{ color:"#64748b", fontSize:11, margin:0 }}>{fert.label} · {nTiming.length} N stage{nTiming.length!==1?"s":""} · {secondary.length > 0 ? secondary.join("+") : "No secondary"} · {micro==="none"?"No micro":micro==="basic"?"Basic micro":"Full micro"}</p>
+            </div>
+            <div style={{ display:"flex", gap:6 }}>
+              <button onClick={()=>setCeoView(true)}  style={{ background:ceoView?"#0ea5e920":"transparent", border:`1px solid ${ceoView?"#0ea5e9":"#1a2436"}`, color:ceoView?"#0ea5e9":"#475569", borderRadius:6, padding:"5px 12px", fontSize:10, cursor:"pointer", fontWeight:ceoView?700:400 }}>CEO view</button>
+              <button onClick={()=>setCeoView(false)} style={{ background:!ceoView?"#0ea5e920":"transparent", border:`1px solid ${!ceoView?"#0ea5e9":"#1a2436"}`, color:!ceoView?"#0ea5e9":"#475569", borderRadius:6, padding:"5px 12px", fontSize:10, cursor:"pointer", fontWeight:!ceoView?700:400 }}>Detailed</button>
+            </div>
+          </div>
+
+          {ceoView ? (
+            /* ── CEO VIEW ── */
+            <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+
+              {/* 3 hero KPIs */}
+              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:14 }}>
+                {[
+                  { label:"Output per hectare", before:Math.round(baseOutput), after:Math.round(stratOutput), delta:outDelta, color:"#0ea5e9", icon:"📈" },
+                  { label:"Total input cost",    before:Math.round(baseCost),   after:Math.round(stratCost),   delta:costDelta, color:"#f59e0b", icon:"💶", lowerGood:true },
+                  { label:"Gross margin",        before:Math.round(baseMargin), after:Math.round(stratMargin), delta:marginDelta, color:"#10b981", icon:"💰", hero:true },
+                ].map((kpi,i) => {
+                  const good = kpi.lowerGood ? kpi.delta <= 0 : kpi.delta >= 0;
+                  const dc   = good ? "#10b981" : "#f43f5e";
+                  return (
+                    <div key={i} style={{
+                      background: kpi.hero ? "linear-gradient(135deg,#041510,#080e18)" : "#080e18",
+                      border:`1.5px solid ${kpi.hero?"#10b98140":kpi.color+"22"}`,
+                      borderRadius:16, padding:"22px 20px",
+                      animation:`scaleIn 0.4s ${i*0.08}s ease both`, opacity:0,
+                    }}>
+                      <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:14 }}>
+                        <span style={{ fontSize:16 }}>{kpi.icon}</span>
+                        <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:600, margin:0, flex:1 }}>{kpi.label}</p>
+                        {kpi.hero && <span style={{ background:"#10b98120", color:"#10b981", fontSize:8, fontWeight:700, padding:"2px 7px", borderRadius:6 }}>KEY METRIC</span>}
+                      </div>
+                      <div style={{ marginBottom:10 }}>
+                        <div style={{ display:"flex", justifyContent:"space-between", marginBottom:4 }}>
+                          <span style={{ color:"#475569", fontSize:11 }}>Baseline</span>
+                          <span style={{ color:"#475569", fontSize:12, fontFamily:"'DM Mono',monospace", fontWeight:600 }}>€{Math.abs(kpi.before).toLocaleString()}</span>
+                        </div>
+                        <div style={{ height:4, background:"#1a2436", borderRadius:2 }}>
+                          <div style={{ height:"100%", width:"52%", background:"#1e3050", borderRadius:2 }}/>
+                        </div>
+                      </div>
+                      <div style={{ marginBottom:14 }}>
+                        <div style={{ display:"flex", justifyContent:"space-between", marginBottom:4 }}>
+                          <span style={{ color:kpi.color, fontSize:11, fontWeight:700 }}>With strategy</span>
+                          <span style={{ color:kpi.color, fontSize:14, fontFamily:"'DM Mono',monospace", fontWeight:800 }}>€{Math.abs(kpi.after).toLocaleString()}</span>
+                        </div>
+                        <div style={{ height:7, background:"#1a2436", borderRadius:3, overflow:"hidden" }}>
+                          <div style={{ height:"100%", width:`${Math.min(96,Math.max(8,(Math.abs(kpi.after)/Math.max(Math.abs(kpi.before),Math.abs(kpi.after)))*76))}%`, background:`linear-gradient(90deg,${kpi.color},${kpi.color}80)`, borderRadius:3, animation:"barGrow 0.8s ease" }}/>
+                        </div>
+                      </div>
+                      <div style={{ display:"flex", alignItems:"baseline", gap:8, paddingTop:10, borderTop:`1px solid ${kpi.color}15` }}>
+                        <span style={{ color:dc, fontSize:kpi.hero?22:18, fontWeight:800, fontFamily:"'DM Mono',monospace", lineHeight:1 }}>{fmtK(kpi.delta)}</span>
+                        <span style={{ color:dc+"aa", fontSize:11, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>{fmtPct(kpi.delta/Math.abs(kpi.before||1)*100)}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* P&L waterfall */}
+              <div style={{ ...S.card }}>
+                <p style={{ color:"#cbd5e1", fontSize:13, fontWeight:700, marginBottom:18 }}>P&L waterfall — from baseline to net result</p>
+                <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+                  {waterfallItems.map((item,i) => {
+                    if (item.value === 0) return null;
+                    const isBase   = item.type === "base";
+                    const isResult = item.type === "result";
+                    const isGain   = item.type === "gain";
+                    const maxAbs   = Math.max(...waterfallItems.map(x=>Math.abs(x.value)));
+                    const barW     = Math.max(4, (Math.abs(item.value)/maxAbs)*88);
+                    return (
+                      <div key={i} style={{ display:"flex", alignItems:"center", gap:12, padding:isResult?"10px 12px":"6px 12px", background:isResult?"#0a1628":"transparent", borderRadius:isResult?8:0, borderTop:isResult?"1px solid #1a2436":"none" }}>
+                        <span style={{ color:"#64748b", fontSize:11, width:160, flexShrink:0 }}>{item.label}</span>
+                        <div style={{ flex:1, height:isBase||isResult?10:7, background:"#0a1020", borderRadius:3, overflow:"hidden" }}>
+                          <div style={{ height:"100%", width:`${barW}%`, background:`linear-gradient(90deg,${item.color},${item.color}88)`, borderRadius:3, animation:"barGrow 0.7s ease" }}/>
+                        </div>
+                        <span style={{
+                          color:isGain?"#10b981":item.type==="cost"?"#f43f5e":item.color,
+                          fontSize:isResult?14:12, fontWeight:isResult||isBase?800:600,
+                          fontFamily:"'DM Mono',monospace", width:100, textAlign:"right",
+                        }}>
+                          {item.type==="cost" ? fmtK(item.value) : fmtAbs(item.value)}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          ) : (
+            /* ── DETAILED VIEW ── */
+            <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+              {/* Full P&L table */}
+              <div style={{ ...S.card }}>
+                <p style={{ color:"#cbd5e1", fontSize:13, fontWeight:700, marginBottom:14 }}>Full P&L breakdown — €/ha</p>
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 100px 100px 100px", gap:0 }}>
+                  {[["Line item","Baseline","Strategy","Change"]].concat([
+                    ["Gross revenue",        fmtAbs(baseOutput),  fmtAbs(stratOutput),  fmtK(outDelta)],
+                    ["Primary fertilizer",   fmtAbs(Object.values(BASE_SP).reduce((s,v)=>s+v,0)), fmtAbs(Object.values(fert.spending).reduce((s,v)=>s+v,0)), fmtK(Object.values(fert.spending).reduce((s,v)=>s+v,0)-Object.values(BASE_SP).reduce((s,v)=>s+v,0))],
+                    ["N applications",       "—",                 `€${nTimingCost+extraPasses}`,   fmtK(-(nTimingCost+extraPasses))],
+                    ["Secondary nutrients",  "—",                 `€${secondaryCost}`,  fmtK(-secondaryCost)],
+                    ["Micronutrients",       "—",                 `€${microCost}`,      fmtK(-microCost)],
+                    ["Total input cost",     fmtAbs(baseCost),    fmtAbs(stratCost),    fmtK(costDelta)],
+                    ["Gross margin",         fmtAbs(baseMargin),  fmtAbs(stratMargin),  fmtK(marginDelta)],
+                  ]).map((row,i) => {
+                    const isHeader = i === 0;
+                    const isTotal  = i === 6 || i === 7;
+                    const bg = isHeader ? "#060d1a" : isTotal ? "#0a1628" : "transparent";
+                    return (
+                      <div key={i} style={{ display:"contents" }}>
+                        {row.map((cell,j) => (
+                          <div key={j} style={{
+                            padding:"9px 12px", background:bg,
+                            borderBottom:"1px solid #0d1520",
+                            fontSize: isHeader?9:isTotal?13:12,
+                            fontWeight: isHeader||isTotal?700:400,
+                            color: isHeader?"#64748b":j===3&&!isHeader?(cell.startsWith("+")||cell==="—")?"#10b981":"#f43f5e":"#cbd5e1",
+                            textAlign: j>0?"right":"left",
+                            fontFamily: j>0?"'DM Mono',monospace":"inherit",
+                            textTransform: isHeader?"uppercase":"none",
+                            letterSpacing: isHeader?"0.08em":"normal",
+                          }}>
+                            {cell}
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Balance sheet impact */}
+              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:14 }}>
+                <div style={{ ...S.card }}>
+                  <p style={{ color:"#10b981", fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:12 }}>Asset impact</p>
+                  {[
+                    { label:"Production value", delta:outDelta, note:"Higher yield per hectare" },
+                    { label:"Soil fertility",   delta: micro!=="none"?15:0, note:"Micronutrient investment" },
+                  ].map((item,i) => (
+                    <div key={i} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"8px 0", borderBottom:"1px solid #0d1520" }}>
+                      <div><p style={{ color:"#cbd5e1", fontSize:12, margin:0 }}>{item.label}</p><p style={{ color:"#334155", fontSize:10, margin:0 }}>{item.note}</p></div>
+                      <span style={{ color:item.delta>=0?"#10b981":"#f43f5e", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>{fmtK(item.delta)}</span>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ ...S.card }}>
+                  <p style={{ color:"#f43f5e", fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:12 }}>Liability impact</p>
+                  {[
+                    { label:"Input purchases",   delta:-(Object.values(fert.spending).reduce((s,v)=>s+v,0)-baseCost), note:"Primary fertilizer" },
+                    { label:"Working capital",   delta:-(nTimingCost+extraPasses+secondaryCost+microCost), note:"Labour + secondary costs" },
+                  ].map((item,i) => (
+                    <div key={i} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"8px 0", borderBottom:"1px solid #0d1520" }}>
+                      <div><p style={{ color:"#cbd5e1", fontSize:12, margin:0 }}>{item.label}</p><p style={{ color:"#334155", fontSize:10, margin:0 }}>{item.note}</p></div>
+                      <span style={{ color:"#f43f5e", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>{fmtK(item.delta)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Strategic interpretation */}
+          <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:14, padding:"18px 22px" }}>
+            <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:700, marginBottom:10 }}>Financial analyst read-out</p>
+            <p style={{ color:"#cbd5e1", fontSize:13, lineHeight:1.9, margin:0 }}>
+              {marginDelta > 0
+                ? `This strategy improves gross margin by ${fmtK(marginDelta)} per hectare (${fmtPct(marginDeltaPct)} vs baseline). The revenue gain of ${fmtK(outDelta)} from improved phosphorus availability outweighs the additional input cost of ${fmtK(costDelta)}. ${nTiming.length > 0 ? `Staged nitrogen application adds ${fmtAbs(nTimingCost+extraPasses)}/ha in labour and spreading costs, which is a real operational commitment but standard practice for cereal production.` : "The absence of staged N reduces operational complexity at the cost of yield ceiling."} ${micro !== "none" ? `The micronutrient investment of €${microCost}/ha carries agronomic insurance value beyond what appears in this model's output.` : ""}`
+                : `This strategy increases input cost by ${fmtK(costDelta)} per hectare without a proportional yield response under the current model parameters. The primary driver is ${nTiming.length > 1 ? "the number of nitrogen passes, which adds meaningful labour cost" : "the shift in fertilizer spending mix"}. Consider reducing operational complexity or adjusting the nitrogen program before committing to this strategy.`
+              }
+            </p>
+          </div>
+
+          {/* All products ranked */}
+          <div style={{ ...S.card, padding:0, overflow:"hidden" }}>
+            <div style={{ padding:"12px 18px", borderBottom:"1px solid #1a2436", display:"flex", justifyContent:"space-between" }}>
+              <p style={{ color:"#cbd5e1", fontSize:11, fontWeight:700, margin:0 }}>All base fertilizers — ranked by gross margin impact</p>
+              <p style={{ color:"#334155", fontSize:10, margin:0 }}>Same N and nutrient program applied to each</p>
+            </div>
+            {FERTILIZERS.map(f => ({
+              ...f,
+              m: predict(f.spending) - Object.values(f.spending).reduce((s,v)=>s+v,0) - totalExtraCost + (fert.id===f.id?0:0),
+            })).sort((a,b)=>b.m-a.m).map((f,i) => {
+              const isCur  = f.id === fert.id;
+              const mDelta = f.m - baseMargin;
               return (
-                <div key={i} style={{
-                  background: kpi.hero ? "linear-gradient(135deg,#041510,#080e18)" : "#080e18",
-                  border:`1.5px solid ${kpi.hero ? "#10b98140" : kpi.color+"20"}`,
-                  borderRadius:16, padding:"22px 20px",
-                  animation:`countUp 0.5s ${0.1+i*0.1}s ease both`, opacity:0,
-                  position:"relative", overflow:"hidden",
-                }}>
-                  {kpi.hero && (
-                    <div style={{ position:"absolute", top:-20, right:-20, width:80, height:80, borderRadius:"50%", background:"#10b98108", pointerEvents:"none" }}/>
-                  )}
-                  <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:16 }}>
-                    <span style={{ fontSize:16 }}>{kpi.icon}</span>
-                    <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:600, margin:0 }}>{kpi.label}</p>
-                    {kpi.hero && <span style={{ background:"#10b98120", color:"#10b981", fontSize:8, fontWeight:700, padding:"2px 7px", borderRadius:6, marginLeft:"auto" }}>KEY</span>}
-                  </div>
-
-                  {/* Baseline row */}
-                  <div style={{ marginBottom:12 }}>
-                    <div style={{ display:"flex", justifyContent:"space-between", marginBottom:5 }}>
-                      <span style={{ color:"#475569", fontSize:11 }}>Baseline</span>
-                      <span style={{ color:"#475569", fontSize:12, fontFamily:"'DM Mono',monospace", fontWeight:600 }}>€{Math.abs(kpi.base).toLocaleString()}</span>
-                    </div>
-                    <div style={{ height:5, background:"#1a2436", borderRadius:3 }}>
-                      <div style={{ height:"100%", width:`${baseWidth}%`, background:"#1e3050", borderRadius:3 }}/>
-                    </div>
-                  </div>
-
-                  {/* After row */}
-                  <div style={{ marginBottom:16 }}>
-                    <div style={{ display:"flex", justifyContent:"space-between", marginBottom:5 }}>
-                      <span style={{ color:kpi.color, fontSize:11, fontWeight:700 }}>{fert.label}</span>
-                      <span style={{ color:kpi.color, fontSize:14, fontFamily:"'DM Mono',monospace", fontWeight:800 }}>€{Math.abs(kpi.after).toLocaleString()}</span>
-                    </div>
-                    <div style={{ height:7, background:"#1a2436", borderRadius:3, overflow:"hidden" }}>
-                      <div style={{ height:"100%", width:`${afterWidth}%`, background:`linear-gradient(90deg,${kpi.color},${kpi.color}99)`, borderRadius:3, animation:"barGrow 0.8s ease" }}/>
-                    </div>
-                  </div>
-
-                  {/* Delta */}
-                  <div style={{ display:"flex", alignItems:"baseline", gap:8, paddingTop:12, borderTop:`1px solid ${kpi.color}15` }}>
-                    <span style={{ color:signColor, fontSize: kpi.hero ? 22 : 18, fontWeight:800, fontFamily:"'DM Mono',monospace", lineHeight:1 }}>
-                      {fmtK(kpi.delta)}
-                    </span>
-                    <span style={{ color:signColor+"aa", fontSize:11, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>
-                      {fmtPct(kpi.pct)}
-                    </span>
-                  </div>
+                <div key={f.id}
+                  onClick={()=>{ setBaseFert(f.id); setStep(5); }}
+                  style={{ display:"flex", alignItems:"center", gap:14, padding:"11px 18px", cursor:"pointer", background:isCur?`${f.color}10`:"transparent", borderLeft:`3px solid ${isCur?f.color:"transparent"}`, transition:"background 0.15s" }}
+                  onMouseEnter={e=>{if(!isCur)e.currentTarget.style.background="#0a1020";}}
+                  onMouseLeave={e=>{if(!isCur)e.currentTarget.style.background="transparent";}}>
+                  <span style={{ color:"#334155", fontSize:10, width:18, fontFamily:"'DM Mono',monospace", fontWeight:700 }}>#{i+1}</span>
+                  <div style={{ width:6, height:6, borderRadius:2, background:f.color, flexShrink:0 }}/>
+                  <span style={{ color:isCur?"#f1f5f9":"#94a3b8", fontSize:12, fontWeight:isCur?700:400, flex:1 }}>{f.label}</span>
+                  <span style={{ color:"#334155", fontSize:10, fontFamily:"'DM Mono',monospace" }}>P₂O₅ {f.p2o5}%</span>
+                  <span style={{ color:mDelta>=0?"#10b981":"#f43f5e", fontSize:12, fontWeight:700, fontFamily:"'DM Mono',monospace", width:88, textAlign:"right" }}>{fmtK(mDelta)}</span>
                 </div>
               );
             })}
           </div>
 
-          {/* ── VISUAL COMPARISON BARS ── */}
-          <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:16, padding:"20px 24px" }}>
-            <p style={{ color:"#e2e8f0", fontSize:13, fontWeight:700, marginBottom:18 }}>
-              Baseline <span style={{ color:"#334155" }}>vs</span> {fert.label} — side by side
-            </p>
-            <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
-              {[
-                { label:"Output /ha", base:baselineOutput, after:currentOut,  color:"#0ea5e9" },
-                { label:"Gross margin",base:baselineMargin, after:currentMarg, color:"#10b981" },
-                { label:"Input cost",  base:baselineCost,   after:currentCost, color:"#f59e0b" },
-              ].map(({label,base,after,color}) => {
-                const maxVal = Math.max(Math.abs(base), Math.abs(after)) * 1.12 || 1;
-                const bPct   = Math.max(0, (Math.abs(base)/maxVal)*100);
-                const aPct   = Math.max(0, (Math.abs(after)/maxVal)*100);
-                const up     = after >= base;
-                return (
-                  <div key={label}>
-                    <div style={{ display:"flex", justifyContent:"space-between", marginBottom:6 }}>
-                      <span style={{ color:"#cbd5e1", fontSize:12, fontWeight:600 }}>{label}</span>
-                      <span style={{ color:up?color:"#f43f5e", fontSize:12, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>
-                        {fmtK(after-base)}
-                      </span>
-                    </div>
-                    <div style={{ height:10, background:"#0a1020", borderRadius:4, overflow:"hidden", position:"relative", marginBottom:4 }}>
-                      <div style={{ position:"absolute", height:"100%", width:`${bPct}%`, background:"#1e3050", borderRadius:4 }}/>
-                      <div style={{ position:"absolute", height:"100%", width:`${aPct}%`, background:`linear-gradient(90deg,${color}cc,${color}55)`, borderRadius:4, animation:"barGrow 0.9s ease" }}/>
-                    </div>
-                    <div style={{ display:"flex", justifyContent:"space-between" }}>
-                      <span style={{ color:"#334155", fontSize:10, fontFamily:"'DM Mono',monospace" }}>Baseline: €{Math.round(Math.abs(base)).toLocaleString()}</span>
-                      <span style={{ color, fontSize:10, fontFamily:"'DM Mono',monospace", fontWeight:600 }}>{fert.label}: €{Math.round(Math.abs(after)).toLocaleString()}</span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+          {/* CTA */}
+          <div style={{ display:"flex", justifyContent:"center", paddingTop:4 }}>
+            <button className="try-btn"
+              onClick={resetAll}
+              style={{ background:"transparent", border:"1.5px solid #e2e8f0", color:"#e2e8f0", padding:"14px 44px", borderRadius:8, fontSize:13, fontWeight:700, cursor:"pointer", letterSpacing:"0.06em", transition:"all 0.2s" }}>
+              ← Build a new strategy
+            </button>
           </div>
+        </div>
+      )}
 
-          {/* ── OCP INSIGHT ── */}
-          {fert.id === "TSP" ? (
-            <div style={{ background:"linear-gradient(135deg,#041510,#060d18)", border:"1.5px solid #10b98145", borderRadius:14, padding:"18px 22px", display:"flex", gap:14 }}>
-              <div style={{ width:38, height:38, borderRadius:10, background:"#10b98118", border:"1px solid #10b98130", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              </div>
-              <div>
-                <p style={{ color:"#10b981", fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", margin:"0 0 6px" }}>OCP P-Doctrine · TSP advantage confirmed</p>
-                <p style={{ color:"#94a3b8", fontSize:12, lineHeight:1.85, margin:0 }}>
-                  TSP delivers 46% P₂O₅ with zero nitrogen present. The separation strategy allows Mathieu to apply phosphorus at exactly the right time, independent of his nitrogen schedule — the single most controllable lever in cereal agronomy. The margin result above reflects that flexibility.
+      {/* ── MODEL OVERLAY ── */}
+      {showModel && (
+        <div style={{ position:"fixed", inset:0, background:"rgba(4,8,15,0.88)", zIndex:300, display:"flex", alignItems:"center", justifyContent:"center", padding:24 }}
+          onClick={()=>setShowModel(false)}>
+          <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:16, padding:"28px", maxWidth:620, width:"100%", maxHeight:"80vh", overflow:"auto" }}
+            onClick={e=>e.stopPropagation()}>
+            <div style={{ display:"flex", justifyContent:"space-between", marginBottom:18 }}>
+              <p style={{ color:"#f1f5f9", fontSize:14, fontWeight:700, margin:0 }}>Log-Log Production Model · FADN France · n=909</p>
+              <button onClick={()=>setShowModel(false)} style={{ background:"transparent", border:"none", color:"#64748b", fontSize:18, cursor:"pointer" }}>✕</button>
+            </div>
+            <div style={{ background:"#060d1a", borderRadius:8, padding:"12px 16px", fontFamily:"'DM Mono',monospace", color:"#94a3b8", fontSize:11, lineHeight:1.8, marginBottom:14 }}>
+              log(output/ha) = α + β₁·log(fertilizers) + β₂·log(labour) + β₃·log(machinery) + β₄·log(seeds) + FE
+            </div>
+            {Object.entries(MODEL1.elasticities).map(([k,e]) => (
+              <div key={k} style={{ display:"flex", gap:12, padding:"10px 0", borderBottom:"1px solid #0d1520" }}>
+                <span style={{ color:"#0ea5e9", fontSize:13, fontWeight:800, fontFamily:"'DM Mono',monospace", width:68 }}>+{(e.coef*100).toFixed(2)}%</span>
+                <p style={{ color:"#94a3b8", fontSize:12, margin:0, lineHeight:1.7 }}>
+                  <strong style={{ color:"#cbd5e1" }}>{e.label}</strong> — a 1% increase in spending raises output by {(e.coef*100).toFixed(2)}%.
+                  {k==="intermediate" && " Dominant lever across all farm types."}
                 </p>
               </div>
+            ))}
+            <div style={{ marginTop:14 }}>
+              <button onClick={()=>setExpandFE(x=>!x)} style={{ background:"transparent", border:"1px solid #1a2436", color:"#64748b", borderRadius:6, padding:"5px 14px", fontSize:10, cursor:"pointer" }}>
+                {expandFE?"Hide":"Show"} fixed effects
+              </button>
+              {expandFE && (
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:12, marginTop:12 }}>
+                  {[
+                    {title:"Regions",    items:Object.entries(MODEL1.regions)},
+                    {title:"Farm types", items:Object.entries(MODEL1.farmingTypes)},
+                    {title:"Years",      items:Object.entries(MODEL1.years)},
+                  ].map(({title,items}) => (
+                    <div key={title}>
+                      <p style={{ color:"#475569", fontSize:9, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>{title}</p>
+                      {items.map(([k,v]) => (
+                        <div key={k} style={{ display:"flex", justifyContent:"space-between", marginBottom:3 }}>
+                          <span style={{ color:"#334155", fontSize:10 }}>{String(k).replace(/^\(\d+\)\s*/,"")}</span>
+                          <span style={{ color:v>=0?"#10b981":"#f43f5e", fontSize:10, fontFamily:"'DM Mono',monospace" }}>{v>=0?"+":""}{(v*100).toFixed(1)}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-          ) : (
-            <div style={{ background:"#080e18", border:`1.5px solid ${fert.color}25`, borderRadius:14, padding:"18px 22px", display:"flex", gap:14 }}>
-              <div style={{ width:38, height:38, borderRadius:10, background:`${fert.color}12`, border:`1px solid ${fert.color}28`, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={fert.color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-              </div>
-              <div>
-                <p style={{ color:fert.color, fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", margin:"0 0 6px" }}>Treatment note</p>
-                <p style={{ color:"#94a3b8", fontSize:12, lineHeight:1.85, margin:0 }}>{fert.agronomicNote}</p>
-              </div>
-            </div>
-          )}
-
-          {/* ── RANKING TABLE ── */}
-          <div style={{ background:"#080e18", border:"1px solid #1a2436", borderRadius:14, overflow:"hidden" }}>
-            <div style={{ padding:"12px 18px", borderBottom:"1px solid #1a2436", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-              <p style={{ color:"#cbd5e1", fontSize:11, fontWeight:700, margin:0 }}>All treatments ranked by gross margin</p>
-              <p style={{ color:"#334155", fontSize:10, margin:0 }}>Click any row to switch</p>
-            </div>
-            {FERTILIZERS
-              .map(f => ({
-                ...f,
-                m:   predict(f.spending) - Object.values(f.spending).reduce((s,v)=>s+v,0),
-                out: predict(f.spending),
-              }))
-              .sort((a,b) => b.m - a.m)
-              .map((f,i) => {
-                const isCur  = f.id === fert.id;
-                const mDelta = f.m - baselineMargin;
-                return (
-                  <div key={f.id}
-                    onClick={()=>setApplied(f.id)}
-                    style={{
-                      display:"flex", alignItems:"center", gap:14, padding:"11px 18px",
-                      cursor:"pointer",
-                      background:isCur?`${f.color}10`:"transparent",
-                      borderLeft:`3px solid ${isCur?f.color:"transparent"}`,
-                      transition:"background 0.15s",
-                    }}
-                    onMouseEnter={e=>{if(!isCur)e.currentTarget.style.background="#0a1020";}}
-                    onMouseLeave={e=>{if(!isCur)e.currentTarget.style.background="transparent";}}>
-                    <span style={{ color:"#334155", fontSize:10, width:18, fontFamily:"'DM Mono',monospace", fontWeight:700 }}>#{i+1}</span>
-                    <div style={{ width:6, height:6, borderRadius:2, background:f.color, flexShrink:0 }}/>
-                    <span style={{ color:isCur?"#f1f5f9":"#94a3b8", fontSize:12, fontWeight:isCur?700:400, flex:1 }}>{f.label}</span>
-                    <span style={{ color:"#334155", fontSize:10, fontFamily:"'DM Mono',monospace" }}>P₂O₅: {f.p2o5}%</span>
-                    <span style={{ color:mDelta>=0?"#10b981":"#f43f5e", fontSize:12, fontWeight:700, fontFamily:"'DM Mono',monospace", width:88, textAlign:"right" }}>
-                      {fmtK(mDelta)}
-                    </span>
-                  </div>
-                );
-              })}
-          </div>
-
-          {/* ── PROMINENT CTA ── */}
-          <div style={{ display:"flex", justifyContent:"center", paddingTop:4 }}>
-            <button
-              className="try-btn"
-              onClick={()=>{ setApplied(null); setScene("drop"); setShowCheck(false); }}
-              style={{
-                background:"transparent",
-                border:"1.5px solid #e2e8f0",
-                color:"#e2e8f0",
-                padding:"14px 44px",
-                borderRadius:8,
-                fontSize:13, fontWeight:700,
-                cursor:"pointer",
-                letterSpacing:"0.06em",
-                transition:"all 0.2s",
-              }}>
-              ← Try a different treatment
-            </button>
           </div>
         </div>
       )}
