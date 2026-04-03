@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import ATLASPage from "./ATLAS";
 import {
   BarChart, Bar, LineChart, Line, RadarChart, Radar, PolarGrid, PolarAngleAxis,
@@ -1491,88 +1491,211 @@ const MODEL1 = {
 
 // ─── QUANTITATIVE ENGINE — MATHIEU EXPERIENCE ─────────────────────────────────
 
-// ─── MATHIEU EXPERIENCE — narrative-driven, game-first ───────────────────────
-
 function MathieuIntroPage({ region, onEnterFarm }) {
-  const [step, setStep]   = useState(0);
-  const [typed, setTyped] = useState("");
-
-  const LINES = useMemo(() => [
-    "Every year, French farmers face the same question.",
-    "Does spending more on their inputs actually pay off?",
-    "More fertilizer, better seeds, newer machinery — does any of it move the needle on yield and income?",
-    "The SMO Business Unit built a set of econometric models to answer exactly that.",
-    "Estimated on nearly a thousand real French farms, they quantify the link between what a farmer spends and what his land produces.",
-  ], []);
+  const [phase, setPhase] = useState(0);
+  // phase 0: black → name appears
+  // phase 1: portrait slides in + subtitle
+  // phase 2: lines reveal one by one
+  // phase 3: CTA appears
 
   useEffect(() => {
-    if (step >= LINES.length) return;
-    const line = LINES[step];
-    let i = 0;
-    setTyped("");
-    const interval = setInterval(() => {
-      i++;
-      setTyped(line.slice(0, i));
-      if (i >= line.length) {
-        clearInterval(interval);
-        if (step < LINES.length - 1) {
-          setTimeout(() => setStep(s => s + 1), 900);
-        }
-      }
-    }, 28);
-    return () => clearInterval(interval);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [step, LINES]);
+    const timers = [
+      setTimeout(() => setPhase(1), 600),
+      setTimeout(() => setPhase(2), 1800),
+      setTimeout(() => setPhase(3), 3800),
+    ];
+    return () => timers.forEach(clearTimeout);
+  }, []);
 
   if (region !== "France") return (
-    <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:400, gap:20 }}>
-      <p style={{ color:"#94a3b8", fontSize:15 }}>Select France to begin Mathieu's story.</p>
+    <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:400 }}>
+      <p style={{ color:"#94a3b8", fontSize:15 }}>Select France to begin.</p>
     </div>
   );
 
   return (
-    <div style={{ minHeight:"calc(100vh - 130px)", background:"#04080f", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", position:"relative", overflow:"hidden", fontFamily:"'DM Sans',sans-serif" }}>
+    <div style={{
+      minHeight:"calc(100vh - 130px)",
+      background:"#04080f",
+      display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
+      position:"relative", overflow:"hidden",
+      fontFamily:"'DM Sans',sans-serif",
+    }}>
       <style>{`
-        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-        @keyframes pulse  { 0%,100%{opacity:0.4} 50%{opacity:1} }
-        .enter-btn { transition:all 0.25s; }
-        .enter-btn:hover { background:#38bdf8 !important; box-shadow:0 0 44px rgba(14,165,233,0.5) !important; }
+        @keyframes fadeIn    { from{opacity:0}                    to{opacity:1} }
+        @keyframes riseUp    { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes slideIn   { from{opacity:0;transform:translateX(40px)} to{opacity:1;transform:translateX(0)} }
+        @keyframes pulse     { 0%,100%{opacity:0.5} 50%{opacity:1} }
+        @keyframes breathe   { 0%,100%{transform:scale(1)} 50%{transform:scale(1.015)} }
+        @keyframes lineReveal{ from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+        .cta-btn { transition:all 0.3s ease; }
+        .cta-btn:hover {
+          background:#f1f5f9 !important;
+          color:#04080f !important;
+          box-shadow:0 0 60px rgba(241,245,249,0.25) !important;
+          transform:translateY(-2px) !important;
+        }
       `}</style>
 
-      {/* Atmospheric background */}
-      <div style={{ position:"absolute", inset:0, backgroundImage:"linear-gradient(rgba(14,165,233,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(14,165,233,0.025) 1px,transparent 1px)", backgroundSize:"80px 80px", pointerEvents:"none" }}/>
-      <div style={{ position:"absolute", bottom:0, left:0, right:0, height:"35%", background:"linear-gradient(to top,rgba(14,165,233,0.04),transparent)", pointerEvents:"none" }}/>
+      {/* Subtle grain overlay */}
+      <div style={{
+        position:"absolute", inset:0, pointerEvents:"none", zIndex:0,
+        backgroundImage:"url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E\")",
+        backgroundSize:"180px",
+      }}/>
 
-      {/* Badge */}
-      <div style={{ animation:"fadeIn 1s ease both", marginBottom:52, display:"flex", alignItems:"center", gap:10 }}>
-        <div style={{ width:6, height:6, borderRadius:"50%", background:"#10b981", animation:"pulse 2s infinite" }}/>
-        <span style={{ color:"#475569", fontSize:11, letterSpacing:"0.18em", textTransform:"uppercase" }}>SMO Business Unit · OCP Nutricrops · Farmer Economics</span>
-      </div>
+      {/* Vignette */}
+      <div style={{
+        position:"absolute", inset:0, pointerEvents:"none", zIndex:0,
+        background:"radial-gradient(ellipse at center, transparent 40%, rgba(4,8,15,0.7) 100%)",
+      }}/>
 
-      {/* Typewriter area */}
-      <div style={{ maxWidth:580, textAlign:"center", padding:"0 32px", marginBottom:72 }}>
-        {LINES.slice(0, step).map((line, i) => (
-          <p key={i} style={{ color: i < step - 1 ? "#1e3050" : "#64748b", fontSize:14, lineHeight:2.0, margin:0, animation:"fadeIn 0.4s ease", letterSpacing:"0.01em" }}>{line}</p>
-        ))}
-        <p style={{ color:"#cbd5e1", fontSize:14, lineHeight:2.0, margin:0, letterSpacing:"0.01em" }}>
-          {typed}
-          <span style={{ animation:"pulse 1s infinite", display:"inline-block", marginLeft:2, color:"#0ea5e9" }}>|</span>
-        </p>
-      </div>
+      {/* ── MAIN LAYOUT: portrait left, text right ── */}
+      <div style={{
+        display:"grid",
+        gridTemplateColumns:"1fr 1fr",
+        gap:0,
+        maxWidth:1000,
+        width:"100%",
+        padding:"0 40px",
+        zIndex:10,
+        alignItems:"center",
+      }}>
 
-      {/* Enter button — bright, prominent, fade in */}
-      {step >= LINES.length - 1 && typed === LINES[LINES.length - 1] && (
-        <button
-          className="enter-btn"
-          onClick={onEnterFarm}
-          style={{ animation:"fadeIn 1.2s 0.2s ease both", opacity:0, background:"#0ea5e9", border:"none", color:"#ffffff", padding:"16px 52px", borderRadius:6, fontSize:13, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", cursor:"pointer", boxShadow:"0 0 32px rgba(14,165,233,0.35)" }}>
-          Enter the farm →
-        </button>
-      )}
+        {/* LEFT — portrait */}
+        <div style={{
+          display:"flex", justifyContent:"center", alignItems:"center",
+          opacity: phase >= 1 ? 1 : 0,
+          transition:"opacity 1s ease",
+        }}>
+          <div style={{
+            position:"relative",
+            width:320, height:420,
+            borderRadius:4,
+            overflow:"hidden",
+            animation: phase >= 1 ? "breathe 6s ease-in-out infinite" : "none",
+            boxShadow:"0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)",
+          }}>
+            <img
+              src="/farmer.png"
+              alt="Mathieu"
+              style={{
+                position:"absolute",
+                top:"-8%", left:"-4%",
+                width:"108%", height:"108%",
+                objectFit:"cover",
+                objectPosition:"center 12%",
+                display:"block",
+                filter:"brightness(0.88) contrast(1.05)",
+              }}
+              onError={e => { e.target.style.display="none"; }}
+            />
+            {/* Portrait gradient overlay */}
+            <div style={{
+              position:"absolute", inset:0,
+              background:"linear-gradient(to bottom, transparent 55%, rgba(4,8,15,0.85) 100%)",
+            }}/>
+            {/* Name plate at portrait bottom */}
+            <div style={{ position:"absolute", bottom:0, left:0, right:0, padding:"18px 20px" }}>
+              <p style={{ color:"rgba(255,255,255,0.5)", fontSize:10, letterSpacing:"0.2em", textTransform:"uppercase", margin:"0 0 4px" }}>
+                Champagne-Ardenne · France
+              </p>
+              <p style={{ color:"#f1f5f9", fontSize:18, fontWeight:700, margin:0, letterSpacing:"-0.01em" }}>
+                Mathieu
+              </p>
+            </div>
+          </div>
+        </div>
 
-      {/* Bottom attribution */}
-      <div style={{ position:"absolute", bottom:28, fontSize:10, color:"#1e3050", letterSpacing:"0.1em", textTransform:"uppercase" }}>
-        FADN France · 909 farms · Log-log production model
+        {/* RIGHT — narrative text */}
+        <div style={{
+          display:"flex", flexDirection:"column", gap:28,
+          paddingLeft:48,
+        }}>
+
+          {/* "This is Mathieu." — hero line */}
+          <div style={{
+            opacity: phase >= 1 ? 1 : 0,
+            transform: phase >= 1 ? "none" : "translateY(20px)",
+            transition:"opacity 0.9s ease, transform 0.9s ease",
+          }}>
+            <p style={{
+              color:"#94a3b8", fontSize:11, textTransform:"uppercase",
+              letterSpacing:"0.2em", fontWeight:600, margin:"0 0 14px",
+            }}>
+              GMO Business Unit · OCP Nutricrops
+            </p>
+            <h1 style={{
+              color:"#f1f5f9", fontSize:"clamp(28px,3.5vw,44px)",
+              fontWeight:300, letterSpacing:"-0.03em", lineHeight:1.15,
+              margin:0,
+            }}>
+              This is <span style={{ fontWeight:800 }}>Mathieu.</span>
+            </h1>
+          </div>
+
+          {/* Story lines */}
+          {phase >= 2 && (
+            <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+              {[
+                { text:"He farms 120 hectares in northern France.", delay:"0s" },
+                { text:"Every spring, he makes the same set of decisions — what to plant, what to spend, and where to cut.", delay:"0.3s" },
+                { text:"The question is: do those choices actually move the needle?", delay:"0.6s", accent:true },
+              ].map((line, i) => (
+                <p key={i} style={{
+                  color: line.accent ? "#e2e8f0" : "#64748b",
+                  fontSize: line.accent ? 16 : 14,
+                  fontWeight: line.accent ? 600 : 400,
+                  lineHeight:1.75, margin:0,
+                  animation:`lineReveal 0.6s ${line.delay} ease both`,
+                  opacity:0,
+                  fontStyle: line.accent ? "italic" : "normal",
+                }}>
+                  {line.text}
+                </p>
+              ))}
+            </div>
+          )}
+
+          {/* Supporting line */}
+          {phase >= 2 && (
+            <p style={{
+              color:"#334155", fontSize:12, lineHeight:1.7, margin:0,
+              animation:"lineReveal 0.6s 1s ease both", opacity:0,
+            }}>
+              Built on data from nearly a thousand real French farms, this simulator estimates what each input decision does to Mathieu's output and income — in real numbers.
+            </p>
+          )}
+
+          {/* CTA */}
+          {phase >= 3 && (
+            <div style={{
+              display:"flex", flexDirection:"column", gap:14,
+              animation:"riseUp 0.7s ease both",
+            }}>
+              <button
+                className="cta-btn"
+                onClick={onEnterFarm}
+                style={{
+                  alignSelf:"flex-start",
+                  background:"#f1f5f9",
+                  border:"none",
+                  color:"#04080f",
+                  padding:"15px 40px",
+                  borderRadius:4,
+                  fontSize:12, fontWeight:800,
+                  letterSpacing:"0.14em", textTransform:"uppercase",
+                  cursor:"pointer",
+                  boxShadow:"0 0 40px rgba(241,245,249,0.15)",
+                }}>
+                Enter Mathieu's Farm →
+              </button>
+              <p style={{ color:"#1e3050", fontSize:10, letterSpacing:"0.1em", textTransform:"uppercase" }}>
+                FADN France · 909 farms · Log-log production model
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
