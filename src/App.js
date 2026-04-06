@@ -1490,11 +1490,7 @@ const MODEL1 = {
 //   rSquared: 0.8075,
 // };
 
-// ─── QUANTITATIVE ENGINE — VALUE POSITIONING PAGE ─────────────────────────────
-// This page appears after the user selects "Quantitative Engine" from the
-// Engine / Market Intelligence fork. It positions the tool's value for every
-// OCP Nutricrops stakeholder before introducing Mathieu.
-
+// --- QUANTITATIVE ENGINE - VALUE POSITIONING PAGE ---
 function QuantitativeEngineValuePage({ onContinue }) {
   const [phase, setPhase] = useState(0);
 
@@ -1509,19 +1505,19 @@ function QuantitativeEngineValuePage({ onContinue }) {
   }, []);
 
   const regions = [
-    { name:"Europe",        color:"#0ea5e9" },
-    { name:"Brazil",        color:"#10b981" },
-    { name:"India",         color:"#f59e0b" },
-    { name:"Africa",        color:"#f43f5e" },
-    { name:"LATAM",         color:"#a78bfa" },
-    { name:"APAC",          color:"#38bdf8" },
+    { name:"Europe", color:"#0ea5e9" },
+    { name:"Brazil", color:"#10b981" },
+    { name:"India", color:"#f59e0b" },
+    { name:"Africa", color:"#f43f5e" },
+    { name:"LATAM", color:"#a78bfa" },
+    { name:"APAC", color:"#38bdf8" },
     { name:"North America", color:"#fb923c" },
   ];
 
   const bus = [
-    { name:"Customization BU",       role:"Tailor formulations to real purchasing power and local economics" },
-    { name:"Green Solutions BU",      role:"Validate environmental claims with field level financial evidence" },
-    { name:"Nutrition Solutions BU",  role:"Demonstrate the agronomic and economic case for nutrient separation" },
+    { name:"Customization BU", role:"Tailor formulations to real purchasing power and local economics" },
+    { name:"Green Solutions BU", role:"Validate environmental claims with field level financial evidence" },
+    { name:"Nutrition Solutions BU", role:"Demonstrate the agronomic and economic case for nutrient separation" },
   ];
 
   return (
@@ -1635,7 +1631,7 @@ function QuantitativeEngineValuePage({ onContinue }) {
               padding:"16px 44px", borderRadius:4, fontSize:12, fontWeight:800,
               letterSpacing:"0.14em", textTransform:"uppercase", cursor:"pointer",
             }}>
-            Meet the farmer →
+            {"Meet the farmer →"}
           </button>
         </div>
       </div>
@@ -1644,8 +1640,7 @@ function QuantitativeEngineValuePage({ onContinue }) {
 }
 
 
-// ─── MATHIEU INTRO — Updated narrative ──────────────────────────────────────
-
+// --- MATHIEU INTRO ---
 function MathieuIntroPage({ region, onEnterFarm }) {
   const [phase, setPhase] = useState(0);
 
@@ -1724,7 +1719,7 @@ function MathieuIntroPage({ region, onEnterFarm }) {
             <div style={{ display:"flex", flexDirection:"column", gap:14, animation:"riseUp 0.7s ease both" }}>
               <button className="cta-btn" onClick={onEnterFarm}
                 style={{ alignSelf:"flex-start", background:"#f1f5f9", border:"none", color:"#04080f", padding:"15px 40px", borderRadius:4, fontSize:12, fontWeight:800, letterSpacing:"0.14em", textTransform:"uppercase", cursor:"pointer", boxShadow:"0 0 40px rgba(241,245,249,0.15)" }}>
-                Enter Mathieu's Farm →
+                {"Enter Mathieu's Farm →"}
               </button>
               <p style={{ color:"#1e3050", fontSize:10, letterSpacing:"0.1em", textTransform:"uppercase" }}>FADN France · 909 farms · Log-log production model</p>
             </div>
@@ -1736,8 +1731,7 @@ function MathieuIntroPage({ region, onEnterFarm }) {
 }
 
 
-// ─── MATHIEU FARM — Complete redesign ────────────────────────────────────────
-
+// --- MATHIEU FARM ---
 function MathieuFarmPage({ region }) {
   const [phase, setPhase] = useState("configure");
   const [farmSize, setFarmSize] = useState(120);
@@ -1749,12 +1743,11 @@ function MathieuFarmPage({ region }) {
   const [currentFerts, setCurrentFerts] = useState([]);
   const [showBS, setShowBS] = useState(false);
   const [showPL, setShowPL] = useState(false);
-  const [showParams, setShowParams] = useState(false);
+  const [showParams, setShowParams] = useState(true);
   const [marginZoom, setMarginZoom] = useState(null);
   const [costZoom, setCostZoom] = useState(null);
   const [outputZoom, setOutputZoom] = useState(null);
   const [cashZoom, setCashZoom] = useState(null);
-  const [refStart, setRefStart] = useState(null);
 
   if (region !== "France") return (
     <div style={{ display:"flex", alignItems:"center", justifyContent:"center", minHeight:400 }}>
@@ -1762,21 +1755,6 @@ function MathieuFarmPage({ region }) {
     </div>
   );
 
-  // ── Crop definitions with RESEARCH-BACKED differentiated treatment response ──
-  // Sources: University of Minnesota Extension, University of Adelaide FTRC,
-  // agronomic field comparison literature.
-  //
-  // Key agronomic principles:
-  // 1. Crops with high N demand (maize, tomato, wheat) benefit from MAP/DAP
-  //    because co-located N+P at sowing supports early development.
-  // 2. Crops with moderate N demand (potato, sugarbeet) are penalized by excess N
-  //    which damages quality (tuber uniformity, sugar extraction).
-  // 3. TSP advantage = P delivery without N forcing + lower efficiency decay.
-  // 4. NPK blends deliver less concentrated P per kg, requiring higher rates.
-  //
-  // TSP does NOT always win. On wheat, barley, maize, tomato — MAP or DAP
-  // genuinely outperform because bundled N has real agronomic value.
-  // TSP wins on potato and sugarbeet where excess N is harmful.
   const CROPS = [
     { id:"wheat", label:"Soft wheat", pDemand:"high", nDemand:"high", icon:"\u{1F33E}", revenuePerHa:1850,
       note:"DAP and MAP benefit from N+P co-location at tillering. TSP competitive but not dominant.",
@@ -1827,19 +1805,19 @@ function MathieuFarmPage({ region }) {
     { display:"Nord-Pas-de-Calais", value:"(141) Nord-Pas-de-Calais" },
     { display:"Lorraine", value:"(142) Lorraine" },
     { display:"Alsace", value:"(143) Alsace" },
-    { display:"Franche-Comté", value:"(144) Franche-Comté" },
+    { display:"Franche-Comt\u00e9", value:"(144) Franche-Comt\u00e9" },
     { display:"Pays de la Loire", value:"(151) Pays de la Loire" },
     { display:"Bretagne", value:"(152) Bretagne" },
     { display:"Poitou-Charentes", value:"(153) Poitou-Charentes" },
     { display:"Aquitaine", value:"(162) Aquitaine" },
-    { display:"Midi-Pyrénées", value:"(163) Midi-Pyrénées" },
+    { display:"Midi-Pyr\u00e9n\u00e9es", value:"(163) Midi-Pyr\u00e9n\u00e9es" },
     { display:"Limousin", value:"(164) Limousin" },
-    { display:"Rhône-Alpes", value:"(171) Rhône-Alpes" },
+    { display:"Rh\u00f4ne-Alpes", value:"(171) Rh\u00f4ne-Alpes" },
     { display:"Auvergne", value:"(172) Auvergne" },
     { display:"Languedoc-Roussillon", value:"(181) Languedoc-Roussillon" },
     { display:"PACA", value:"(182) PACA" },
     { display:"Corse", value:"(183) Corse" },
-    { display:"Île-de-France", value:"(121) Île-de-France" },
+    { display:"\u00cele-de-France", value:"(121) \u00cele-de-France" },
   ];
 
   const selectedCrop = CROPS.find(c => c.id === crop) || CROPS[0];
@@ -1940,8 +1918,16 @@ function MathieuFarmPage({ region }) {
     };
   };
 
-  const fmtE = n => n < 0 ? ("\u2212\u20AC"+Math.round(Math.abs(n)).toLocaleString()) : ("\u20AC"+Math.round(n).toLocaleString());
-  const fmtK = n => n >= 0 ? ("+\u20AC"+Math.round(n).toLocaleString()) : ("\u2212\u20AC"+Math.round(Math.abs(n)).toLocaleString());
+  const EUR = "\u20AC";
+  const MINUS = "\u2212";
+  const MDASH = "\u2014";
+  const LARR = "\u2190";
+  const MIDDOT = "\u00B7";
+  const TIMES = "\u00D7";
+  const CARET = "\u25BE";
+  const P2O5 = "P\u2082O\u2085";
+  const fmtE = n => n < 0 ? (MINUS+EUR+Math.round(Math.abs(n)).toLocaleString()) : (EUR+Math.round(n).toLocaleString());
+  const fmtK = n => n >= 0 ? ("+"+EUR+Math.round(n).toLocaleString()) : (MINUS+EUR+Math.round(Math.abs(n)).toLocaleString());
   const CHART_COLORS = { TSP:"#10b981", MAP:"#0ea5e9", NPS:"#a78bfa", DAP:"#f59e0b", NPK1:"#f43f5e", NPK2:"#64748b", NPK3:"#818cf8" };
 
   const allTreatments = [TSP, ...FERTILIZERS.filter(f => currentFerts.includes(f.id) && f.id !== "TSP")];
@@ -1951,13 +1937,56 @@ function MathieuFarmPage({ region }) {
   const tspRank = allRanked.findIndex(f => f.id === "TSP") + 1;
   const tspIsBest = bestTreatment.id === "TSP";
 
+  // Zoom helpers: +/- buttons step through fixed zoom levels
+  const zoomIn = (rawData, currentZoom, setZoom, labelKey) => {
+    const len = rawData.length;
+    if (!currentZoom) {
+      const mid = Math.floor(len / 2);
+      const span = Math.max(2, Math.floor(len * 0.6));
+      setZoom([Math.max(0, mid - Math.floor(span/2)), Math.min(len-1, mid + Math.floor(span/2))]);
+    } else {
+      const [s,e] = currentZoom;
+      if (e - s <= 2) return;
+      const mid = Math.floor((s+e)/2);
+      const newSpan = Math.max(2, Math.floor((e-s) * 0.6));
+      setZoom([Math.max(0, mid - Math.floor(newSpan/2)), Math.min(len-1, mid + Math.ceil(newSpan/2))]);
+    }
+  };
+  const zoomOut = (rawData, currentZoom, setZoom) => {
+    if (!currentZoom) return;
+    const len = rawData.length;
+    const [s,e] = currentZoom;
+    const newS = Math.max(0, s - 1);
+    const newE = Math.min(len-1, e + 1);
+    if (newS === 0 && newE === len-1) { setZoom(null); return; }
+    setZoom([newS, newE]);
+  };
+
+  const ZoomControls = ({ rawData, zoom, setZoom }) => (
+    <div style={{ display:"flex", gap:4, alignItems:"center", flexShrink:0 }}>
+      <button onClick={()=>zoomIn(rawData, zoom, setZoom)} title="Zoom in" style={{ background:"#060d1a", border:"1px solid #1a2436", color:"#94a3b8", borderRadius:6, width:28, height:28, display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", fontSize:14, fontWeight:700, transition:"all 0.15s" }}
+        onMouseEnter={e=>{e.target.style.background="#0ea5e920";e.target.style.color="#0ea5e9";e.target.style.borderColor="#0ea5e9";}}
+        onMouseLeave={e=>{e.target.style.background="#060d1a";e.target.style.color="#94a3b8";e.target.style.borderColor="#1a2436";}}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+      </button>
+      <button onClick={()=>zoomOut(rawData, zoom, setZoom)} title="Zoom out" style={{ background:"#060d1a", border:"1px solid #1a2436", color: zoom ? "#94a3b8" : "#1a2436", borderRadius:6, width:28, height:28, display:"flex", alignItems:"center", justifyContent:"center", cursor: zoom ? "pointer" : "default", fontSize:14, fontWeight:700, transition:"all 0.15s" }}
+        onMouseEnter={e=>{if(zoom){e.target.style.background="#0ea5e920";e.target.style.color="#0ea5e9";e.target.style.borderColor="#0ea5e9";}}}
+        onMouseLeave={e=>{e.target.style.background="#060d1a";e.target.style.color=zoom?"#94a3b8":"#1a2436";e.target.style.borderColor="#1a2436";}}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+      </button>
+      {zoom && <button onClick={()=>setZoom(null)} style={{ background:"#060d1a", border:"1px solid #1a2436", color:"#94a3b8", borderRadius:6, padding:"2px 8px", height:28, fontSize:9, fontWeight:600, cursor:"pointer", transition:"all 0.15s" }}
+        onMouseEnter={e=>{e.target.style.background="#0ea5e920";e.target.style.color="#0ea5e9";}}
+        onMouseLeave={e=>{e.target.style.background="#060d1a";e.target.style.color="#94a3b8";}}>Reset</button>}
+    </div>
+  );
+
   const S = {
     card: { background:"#080e18", border:"1px solid #1a2436", borderRadius:14, padding:"18px 20px" },
     label: { color:"#94a3b8", fontSize:9, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:600 },
     h2: { color:"#f1f5f9", fontSize:17, fontWeight:700, letterSpacing:"-0.02em", margin:0 },
   };
 
-  // ═══════════════ CONFIGURE ═══════════════
+  // =============== CONFIGURE ===============
   if (phase === "configure") {
     return (
       <div style={{ fontFamily:"'DM Sans',sans-serif", display:"flex", flexDirection:"column", gap:0 }}>
@@ -2013,7 +2042,7 @@ function MathieuFarmPage({ region }) {
                   }}>
                     <span style={{ fontSize:20, display:"block" }}>{c.icon}</span>
                     <span style={{ color: crop===c.id ? "#10b981" : "#94a3b8", fontSize:11, fontWeight:crop===c.id?700:500, display:"block", marginTop:4 }}>{c.label}</span>
-                    <span style={{ color:"#334155", fontSize:9, display:"block", marginTop:2 }}>P:{c.pDemand} · N:{c.nDemand}</span>
+                    <span style={{ color:"#334155", fontSize:9, display:"block", marginTop:2 }}>P:{c.pDemand} {MIDDOT} N:{c.nDemand}</span>
                   </button>
                 ))}
               </div>
@@ -2026,7 +2055,7 @@ function MathieuFarmPage({ region }) {
                 <span style={{ color:"#f59e0b", fontSize:11, fontWeight:600 }}>Owned: {ownedPct}%</span>
                 <span style={{ color:"#94a3b8", fontSize:11 }}>Rented: {100-ownedPct}%</span>
               </div>
-              <p style={{ color:"#334155", fontSize:10, margin:"8px 0 0" }}>Rent cost: \u20AC{Math.round(rentCostPerHa)}/ha/year</p>
+              <p style={{ color:"#334155", fontSize:10, margin:"8px 0 0" }}>Rent cost: {EUR}{Math.round(rentCostPerHa)}/ha/year</p>
             </div>
           </div>
         </div>
@@ -2036,14 +2065,14 @@ function MathieuFarmPage({ region }) {
             padding:"16px 48px", borderRadius:4, fontSize:12, fontWeight:800,
             letterSpacing:"0.14em", textTransform:"uppercase", cursor:"pointer",
           }} onClick={()=>setPhase("narrative")}>
-            Continue to choose treatments
+            {"Continue " + MDASH + " Choose Treatments →"}
           </button>
         </div>
       </div>
     );
   }
 
-  // ═══════════════ NARRATIVE ═══════════════
+  // =============== NARRATIVE ===============
   if (phase === "narrative") {
     const selectedFerts = currentFerts.map(id=>FERTILIZERS.find(f=>f.id===id)).filter(Boolean);
     return (
@@ -2055,10 +2084,10 @@ function MathieuFarmPage({ region }) {
           .run-btn { transition:all 0.25s; }
           .run-btn:hover { background:#f1f5f9 !important; color:#04080f !important; transform:translateY(-2px); box-shadow:0 8px 40px rgba(241,245,249,0.15); }
         `}</style>
-        <button onClick={()=>setPhase("configure")} style={{ background:"none", border:"none", color:"#475569", fontSize:11, cursor:"pointer", padding:0, marginBottom:24 }}>\u2190 Back to farm configuration</button>
+        <button onClick={()=>setPhase("configure")} style={{ background:"none", border:"none", color:"#475569", fontSize:11, cursor:"pointer", padding:0, marginBottom:24 }}>{LARR} Back to farm configuration</button>
 
         <div style={{ animation:"fadeUp 0.5s ease" }}>
-          <p style={{ color:"#64748b", fontSize:11, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:600, margin:"0 0 14px" }}>{selectedCrop.icon} {selectedCrop.label} · {regionDisplay} · {farmSize} ha</p>
+          <p style={{ color:"#64748b", fontSize:11, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:600, margin:"0 0 14px" }}>{selectedCrop.icon} {selectedCrop.label} {MIDDOT} {regionDisplay} {MIDDOT} {farmSize} ha</p>
           <h2 style={{ color:"#f1f5f9", fontSize:26, fontWeight:300, letterSpacing:"-0.02em", lineHeight:1.3, margin:"0 0 10px" }}>
             Today, Mathieu uses <span style={{ fontWeight:800, color: selectedFerts.length > 0 ? "#0ea5e9" : "#475569" }}>
               {selectedFerts.length > 0 ? selectedFerts.map(f=>f.label).join(" and ") : "..."}
@@ -2084,7 +2113,7 @@ function MathieuFarmPage({ region }) {
                 <div style={{ width:8, height:8, borderRadius:"50%", background: sel ? f.color : "#1a2436", flexShrink:0, transition:"all 0.15s" }}/>
                 <div>
                   <p style={{ color: sel ? "#f1f5f9" : "#94a3b8", fontSize:13, fontWeight:sel?700:500, margin:0 }}>{f.label}</p>
-                  <p style={{ color:"#475569", fontSize:10, margin:0 }}>P\u2082O\u2085: {f.p2o5}% \u00B7 N: {f.n}% \u00B7 \u20AC{f.baseCostPerHa}/ha</p>
+                  <p style={{ color:"#475569", fontSize:10, margin:0 }}>{P2O5}: {f.p2o5}% {MIDDOT} N: {f.n}% {MIDDOT} {EUR}{f.baseCostPerHa}/ha</p>
                 </div>
                 <span style={{ marginLeft:"auto", fontSize:10, color:f.badgeColor, background:f.badgeColor+"18", padding:"2px 8px", borderRadius:6, fontWeight:600 }}>{f.badge}</span>
               </div>
@@ -2095,7 +2124,7 @@ function MathieuFarmPage({ region }) {
         {currentFerts.length > 0 && (
           <div style={{ animation:"fadeUp 0.4s ease" }}>
             <p style={{ color:"#e2e8f0", fontSize:18, fontWeight:300, lineHeight:1.5, margin:"0 0 24px" }}>
-              But today, Mathieu wants to check if <span style={{ fontWeight:700, color:"#10b981" }}>switching to TSP</span> will benefit him economically \u2014 or whether his current program is already the better choice.
+              But today, Mathieu wants to check if <span style={{ fontWeight:700, color:"#10b981" }}>switching to TSP</span> will benefit him economically {MDASH} or whether his current program is already the better choice.
             </p>
             <div style={{ display:"flex", justifyContent:"center" }}>
               <button className="run-btn" onClick={()=>setPhase("results")} style={{
@@ -2103,7 +2132,7 @@ function MathieuFarmPage({ region }) {
                 padding:"16px 44px", borderRadius:4, fontSize:12, fontWeight:800,
                 letterSpacing:"0.14em", textTransform:"uppercase", cursor:"pointer",
               }}>
-                Run the comparison \u2192
+                {"Run the comparison →"}
               </button>
             </div>
           </div>
@@ -2112,7 +2141,7 @@ function MathieuFarmPage({ region }) {
     );
   }
 
-  // ═══════════════ RESULTS ═══════════════
+  // =============== RESULTS ===============
   return (
     <div style={{ fontFamily:"'DM Sans',sans-serif", display:"flex", flexDirection:"column", gap:16 }}>
       <style>{`
@@ -2122,71 +2151,57 @@ function MathieuFarmPage({ region }) {
         .restart-btn { transition:all 0.2s; }
         .restart-btn:hover { background:#f1f5f9 !important; color:#04080f !important; transform:translateY(-2px); }
         .back-link:hover { color:#f1f5f9 !important; }
-        .param-slider { width:100%; }
-        .param-panel-btn { transition:all 0.2s; }
-        .param-panel-btn:hover { background:#0ea5e920 !important; border-color:#0ea5e9 !important; }
-        .zoom-reset { transition:all 0.15s; cursor:pointer; }
-        .zoom-reset:hover { background:#0ea5e920 !important; color:#0ea5e9 !important; }
       `}</style>
 
       {/* TOP BAR */}
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
         <div style={{ display:"flex", gap:12 }}>
-          <button className="back-link" onClick={()=>setPhase("narrative")} style={{ background:"none", border:"none", color:"#475569", fontSize:11, cursor:"pointer", padding:0, transition:"all 0.15s" }}>{"\u2190"} Change treatment</button>
-          <button className="back-link" onClick={()=>setPhase("configure")} style={{ background:"none", border:"none", color:"#334155", fontSize:11, cursor:"pointer", padding:0, transition:"all 0.15s" }}>{"\u2190"} Reconfigure farm</button>
+          <button className="back-link" onClick={()=>setPhase("narrative")} style={{ background:"none", border:"none", color:"#475569", fontSize:11, cursor:"pointer", padding:0, transition:"all 0.15s" }}>{LARR} Change treatment</button>
+          <button className="back-link" onClick={()=>setPhase("configure")} style={{ background:"none", border:"none", color:"#334155", fontSize:11, cursor:"pointer", padding:0, transition:"all 0.15s" }}>{LARR} Reconfigure farm</button>
         </div>
-        <button className="param-panel-btn" onClick={()=>setShowParams(!showParams)} style={{
-          background: showParams ? "#0ea5e918" : "#060d1a",
-          border: "1.5px solid "+(showParams ? "#0ea5e9" : "#1a2436"),
-          color: showParams ? "#0ea5e9" : "#94a3b8",
-          borderRadius:10, padding:"10px 20px", fontSize:13, fontWeight:700, cursor:"pointer",
-          display:"flex", alignItems:"center", gap:8,
+        <button onClick={()=>setShowParams(!showParams)} style={{
+          background:"none", border:"none", color: showParams ? "#0ea5e9" : "#475569",
+          fontSize:11, cursor:"pointer", padding:0, transition:"all 0.15s",
         }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-          {showParams ? "Hide parameters" : "Adjust parameters live"}
+          {showParams ? "Hide parameters" : "Show parameters"}
         </button>
       </div>
 
-      {/* LIVE PARAMETER CONTROLS */}
+      {/* LIVE PARAMETER CONTROLS - visible by default */}
       {showParams && (
         <div style={{
           background:"linear-gradient(135deg, #060d1a 0%, #0a1628 100%)",
           border:"1.5px solid #0ea5e930",
-          borderRadius:14, padding:"20px 24px",
+          borderRadius:14, padding:"16px 20px",
           animation:"fadeUp 0.3s ease",
           position:"sticky", top:0, zIndex:50,
         }}>
-          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
-            <p style={{ color:"#0ea5e9", fontSize:10, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, margin:0 }}>Live parameters \u2014 all results update instantly</p>
-            <button onClick={()=>setShowParams(false)} style={{ background:"none", border:"none", color:"#475569", fontSize:18, cursor:"pointer", padding:0, lineHeight:1 }}>{"\u00D7"}</button>
-          </div>
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr 1fr", gap:20 }}>
+          <p style={{ color:"#0ea5e9", fontSize:9, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, margin:"0 0 12px" }}>Live parameters {MDASH} all results update instantly</p>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr 1fr", gap:16 }}>
             <div>
-              <p style={{ color:"#94a3b8", fontSize:11, fontWeight:600, margin:"0 0 8px" }}>Farm size</p>
-              <input type="range" min={10} max={500} step={5} value={farmSize} onChange={e=>setFarmSize(Number(e.target.value))} className="param-slider" style={{ accentColor:"#10b981" }}/>
-              <p style={{ color:"#10b981", fontSize:14, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"6px 0 0", textAlign:"center" }}>{farmSize} ha</p>
+              <p style={{ color:"#94a3b8", fontSize:10, fontWeight:600, margin:"0 0 6px" }}>Farm size</p>
+              <input type="range" min={10} max={500} step={5} value={farmSize} onChange={e=>setFarmSize(Number(e.target.value))} style={{ width:"100%", accentColor:"#10b981" }}/>
+              <p style={{ color:"#10b981", fontSize:13, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"4px 0 0", textAlign:"center" }}>{farmSize} ha</p>
             </div>
             <div>
-              <p style={{ color:"#94a3b8", fontSize:11, fontWeight:600, margin:"0 0 8px" }}>Farmer age</p>
-              <input type="range" min={18} max={90} step={1} value={farmerAge} onChange={e=>setFarmerAge(Number(e.target.value))} className="param-slider" style={{ accentColor:"#0ea5e9" }}/>
-              <p style={{ color:"#0ea5e9", fontSize:14, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"6px 0 0", textAlign:"center" }}>{farmerAge} years</p>
+              <p style={{ color:"#94a3b8", fontSize:10, fontWeight:600, margin:"0 0 6px" }}>Farmer age</p>
+              <input type="range" min={18} max={90} step={1} value={farmerAge} onChange={e=>setFarmerAge(Number(e.target.value))} style={{ width:"100%", accentColor:"#0ea5e9" }}/>
+              <p style={{ color:"#0ea5e9", fontSize:13, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"4px 0 0", textAlign:"center" }}>{farmerAge} yrs</p>
             </div>
             <div>
-              <p style={{ color:"#94a3b8", fontSize:11, fontWeight:600, margin:"0 0 8px" }}>Owned / Rented</p>
-              <input type="range" min={0} max={100} step={5} value={ownedPct} onChange={e=>setOwnedPct(Number(e.target.value))} className="param-slider" style={{ accentColor:"#f59e0b" }}/>
-              <p style={{ color:"#f59e0b", fontSize:14, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"6px 0 0", textAlign:"center" }}>{ownedPct}% / {100-ownedPct}%</p>
-              <p style={{ color:"#475569", fontSize:9, margin:"2px 0 0", textAlign:"center" }}>Rent: \u20AC{Math.round(rentCostPerHa)}/ha</p>
+              <p style={{ color:"#94a3b8", fontSize:10, fontWeight:600, margin:"0 0 6px" }}>Owned / Rented</p>
+              <input type="range" min={0} max={100} step={5} value={ownedPct} onChange={e=>setOwnedPct(Number(e.target.value))} style={{ width:"100%", accentColor:"#f59e0b" }}/>
+              <p style={{ color:"#f59e0b", fontSize:13, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"4px 0 0", textAlign:"center" }}>{ownedPct}% / {100-ownedPct}%</p>
             </div>
             <div>
-              <p style={{ color:"#94a3b8", fontSize:11, fontWeight:600, margin:"0 0 8px" }}>Crop</p>
-              <select value={crop} onChange={e=>setCrop(e.target.value)} style={{ width:"100%", background:"#080e18", border:"1.5px solid #1a2436", color:"#f1f5f9", borderRadius:8, padding:"8px 10px", fontSize:12, fontWeight:600 }}>
+              <p style={{ color:"#94a3b8", fontSize:10, fontWeight:600, margin:"0 0 6px" }}>Crop</p>
+              <select value={crop} onChange={e=>setCrop(e.target.value)} style={{ width:"100%", background:"#080e18", border:"1.5px solid #1a2436", color:"#f1f5f9", borderRadius:8, padding:"6px 8px", fontSize:11, fontWeight:600 }}>
                 {CROPS.map(c=><option key={c.id} value={c.id}>{c.icon} {c.label}</option>)}
               </select>
-              <p style={{ color:"#475569", fontSize:9, margin:"4px 0 0", textAlign:"center" }}>P: {selectedCrop.pDemand} · N: {selectedCrop.nDemand}</p>
             </div>
             <div>
-              <p style={{ color:"#94a3b8", fontSize:11, fontWeight:600, margin:"0 0 8px" }}>Region</p>
-              <select value={simRegion} onChange={e=>setSimRegion(e.target.value)} style={{ width:"100%", background:"#080e18", border:"1.5px solid #1a2436", color:"#f1f5f9", borderRadius:8, padding:"8px 10px", fontSize:12, fontWeight:600 }}>
+              <p style={{ color:"#94a3b8", fontSize:10, fontWeight:600, margin:"0 0 6px" }}>Region</p>
+              <select value={simRegion} onChange={e=>setSimRegion(e.target.value)} style={{ width:"100%", background:"#080e18", border:"1.5px solid #1a2436", color:"#f1f5f9", borderRadius:8, padding:"6px 8px", fontSize:11, fontWeight:600 }}>
                 {REGIONS.map(r=><option key={r.value} value={r.value}>{r.display}</option>)}
               </select>
             </div>
@@ -2209,8 +2224,8 @@ function MathieuFarmPage({ region }) {
               : bestTreatment.label+" outperforms TSP for "+selectedCrop.label+" in "+regionDisplay}
           </p>
           <p style={{ color:"#64748b", fontSize:11, margin:0 }}>
-            {farmSize} ha \u00B7 {farmerAge} y/o \u00B7 {ownedPct}% owned \u00B7 TSP ranks #{tspRank} of {FERTILIZERS.length}
-            {!tspIsBest ? (" \u00B7 "+bestTreatment.label+" leads by "+fmtE(bestTreatment.margin - tspFin.grossMargin)+"/ha") : ""}
+            {farmSize} ha {MIDDOT} {farmerAge} y/o {MIDDOT} {ownedPct}% owned {MIDDOT} TSP ranks #{tspRank} of {FERTILIZERS.length}
+            {!tspIsBest ? (" "+MIDDOT+" "+bestTreatment.label+" leads by "+fmtE(bestTreatment.margin - tspFin.grossMargin)+"/ha") : ""}
           </p>
         </div>
       </div>
@@ -2218,14 +2233,14 @@ function MathieuFarmPage({ region }) {
       {/* KPI table */}
       <div style={{ ...S.card, padding:0, overflow:"hidden" }}>
         <div style={{ padding:"14px 18px", borderBottom:"1px solid #1a2436" }}>
-          <p style={{ color:"#cbd5e1", fontSize:13, fontWeight:700, margin:0 }}>Treatment comparison \u2014 end of season financial metrics (\u20AC per hectare)</p>
+          <p style={{ color:"#cbd5e1", fontSize:13, fontWeight:700, margin:0 }}>Treatment comparison {MDASH} end of season financial metrics ({EUR} per hectare)</p>
           <p style={{ color:"#475569", fontSize:10, margin:"4px 0 0" }}>These are full season results at harvest. All gross margins are positive because total revenue exceeds total input cost for every treatment.</p>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"180px repeat("+allTreatments.length+",1fr)", gap:0 }}>
           {["Metric", ...allTreatments.map(t=>t.id==="TSP"?"TSP (P Separation)":t.label)].map((h,j)=>(
             <div key={j} style={{ padding:"10px 14px", background:"#060d1a", borderBottom:"1px solid #0d1520", fontSize:10, fontWeight:700, color:j===1?"#10b981":j>1?CHART_COLORS[allTreatments[j-1]?.id]||"#94a3b8":"#64748b", textTransform:"uppercase", letterSpacing:"0.08em", textAlign:j>0?"right":"left" }}>{h}</div>
           ))}
-          {[{label:"Gross output (revenue)",key:"output"},{label:"Total input cost",key:"inputCost"},{label:"Gross margin (revenue \u2212 cost)",key:"grossMargin"}].map((row,i)=>(
+          {[{label:"Gross output (revenue)",key:"output"},{label:"Total input cost",key:"inputCost"},{label:"Gross margin (revenue "+MINUS+" cost)",key:"grossMargin"}].map((row,i)=>(
             <div key={i} style={{ display:"contents" }}>
               <div style={{ padding:"12px 14px", borderBottom:"1px solid #0d1520", color:"#94a3b8", fontSize:12 }}>{row.label}</div>
               {allTreatments.map((t,j)=>{
@@ -2243,7 +2258,7 @@ function MathieuFarmPage({ region }) {
               const fin=computeFinancials(t);
               return (<div key={t.id} style={{ padding:"12px 14px", background:"#0a1628", textAlign:"right" }}>
                 <span style={{ color:j===0?"#10b981":"#cbd5e1", fontSize:14, fontWeight:j===0?800:700, fontFamily:"'DM Mono',monospace" }}>{fin.rofi.toFixed(2)}x</span>
-                {j>0 && <span style={{ color:fin.rofi>=tspFin.rofi?"#10b981":"#f43f5e", fontSize:10, fontFamily:"'DM Mono',monospace", marginLeft:8 }}>({fin.rofi>=tspFin.rofi?"+":"\u2212"}{Math.abs(fin.rofi-tspFin.rofi).toFixed(2)})</span>}
+                {j>0 && <span style={{ color:fin.rofi>=tspFin.rofi?"#10b981":"#f43f5e", fontSize:10, fontFamily:"'DM Mono',monospace", marginLeft:8 }}>({fin.rofi>=tspFin.rofi?"+":MINUS}{Math.abs(fin.rofi-tspFin.rofi).toFixed(2)})</span>}
               </div>);
             })}
           </div>
@@ -2260,7 +2275,7 @@ function MathieuFarmPage({ region }) {
         </div>
       </div>
 
-      {/* MARGIN TRAJECTORY with click-drag zoom */}
+      {/* MARGIN TRAJECTORY */}
       {(() => {
         const rawData = buildMultiYear(TSP).map((r,i) => { const row={year:r.year,TSP:r.margin}; currentFerts.forEach(id=>{const f=FERTILIZERS.find(x=>x.id===id);if(f)row[f.label]=buildMultiYear(f)[i].margin;}); return row; });
         const chartData = marginZoom ? rawData.slice(marginZoom[0], marginZoom[1]+1) : rawData;
@@ -2268,20 +2283,17 @@ function MathieuFarmPage({ region }) {
           <div style={{ ...S.card }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:4 }}>
               <div>
-                <p style={{ color:"#cbd5e1", fontSize:13, fontWeight:700, margin:0 }}>Gross margin trajectory \u2014 five seasons (\u20AC per hectare)</p>
-                <p style={{ color:"#475569", fontSize:10, margin:"4px 0 0" }}>These are positive end of season margins. Click and drag horizontally on the chart to zoom in. Each line shows how the margin evolves as soil nutrient efficiency changes over time.</p>
+                <p style={{ color:"#cbd5e1", fontSize:13, fontWeight:700, margin:0 }}>Gross margin trajectory {MDASH} five seasons ({EUR} per hectare)</p>
+                <p style={{ color:"#475569", fontSize:10, margin:"4px 0 0" }}>These are positive end of season margins. Each line shows how the margin evolves as soil nutrient efficiency changes over time.</p>
               </div>
-              {marginZoom && <button className="zoom-reset" onClick={()=>setMarginZoom(null)} style={{ background:"#060d1a", border:"1px solid #1a2436", color:"#94a3b8", borderRadius:6, padding:"4px 12px", fontSize:10, fontWeight:600, flexShrink:0 }}>Reset zoom</button>}
+              <ZoomControls rawData={rawData} zoom={marginZoom} setZoom={setMarginZoom} />
             </div>
             <ResponsiveContainer width="100%" height={320}>
-              <LineChart data={chartData}
-                onMouseDown={e => e && setRefStart(e.activeLabel)}
-                onMouseUp={e => { if (refStart && e && e.activeLabel && refStart !== e.activeLabel) { const labels = rawData.map(d=>d.year); const i1 = labels.indexOf(refStart); const i2 = labels.indexOf(e.activeLabel); if (i1>=0 && i2>=0) setMarginZoom([Math.min(i1,i2), Math.max(i1,i2)]); } setRefStart(null); }}
-              >
+              <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1a2436"/>
                 <XAxis dataKey="year" tick={{fill:"#64748b",fontSize:11}} axisLine={{stroke:"#1a2436"}}/>
-                <YAxis tick={{fill:"#64748b",fontSize:10}} axisLine={{stroke:"#1a2436"}} tickFormatter={v=>"\u20AC"+v} domain={['dataMin - 20','dataMax + 20']} allowDataOverflow={true}/>
-                <Tooltip contentStyle={{background:"#0a1020",border:"1px solid #1a2436",borderRadius:8,fontSize:11}} formatter={(v,name)=>["\u20AC"+Math.round(v).toLocaleString()+"/ha",name]}/>
+                <YAxis tick={{fill:"#64748b",fontSize:10}} axisLine={{stroke:"#1a2436"}} tickFormatter={v=>EUR+v} domain={['dataMin - 20','dataMax + 20']} allowDataOverflow={true}/>
+                <Tooltip contentStyle={{background:"#0a1020",border:"1px solid #1a2436",borderRadius:8,fontSize:11}} formatter={(v,name)=>[EUR+Math.round(v).toLocaleString()+"/ha",name]}/>
                 <Legend wrapperStyle={{fontSize:11,color:"#94a3b8"}}/>
                 <Line type="monotone" dataKey="TSP" stroke="#10b981" strokeWidth={3} dot={{r:5,fill:"#10b981",strokeWidth:2,stroke:"#04080f"}} activeDot={{r:7}}/>
                 {currentFerts.map(id=>{const f=FERTILIZERS.find(x=>x.id===id);return f?<Line key={id} type="monotone" dataKey={f.label} stroke={CHART_COLORS[id]||"#94a3b8"} strokeWidth={2} dot={{r:4,fill:CHART_COLORS[id]||"#94a3b8",strokeWidth:2,stroke:"#04080f"}} activeDot={{r:6}} strokeDasharray="6 3"/>:null;})}
@@ -2291,25 +2303,21 @@ function MathieuFarmPage({ region }) {
         );
       })()}
 
-      {/* Cost vs Revenue side by side */}
+      {/* Revenue vs Cost side by side */}
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:14 }}>
         {(() => {
-          const rawCost = buildMultiYear(TSP).map((r,i) => { const row={year:r.year,TSP:r.cost}; currentFerts.forEach(id=>{const f=FERTILIZERS.find(x=>x.id===id);if(f)row[f.label]=buildMultiYear(f)[i].cost;}); return row; });
-          const data = costZoom ? rawCost.slice(costZoom[0], costZoom[1]+1) : rawCost;
+          const rawOut = buildMultiYear(TSP).map((r,i) => { const row={year:r.year,TSP:r.output}; currentFerts.forEach(id=>{const f=FERTILIZERS.find(x=>x.id===id);if(f)row[f.label]=buildMultiYear(f)[i].output;}); return row; });
+          const data = outputZoom ? rawOut.slice(outputZoom[0], outputZoom[1]+1) : rawOut;
           return (
             <div style={{ ...S.card }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:6 }}>
-                <p style={{ color:"#f43f5e", fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", margin:0 }}>Total input cost \u2014 five seasons</p>
-                {costZoom && <button className="zoom-reset" onClick={()=>setCostZoom(null)} style={{ background:"#060d1a", border:"1px solid #1a2436", color:"#94a3b8", borderRadius:6, padding:"2px 8px", fontSize:9, fontWeight:600 }}>Reset</button>}
+                <p style={{ color:"#0ea5e9", fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", margin:0 }}>Gross output {MDASH} five seasons</p>
+                <ZoomControls rawData={rawOut} zoom={outputZoom} setZoom={setOutputZoom} />
               </div>
-              <p style={{ color:"#475569", fontSize:9, marginBottom:6 }}>Click and drag to zoom.</p>
               <ResponsiveContainer width="100%" height={240}>
-                <BarChart data={data}
-                  onMouseDown={e => e && setRefStart(e.activeLabel)}
-                  onMouseUp={e => { if (refStart && e && e.activeLabel && refStart !== e.activeLabel) { const labels = rawCost.map(d=>d.year); const i1 = labels.indexOf(refStart); const i2 = labels.indexOf(e.activeLabel); if (i1>=0 && i2>=0) setCostZoom([Math.min(i1,i2), Math.max(i1,i2)]); } setRefStart(null); }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1a2436"/><XAxis dataKey="year" tick={{fill:"#64748b",fontSize:9}} axisLine={{stroke:"#1a2436"}}/><YAxis tick={{fill:"#64748b",fontSize:9}} axisLine={{stroke:"#1a2436"}} tickFormatter={v=>"\u20AC"+v} domain={['dataMin - 10','dataMax + 10']}/>
-                  <Tooltip contentStyle={{background:"#0a1020",border:"1px solid #1a2436",borderRadius:8,fontSize:10}} formatter={(v,name)=>["\u20AC"+Math.round(v).toLocaleString()+"/ha",name]}/>
+                <BarChart data={data}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1a2436"/><XAxis dataKey="year" tick={{fill:"#64748b",fontSize:9}} axisLine={{stroke:"#1a2436"}}/><YAxis tick={{fill:"#64748b",fontSize:9}} axisLine={{stroke:"#1a2436"}} tickFormatter={v=>EUR+v} domain={['dataMin - 40','dataMax + 40']}/>
+                  <Tooltip contentStyle={{background:"#0a1020",border:"1px solid #1a2436",borderRadius:8,fontSize:10}} formatter={(v,name)=>[EUR+Math.round(v).toLocaleString()+"/ha",name]}/>
                   <Bar dataKey="TSP" fill="#10b981" radius={[3,3,0,0]}/>{currentFerts.map(id=>{const f=FERTILIZERS.find(x=>x.id===id);return f?<Bar key={id} dataKey={f.label} fill={CHART_COLORS[id]||"#94a3b8"} radius={[3,3,0,0]} opacity={0.75}/>:null;})}
                 </BarChart>
               </ResponsiveContainer>
@@ -2317,23 +2325,24 @@ function MathieuFarmPage({ region }) {
           );
         })()}
         {(() => {
-          const rawOut = buildMultiYear(TSP).map((r,i) => { const row={year:r.year,TSP:r.output}; currentFerts.forEach(id=>{const f=FERTILIZERS.find(x=>x.id===id);if(f)row[f.label]=buildMultiYear(f)[i].output;}); return row; });
-          const data = outputZoom ? rawOut.slice(outputZoom[0], outputZoom[1]+1) : rawOut;
+          const rawCost = allTreatments.map(t => ({ name: t.id==="TSP" ? "TSP" : t.label, value: t.baseCostPerHa, color: CHART_COLORS[t.id] || "#94a3b8" }));
           return (
             <div style={{ ...S.card }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:6 }}>
-                <p style={{ color:"#0ea5e9", fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", margin:0 }}>Gross output \u2014 five seasons</p>
-                {outputZoom && <button className="zoom-reset" onClick={()=>setOutputZoom(null)} style={{ background:"#060d1a", border:"1px solid #1a2436", color:"#94a3b8", borderRadius:6, padding:"2px 8px", fontSize:9, fontWeight:600 }}>Reset</button>}
+                <div>
+                  <p style={{ color:"#f43f5e", fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", margin:0 }}>Fertilizer cost comparison ({EUR}/ha)</p>
+                  <p style={{ color:"#475569", fontSize:9, margin:"3px 0 0" }}>Only the fertilizer component varies between treatments. All other costs (seed, labour, machinery, rent, insurance) are identical.</p>
+                </div>
               </div>
-              <p style={{ color:"#475569", fontSize:9, marginBottom:6 }}>Click and drag to zoom.</p>
               <ResponsiveContainer width="100%" height={240}>
-                <BarChart data={data}
-                  onMouseDown={e => e && setRefStart(e.activeLabel)}
-                  onMouseUp={e => { if (refStart && e && e.activeLabel && refStart !== e.activeLabel) { const labels = rawOut.map(d=>d.year); const i1 = labels.indexOf(refStart); const i2 = labels.indexOf(e.activeLabel); if (i1>=0 && i2>=0) setOutputZoom([Math.min(i1,i2), Math.max(i1,i2)]); } setRefStart(null); }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1a2436"/><XAxis dataKey="year" tick={{fill:"#64748b",fontSize:9}} axisLine={{stroke:"#1a2436"}}/><YAxis tick={{fill:"#64748b",fontSize:9}} axisLine={{stroke:"#1a2436"}} tickFormatter={v=>"\u20AC"+v} domain={['dataMin - 20','dataMax + 20']}/>
-                  <Tooltip contentStyle={{background:"#0a1020",border:"1px solid #1a2436",borderRadius:8,fontSize:10}} formatter={(v,name)=>["\u20AC"+Math.round(v).toLocaleString()+"/ha",name]}/>
-                  <Bar dataKey="TSP" fill="#10b981" radius={[3,3,0,0]}/>{currentFerts.map(id=>{const f=FERTILIZERS.find(x=>x.id===id);return f?<Bar key={id} dataKey={f.label} fill={CHART_COLORS[id]||"#94a3b8"} radius={[3,3,0,0]} opacity={0.75}/>:null;})}
+                <BarChart data={rawCost} layout="vertical">
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1a2436"/><XAxis type="number" tick={{fill:"#64748b",fontSize:9}} axisLine={{stroke:"#1a2436"}} tickFormatter={v=>EUR+v} domain={[0, 'dataMax + 30']}/><YAxis type="category" dataKey="name" tick={{fill:"#94a3b8",fontSize:10}} axisLine={{stroke:"#1a2436"}} width={100}/>
+                  <Tooltip contentStyle={{background:"#0a1020",border:"1px solid #1a2436",borderRadius:8,fontSize:10}} formatter={(v)=>[EUR+v+"/ha","Fertilizer cost"]}/>
+                  <Bar dataKey="value" radius={[0,4,4,0]}>
+                    {rawCost.map((entry, idx) => (
+                      <Cell key={idx} fill={entry.color} />
+                    ))}
+                  </Bar>
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -2341,30 +2350,26 @@ function MathieuFarmPage({ region }) {
         })()}
       </div>
 
-      {/* SEASON CASH FLOW — clearly NOT margin */}
+      {/* SEASON CASH FLOW */}
       <div style={{ ...S.card }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:4 }}>
           <div>
-            <p style={{ color:"#cbd5e1", fontSize:13, fontWeight:700, margin:0 }}>Growing season cumulative cash position \u2014 October to July (\u20AC per hectare)</p>
+            <p style={{ color:"#cbd5e1", fontSize:13, fontWeight:700, margin:0 }}>Growing season cumulative cash position {MDASH} October to July ({EUR} per hectare)</p>
             <div style={{ margin:"8px 0", padding:"8px 14px", background:"#f59e0b10", border:"1px solid #f59e0b30", borderRadius:8, display:"inline-block" }}>
               <p style={{ color:"#f59e0b", fontSize:11, fontWeight:700, margin:0 }}>This is NOT the final margin. This is the running cash position during the growing season.</p>
               <p style={{ color:"#94a3b8", fontSize:10, margin:"4px 0 0" }}>Costs accumulate from sowing (October) while harvest revenue arrives in summer (June/July). The negative values in early months are normal: they represent capital committed before any revenue is earned. Every treatment ends the season positive.</p>
             </div>
-            <p style={{ color:"#475569", fontSize:10, margin:"4px 0 0" }}>The earlier a treatment's line crosses zero, the sooner the farmer recovers invested capital. Click and drag to zoom.</p>
           </div>
-          {cashZoom && <button className="zoom-reset" onClick={()=>setCashZoom(null)} style={{ background:"#060d1a", border:"1px solid #1a2436", color:"#94a3b8", borderRadius:6, padding:"4px 12px", fontSize:10, fontWeight:600, flexShrink:0 }}>Reset zoom</button>}
+          <ZoomControls rawData={MONTHS} zoom={cashZoom} setZoom={setCashZoom} />
         </div>
         {(() => {
           const rawCash = buildTimeline(TSP).map((d,i) => { const row={month:d.month,TSP:d.cumCash}; currentFerts.forEach(id=>{const f=FERTILIZERS.find(x=>x.id===id);if(f)row[f.label]=buildTimeline(f)[i].cumCash;}); return row; });
           const data = cashZoom ? rawCash.slice(cashZoom[0], cashZoom[1]+1) : rawCash;
           return (
             <ResponsiveContainer width="100%" height={290}>
-              <AreaChart data={data}
-                onMouseDown={e => e && setRefStart(e.activeLabel)}
-                onMouseUp={e => { if (refStart && e && e.activeLabel && refStart !== e.activeLabel) { const labels = rawCash.map(d=>d.month); const i1 = labels.indexOf(refStart); const i2 = labels.indexOf(e.activeLabel); if (i1>=0 && i2>=0) setCashZoom([Math.min(i1,i2), Math.max(i1,i2)]); } setRefStart(null); }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#1a2436"/><XAxis dataKey="month" tick={{fill:"#64748b",fontSize:10}} axisLine={{stroke:"#1a2436"}}/><YAxis tick={{fill:"#64748b",fontSize:10}} axisLine={{stroke:"#1a2436"}} tickFormatter={v=>"\u20AC"+v}/>
-                <Tooltip contentStyle={{background:"#0a1020",border:"1px solid #1a2436",borderRadius:8,fontSize:10}} formatter={(v,name)=>["\u20AC"+Math.round(v).toLocaleString()+"/ha (cumulative cash)",name]}/>
+              <AreaChart data={data}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#1a2436"/><XAxis dataKey="month" tick={{fill:"#64748b",fontSize:10}} axisLine={{stroke:"#1a2436"}}/><YAxis tick={{fill:"#64748b",fontSize:10}} axisLine={{stroke:"#1a2436"}} tickFormatter={v=>EUR+v}/>
+                <Tooltip contentStyle={{background:"#0a1020",border:"1px solid #1a2436",borderRadius:8,fontSize:10}} formatter={(v,name)=>[EUR+Math.round(v).toLocaleString()+"/ha (cumulative cash)",name]}/>
                 <Legend wrapperStyle={{fontSize:10,color:"#94a3b8"}}/>
                 <ReferenceLine y={0} stroke="#f43f5e50" strokeDasharray="4 4" label={{value:"breakeven",fill:"#f43f5e80",fontSize:9}}/>
                 <Area type="monotone" dataKey="TSP" stroke="#10b981" fill="#10b98120" strokeWidth={2}/>
@@ -2394,24 +2399,83 @@ function MathieuFarmPage({ region }) {
             } else {
               lines.push("TSP produces the highest gross margin of all treatments for "+selectedCrop.label.toLowerCase()+" in this configuration. This is because "+selectedCrop.label.toLowerCase()+"'s "+selectedCrop.nDemand+" nitrogen demand means the farmer does not benefit from bundled N in compound products, and the extra cost of those products reduces the margin without a proportional yield increase.");
             }
-            currentFerts.forEach(id => {
-              if (id === bestTreatment.id && !tspIsBest) return;
-              const f=FERTILIZERS.find(x=>x.id===id); if(!f)return;
-              const fin=computeFinancials(f); const mDiff=fin.grossMargin-tspFin.grossMargin;
-              if(mDiff<0) lines.push(f.label+" produces a margin "+fmtE(Math.abs(mDiff))+" per hectare lower than TSP, driven by "+(fin.inputCost>tspFin.inputCost?"higher input costs that are not offset by proportional yield gains":"lower yield response to its nutrient profile in this crop context")+".");
-              else if(mDiff>0) lines.push(f.label+" outperforms TSP by "+fmtE(mDiff)+" per hectare in season one because its bundled nitrogen aligns with "+selectedCrop.label.toLowerCase()+"'s demand profile.");
-            });
-            if(ownedPct<50) lines.push("With "+(100-ownedPct)+"% rented land adding \u20AC"+Math.round(rentCostPerHa)+" per hectare in fixed costs, every euro of margin difference is more consequential to the farm's solvency.");
+            if(ownedPct<50) lines.push("With "+(100-ownedPct)+"% rented land adding "+EUR+Math.round(rentCostPerHa)+" per hectare in fixed costs, every euro of margin difference is more consequential to the farm's solvency.");
             return lines.join(" ");
           })()}
         </p>
+      </div>
+
+      {/* Ranked */}
+      <div style={{ ...S.card, padding:0, overflow:"hidden" }}>
+        <div style={{ padding:"12px 18px", borderBottom:"1px solid #1a2436" }}>
+          <p style={{ color:"#cbd5e1", fontSize:11, fontWeight:700, margin:0 }}>All treatments ranked by gross margin for {selectedCrop.label} ({EUR} per hectare)</p>
+          <p style={{ color:"#475569", fontSize:9, margin:"3px 0 0" }}>Ranking reflects this specific crop and region. A different crop or region may produce a different ranking.</p>
+        </div>
+        {allRanked.map((f,i)=>{
+          const isTSP=f.id==="TSP"; const isC=currentFerts.includes(f.id); const mD=f.margin-tspFin.grossMargin;
+          return (<div key={f.id} style={{ display:"flex", alignItems:"center", gap:14, padding:"11px 18px", background:isTSP?"#10b98108":isC?(f.color+"08"):"transparent", borderLeft:"3px solid "+(isTSP?"#10b981":isC?f.color:"transparent") }}>
+            <span style={{ color:i===0?"#f59e0b":"#334155", fontSize:10, width:18, fontFamily:"'DM Mono',monospace", fontWeight:700 }}>#{i+1}</span>
+            <div style={{ width:6, height:6, borderRadius:2, background:f.color, flexShrink:0 }}/>
+            <span style={{ color:isTSP?"#10b981":isC?"#f1f5f9":"#94a3b8", fontSize:12, fontWeight:isTSP||isC||i===0?700:400, flex:1 }}>
+              {f.label}
+              {i===0&&<span style={{ marginLeft:8, fontSize:9, color:"#f59e0b", background:"#f59e0b18", padding:"1px 6px", borderRadius:4 }}>BEST FOR {selectedCrop.label.toUpperCase()}</span>}
+              {isTSP&&i!==0&&<span style={{ marginLeft:8, fontSize:9, color:"#10b981", background:"#10b98118", padding:"1px 6px", borderRadius:4 }}>P SEPARATION</span>}
+              {isC&&!isTSP&&<span style={{ marginLeft:8, fontSize:9, color:f.color, background:f.color+"18", padding:"1px 6px", borderRadius:4 }}>COMPARED</span>}
+            </span>
+            <span style={{ color:"#cbd5e1", fontSize:12, fontFamily:"'DM Mono',monospace", width:80, textAlign:"right" }}>{fmtE(f.margin)}</span>
+            <span style={{ color:mD>=0?"#10b981":"#f43f5e", fontSize:11, fontWeight:700, fontFamily:"'DM Mono',monospace", width:80, textAlign:"right" }}>{isTSP?MDASH:fmtK(mD)}</span>
+          </div>);
+        })}
+      </div>
+
+      {/* TAKEAWAYS */}
+      <div style={{ background:"linear-gradient(135deg, #060d1a 0%, #0a1628 100%)", border:"1.5px solid #1a2436", borderRadius:16, padding:"24px 28px" }}>
+        <p style={{ color:"#f1f5f9", fontSize:22, fontWeight:800, letterSpacing:"-0.02em", margin:"0 0 6px" }}>What this means for OCP Nutricrops</p>
+        <p style={{ color:"#64748b", fontSize:12, margin:"0 0 20px", lineHeight:1.6 }}>
+          Interpretation specific to {selectedCrop.label.toLowerCase()} grown in {regionDisplay}, France. Conclusions are scoped to the European context and depend on crop nutrient demand profile and farm cost structure.
+        </p>
+        {(()=>{
+          const c=selectedCrop; const lowN=c.nDemand==="moderate"||c.nDemand==="medium";
+          const tspY5 = computeFinancials(TSP, 4).grossMargin;
+          const bestY5 = computeFinancials(allRanked[0], 4).grossMargin;
+          const tspWinsLong = tspY5 > bestY5;
+          const mkCard = (title, color, text) => (<div key={title} style={{ background:"#080e18", borderRadius:12, padding:"16px 20px" }}><p style={{ color:color, fontSize:13, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, margin:"0 0 10px" }}>{title}</p><p style={{ color:"#cbd5e1", fontSize:12, lineHeight:1.8, margin:0 }}>{text}</p></div>);
+
+          const europeText = tspIsBest
+            ? "For "+c.label.toLowerCase()+" in "+regionDisplay+", TSP delivers the highest gross margin of all treatments at "+fmtE(tspFin.grossMargin)+" per hectare. The commercial team can present this as a direct economic argument. At "+farmSize+" hectares, switching to TSP represents a total farm margin of "+fmtE(tspFin.grossMargin * farmSize)+"."
+            : "For "+c.label.toLowerCase()+" in "+regionDisplay+", TSP ranks #"+tspRank+" out of "+FERTILIZERS.length+" treatments. "+bestTreatment.label+" produces the highest margin at "+fmtE(bestTreatment.margin)+" per hectare, which is "+fmtE(bestTreatment.margin-tspFin.grossMargin)+" more than TSP. This is an honest result: "+c.label.toLowerCase()+"'s "+c.nDemand+" nitrogen demand means compound products with bundled N provide a real yield advantage in this context. The commercial team should not oversell TSP on this crop."+(tspWinsLong ? " If the conversation shifts to multi season economics, TSP's lower decay rate reverses the ranking by season five." : " Even over five seasons, the compound advantage persists. Focus TSP messaging on crops where separation economics are unambiguous, such as potato and sugar beet.");
+
+          const customText = tspIsBest
+            ? "For "+c.label.toLowerCase()+", straight TSP is the most cost effective phosphorus delivery. Any customized formulation must match or beat TSP's cost per unit of usable "+P2O5+", or it will reduce the farmer's margin."
+            : "For "+c.label.toLowerCase()+", "+bestTreatment.label+" outperforms TSP in season one because the crop's "+c.nDemand+" nitrogen demand means bundled N contributes to yield. This opens a formulation opportunity: a customized product combining concentrated P with a modest N component calibrated to "+c.label.toLowerCase()+"'s demand curve could capture the best of both approaches.";
+
+          const nutritionText = tspIsBest
+            ? "TSP tops the margin ranking for "+c.label.toLowerCase()+", validating the core product line in this crop context. Even products with comparable "+P2O5+" concentration do not match TSP's margin because accompanying nutrients add cost without proportional yield benefit."
+            : "For "+c.label.toLowerCase()+", TSP is not the top performer, and the Nutrition Solutions team should present this transparently. "+bestTreatment.label+" wins because this crop's "+c.nDemand+" nitrogen demand means bundled N contributes real yield value."+(tspWinsLong ? " The honest argument is a multi season one: over five seasons, TSP's lower annual decay shifts the cumulative economics in its favor." : " For this specific crop, the data does not support a blanket TSP recommendation.");
+
+          const cropTexts = {
+            wheat: "Soft wheat has high demand for both phosphorus and nitrogen. Research from the University of Adelaide's Fertiliser Technology Research Centre shows that MAP and DAP can outperform TSP in certain soils because co-located ammonium and phosphate enhance early root development through localised pH effects. In this simulation, MAP and DAP rank above TSP for wheat because the bundled nitrogen provides a genuine yield contribution during tillering and stem elongation. TSP remains competitive and its lower efficiency decay means it gains ground over multiple seasons, but the first season advantage belongs to the ammoniated phosphates.",
+            barley: "Barley has moderate P and N demand, making it the most cost sensitive of the major cereals. MAP tends to edge out TSP for barley because its modest nitrogen contribution aligns with the crop's moderate demand profile. TSP is competitive but does not dominate in the way it does on potato or sugar beet.",
+            maize: "Maize is the crop where the P Doctrine faces its most direct challenge. Both P and N demand are substantial, with nitrogen uptake peaking during the V6 to V12 growth stages. MAP and DAP decisively outperform TSP because their bundled nitrogen provides critical yield contribution during this window. This is the context where the commercial team should be most honest: separation is not the optimal strategy for maize.",
+            potato: "Potato is the strongest single crop case for nutrient separation in the entire French rotation. High P demand, moderate N demand, and direct quality damage from excess nitrogen make TSP the unambiguous winner. When nitrogen is bundled with phosphorus in a compound fertilizer, the resulting N surplus reduces tuber size uniformity and increases hollow heart incidence, both of which lower the price per tonne.",
+            sugarbeet: "Sugar beet is highly sensitive to excess nitrogen, which reduces sugar content and extraction rate at the factory. Every kilogram of unnecessary N lowers the effective price per tonne because beet contracts typically include quality premiums tied to sugar percentage. TSP eliminates this risk by keeping P and N independent.",
+            tomato: "Tomato is a high value crop where small yield differences create large margin swings. MAP outperforms TSP on tomato because the crop's high nitrogen demand during fruit development means the bundled N in MAP provides a genuine yield advantage that more than compensates for its higher cost.",
+          };
+
+          return (<div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+            {mkCard("OCP Europe "+MDASH+" Regional commercial team", "#0ea5e9", europeText)}
+            {mkCard("Customization BU", "#10b981", customText)}
+            {mkCard("Nutrition Solutions BU", "#10b981", nutritionText)}
+            {mkCard("Crop specific interpretation "+MDASH+" "+c.label, "#f59e0b", cropTexts[c.id]||"")}
+          </div>);
+        })()}
       </div>
 
       {/* Balance Sheet */}
       <div style={{ ...S.card, padding:0, overflow:"hidden" }}>
         <div className="dropdown-toggle" onClick={()=>setShowBS(!showBS)} style={{ padding:"20px 24px", display:"flex", alignItems:"center", justifyContent:"space-between", background:"#080e18" }}>
           <p style={{ color:"#f1f5f9", fontSize:22, fontWeight:800, letterSpacing:"-0.02em", margin:0 }}>Balance Sheet</p>
-          <span style={{ color:"#64748b", fontSize:26, fontWeight:300, transform:showBS?"rotate(180deg)":"none", transition:"transform 0.2s" }}>{"\u25BE"}</span>
+          <span style={{ color:"#64748b", fontSize:26, fontWeight:300, transform:showBS?"rotate(180deg)":"none", transition:"transform 0.2s" }}>{CARET}</span>
         </div>
         {showBS && (
           <div style={{ padding:"0 18px 18px", animation:"fadeUp 0.3s ease" }}>
@@ -2433,7 +2497,7 @@ function MathieuFarmPage({ region }) {
       <div style={{ ...S.card, padding:0, overflow:"hidden" }}>
         <div className="dropdown-toggle" onClick={()=>setShowPL(!showPL)} style={{ padding:"20px 24px", display:"flex", alignItems:"center", justifyContent:"space-between", background:"#080e18" }}>
           <p style={{ color:"#f1f5f9", fontSize:22, fontWeight:800, letterSpacing:"-0.02em", margin:0 }}>Profit & Loss Statement</p>
-          <span style={{ color:"#64748b", fontSize:26, fontWeight:300, transform:showPL?"rotate(180deg)":"none", transition:"transform 0.2s" }}>{"\u25BE"}</span>
+          <span style={{ color:"#64748b", fontSize:26, fontWeight:300, transform:showPL?"rotate(180deg)":"none", transition:"transform 0.2s" }}>{CARET}</span>
         </div>
         {showPL && (
           <div style={{ padding:"0 18px 18px", animation:"fadeUp 0.3s ease" }}>
@@ -2451,81 +2515,10 @@ function MathieuFarmPage({ region }) {
         )}
       </div>
 
-      {/* Ranked */}
-      <div style={{ ...S.card, padding:0, overflow:"hidden" }}>
-        <div style={{ padding:"12px 18px", borderBottom:"1px solid #1a2436" }}>
-          <p style={{ color:"#cbd5e1", fontSize:11, fontWeight:700, margin:0 }}>All treatments ranked by gross margin for {selectedCrop.label} (\u20AC per hectare)</p>
-          <p style={{ color:"#475569", fontSize:9, margin:"3px 0 0" }}>Ranking reflects this specific crop and region. A different crop or region may produce a different ranking.</p>
-        </div>
-        {allRanked.map((f,i)=>{
-          const isTSP=f.id==="TSP"; const isC=currentFerts.includes(f.id); const mD=f.margin-tspFin.grossMargin;
-          return (<div key={f.id} style={{ display:"flex", alignItems:"center", gap:14, padding:"11px 18px", background:isTSP?"#10b98108":isC?(f.color+"08"):"transparent", borderLeft:"3px solid "+(isTSP?"#10b981":isC?f.color:"transparent") }}>
-            <span style={{ color:i===0?"#f59e0b":"#334155", fontSize:10, width:18, fontFamily:"'DM Mono',monospace", fontWeight:700 }}>#{i+1}</span>
-            <div style={{ width:6, height:6, borderRadius:2, background:f.color, flexShrink:0 }}/>
-            <span style={{ color:isTSP?"#10b981":isC?"#f1f5f9":"#94a3b8", fontSize:12, fontWeight:isTSP||isC||i===0?700:400, flex:1 }}>
-              {f.label}
-              {i===0&&<span style={{ marginLeft:8, fontSize:9, color:"#f59e0b", background:"#f59e0b18", padding:"1px 6px", borderRadius:4 }}>BEST FOR {selectedCrop.label.toUpperCase()}</span>}
-              {isTSP&&i!==0&&<span style={{ marginLeft:8, fontSize:9, color:"#10b981", background:"#10b98118", padding:"1px 6px", borderRadius:4 }}>P SEPARATION</span>}
-              {isC&&!isTSP&&<span style={{ marginLeft:8, fontSize:9, color:f.color, background:f.color+"18", padding:"1px 6px", borderRadius:4 }}>COMPARED</span>}
-            </span>
-            <span style={{ color:"#cbd5e1", fontSize:12, fontFamily:"'DM Mono',monospace", width:80, textAlign:"right" }}>{fmtE(f.margin)}</span>
-            <span style={{ color:mD>=0?"#10b981":"#f43f5e", fontSize:11, fontWeight:700, fontFamily:"'DM Mono',monospace", width:80, textAlign:"right" }}>{isTSP?"\u2014":fmtK(mD)}</span>
-          </div>);
-        })}
-      </div>
-
-      {/* TAKEAWAYS */}
-      <div style={{ background:"linear-gradient(135deg, #060d1a 0%, #0a1628 100%)", border:"1.5px solid #1a2436", borderRadius:16, padding:"24px 28px" }}>
-        <p style={{ color:"#f1f5f9", fontSize:22, fontWeight:800, letterSpacing:"-0.02em", margin:"0 0 6px" }}>What this means for OCP Nutricrops</p>
-        <p style={{ color:"#64748b", fontSize:12, margin:"0 0 20px", lineHeight:1.6 }}>
-          Interpretation specific to {selectedCrop.label.toLowerCase()} grown in {regionDisplay}, France. Conclusions are scoped to the European context and depend on crop nutrient demand profile and farm cost structure.
-        </p>
-        {(()=>{
-          const c=selectedCrop; const lowN=c.nDemand==="moderate"||c.nDemand==="medium";
-          const tspY5 = computeFinancials(TSP, 4).grossMargin;
-          const bestY5 = computeFinancials(allRanked[0], 4).grossMargin;
-          const tspWinsLong = tspY5 > bestY5;
-          const mkCard = (title, color, text) => (<div key={title} style={{ background:"#080e18", borderRadius:12, padding:"16px 20px" }}><p style={{ color:color, fontSize:13, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, margin:"0 0 10px" }}>{title}</p><p style={{ color:"#cbd5e1", fontSize:12, lineHeight:1.8, margin:0 }}>{text}</p></div>);
-
-          const europeText = tspIsBest
-            ? "For "+c.label.toLowerCase()+" in "+regionDisplay+", TSP delivers the highest gross margin of all treatments at "+fmtE(tspFin.grossMargin)+" per hectare. The commercial team can present this as a direct economic argument. The case is strongest when targeting farmers who currently use blended NPK products, where the margin gap is widest. At "+farmSize+" hectares, switching to TSP represents a total farm margin of "+fmtE(tspFin.grossMargin * farmSize)+"."
-            : "For "+c.label.toLowerCase()+" in "+regionDisplay+", TSP ranks #"+tspRank+" out of "+FERTILIZERS.length+" treatments. "+bestTreatment.label+" produces the highest margin at "+fmtE(bestTreatment.margin)+" per hectare, which is "+fmtE(bestTreatment.margin-tspFin.grossMargin)+" more than TSP. This is an honest result: "+c.label.toLowerCase()+"'s "+c.nDemand+" nitrogen demand means compound products with bundled N provide a real yield advantage in this context. The commercial team should not oversell TSP on this crop."+(tspWinsLong ? " If the conversation shifts to multi season economics, TSP's lower decay rate reverses the ranking by season five, and the team can build a long term profitability argument." : " Even over five seasons, the compound advantage persists for this crop. The team should focus TSP messaging on crops where separation economics are unambiguous, such as potato and sugar beet.")+(lowN?" "+c.label+" has moderate nitrogen demand, which is the strongest context for separation because farmers are paying for nitrogen they do not fully use in compound formulations.":"");
-
-          const customText = tspIsBest
-            ? "For "+c.label.toLowerCase()+", straight TSP is the most cost effective phosphorus delivery. Any customized formulation must match or beat TSP's cost per unit of usable P\u2082O\u2085, or it will reduce the farmer's margin. The farmer's margin of "+fmtE(tspFin.grossMargin)+" per hectare defines the ceiling for premium pricing."+(ownedPct<50?" High rental ratios compress margin further. Product pricing must reflect that farmers at "+ownedPct+"% ownership have less flexibility to absorb premium formulation costs.":"")
-            : "For "+c.label.toLowerCase()+", "+bestTreatment.label+" outperforms TSP in season one because the crop's "+c.nDemand+" nitrogen demand means bundled N contributes to yield. This opens a formulation opportunity: a customized product combining concentrated P with a modest N component calibrated to "+c.label.toLowerCase()+"'s demand curve could capture the best of both approaches."+(ownedPct<50?" High rental ratios compress margin further. Product pricing must reflect that farmers at "+ownedPct+"% ownership have less flexibility to absorb premium formulation costs.":"");
-
-          const nutritionText = tspIsBest
-            ? "TSP tops the margin ranking for "+c.label.toLowerCase()+", validating the core product line in this crop context. Even products with comparable P\u2082O\u2085 concentration do not match TSP's margin because accompanying nutrients add cost without proportional yield benefit."
-            : "For "+c.label.toLowerCase()+", TSP is not the top performer, and the Nutrition Solutions team should present this transparently rather than overstating the case. "+bestTreatment.label+" wins because this crop's "+c.nDemand+" nitrogen demand means bundled N contributes real yield value."+(tspWinsLong ? " The honest argument is a multi season one: over five seasons, TSP's lower annual decay shifts the cumulative economics in its favor." : " For this specific crop, the data does not support a blanket TSP recommendation. Focus the conversation on crops where separation economics are unambiguous.");
-
-          const greenText = lowN
-            ? c.label+" has moderate nitrogen demand, so compound fertilizers systematically over deliver N relative to what the crop absorbs. The environmental case for separation is direct: by using TSP and dosing nitrogen independently, the farmer applies less total N, reducing nitrate leaching and nitrous oxide emissions. The financial data supports this because the farmer does not sacrifice margin by switching."
-            : c.label+" has "+c.nDemand+" nitrogen demand, so the environmental case for separation is more nuanced. The farmer needs substantial nitrogen regardless of which phosphorus product is used. The separation advantage is about timing precision: staged N applications match the crop's uptake curve more closely than a single compound dose, reducing the fraction of applied N lost to the environment."+(!tspIsBest?" The fact that "+bestTreatment.label+" outperforms TSP on margin means the Green Solutions team cannot frame separation as a win on both economics and environment for this crop. The environmental argument must stand on its own merits.":"");
-
-          const cropTexts = {
-            wheat: "Soft wheat has high demand for both phosphorus and nitrogen. Research from the University of Adelaide's Fertiliser Technology Research Centre shows that MAP and DAP can outperform TSP in certain soils because co-located ammonium and phosphate enhance early root development through localised pH effects. In this simulation, MAP and DAP rank above TSP for wheat because the bundled nitrogen provides a genuine yield contribution during tillering and stem elongation. TSP remains competitive and its lower efficiency decay means it gains ground over multiple seasons, but the first season advantage belongs to the ammoniated phosphates. The commercial team should present TSP as a viable long term option for wheat, not as the outright winner.",
-            barley: "Barley has moderate P and N demand, making it the most cost sensitive of the major cereals. The margin difference between treatments is smaller in absolute terms but larger as a percentage of total input cost. MAP tends to edge out TSP for barley because its modest nitrogen contribution aligns with the crop's moderate demand profile. TSP is competitive but does not dominate in the way it does on potato or sugar beet.",
-            maize: "Maize is the crop where the P Doctrine faces its most direct challenge. Both P and N demand are substantial, with nitrogen uptake peaking during the V6 to V12 growth stages. MAP and DAP decisively outperform TSP because their bundled nitrogen provides critical yield contribution during this window. The case for TSP on maize is a multi season argument built on efficiency decay differentials, but even over five seasons the compound advantage often persists because the nitrogen contribution is so large. This is the context where the commercial team should be most honest: separation is not the optimal strategy for maize.",
-            potato: "Potato is the strongest single crop case for nutrient separation in the entire French rotation. High P demand, moderate N demand, and direct quality damage from excess nitrogen make TSP the unambiguous winner. When nitrogen is bundled with phosphorus in a compound fertilizer, the resulting N surplus reduces tuber size uniformity and increases hollow heart incidence, both of which lower the price per tonne. TSP delivers full P without N, allowing the farmer to apply nitrogen conservatively and late.",
-            sugarbeet: "Sugar beet is highly sensitive to excess nitrogen, which reduces sugar content and extraction rate at the factory. Every kilogram of unnecessary N lowers the effective price per tonne because beet contracts typically include quality premiums tied to sugar percentage. TSP eliminates this risk by keeping P and N independent, allowing the farmer to calibrate nitrogen application precisely to the crop's moderate demand.",
-            tomato: "Tomato is a high value crop where small yield differences create large margin swings in both directions. MAP outperforms TSP on tomato because the crop's high nitrogen demand during fruit development means the bundled N in MAP provides a genuine yield advantage that more than compensates for its higher cost. TSP supports strong root development and early flowering without nitrogen surge, but it leaves the farmer to source and time nitrogen separately during the most critical growth phase.",
-          };
-
-          return (<div style={{ display:"flex", flexDirection:"column", gap:14 }}>
-            {mkCard("OCP Europe \u2014 Regional commercial team", "#0ea5e9", europeText)}
-            {mkCard("Customization BU", "#10b981", customText)}
-            {mkCard("Nutrition Solutions BU", "#10b981", nutritionText)}
-            {mkCard("Green Solutions BU", "#10b981", greenText)}
-            {mkCard("Crop specific interpretation \u2014 "+c.label, "#f59e0b", cropTexts[c.id]||"")}
-          </div>);
-        })()}
-      </div>
-
       {/* CTA */}
       <div style={{ display:"flex", justifyContent:"center", paddingTop:4, gap:16 }}>
-        <button className="restart-btn" onClick={()=>setPhase("narrative")} style={{ background:"transparent", border:"1.5px solid #0ea5e9", color:"#0ea5e9", padding:"14px 36px", borderRadius:8, fontSize:13, fontWeight:700, cursor:"pointer", transition:"all 0.2s" }}>{"\u2190"} Change treatment</button>
-        <button className="restart-btn" onClick={()=>{setPhase("configure");setCurrentFerts([]);}} style={{ background:"transparent", border:"1.5px solid #e2e8f0", color:"#e2e8f0", padding:"14px 36px", borderRadius:8, fontSize:13, fontWeight:700, cursor:"pointer", transition:"all 0.2s" }}>{"\u2190"} New farm configuration</button>
+        <button className="restart-btn" onClick={()=>setPhase("narrative")} style={{ background:"transparent", border:"1.5px solid #0ea5e9", color:"#0ea5e9", padding:"14px 36px", borderRadius:8, fontSize:13, fontWeight:700, cursor:"pointer", transition:"all 0.2s" }}>{LARR} Change treatment</button>
+        <button className="restart-btn" onClick={()=>{setPhase("configure");setCurrentFerts([]);}} style={{ background:"transparent", border:"1.5px solid #e2e8f0", color:"#e2e8f0", padding:"14px 36px", borderRadius:8, fontSize:13, fontWeight:700, cursor:"pointer", transition:"all 0.2s" }}>{LARR} New farm configuration</button>
       </div>
     </div>
   );
