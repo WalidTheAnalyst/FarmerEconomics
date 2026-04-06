@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars -- setSimYear, selectedAlts, REGION_KEYS, YEAR_KEYS, FARMTYPE_KEYS, rofiDiff reserved for future use */
 import { useState, useEffect } from "react";
 import ATLASPage from "./ATLAS";
 import {
