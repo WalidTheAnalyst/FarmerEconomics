@@ -1,8 +1,7 @@
 /* eslint-disable no-unused-vars -- setSimYear, selectedAlts, REGION_KEYS, YEAR_KEYS, FARMTYPE_KEYS, rofiDiff reserved for future use */
 import { useState, useEffect } from "react";
 import ATLASPage from "./ATLAS";
-import { ResponsiveContainer, LineChart, BarChart, AreaChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line, Bar, Area, ReferenceLine, ReferenceArea, Cell } from 'recharts';
-
+import { ResponsiveContainer, LineChart, BarChart, AreaChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line, Bar, Area, ReferenceLine, ReferenceArea, Cell, RadarChart, Radar, PolarGrid, PolarAngleAxis, PieChart, Pie } from 'recharts';
 // ─── DATA ────────────────────────────────────────────────────────────────────
 
 
