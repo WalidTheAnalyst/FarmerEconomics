@@ -3,7 +3,7 @@ import ATLASPage from "./ATLAS";
 import {
   BarChart, Bar, LineChart, Line, RadarChart, Radar, PolarGrid, PolarAngleAxis,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  ReferenceLine, Cell, PieChart, Pie
+  ReferenceLine, Cell, PieChart, Pie, AreaChart, Area
 } from "recharts";
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
@@ -1490,7 +1490,202 @@ const MODEL1 = {
 // };
 
 // ─── QUANTITATIVE ENGINE — MATHIEU EXPERIENCE ─────────────────────────────────
+// ─── QUANTITATIVE ENGINE — MATHIEU INTRO ──────────────────────────────────────
 
+function MathieuIntroPage({ region, onEnterFarm }) {
+  const [phase, setPhase] = useState(0);
+
+  useEffect(() => {
+    const timers = [
+      setTimeout(() => setPhase(1), 600),
+      setTimeout(() => setPhase(2), 1800),
+      setTimeout(() => setPhase(3), 3800),
+    ];
+    return () => timers.forEach(clearTimeout);
+  }, []);
+
+  if (region !== "France") return (
+    <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:400 }}>
+      <p style={{ color:"#94a3b8", fontSize:15 }}>Select France to begin.</p>
+    </div>
+  );
+
+  return (
+    <div style={{
+      minHeight:"calc(100vh - 130px)",
+      background:"#04080f",
+      display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
+      position:"relative", overflow:"hidden",
+      fontFamily:"'DM Sans',sans-serif",
+    }}>
+      <style>{`
+        @keyframes fadeIn    { from{opacity:0}                    to{opacity:1} }
+        @keyframes riseUp    { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes slideIn   { from{opacity:0;transform:translateX(40px)} to{opacity:1;transform:translateX(0)} }
+        @keyframes pulse     { 0%,100%{opacity:0.5} 50%{opacity:1} }
+        @keyframes breathe   { 0%,100%{transform:scale(1)} 50%{transform:scale(1.015)} }
+        @keyframes lineReveal{ from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+        .cta-btn { transition:all 0.3s ease; }
+        .cta-btn:hover {
+          background:#f1f5f9 !important;
+          color:#04080f !important;
+          box-shadow:0 0 60px rgba(241,245,249,0.25) !important;
+          transform:translateY(-2px) !important;
+        }
+      `}</style>
+
+      <div style={{
+        position:"absolute", inset:0, pointerEvents:"none", zIndex:0,
+        backgroundImage:"url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E\")",
+        backgroundSize:"180px",
+      }}/>
+
+      <div style={{
+        position:"absolute", inset:0, pointerEvents:"none", zIndex:0,
+        background:"radial-gradient(ellipse at center, transparent 40%, rgba(4,8,15,0.7) 100%)",
+      }}/>
+
+      <div style={{
+        display:"grid",
+        gridTemplateColumns:"1fr 1fr",
+        gap:0,
+        maxWidth:1000,
+        width:"100%",
+        padding:"0 40px",
+        zIndex:10,
+        alignItems:"center",
+      }}>
+
+        <div style={{
+          display:"flex", justifyContent:"center", alignItems:"center",
+          opacity: phase >= 1 ? 1 : 0,
+          transition:"opacity 1s ease",
+        }}>
+          <div style={{
+            position:"relative",
+            width:320, height:420,
+            borderRadius:4,
+            overflow:"hidden",
+            animation: phase >= 1 ? "breathe 6s ease-in-out infinite" : "none",
+            boxShadow:"0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)",
+          }}>
+            <img
+              src="/farmer.png"
+              alt="Mathieu"
+              style={{
+                position:"absolute",
+                top:"-8%", left:"-4%",
+                width:"108%", height:"108%",
+                objectFit:"cover",
+                objectPosition:"center 12%",
+                display:"block",
+                filter:"brightness(0.88) contrast(1.05)",
+              }}
+              onError={e => { e.target.style.display="none"; }}
+            />
+            <div style={{
+              position:"absolute", inset:0,
+              background:"linear-gradient(to bottom, transparent 55%, rgba(4,8,15,0.85) 100%)",
+            }}/>
+            <div style={{ position:"absolute", bottom:0, left:0, right:0, padding:"18px 20px" }}>
+              <p style={{ color:"rgba(255,255,255,0.5)", fontSize:10, letterSpacing:"0.2em", textTransform:"uppercase", margin:"0 0 4px" }}>
+                Champagne-Ardenne · France
+              </p>
+              <p style={{ color:"#f1f5f9", fontSize:18, fontWeight:700, margin:0, letterSpacing:"-0.01em" }}>
+                Mathieu
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div style={{
+          display:"flex", flexDirection:"column", gap:28,
+          paddingLeft:48,
+        }}>
+
+          <div style={{
+            opacity: phase >= 1 ? 1 : 0,
+            transform: phase >= 1 ? "none" : "translateY(20px)",
+            transition:"opacity 0.9s ease, transform 0.9s ease",
+          }}>
+            <p style={{
+              color:"#94a3b8", fontSize:11, textTransform:"uppercase",
+              letterSpacing:"0.2em", fontWeight:600, margin:"0 0 14px",
+            }}>
+              GMO Business Unit · OCP Nutricrops
+            </p>
+            <h1 style={{
+              color:"#f1f5f9", fontSize:"clamp(28px,3.5vw,44px)",
+              fontWeight:300, letterSpacing:"-0.03em", lineHeight:1.15,
+              margin:0,
+            }}>
+              This is <span style={{ fontWeight:800 }}>Mathieu.</span>
+            </h1>
+          </div>
+
+          {phase >= 2 && (
+            <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+              {[
+                { text:"He farms 120 hectares in northern France.", delay:"0s" },
+                { text:"Every spring, he makes the same set of decisions — what to plant, what to spend, and where to cut.", delay:"0.3s" },
+                { text:"The question is: do those choices actually move the needle?", delay:"0.6s", accent:true },
+              ].map((line, i) => (
+                <p key={i} style={{
+                  color: line.accent ? "#e2e8f0" : "#64748b",
+                  fontSize: line.accent ? 16 : 14,
+                  fontWeight: line.accent ? 600 : 400,
+                  lineHeight:1.75, margin:0,
+                  animation:`lineReveal 0.6s ${line.delay} ease both`,
+                  opacity:0,
+                  fontStyle: line.accent ? "italic" : "normal",
+                }}>
+                  {line.text}
+                </p>
+              ))}
+            </div>
+          )}
+
+          {phase >= 2 && (
+            <p style={{
+              color:"#334155", fontSize:12, lineHeight:1.7, margin:0,
+              animation:"lineReveal 0.6s 1s ease both", opacity:0,
+            }}>
+              Built on data from nearly a thousand real French farms, this simulator estimates what each input decision does to Mathieu's output and income — in real numbers.
+            </p>
+          )}
+
+          {phase >= 3 && (
+            <div style={{
+              display:"flex", flexDirection:"column", gap:14,
+              animation:"riseUp 0.7s ease both",
+            }}>
+              <button
+                className="cta-btn"
+                onClick={onEnterFarm}
+                style={{
+                  alignSelf:"flex-start",
+                  background:"#f1f5f9",
+                  border:"none",
+                  color:"#04080f",
+                  padding:"15px 40px",
+                  borderRadius:4,
+                  fontSize:12, fontWeight:800,
+                  letterSpacing:"0.14em", textTransform:"uppercase",
+                  cursor:"pointer",
+                  boxShadow:"0 0 40px rgba(241,245,249,0.15)",
+                }}>
+                Enter Mathieu's Farm →
+              </button>
+              <p style={{ color:"#1e3050", fontSize:10, letterSpacing:"0.1em", textTransform:"uppercase" }}>
+                FADN France · 909 farms · Log-log production model
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 // ─── MATHIEU FARM — Redesigned financial simulation ──────────────────────────
 // Replace the entire MathieuFarmPage function in App.js with this code.
 // Everything between "function MathieuFarmPage({ region })" and the next
@@ -1519,7 +1714,9 @@ function MathieuFarmPage({ region }) {
   // Results view
   const [showBS,      setShowBS]      = useState(false);
   const [showPL,      setShowPL]      = useState(false);
-
+  const [landingRegion, setLandingRegion] = useState("(131) Champagne-Ardenne");
+  const [landingFarm,   setLandingFarm]   = useState("(1) Fieldcrops");
+  
   if (region !== "France") return (
     <div style={{ display:"flex", alignItems:"center", justifyContent:"center", minHeight:400 }}>
       <p style={{ color:"#94a3b8" }}>Select France to run this simulation.</p>
@@ -1630,10 +1827,7 @@ function MathieuFarmPage({ region }) {
     { display:"Other grazing livestock",         value:"(6) Other grazing livestock" },
     { display:"Granivores (pig, poultry)",        value:"(7) Granivores" },
     { display:"Mixed",                           value:"(8) Mixed" },
-  ];
-
-  const [landingRegion, setLandingRegion] = useState(uniqueRegions[0].value);
-  const [landingFarm,   setLandingFarm]   = useState(LANDING_FARMTYPES[0].value);
+  ]
 
   // ── Derived state ──────────────────────────────────────────────────────────
   const selectedAlts = FERTILIZERS.filter(f => altFerts.includes(f.id));
