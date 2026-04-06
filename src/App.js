@@ -1937,48 +1937,36 @@ function MathieuFarmPage({ region }) {
   const tspRank = allRanked.findIndex(f => f.id === "TSP") + 1;
   const tspIsBest = bestTreatment.id === "TSP";
 
-  // Zoom helpers: +/- buttons step through fixed zoom levels
-  const zoomIn = (rawData, currentZoom, setZoom, labelKey) => {
-    const len = rawData.length;
-    if (!currentZoom) {
-      const mid = Math.floor(len / 2);
-      const span = Math.max(2, Math.floor(len * 0.6));
-      setZoom([Math.max(0, mid - Math.floor(span/2)), Math.min(len-1, mid + Math.floor(span/2))]);
-    } else {
-      const [s,e] = currentZoom;
-      if (e - s <= 2) return;
-      const mid = Math.floor((s+e)/2);
-      const newSpan = Math.max(2, Math.floor((e-s) * 0.6));
-      setZoom([Math.max(0, mid - Math.floor(newSpan/2)), Math.min(len-1, mid + Math.ceil(newSpan/2))]);
-    }
+  // Drag-select zoom: user clicks and drags on chart to select a region, then zooms in
+  const [dragStart, setDragStart] = useState(null);
+  const [dragEnd, setDragEnd] = useState(null);
+  const [activeChart, setActiveChart] = useState(null);
+
+  const handleDragStart = (chartId, e) => {
+    if (e && e.activeLabel) { setDragStart(e.activeLabel); setDragEnd(null); setActiveChart(chartId); }
   };
-  const zoomOut = (rawData, currentZoom, setZoom) => {
-    if (!currentZoom) return;
-    const len = rawData.length;
-    const [s,e] = currentZoom;
-    const newS = Math.max(0, s - 1);
-    const newE = Math.min(len-1, e + 1);
-    if (newS === 0 && newE === len-1) { setZoom(null); return; }
-    setZoom([newS, newE]);
+  const handleDragMove = (chartId, e) => {
+    if (dragStart && activeChart === chartId && e && e.activeLabel) { setDragEnd(e.activeLabel); }
+  };
+  const handleDragEnd = (chartId, rawLabels, setZoom) => {
+    if (dragStart && dragEnd && activeChart === chartId && dragStart !== dragEnd) {
+      const i1 = rawLabels.indexOf(dragStart);
+      const i2 = rawLabels.indexOf(dragEnd);
+      if (i1 >= 0 && i2 >= 0) {
+        setZoom([Math.min(i1,i2), Math.max(i1,i2)]);
+      }
+    }
+    setDragStart(null); setDragEnd(null); setActiveChart(null);
   };
 
-  const ZoomControls = ({ rawData, zoom, setZoom }) => (
-    <div style={{ display:"flex", gap:4, alignItems:"center", flexShrink:0 }}>
-      <button onClick={()=>zoomIn(rawData, zoom, setZoom)} title="Zoom in" style={{ background:"#060d1a", border:"1px solid #1a2436", color:"#94a3b8", borderRadius:6, width:28, height:28, display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", fontSize:14, fontWeight:700, transition:"all 0.15s" }}
-        onMouseEnter={e=>{e.target.style.background="#0ea5e920";e.target.style.color="#0ea5e9";e.target.style.borderColor="#0ea5e9";}}
-        onMouseLeave={e=>{e.target.style.background="#060d1a";e.target.style.color="#94a3b8";e.target.style.borderColor="#1a2436";}}>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-      </button>
-      <button onClick={()=>zoomOut(rawData, zoom, setZoom)} title="Zoom out" style={{ background:"#060d1a", border:"1px solid #1a2436", color: zoom ? "#94a3b8" : "#1a2436", borderRadius:6, width:28, height:28, display:"flex", alignItems:"center", justifyContent:"center", cursor: zoom ? "pointer" : "default", fontSize:14, fontWeight:700, transition:"all 0.15s" }}
-        onMouseEnter={e=>{if(zoom){e.target.style.background="#0ea5e920";e.target.style.color="#0ea5e9";e.target.style.borderColor="#0ea5e9";}}}
-        onMouseLeave={e=>{e.target.style.background="#060d1a";e.target.style.color=zoom?"#94a3b8":"#1a2436";e.target.style.borderColor="#1a2436";}}>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-      </button>
-      {zoom && <button onClick={()=>setZoom(null)} style={{ background:"#060d1a", border:"1px solid #1a2436", color:"#94a3b8", borderRadius:6, padding:"2px 8px", height:28, fontSize:9, fontWeight:600, cursor:"pointer", transition:"all 0.15s" }}
-        onMouseEnter={e=>{e.target.style.background="#0ea5e920";e.target.style.color="#0ea5e9";}}
-        onMouseLeave={e=>{e.target.style.background="#060d1a";e.target.style.color="#94a3b8";}}>Reset</button>}
-    </div>
-  );
+  const ResetZoomBtn = ({ zoom, setZoom }) => zoom ? (
+    <button onClick={()=>setZoom(null)} style={{ background:"#060d1a", border:"1px solid #0ea5e940", color:"#0ea5e9", borderRadius:6, padding:"4px 12px", fontSize:10, fontWeight:600, cursor:"pointer", display:"flex", alignItems:"center", gap:5, flexShrink:0, transition:"all 0.15s" }}
+      onMouseEnter={e=>{e.currentTarget.style.background="#0ea5e920";}}
+      onMouseLeave={e=>{e.currentTarget.style.background="#060d1a";}}>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+      Reset zoom
+    </button>
+  ) : null;
 
   const S = {
     card: { background:"#080e18", border:"1px solid #1a2436", borderRadius:14, padding:"18px 20px" },
@@ -2209,23 +2197,17 @@ function MathieuFarmPage({ region }) {
         </div>
       )}
 
-      {/* Confirmation banner */}
-      <div style={{ display:"flex", alignItems:"center", gap:14, padding:"14px 18px", background: tspIsBest ? "linear-gradient(135deg,#041510,#080e18)" : "linear-gradient(135deg,#0c0e18,#080e18)", border: "1.5px solid "+(tspIsBest ? "#10b98135" : "#f59e0b35"), borderRadius:14, animation:"fadeUp 0.4s ease" }}>
-        <div style={{ width:40, height:40, borderRadius:"50%", background: tspIsBest ? "#10b98120" : "#f59e0b20", border: "2px solid "+(tspIsBest ? "#10b981" : "#f59e0b"), display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
-          {tspIsBest
-            ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="2" x2="12" y2="14"/><line x1="12" y1="18" x2="12" y2="22"/></svg>
-          }
+      {/* Context summary - neutral, no winner declared */}
+      <div style={{ display:"flex", alignItems:"center", gap:14, padding:"14px 18px", background:"linear-gradient(135deg,#060d1a,#080e18)", border:"1.5px solid #1a243650", borderRadius:14, animation:"fadeUp 0.4s ease" }}>
+        <div style={{ width:40, height:40, borderRadius:"50%", background:"#0ea5e915", border:"2px solid #0ea5e940", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
         </div>
         <div>
-          <p style={{ color: tspIsBest ? "#10b981" : "#f59e0b", fontSize:13, fontWeight:700, margin:0 }}>
-            {tspIsBest
-              ? "TSP is the highest margin treatment for "+selectedCrop.label+" in "+regionDisplay
-              : bestTreatment.label+" outperforms TSP for "+selectedCrop.label+" in "+regionDisplay}
+          <p style={{ color:"#cbd5e1", fontSize:13, fontWeight:700, margin:0 }}>
+            {selectedCrop.label} {MIDDOT} {regionDisplay} {MDASH} {allTreatments.length} treatments compared
           </p>
           <p style={{ color:"#64748b", fontSize:11, margin:0 }}>
-            {farmSize} ha {MIDDOT} {farmerAge} y/o {MIDDOT} {ownedPct}% owned {MIDDOT} TSP ranks #{tspRank} of {FERTILIZERS.length}
-            {!tspIsBest ? (" "+MIDDOT+" "+bestTreatment.label+" leads by "+fmtE(bestTreatment.margin - tspFin.grossMargin)+"/ha") : ""}
+            {farmSize} ha {MIDDOT} {farmerAge} y/o {MIDDOT} {ownedPct}% owned {MIDDOT} {100-ownedPct}% rented {MIDDOT} Rent {EUR}{Math.round(rentCostPerHa)}/ha
           </p>
         </div>
       </div>
@@ -2284,17 +2266,21 @@ function MathieuFarmPage({ region }) {
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:4 }}>
               <div>
                 <p style={{ color:"#cbd5e1", fontSize:13, fontWeight:700, margin:0 }}>Gross margin trajectory {MDASH} five seasons ({EUR} per hectare)</p>
-                <p style={{ color:"#475569", fontSize:10, margin:"4px 0 0" }}>These are positive end of season margins. Each line shows how the margin evolves as soil nutrient efficiency changes over time.</p>
+                <p style={{ color:"#475569", fontSize:10, margin:"4px 0 0" }}>These are positive end of season margins. Click and drag on the chart to select a region and zoom in.</p>
               </div>
-              <ZoomControls rawData={rawData} zoom={marginZoom} setZoom={setMarginZoom} />
+              <ResetZoomBtn zoom={marginZoom} setZoom={setMarginZoom} />
             </div>
             <ResponsiveContainer width="100%" height={320}>
-              <LineChart data={chartData}>
+              <LineChart data={chartData}
+                onMouseDown={e=>handleDragStart("margin",e)}
+                onMouseMove={e=>handleDragMove("margin",e)}
+                onMouseUp={()=>handleDragEnd("margin",rawData.map(d=>d.year),setMarginZoom)}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1a2436"/>
                 <XAxis dataKey="year" tick={{fill:"#64748b",fontSize:11}} axisLine={{stroke:"#1a2436"}}/>
                 <YAxis tick={{fill:"#64748b",fontSize:10}} axisLine={{stroke:"#1a2436"}} tickFormatter={v=>EUR+v} domain={['dataMin - 20','dataMax + 20']} allowDataOverflow={true}/>
                 <Tooltip contentStyle={{background:"#0a1020",border:"1px solid #1a2436",borderRadius:8,fontSize:11}} formatter={(v,name)=>[EUR+Math.round(v).toLocaleString()+"/ha",name]}/>
                 <Legend wrapperStyle={{fontSize:11,color:"#94a3b8"}}/>
+                {(dragStart && dragEnd && activeChart==="margin") && <ReferenceArea x1={dragStart} x2={dragEnd} strokeOpacity={0.3} fill="#0ea5e9" fillOpacity={0.15}/>}
                 <Line type="monotone" dataKey="TSP" stroke="#10b981" strokeWidth={3} dot={{r:5,fill:"#10b981",strokeWidth:2,stroke:"#04080f"}} activeDot={{r:7}}/>
                 {currentFerts.map(id=>{const f=FERTILIZERS.find(x=>x.id===id);return f?<Line key={id} type="monotone" dataKey={f.label} stroke={CHART_COLORS[id]||"#94a3b8"} strokeWidth={2} dot={{r:4,fill:CHART_COLORS[id]||"#94a3b8",strokeWidth:2,stroke:"#04080f"}} activeDot={{r:6}} strokeDasharray="6 3"/>:null;})}
               </LineChart>
@@ -2312,12 +2298,16 @@ function MathieuFarmPage({ region }) {
             <div style={{ ...S.card }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:6 }}>
                 <p style={{ color:"#0ea5e9", fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", margin:0 }}>Gross output {MDASH} five seasons</p>
-                <ZoomControls rawData={rawOut} zoom={outputZoom} setZoom={setOutputZoom} />
+                <ResetZoomBtn zoom={outputZoom} setZoom={setOutputZoom} />
               </div>
               <ResponsiveContainer width="100%" height={240}>
-                <BarChart data={data}>
+                <BarChart data={data}
+                  onMouseDown={e=>handleDragStart("output",e)}
+                  onMouseMove={e=>handleDragMove("output",e)}
+                  onMouseUp={()=>handleDragEnd("output",rawOut.map(d=>d.year),setOutputZoom)}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#1a2436"/><XAxis dataKey="year" tick={{fill:"#64748b",fontSize:9}} axisLine={{stroke:"#1a2436"}}/><YAxis tick={{fill:"#64748b",fontSize:9}} axisLine={{stroke:"#1a2436"}} tickFormatter={v=>EUR+v} domain={['dataMin - 40','dataMax + 40']}/>
                   <Tooltip contentStyle={{background:"#0a1020",border:"1px solid #1a2436",borderRadius:8,fontSize:10}} formatter={(v,name)=>[EUR+Math.round(v).toLocaleString()+"/ha",name]}/>
+                  {(dragStart && dragEnd && activeChart==="output") && <ReferenceArea x1={dragStart} x2={dragEnd} strokeOpacity={0.3} fill="#0ea5e9" fillOpacity={0.15}/>}
                   <Bar dataKey="TSP" fill="#10b981" radius={[3,3,0,0]}/>{currentFerts.map(id=>{const f=FERTILIZERS.find(x=>x.id===id);return f?<Bar key={id} dataKey={f.label} fill={CHART_COLORS[id]||"#94a3b8"} radius={[3,3,0,0]} opacity={0.75}/>:null;})}
                 </BarChart>
               </ResponsiveContainer>
@@ -2360,18 +2350,22 @@ function MathieuFarmPage({ region }) {
               <p style={{ color:"#94a3b8", fontSize:10, margin:"4px 0 0" }}>Costs accumulate from sowing (October) while harvest revenue arrives in summer (June/July). The negative values in early months are normal: they represent capital committed before any revenue is earned. Every treatment ends the season positive.</p>
             </div>
           </div>
-          <ZoomControls rawData={MONTHS} zoom={cashZoom} setZoom={setCashZoom} />
+          <ResetZoomBtn zoom={cashZoom} setZoom={setCashZoom} />
         </div>
         {(() => {
           const rawCash = buildTimeline(TSP).map((d,i) => { const row={month:d.month,TSP:d.cumCash}; currentFerts.forEach(id=>{const f=FERTILIZERS.find(x=>x.id===id);if(f)row[f.label]=buildTimeline(f)[i].cumCash;}); return row; });
           const data = cashZoom ? rawCash.slice(cashZoom[0], cashZoom[1]+1) : rawCash;
           return (
             <ResponsiveContainer width="100%" height={290}>
-              <AreaChart data={data}>
+              <AreaChart data={data}
+                onMouseDown={e=>handleDragStart("cash",e)}
+                onMouseMove={e=>handleDragMove("cash",e)}
+                onMouseUp={()=>handleDragEnd("cash",rawCash.map(d=>d.month),setCashZoom)}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1a2436"/><XAxis dataKey="month" tick={{fill:"#64748b",fontSize:10}} axisLine={{stroke:"#1a2436"}}/><YAxis tick={{fill:"#64748b",fontSize:10}} axisLine={{stroke:"#1a2436"}} tickFormatter={v=>EUR+v}/>
                 <Tooltip contentStyle={{background:"#0a1020",border:"1px solid #1a2436",borderRadius:8,fontSize:10}} formatter={(v,name)=>[EUR+Math.round(v).toLocaleString()+"/ha (cumulative cash)",name]}/>
                 <Legend wrapperStyle={{fontSize:10,color:"#94a3b8"}}/>
                 <ReferenceLine y={0} stroke="#f43f5e50" strokeDasharray="4 4" label={{value:"breakeven",fill:"#f43f5e80",fontSize:9}}/>
+                {(dragStart && dragEnd && activeChart==="cash") && <ReferenceArea x1={dragStart} x2={dragEnd} strokeOpacity={0.3} fill="#0ea5e9" fillOpacity={0.15}/>}
                 <Area type="monotone" dataKey="TSP" stroke="#10b981" fill="#10b98120" strokeWidth={2}/>
                 {currentFerts.map(id=>{const f=FERTILIZERS.find(x=>x.id===id);return f?<Area key={id} type="monotone" dataKey={f.label} stroke={CHART_COLORS[id]||"#94a3b8"} fill={(CHART_COLORS[id]||"#94a3b8")+"15"} strokeWidth={1.5} strokeDasharray="4 3"/>:null;})}
               </AreaChart>
@@ -2523,7 +2517,6 @@ function MathieuFarmPage({ region }) {
     </div>
   );
 }
-
 
 
 
