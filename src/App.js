@@ -2377,7 +2377,7 @@ function MathieuFarmPage({ region }) {
       {/* ══════════════════════════════════════════════════════════════════════════
           STEP 2 — NITROGEN STRATEGY
       ══════════════════════════════════════════════════════════════════════════ */}
-      {step === 2 && (
+     {step === 2 && (
         <div style={{ display:"flex", flexDirection:"column", gap:18, animation:"fadeUp 0.35s ease" }}>
           <div style={{ ...S.card }}>
             <p style={{ ...S.label, marginBottom:6 }}>Step 2 of 4</p>
@@ -2409,27 +2409,55 @@ function MathieuFarmPage({ region }) {
               })}
             </div>
 
-            {nTiming.length > 0 && (
-              <div style={{ background:"#060d1a", borderRadius:10, padding:"14px 16px", display:"flex", alignItems:"center", gap:16 }}>
-                <div style={{ flex:1 }}>
-                  <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:6 }}>N dose per application</p>
-                  <input type="range" min={20} max={180} step={10} value={nQty} onChange={e=>setNQty(Number(e.target.value))}
-                    style={{ width:"100%", accentColor:"#0ea5e9" }}/>
-                  <div style={{ display:"flex", justifyContent:"space-between", marginTop:4 }}>
-                    <span style={{ color:"#334155", fontSize:10 }}>20 kg/ha</span>
-                    <span style={{ color:"#0ea5e9", fontSize:12, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>{nQty} kg/ha</span>
-                    <span style={{ color:"#334155", fontSize:10 }}>180 kg/ha</span>
+            {nTiming.length > 0 && (() => {
+              const nPricePerKg     = 1.15;
+              const spreadCostPerPass = 14;
+              const nNutrientCost   = Math.round(nQty * nPricePerKg * nTiming.length);
+              const nOperationalCost = spreadCostPerPass * nTiming.length;
+              const nTotalCost      = nNutrientCost + nOperationalCost;
+              const totalNApplied   = nQty * nTiming.length;
+
+              return (
+                <div style={{ background:"#060d1a", borderRadius:10, padding:"14px 16px", display:"flex", flexDirection:"column", gap:14 }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:16 }}>
+                    <div style={{ flex:1 }}>
+                      <p style={{ color:"#94a3b8", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:6 }}>N dose per application</p>
+                      <input type="range" min={20} max={180} step={5} value={nQty} onChange={e=>setNQty(Number(e.target.value))}
+                        style={{ width:"100%", accentColor:"#0ea5e9" }}/>
+                      <div style={{ display:"flex", justifyContent:"space-between", marginTop:4 }}>
+                        <span style={{ color:"#334155", fontSize:10 }}>20 kg N/ha</span>
+                        <span style={{ color:"#0ea5e9", fontSize:12, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>{nQty} kg N/ha</span>
+                        <span style={{ color:"#334155", fontSize:10 }}>180 kg N/ha</span>
+                      </div>
+                    </div>
+                    <div style={{ textAlign:"right", minWidth:110 }}>
+                      <p style={{ color:"#475569", fontSize:10, margin:0 }}>Total N cost</p>
+                      <p style={{ color:"#f59e0b", fontSize:18, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"2px 0" }}>
+                        +€{nTotalCost}/ha
+                      </p>
+                      <p style={{ color:"#334155", fontSize:9, margin:0 }}>{nTiming.length} pass{nTiming.length>1?"es":""} × {nQty} kg N</p>
+                    </div>
+                  </div>
+
+                  <div style={{ display:"flex", gap:12, paddingTop:10, borderTop:"1px solid #1a2436" }}>
+                    <div style={{ flex:1, background:"#080e18", borderRadius:8, padding:"10px 12px" }}>
+                      <p style={{ color:"#475569", fontSize:9, textTransform:"uppercase", letterSpacing:"0.08em", margin:"0 0 3px" }}>Total N applied</p>
+                      <p style={{ color:"#0ea5e9", fontSize:14, fontWeight:700, fontFamily:"'DM Mono',monospace", margin:0 }}>{totalNApplied} kg N/ha</p>
+                    </div>
+                    <div style={{ flex:1, background:"#080e18", borderRadius:8, padding:"10px 12px" }}>
+                      <p style={{ color:"#475569", fontSize:9, textTransform:"uppercase", letterSpacing:"0.08em", margin:"0 0 3px" }}>Nutrient cost</p>
+                      <p style={{ color:"#f59e0b", fontSize:14, fontWeight:700, fontFamily:"'DM Mono',monospace", margin:0 }}>€{nNutrientCost}/ha</p>
+                      <p style={{ color:"#334155", fontSize:9, margin:0 }}>@ €{nPricePerKg}/kg N (AN 33.5%)</p>
+                    </div>
+                    <div style={{ flex:1, background:"#080e18", borderRadius:8, padding:"10px 12px" }}>
+                      <p style={{ color:"#475569", fontSize:9, textTransform:"uppercase", letterSpacing:"0.08em", margin:"0 0 3px" }}>Spreading cost</p>
+                      <p style={{ color:"#94a3b8", fontSize:14, fontWeight:700, fontFamily:"'DM Mono',monospace", margin:0 }}>€{nOperationalCost}/ha</p>
+                      <p style={{ color:"#334155", fontSize:9, margin:0 }}>{nTiming.length} × €{spreadCostPerPass}/pass</p>
+                    </div>
                   </div>
                 </div>
-                <div style={{ textAlign:"right" }}>
-                  <p style={{ color:"#475569", fontSize:10, margin:0 }}>Extra cost</p>
-                  <p style={{ color:"#f59e0b", fontSize:14, fontWeight:700, fontFamily:"'DM Mono',monospace", margin:0 }}>
-                    +€{nTimingCost + extraPasses}/ha
-                  </p>
-                  <p style={{ color:"#334155", fontSize:9, margin:0 }}>{nTiming.length} pass{nTiming.length>1?"es":""}</p>
-                </div>
-              </div>
-            )}
+              );
+            })()}
           </div>
 
           <button className="next-btn" onClick={()=>setStep(3)}
