@@ -2036,7 +2036,7 @@ function MathieuFarmPage({ region }) {
             padding:"16px 48px", borderRadius:4, fontSize:12, fontWeight:800,
             letterSpacing:"0.14em", textTransform:"uppercase", cursor:"pointer",
           }} onClick={()=>setPhase("narrative")}>
-            Continue \u2014 Choose Treatments \u2192
+            Continue to choose treatments
           </button>
         </div>
       </div>
