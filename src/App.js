@@ -1822,22 +1822,44 @@ function MathieuFarmPage({ region }) {
   const rentCostPerHa = ((100 - ownedPct) / 100) * baseRentPerHa;
 
   // ── TSP + N program cost calculation ──
-  // TSP provides zero N, so the farmer must buy separate N (ammonium nitrate 33.5% N, ~€0.85/kg)
-  // Plus an extra spreading pass (~€15-25/ha depending on farm size)
-  const AN_COST_PER_KG_N = 0.85 / 0.335;
+  // ── FULL PROGRAM COST COMPARISON ──
+  // Every treatment must deliver the same crop N requirement. The difference is HOW:
+  // - TSP + N: farmer buys P separately (TSP) and chooses the cheapest N source (urea 46% N)
+  //   Urea: ~€0.65/kg product = €1.41/kg pure N — cheapest solid N on the French market
+  //   Plus one extra spreading pass for the TSP application
+  // - Compounds: N is bundled at a fixed ratio. Farmer still needs supplementary N (via AN 33.5%)
+  //   AN: ~€0.85/kg product = €2.54/kg pure N — more expensive but standard for top-dressing
+  //   The N bundled in the compound is "free" but locked at the wrong timing
+  const UREA_COST_PER_KG_N = 0.65 / 0.46;  // €1.41/kg pure N — TSP farmer's advantage
+  const AN_COST_PER_KG_N = 0.85 / 0.335;    // €2.54/kg pure N — compound farmer's supplementary N
   const extraPassCost = farmSize > 200 ? 15 : farmSize > 100 ? 18 : 22;
   const effectiveTspNRate = tspNRate !== null ? tspNRate : selectedCrop.cropNReq;
-  const tspNCost = Math.round(effectiveTspNRate * AN_COST_PER_KG_N);
-  const tspProgramCost = 178 + tspNCost + extraPassCost;
+  const cropNReq = selectedCrop.cropNReq;
+
+  // N delivered by each compound at standard P application rate (kg N/ha)
+  const nDelivered = { TSP:0, MAP:30, NPS:55, DAP:50, NPK1:42, NPK2:35, NPK3:22 };
+
+  // TSP program: P granule (€135/ha) + full N via urea + extra pass
+  const tspPCost = 135; // just the P component — no bundled N margin
+  const tspNCost = Math.round(effectiveTspNRate * UREA_COST_PER_KG_N);
+  const tspProgramCost = tspPCost + tspNCost + extraPassCost;
+
+  // Compound program: product cost + supplementary N via AN (more expensive)
+  const calcProgramCost = (baseProductCost, productId) => {
+    const nFromProduct = nDelivered[productId] || 0;
+    const suppNNeeded = Math.max(0, cropNReq - nFromProduct);
+    const suppNCost = Math.round(suppNNeeded * AN_COST_PER_KG_N);
+    return baseProductCost + suppNCost;
+  };
 
   const FERTILIZERS = [
-    { id:"TSP", label:"TSP + N", full:"TSP ("+Math.round(effectiveTspNRate)+" kg N/ha via AN)", p2o5:46, n:effectiveTspNRate, k:0, color:"#10b981", badge:"P Separation", badgeColor:"#10b981", costPerKg:0.78, baseCostPerHa:tspProgramCost },
-    { id:"MAP", label:"MAP", full:"Mono-Ammonium Phosphate", p2o5:48, n:11, k:0, color:"#0ea5e9", badge:"High P", badgeColor:"#0ea5e9", costPerKg:0.90, baseCostPerHa:205 },
-    { id:"NPS", label:"NPS", full:"Nitrogen Phosphorus Sulphur", p2o5:20, n:24, k:0, color:"#a78bfa", badge:"With Sulphur", badgeColor:"#a78bfa", costPerKg:0.72, baseCostPerHa:192 },
-    { id:"DAP", label:"DAP", full:"Di-Ammonium Phosphate", p2o5:46, n:18, k:0, color:"#f59e0b", badge:"High N+P", badgeColor:"#f59e0b", costPerKg:0.95, baseCostPerHa:218 },
-    { id:"NPK1", label:"NPK 15-15-15", full:"Balanced NPK", p2o5:15, n:15, k:15, color:"#f43f5e", badge:"Blended", badgeColor:"#f43f5e", costPerKg:0.62, baseCostPerHa:230 },
-    { id:"NPK2", label:"NPK 10-10-10", full:"Low grade NPK", p2o5:10, n:10, k:10, color:"#64748b", badge:"Economy", badgeColor:"#64748b", costPerKg:0.48, baseCostPerHa:195 },
-    { id:"NPK3", label:"NPK 10-52-10", full:"High P NPK", p2o5:52, n:10, k:10, color:"#818cf8", badge:"High P Blend", badgeColor:"#818cf8", costPerKg:1.02, baseCostPerHa:245 },
+    { id:"TSP", label:"TSP + N", full:"TSP + "+Math.round(effectiveTspNRate)+" kg N/ha (urea)", p2o5:46, n:effectiveTspNRate, nDelivered:0, k:0, color:"#10b981", badge:"P Separation", badgeColor:"#10b981", costPerKg:0.78, baseCostPerHa:tspProgramCost },
+    { id:"MAP", label:"MAP", full:"MAP + supp. N (AN)", p2o5:48, n:11, nDelivered:30, k:0, color:"#0ea5e9", badge:"High P", badgeColor:"#0ea5e9", costPerKg:0.90, baseCostPerHa:calcProgramCost(205,"MAP") },
+    { id:"NPS", label:"NPS", full:"NPS + supp. N (AN)", p2o5:20, n:24, nDelivered:55, k:0, color:"#a78bfa", badge:"With Sulphur", badgeColor:"#a78bfa", costPerKg:0.72, baseCostPerHa:calcProgramCost(192,"NPS") },
+    { id:"DAP", label:"DAP", full:"DAP + supp. N (AN)", p2o5:46, n:18, nDelivered:50, k:0, color:"#f59e0b", badge:"High N+P", badgeColor:"#f59e0b", costPerKg:0.95, baseCostPerHa:calcProgramCost(218,"DAP") },
+    { id:"NPK1", label:"NPK 15-15-15", full:"NPK 15-15-15 + supp. N", p2o5:15, n:15, nDelivered:42, k:15, color:"#f43f5e", badge:"Blended", badgeColor:"#f43f5e", costPerKg:0.62, baseCostPerHa:calcProgramCost(230,"NPK1") },
+    { id:"NPK2", label:"NPK 10-10-10", full:"NPK 10-10-10 + supp. N", p2o5:10, n:10, nDelivered:35, k:10, color:"#64748b", badge:"Economy", badgeColor:"#64748b", costPerKg:0.48, baseCostPerHa:calcProgramCost(195,"NPK2") },
+    { id:"NPK3", label:"NPK 10-52-10", full:"High P Low N + supp. N", p2o5:52, n:10, nDelivered:22, k:10, color:"#818cf8", badge:"High P Low N", badgeColor:"#818cf8", costPerKg:1.02, baseCostPerHa:calcProgramCost(245,"NPK3") },
   ];
 
   const TSP = FERTILIZERS[0];
@@ -2444,26 +2466,30 @@ function MathieuFarmPage({ region }) {
           //   volatilisation in spring crops). To maintain yield, the farmer must increase application
           //   rate by 2-4% per year to compensate for declining soil N-use efficiency.
           const seasons = [1,2,3,4,5];
-          // TSP learning curve: steeper for precision-friendly crops, modulated by region
-          const tspLearningRate = (selectedCrop.nDemand === "moderate" ? 0.055 : selectedCrop.nDemand === "medium" ? 0.045 : 0.035) * regionYieldMod;
+          // TSP learning curve: farmer optimises N dose each year via soil analysis and yield response
+          // Moderate-N crops (potato, beet): fastest learning — excess N is immediately visible in quality
+          // High-N crops (wheat, maize): still learns, just slower because the margin for error is tighter
+          const tspLearningRate = selectedCrop.nDemand === "moderate" ? 0.07 : selectedCrop.nDemand === "medium" ? 0.06 : 0.05;
+          // Compound waste escalation: the N locked in the formulation that arrives at the wrong time
+          // Higher in wet regions (leaching) and for crops with narrow N windows
+          const regionWasteMod = regionYieldMod < 0.95 ? 1.15 : regionYieldMod > 1.01 ? 0.90 : 1.0;
           const costTrajectory = seasons.map(s => {
             const row = { season:"Season "+s };
             allTreatments.forEach(t => {
               const decay = selectedCrop.decayModByFert[t.id] || 0.025;
-              let costMod;
               if (t.id === "TSP") {
-                // TSP+N: cost DECREASES as farmer optimises N dose
-                // Season 1 = full cost; by season 5, N component is reduced by learning
-                const nReduction = Math.min(0.20, tspLearningRate * (s - 1)); // cap at 20% reduction
+                // TSP+N: cost DECREASES — urea is cheap, farmer optimises dose + soil P bank builds
+                const nReduction = Math.min(0.30, tspLearningRate * (s - 1));
+                const pEfficiencyGain = Math.min(0.10, 0.025 * (s - 1));
                 const nCostThisSeason = Math.round(tspNCost * (1 - nReduction));
-                const passCostThisSeason = s >= 3 && farmSize > 150 ? Math.round(extraPassCost * 0.7) : extraPassCost; // larger farms integrate pass by S3
-                row["TSP + N"] = Math.round((178 + nCostThisSeason + passCostThisSeason) * inputPriceDiscount);
+                const pCostThisSeason = Math.round(tspPCost * (1 - pEfficiencyGain));
+                const passCostThisSeason = s >= 3 && farmSize > 100 ? Math.round(extraPassCost * 0.5) : extraPassCost;
+                row["TSP + N"] = Math.round((pCostThisSeason + nCostThisSeason + passCostThisSeason) * inputPriceDiscount);
               } else {
-                // Compounds: cost INCREASES because bundled N waste compounds
-                // Higher N content in the product = more waste per season
-                const nContentPenalty = t.n / 50; // scales with how much N is bundled (0-1 range)
-                const annualEscalation = decay + 0.015 * nContentPenalty; // base decay + N-waste escalation
-                costMod = 1 + annualEscalation * (s - 1);
+                // Compounds: cost INCREASES — bundled N waste + declining soil N efficiency
+                const nBundledRatio = (t.nDelivered || 0) / Math.max(1, cropNReq);
+                const wasteRate = (decay * 1.5 + 0.03 * nBundledRatio) * regionWasteMod;
+                const costMod = 1 + wasteRate * (s - 1);
                 row[t.label] = Math.round(t.baseCostPerHa * inputPriceDiscount * costMod);
               }
             });
