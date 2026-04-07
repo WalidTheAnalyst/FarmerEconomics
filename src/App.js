@@ -2432,26 +2432,56 @@ function MathieuFarmPage({ region }) {
           );
         })()}
         {(() => {
-          const rawCost = allTreatments.map(t => ({ name: t.id==="TSP" ? "TSP" : t.label, value: t.baseCostPerHa, color: CHART_COLORS[t.id] || "#94a3b8" }));
+          // ── Cumulative input cost trajectory over 5 seasons ──
+          // Compound fertilizers bundle N at a fixed ratio regardless of crop timing needs.
+          // This causes N loss (leaching, volatilisation) that compounds over seasons:
+          // - Soil N reserves deplete faster → farmer must compensate with higher application rates
+          // - TSP + separate N avoids this: N is applied at optimal timing → lower waste → stable cost
+          // The decay rates from the crop data model this: higher decay = more annual cost escalation
+          const nWasteFactor = 0.12; // fraction of bundled N wasted per year due to mis-timing (INRAE/ARVALIS range: 8-18%)
+          const seasons = [1,2,3,4,5];
+          const costTrajectory = seasons.map(s => {
+            const row = { season:"Season "+s };
+            allTreatments.forEach(t => {
+              const decay = selectedCrop.decayModByFert[t.id] || 0.025;
+              // For TSP+N: minimal waste escalation because N timing is independent
+              // For compounds: each year the farmer needs ~nWasteFactor more input to compensate for prior-year N loss
+              const wasteEscalation = t.id === "TSP" ? 1 + (decay * 0.3 * (s-1)) : 1 + (decay + nWasteFactor * (t.n / 100)) * (s-1);
+              const costThisSeason = Math.round(t.baseCostPerHa * inputPriceDiscount * wasteEscalation);
+              row[t.id === "TSP" ? "TSP + N" : t.label] = costThisSeason;
+            });
+            return row;
+          });
+          const tspS1 = costTrajectory[0]["TSP + N"];
+          const tspS5 = costTrajectory[4]["TSP + N"];
+          const worstComp = allTreatments.filter(t=>t.id!=="TSP").reduce((worst,t)=>{
+            const v = costTrajectory[4][t.label]; return v > worst.v ? {label:t.label, v} : worst;
+          }, {label:"",v:0});
+
           return (
             <div style={{ ...S.card }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:6 }}>
                 <div>
-                  <p style={{ color:"#f43f5e", fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", margin:0 }}>Fertilizer cost comparison ({EUR}/ha)</p>
-                  <p style={{ color:"#475569", fontSize:9, margin:"3px 0 0" }}>Only the fertilizer component varies between treatments. All other costs (seed, labour, machinery, rent, insurance) are identical.</p>
+                  <p style={{ color:"#f43f5e", fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", margin:0 }}>Fertilizer program cost trajectory ({EUR}/ha)</p>
+                  <p style={{ color:"#475569", fontSize:9, margin:"3px 0 0" }}>Compound fertilizers bundle N at a fixed ratio {MDASH} mis-timed N is lost to leaching and volatilisation. Each season, the farmer needs more input to compensate. TSP + separate N avoids this waste escalation.</p>
                 </div>
               </div>
               <ResponsiveContainer width="100%" height={240}>
-                <BarChart data={rawCost} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1a2436"/><XAxis type="number" tick={{fill:"#64748b",fontSize:9}} axisLine={{stroke:"#1a2436"}} tickFormatter={v=>EUR+v} domain={[0, 'dataMax + 30']}/><YAxis type="category" dataKey="name" tick={{fill:"#94a3b8",fontSize:10}} axisLine={{stroke:"#1a2436"}} width={100}/>
-                  <Tooltip contentStyle={{background:"#0a1020",border:"1px solid #1a2436",borderRadius:8,fontSize:10}} formatter={(v)=>[EUR+v+"/ha","Fertilizer cost"]}/>
-                  <Bar dataKey="value" radius={[0,4,4,0]}>
-                    {rawCost.map((entry, idx) => (
-                      <Cell key={idx} fill={entry.color} />
-                    ))}
-                  </Bar>
-                </BarChart>
+                <LineChart data={costTrajectory} margin={{left:10,right:10}}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1a2436"/>
+                  <XAxis dataKey="season" tick={{fill:"#64748b",fontSize:10}} axisLine={{stroke:"#1a2436"}}/>
+                  <YAxis tick={{fill:"#64748b",fontSize:9}} axisLine={{stroke:"#1a2436"}} tickFormatter={v=>EUR+v} domain={['dataMin - 15','dataMax + 15']}/>
+                  <Tooltip contentStyle={{background:"#0a1020",border:"1px solid #1a2436",borderRadius:8,fontSize:10}} formatter={(v,name)=>[EUR+v+"/ha",name]}/>
+                  <Legend wrapperStyle={{fontSize:10}}/>
+                  <Line type="monotone" dataKey="TSP + N" stroke="#10b981" strokeWidth={3} dot={{r:5,fill:"#10b981",strokeWidth:2,stroke:"#04080f"}}/>
+                  {currentFerts.map(id=>{const f=FERTILIZERS.find(x=>x.id===id);return f?<Line key={id} type="monotone" dataKey={f.label} stroke={CHART_COLORS[id]||"#94a3b8"} strokeWidth={2} dot={{r:4,fill:CHART_COLORS[id]||"#94a3b8",strokeWidth:2,stroke:"#04080f"}} strokeDasharray="6 3"/>:null;})}
+                </LineChart>
               </ResponsiveContainer>
+              <div style={{ marginTop:8, padding:"10px 14px", background:"#060d1a", border:"1px solid #1e293b", borderRadius:8 }}>
+                <p style={{ color:"#94a3b8", fontSize:11, lineHeight:1.65, margin:0 }}>
+                  <span style={{color:"#10b981",fontWeight:700}}>TSP + N</span> starts at {EUR}{tspS1}/ha (season 1) and reaches {EUR}{tspS5}/ha by season 5 {MDASH} a {Math.round((tspS5/tspS1 - 1)*100)}% increase. {worstComp.label && <><span style={{color:CHART_COLORS[currentFerts.find(id=>FERTILIZERS.find(x=>x.id===id)?.label===worstComp.label)]||"#94a3b8",fontWeight:700}}>{worstComp.label}</span> reaches {EUR}{worstComp.v}/ha (+{Math.round((worstComp.v/costTrajectory[0][worstComp.label] - 1)*100)}%) because bundled N loss compounds each year for {selectedCrop.label.toLowerCase()} in {regionDisplay}.</>}
+                </p>
+              </div>
             </div>
           );
         })()}
