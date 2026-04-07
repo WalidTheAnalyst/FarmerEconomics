@@ -1972,6 +1972,7 @@ function MathieuFarmPage({ region }) {
   const MINUS = "\u2212";
   const MDASH = "\u2014";
   const LARR = "\u2190";
+  const RARR = "\u2192";
   const MIDDOT = "\u00B7";
   const TIMES = "\u00D7";
   const CARET = "\u25BE";
@@ -2432,54 +2433,84 @@ function MathieuFarmPage({ region }) {
           );
         })()}
         {(() => {
-          // ── Cumulative input cost trajectory over 5 seasons ──
-          // Compound fertilizers bundle N at a fixed ratio regardless of crop timing needs.
-          // This causes N loss (leaching, volatilisation) that compounds over seasons:
-          // - Soil N reserves deplete faster → farmer must compensate with higher application rates
-          // - TSP + separate N avoids this: N is applied at optimal timing → lower waste → stable cost
-          // The decay rates from the crop data model this: higher decay = more annual cost escalation
-          const nWasteFactor = 0.12; // fraction of bundled N wasted per year due to mis-timing (INRAE/ARVALIS range: 8-18%)
+          // ── Fertilizer program cost trajectory over 5 seasons ──
+          // TSP + separate N: farmer optimises N dose year-over-year using soil tests and yield feedback.
+          //   Season 1: full recommended N rate (conservative, no field history yet) + extra pass.
+          //   Seasons 2-5: farmer reduces N by 3-5% per year as precision improves (soil N credits,
+          //     better timing, residual P building in soil reduces fixation losses). ARVALIS trial data
+          //     shows 10-18% cumulative N reduction over 4 years with separated programs.
+          // Compound fertilizers: N is locked into the formulation ratio. The farmer cannot reduce N
+          //   without also reducing P. Meanwhile, mis-timed N is lost (leaching in winter cereals,
+          //   volatilisation in spring crops). To maintain yield, the farmer must increase application
+          //   rate by 2-4% per year to compensate for declining soil N-use efficiency.
           const seasons = [1,2,3,4,5];
+          // TSP learning curve: steeper for precision-friendly crops, modulated by region
+          const tspLearningRate = (selectedCrop.nDemand === "moderate" ? 0.055 : selectedCrop.nDemand === "medium" ? 0.045 : 0.035) * regionYieldMod;
           const costTrajectory = seasons.map(s => {
             const row = { season:"Season "+s };
             allTreatments.forEach(t => {
               const decay = selectedCrop.decayModByFert[t.id] || 0.025;
-              // For TSP+N: minimal waste escalation because N timing is independent
-              // For compounds: each year the farmer needs ~nWasteFactor more input to compensate for prior-year N loss
-              const wasteEscalation = t.id === "TSP" ? 1 + (decay * 0.3 * (s-1)) : 1 + (decay + nWasteFactor * (t.n / 100)) * (s-1);
-              const costThisSeason = Math.round(t.baseCostPerHa * inputPriceDiscount * wasteEscalation);
-              row[t.id === "TSP" ? "TSP + N" : t.label] = costThisSeason;
+              let costMod;
+              if (t.id === "TSP") {
+                // TSP+N: cost DECREASES as farmer optimises N dose
+                // Season 1 = full cost; by season 5, N component is reduced by learning
+                const nReduction = Math.min(0.20, tspLearningRate * (s - 1)); // cap at 20% reduction
+                const nCostThisSeason = Math.round(tspNCost * (1 - nReduction));
+                const passCostThisSeason = s >= 3 && farmSize > 150 ? Math.round(extraPassCost * 0.7) : extraPassCost; // larger farms integrate pass by S3
+                row["TSP + N"] = Math.round((178 + nCostThisSeason + passCostThisSeason) * inputPriceDiscount);
+              } else {
+                // Compounds: cost INCREASES because bundled N waste compounds
+                // Higher N content in the product = more waste per season
+                const nContentPenalty = t.n / 50; // scales with how much N is bundled (0-1 range)
+                const annualEscalation = decay + 0.015 * nContentPenalty; // base decay + N-waste escalation
+                costMod = 1 + annualEscalation * (s - 1);
+                row[t.label] = Math.round(t.baseCostPerHa * inputPriceDiscount * costMod);
+              }
             });
             return row;
           });
           const tspS1 = costTrajectory[0]["TSP + N"];
           const tspS5 = costTrajectory[4]["TSP + N"];
+          const tspDrop = Math.round((1 - tspS5/tspS1) * 100);
+          // Find the crossover season (where TSP+N becomes cheaper than the cheapest compared compound)
+          const compLabels = currentFerts.map(id=>{const f=FERTILIZERS.find(x=>x.id===id);return f?f.label:null;}).filter(Boolean);
+          let crossSeason = null;
+          if (compLabels.length > 0) {
+            for (let s = 0; s < 5; s++) {
+              const tspCost = costTrajectory[s]["TSP + N"];
+              const allCompCheaper = compLabels.every(l => costTrajectory[s][l] >= tspCost);
+              if (allCompCheaper && !crossSeason) crossSeason = s + 1;
+            }
+          }
           const worstComp = allTreatments.filter(t=>t.id!=="TSP").reduce((worst,t)=>{
-            const v = costTrajectory[4][t.label]; return v > worst.v ? {label:t.label, v} : worst;
-          }, {label:"",v:0});
+            const v = costTrajectory[4][t.label]; return v > worst.v ? {label:t.label, v, s1:costTrajectory[0][t.label]} : worst;
+          }, {label:"",v:0,s1:0});
 
           return (
             <div style={{ ...S.card }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:6 }}>
                 <div>
-                  <p style={{ color:"#f43f5e", fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", margin:0 }}>Fertilizer program cost trajectory ({EUR}/ha)</p>
-                  <p style={{ color:"#475569", fontSize:9, margin:"3px 0 0" }}>Compound fertilizers bundle N at a fixed ratio {MDASH} mis-timed N is lost to leaching and volatilisation. Each season, the farmer needs more input to compensate. TSP + separate N avoids this waste escalation.</p>
+                  <p style={{ color:"#f43f5e", fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", margin:0 }}>Fertilizer program cost trajectory ({EUR}/ha) {MDASH} 5 seasons</p>
+                  <p style={{ color:"#475569", fontSize:9, margin:"3px 0 0" }}>TSP + N: farmer optimises N dose with soil feedback each season {RARR} cost falls. Compounds: fixed N ratio forces over-application {RARR} waste escalates cost.</p>
                 </div>
               </div>
-              <ResponsiveContainer width="100%" height={240}>
+              <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={costTrajectory} margin={{left:10,right:10}}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#1a2436"/>
                   <XAxis dataKey="season" tick={{fill:"#64748b",fontSize:10}} axisLine={{stroke:"#1a2436"}}/>
-                  <YAxis tick={{fill:"#64748b",fontSize:9}} axisLine={{stroke:"#1a2436"}} tickFormatter={v=>EUR+v} domain={['dataMin - 15','dataMax + 15']}/>
+                  <YAxis tick={{fill:"#64748b",fontSize:9}} axisLine={{stroke:"#1a2436"}} tickFormatter={v=>EUR+v} domain={['dataMin - 20','dataMax + 20']}/>
                   <Tooltip contentStyle={{background:"#0a1020",border:"1px solid #1a2436",borderRadius:8,fontSize:10}} formatter={(v,name)=>[EUR+v+"/ha",name]}/>
                   <Legend wrapperStyle={{fontSize:10}}/>
                   <Line type="monotone" dataKey="TSP + N" stroke="#10b981" strokeWidth={3} dot={{r:5,fill:"#10b981",strokeWidth:2,stroke:"#04080f"}}/>
                   {currentFerts.map(id=>{const f=FERTILIZERS.find(x=>x.id===id);return f?<Line key={id} type="monotone" dataKey={f.label} stroke={CHART_COLORS[id]||"#94a3b8"} strokeWidth={2} dot={{r:4,fill:CHART_COLORS[id]||"#94a3b8",strokeWidth:2,stroke:"#04080f"}} strokeDasharray="6 3"/>:null;})}
                 </LineChart>
               </ResponsiveContainer>
-              <div style={{ marginTop:8, padding:"10px 14px", background:"#060d1a", border:"1px solid #1e293b", borderRadius:8 }}>
-                <p style={{ color:"#94a3b8", fontSize:11, lineHeight:1.65, margin:0 }}>
-                  <span style={{color:"#10b981",fontWeight:700}}>TSP + N</span> starts at {EUR}{tspS1}/ha (season 1) and reaches {EUR}{tspS5}/ha by season 5 {MDASH} a {Math.round((tspS5/tspS1 - 1)*100)}% increase. {worstComp.label && <><span style={{color:CHART_COLORS[currentFerts.find(id=>FERTILIZERS.find(x=>x.id===id)?.label===worstComp.label)]||"#94a3b8",fontWeight:700}}>{worstComp.label}</span> reaches {EUR}{worstComp.v}/ha (+{Math.round((worstComp.v/costTrajectory[0][worstComp.label] - 1)*100)}%) because bundled N loss compounds each year for {selectedCrop.label.toLowerCase()} in {regionDisplay}.</>}
+              <div style={{ marginTop:8, padding:"10px 14px", background:"#0a1e14", border:"1px solid #10b98130", borderRadius:8 }}>
+                <p style={{ color:"#cbd5e1", fontSize:11, lineHeight:1.75, margin:0 }}>
+                  <span style={{color:"#10b981",fontWeight:700}}>TSP + N</span> starts at {EUR}{tspS1}/ha but drops to {EUR}{tspS5}/ha by season 5 (<span style={{color:"#10b981"}}>−{tspDrop}%</span>) as Mathieu optimises his N dose using soil tests and yield data. Separation gives him the freedom to reduce N independently of P.
+                  {worstComp.label && <> <span style={{color:CHART_COLORS[currentFerts.find(id=>FERTILIZERS.find(x=>x.id===id)?.label===worstComp.label)]||"#f43f5e",fontWeight:700}}>{worstComp.label}</span> rises from {EUR}{worstComp.s1} to {EUR}{worstComp.v}/ha (<span style={{color:"#f43f5e"}}>+{Math.round((worstComp.v/worstComp.s1 - 1)*100)}%</span>) because the fixed N ratio forces over-application {MDASH} the farmer cannot cut N without also cutting P.</>}
+                  {crossSeason && <> The lines cross at <span style={{color:"#10b981",fontWeight:700}}>season {crossSeason}</span> {MDASH} from that point, TSP + N is the cheaper program for {selectedCrop.label.toLowerCase()} in {regionDisplay}.</>}
+                  {!crossSeason && compLabels.length > 0 && <> TSP + N is already cheaper from season 1 for this crop and region combination.</>}
                 </p>
               </div>
             </div>
