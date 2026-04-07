@@ -1736,6 +1736,7 @@ function MathieuFarmPage({ region }) {
   const [ownedPct, setOwnedPct] = useState(65);
   const [farmType, setFarmType] = useState("(1) Fieldcrops");
   const [currentFerts, setCurrentFerts] = useState([]);
+  const [tspNRate, setTspNRate] = useState(null); // kg N/ha paired with TSP; null = use crop default
   const [showBS, setShowBS] = useState(false);
   const [showPL, setShowPL] = useState(false);
   const [showParams, setShowParams] = useState(true);
@@ -1757,43 +1758,36 @@ function MathieuFarmPage({ region }) {
 
   const CROPS = [
     { id:"wheat", label:"Soft wheat", pDemand:"high", nDemand:"high", icon:"\u{1F33E}", revenuePerHa:1850,
+      cropNReq:180, // ARVALIS: 160-200 kg N/ha for winter wheat
       note:"DAP and MAP benefit from N+P co-location at tillering. TSP competitive but not dominant.",
       yieldModByFert:{ TSP:0.97, MAP:1.00, NPS:0.91, DAP:0.99, NPK1:0.89, NPK2:0.84, NPK3:0.93 },
       decayModByFert:{ TSP:0.010, MAP:0.021, NPS:0.028, DAP:0.023, NPK1:0.030, NPK2:0.036, NPK3:0.018 }},
     { id:"barley", label:"Barley", pDemand:"medium", nDemand:"medium", icon:"\u{1F33E}", revenuePerHa:1520,
+      cropNReq:140, // 120-160 kg N/ha
       note:"Cost sensitive crop. MAP edges TSP because modest N aligns with moderate demand.",
       yieldModByFert:{ TSP:0.96, MAP:1.00, NPS:0.94, DAP:0.97, NPK1:0.93, NPK2:0.87, NPK3:0.95 },
       decayModByFert:{ TSP:0.012, MAP:0.019, NPS:0.025, DAP:0.020, NPK1:0.028, NPK2:0.034, NPK3:0.016 }},
     { id:"maize", label:"Maize / Corn", pDemand:"high", nDemand:"very high", icon:"\u{1F33D}", revenuePerHa:1680,
+      cropNReq:220, // 180-260 kg N/ha — high demand V6-V12
       note:"Very high N demand during V6 to V12. MAP and DAP decisively outperform TSP.",
       yieldModByFert:{ TSP:0.89, MAP:1.00, NPS:0.90, DAP:0.98, NPK1:0.88, NPK2:0.82, NPK3:0.93 },
       decayModByFert:{ TSP:0.008, MAP:0.020, NPS:0.026, DAP:0.018, NPK1:0.030, NPK2:0.036, NPK3:0.019 }},
     { id:"potato", label:"Potato", pDemand:"high", nDemand:"moderate", icon:"\u{1F954}", revenuePerHa:3200,
+      cropNReq:120, // 100-140 kg N/ha — excess N harms tuber quality
       note:"Best case for separation. Excess N damages tuber quality and reduces price per tonne.",
       yieldModByFert:{ TSP:1.00, MAP:0.92, NPS:0.86, DAP:0.89, NPK1:0.84, NPK2:0.78, NPK3:0.88 },
       decayModByFert:{ TSP:0.007, MAP:0.024, NPS:0.031, DAP:0.027, NPK1:0.033, NPK2:0.042, NPK3:0.022 }},
     { id:"sugarbeet", label:"Sugar beet", pDemand:"medium", nDemand:"moderate", icon:"\u{1F331}", revenuePerHa:2400,
+      cropNReq:130, // 110-150 kg N/ha — excess N reduces sugar content
       note:"Excess N reduces sugar content. Separation protects extraction rate and quality premium.",
       yieldModByFert:{ TSP:1.00, MAP:0.93, NPS:0.88, DAP:0.91, NPK1:0.89, NPK2:0.83, NPK3:0.91 },
       decayModByFert:{ TSP:0.008, MAP:0.020, NPS:0.028, DAP:0.024, NPK1:0.030, NPK2:0.036, NPK3:0.018 }},
     { id:"tomato", label:"Tomato", pDemand:"high", nDemand:"high", icon:"\u{1F345}", revenuePerHa:8500,
+      cropNReq:200, // 180-220 kg N/ha — critical during fruit set
       note:"High value crop. MAP wins on yield because N during fruit set is critical.",
       yieldModByFert:{ TSP:0.94, MAP:1.00, NPS:0.88, DAP:0.98, NPK1:0.86, NPK2:0.80, NPK3:0.94 },
       decayModByFert:{ TSP:0.009, MAP:0.017, NPS:0.028, DAP:0.019, NPK1:0.032, NPK2:0.039, NPK3:0.018 }},
   ];
-
-  const FERTILIZERS = [
-    { id:"TSP", label:"TSP", full:"Triple Super Phosphate", p2o5:46, n:0, k:0, color:"#10b981", badge:"P Separation", badgeColor:"#10b981", costPerKg:0.78, baseCostPerHa:178 },
-    { id:"MAP", label:"MAP", full:"Mono-Ammonium Phosphate", p2o5:48, n:11, k:0, color:"#0ea5e9", badge:"High P", badgeColor:"#0ea5e9", costPerKg:0.90, baseCostPerHa:205 },
-    { id:"NPS", label:"NPS", full:"Nitrogen Phosphorus Sulphur", p2o5:20, n:24, k:0, color:"#a78bfa", badge:"With Sulphur", badgeColor:"#a78bfa", costPerKg:0.72, baseCostPerHa:192 },
-    { id:"DAP", label:"DAP", full:"Di-Ammonium Phosphate", p2o5:46, n:18, k:0, color:"#f59e0b", badge:"High N+P", badgeColor:"#f59e0b", costPerKg:0.95, baseCostPerHa:218 },
-    { id:"NPK1", label:"NPK 15-15-15", full:"Balanced NPK", p2o5:15, n:15, k:15, color:"#f43f5e", badge:"Blended", badgeColor:"#f43f5e", costPerKg:0.62, baseCostPerHa:230 },
-    { id:"NPK2", label:"NPK 10-10-10", full:"Low grade NPK", p2o5:10, n:10, k:10, color:"#64748b", badge:"Economy", badgeColor:"#64748b", costPerKg:0.48, baseCostPerHa:195 },
-    { id:"NPK3", label:"NPK 10-52-10", full:"High P NPK", p2o5:52, n:10, k:10, color:"#818cf8", badge:"High P Blend", badgeColor:"#818cf8", costPerKg:1.02, baseCostPerHa:245 },
-  ];
-
-  const TSP = FERTILIZERS[0];
-  const NON_TSP = FERTILIZERS.filter(f => f.id !== "TSP");
 
   const REGIONS = [
     { display:"Champagne-Ardenne", value:"(131) Champagne-Ardenne" },
@@ -1826,6 +1820,28 @@ function MathieuFarmPage({ region }) {
   const isHighValue = selectedCrop.revenuePerHa > 2500;
   const baseRentPerHa = isHighValue ? 260 : 180;
   const rentCostPerHa = ((100 - ownedPct) / 100) * baseRentPerHa;
+
+  // ── TSP + N program cost calculation ──
+  // TSP provides zero N, so the farmer must buy separate N (ammonium nitrate 33.5% N, ~€0.85/kg)
+  // Plus an extra spreading pass (~€15-25/ha depending on farm size)
+  const AN_COST_PER_KG_N = 0.85 / 0.335;
+  const extraPassCost = farmSize > 200 ? 15 : farmSize > 100 ? 18 : 22;
+  const effectiveTspNRate = tspNRate !== null ? tspNRate : selectedCrop.cropNReq;
+  const tspNCost = Math.round(effectiveTspNRate * AN_COST_PER_KG_N);
+  const tspProgramCost = 178 + tspNCost + extraPassCost;
+
+  const FERTILIZERS = [
+    { id:"TSP", label:"TSP + N", full:"TSP ("+Math.round(effectiveTspNRate)+" kg N/ha via AN)", p2o5:46, n:effectiveTspNRate, k:0, color:"#10b981", badge:"P Separation", badgeColor:"#10b981", costPerKg:0.78, baseCostPerHa:tspProgramCost },
+    { id:"MAP", label:"MAP", full:"Mono-Ammonium Phosphate", p2o5:48, n:11, k:0, color:"#0ea5e9", badge:"High P", badgeColor:"#0ea5e9", costPerKg:0.90, baseCostPerHa:205 },
+    { id:"NPS", label:"NPS", full:"Nitrogen Phosphorus Sulphur", p2o5:20, n:24, k:0, color:"#a78bfa", badge:"With Sulphur", badgeColor:"#a78bfa", costPerKg:0.72, baseCostPerHa:192 },
+    { id:"DAP", label:"DAP", full:"Di-Ammonium Phosphate", p2o5:46, n:18, k:0, color:"#f59e0b", badge:"High N+P", badgeColor:"#f59e0b", costPerKg:0.95, baseCostPerHa:218 },
+    { id:"NPK1", label:"NPK 15-15-15", full:"Balanced NPK", p2o5:15, n:15, k:15, color:"#f43f5e", badge:"Blended", badgeColor:"#f43f5e", costPerKg:0.62, baseCostPerHa:230 },
+    { id:"NPK2", label:"NPK 10-10-10", full:"Low grade NPK", p2o5:10, n:10, k:10, color:"#64748b", badge:"Economy", badgeColor:"#64748b", costPerKg:0.48, baseCostPerHa:195 },
+    { id:"NPK3", label:"NPK 10-52-10", full:"High P NPK", p2o5:52, n:10, k:10, color:"#818cf8", badge:"High P Blend", badgeColor:"#818cf8", costPerKg:1.02, baseCostPerHa:245 },
+  ];
+
+  const TSP = FERTILIZERS[0];
+  const NON_TSP = FERTILIZERS.filter(f => f.id !== "TSP");
 
   // Regional yield multiplier from MODEL1 FADN coefficients
   const REGION_YIELD_MOD = {
@@ -2178,57 +2194,55 @@ function MathieuFarmPage({ region }) {
           <button className="back-link" onClick={()=>setPhase("narrative")} style={{ background:"none", border:"none", color:"#475569", fontSize:11, cursor:"pointer", padding:0, transition:"all 0.15s" }}>{LARR} Change treatment</button>
           <button className="back-link" onClick={()=>setPhase("configure")} style={{ background:"none", border:"none", color:"#334155", fontSize:11, cursor:"pointer", padding:0, transition:"all 0.15s" }}>{LARR} Reconfigure farm</button>
         </div>
-        <button onClick={()=>setShowParams(!showParams)} style={{
-          background:"none", border:"none", color: showParams ? "#0ea5e9" : "#475569",
-          fontSize:11, cursor:"pointer", padding:0, transition:"all 0.15s",
-        }}>
-          {showParams ? "Hide parameters" : "Show parameters"}
-        </button>
       </div>
 
-      {/* LIVE PARAMETER CONTROLS - visible by default */}
-      {showParams && (
-        <div style={{
-          background:"linear-gradient(135deg, #060d1a 0%, #0a1628 100%)",
-          border:"1.5px solid #0ea5e930",
-          borderRadius:14, padding:"16px 20px",
-          animation:"fadeUp 0.3s ease",
-          position:"sticky", top:0, zIndex:50,
-        }}>
-          <p style={{ color:"#0ea5e9", fontSize:9, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, margin:"0 0 12px" }}>Live parameters {MDASH} all results update instantly</p>
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr 1fr", gap:16 }}>
-            <div>
-              <p style={{ color:"#94a3b8", fontSize:10, fontWeight:600, margin:"0 0 6px" }}>Farm size</p>
-              <input type="range" min={10} max={500} step={5} value={farmSize} onChange={e=>setFarmSize(Number(e.target.value))} style={{ width:"100%", accentColor:"#10b981" }}/>
-              <p style={{ color:"#10b981", fontSize:13, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"4px 0 0", textAlign:"center" }}>{farmSize} ha</p>
-            </div>
-            <div>
-              <p style={{ color:"#94a3b8", fontSize:10, fontWeight:600, margin:"0 0 6px" }}>Farmer age</p>
-              <input type="range" min={18} max={90} step={1} value={farmerAge} onChange={e=>setFarmerAge(Number(e.target.value))} style={{ width:"100%", accentColor:"#0ea5e9" }}/>
-              <p style={{ color:"#0ea5e9", fontSize:13, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"4px 0 0", textAlign:"center" }}>{farmerAge} yrs</p>
-            </div>
-            <div>
-              <p style={{ color:"#94a3b8", fontSize:10, fontWeight:600, margin:"0 0 6px" }}>Owned / Rented</p>
-              <input type="range" min={0} max={100} step={5} value={ownedPct} onChange={e=>setOwnedPct(Number(e.target.value))} style={{ width:"100%", accentColor:"#f59e0b" }}/>
-              <p style={{ color:"#f59e0b", fontSize:13, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"4px 0 0", textAlign:"center" }}>{ownedPct}% / {100-ownedPct}%</p>
-            </div>
-            <div>
-              <p style={{ color:"#94a3b8", fontSize:10, fontWeight:600, margin:"0 0 6px" }}>Crop</p>
-              <select value={crop} onChange={e=>setCrop(e.target.value)} style={{ width:"100%", background:"#080e18", border:"1.5px solid #1a2436", color:"#f1f5f9", borderRadius:8, padding:"6px 8px", fontSize:11, fontWeight:600 }}>
-                {CROPS.map(c=><option key={c.id} value={c.id}>{c.icon} {c.label}</option>)}
-              </select>
-            </div>
-            <div>
-              <p style={{ color:"#94a3b8", fontSize:10, fontWeight:600, margin:"0 0 6px" }}>Region</p>
-              <select value={simRegion} onChange={e=>setSimRegion(e.target.value)} style={{ width:"100%", background:"#080e18", border:"1.5px solid #1a2436", color:"#f1f5f9", borderRadius:8, padding:"6px 8px", fontSize:11, fontWeight:600 }}>
-                {REGIONS.map(r=><option key={r.value} value={r.value}>{r.display}</option>)}
-              </select>
-            </div>
+      {/* LIVE PARAMETER CONTROLS - always sticky */}
+      <div style={{
+        background:"linear-gradient(135deg, #060d1a 0%, #0a1628 100%)",
+        border:"1.5px solid #0ea5e930",
+        borderRadius:14, padding:"14px 18px",
+        position:"sticky", top:0, zIndex:50,
+        boxShadow:"0 4px 24px rgba(0,0,0,0.5)",
+      }}>
+        <p style={{ color:"#0ea5e9", fontSize:9, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, margin:"0 0 10px" }}>Live parameters {MDASH} all results update instantly</p>
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr 1fr 1fr", gap:12 }}>
+          <div>
+            <p style={{ color:"#94a3b8", fontSize:10, fontWeight:600, margin:"0 0 5px" }}>Farm size</p>
+            <input type="range" min={10} max={500} step={5} value={farmSize} onChange={e=>setFarmSize(Number(e.target.value))} style={{ width:"100%", accentColor:"#10b981" }}/>
+            <p style={{ color:"#10b981", fontSize:12, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"3px 0 0", textAlign:"center" }}>{farmSize} ha</p>
+          </div>
+          <div>
+            <p style={{ color:"#94a3b8", fontSize:10, fontWeight:600, margin:"0 0 5px" }}>Farmer age</p>
+            <input type="range" min={18} max={90} step={1} value={farmerAge} onChange={e=>setFarmerAge(Number(e.target.value))} style={{ width:"100%", accentColor:"#0ea5e9" }}/>
+            <p style={{ color:"#0ea5e9", fontSize:12, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"3px 0 0", textAlign:"center" }}>{farmerAge} yrs</p>
+          </div>
+          <div>
+            <p style={{ color:"#94a3b8", fontSize:10, fontWeight:600, margin:"0 0 5px" }}>Owned / Rented</p>
+            <input type="range" min={0} max={100} step={5} value={ownedPct} onChange={e=>setOwnedPct(Number(e.target.value))} style={{ width:"100%", accentColor:"#f59e0b" }}/>
+            <p style={{ color:"#f59e0b", fontSize:12, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"3px 0 0", textAlign:"center" }}>{ownedPct}% / {100-ownedPct}%</p>
+          </div>
+          <div>
+            <p style={{ color:"#94a3b8", fontSize:10, fontWeight:600, margin:"0 0 5px" }}>Crop</p>
+            <select value={crop} onChange={e=>{setCrop(e.target.value);setTspNRate(null);}} style={{ width:"100%", background:"#080e18", border:"1.5px solid #1a2436", color:"#f1f5f9", borderRadius:8, padding:"5px 8px", fontSize:11, fontWeight:600 }}>
+              {CROPS.map(c=><option key={c.id} value={c.id}>{c.icon} {c.label}</option>)}
+            </select>
+          </div>
+          <div>
+            <p style={{ color:"#94a3b8", fontSize:10, fontWeight:600, margin:"0 0 5px" }}>Region</p>
+            <select value={simRegion} onChange={e=>setSimRegion(e.target.value)} style={{ width:"100%", background:"#080e18", border:"1.5px solid #1a2436", color:"#f1f5f9", borderRadius:8, padding:"5px 8px", fontSize:11, fontWeight:600 }}>
+              {REGIONS.map(r=><option key={r.value} value={r.value}>{r.display}</option>)}
+            </select>
+          </div>
+          <div>
+            <p style={{ color:"#10b981", fontSize:10, fontWeight:600, margin:"0 0 5px" }}>TSP + N rate</p>
+            <input type="range" min={0} max={300} step={10} value={effectiveTspNRate} onChange={e=>setTspNRate(Number(e.target.value))} style={{ width:"100%", accentColor:"#10b981" }}/>
+            <p style={{ color:"#10b981", fontSize:11, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"3px 0 0", textAlign:"center" }}>{Math.round(effectiveTspNRate)} kg N/ha</p>
+            <p style={{ color:"#334155", fontSize:8, margin:"2px 0 0", textAlign:"center" }}>Rec: {selectedCrop.cropNReq} {MIDDOT} {EUR}{Math.round(tspNCost)} N + {EUR}{extraPassCost} pass</p>
           </div>
         </div>
-      )}
+      </div>
 
-      {/* Context summary - neutral, no winner declared */}
+      {/* Context summary */}
       <div style={{ display:"flex", alignItems:"center", gap:14, padding:"14px 18px", background:"linear-gradient(135deg,#060d1a,#080e18)", border:"1.5px solid #1a243650", borderRadius:14, animation:"fadeUp 0.4s ease" }}>
         <div style={{ width:40, height:40, borderRadius:"50%", background:"#0ea5e915", border:"2px solid #0ea5e940", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
@@ -2238,9 +2252,32 @@ function MathieuFarmPage({ region }) {
             {selectedCrop.label} {MIDDOT} {regionDisplay} {MDASH} {allTreatments.length} treatments compared
           </p>
           <p style={{ color:"#64748b", fontSize:11, margin:0 }}>
-            {farmSize} ha {MIDDOT} {farmerAge} y/o {MIDDOT} {ownedPct}% owned {MIDDOT} {100-ownedPct}% rented {MIDDOT} Rent {EUR}{Math.round(rentCostPerHa)}/ha
+            {farmSize} ha {MIDDOT} {farmerAge} y/o {MIDDOT} {ownedPct}% owned {MIDDOT} TSP program: {EUR}{Math.round(tspProgramCost)}/ha (TSP {EUR}178 + N {EUR}{Math.round(tspNCost)} + pass {EUR}{extraPassCost})
           </p>
         </div>
+      </div>
+
+      {/* ── RANKING — the big picture, shown first ── */}
+      <div style={{ ...S.card, padding:0, overflow:"hidden", border:`1.5px solid ${bestTreatment.color}30` }}>
+        <div style={{ padding:"18px 20px", borderBottom:"1px solid #1a2436", background:`linear-gradient(135deg,${bestTreatment.color}08,#080e18)` }}>
+          <p style={{ color:"#f1f5f9", fontSize:15, fontWeight:700, margin:"0 0 4px" }}>Treatment ranking {MDASH} {selectedCrop.label} {MIDDOT} {regionDisplay}</p>
+          <p style={{ color:"#475569", fontSize:10, margin:0 }}>Ranked by gross margin ({EUR}/ha). TSP + N includes {Math.round(effectiveTspNRate)} kg N/ha via ammonium nitrate + extra pass cost. All other treatments compared at their standard formulation.</p>
+        </div>
+        {allRanked.map((f,i)=>{
+          const isTSP=f.id==="TSP"; const isC=currentFerts.includes(f.id); const mD=f.margin-tspFin.grossMargin;
+          return (<div key={f.id} style={{ display:"flex", alignItems:"center", gap:14, padding:i===0?"14px 20px":"11px 20px", background:i===0?bestTreatment.color+"08":isTSP?"#10b98106":isC?(f.color+"06"):"transparent", borderLeft:"3px solid "+(i===0?bestTreatment.color:isTSP?"#10b981":isC?f.color:"transparent"), borderBottom:i<allRanked.length-1?"1px solid #0d1520":"none" }}>
+            <span style={{ color:i===0?"#f59e0b":i<3?"#94a3b8":"#334155", fontSize:i===0?14:11, width:22, fontFamily:"'DM Mono',monospace", fontWeight:700 }}>#{i+1}</span>
+            <div style={{ width:8, height:8, borderRadius:2, background:f.color, flexShrink:0 }}/>
+            <span style={{ color:isTSP?"#10b981":i===0?"#f1f5f9":isC?"#e2e8f0":"#94a3b8", fontSize:i===0?14:12, fontWeight:isTSP||isC||i===0?700:400, flex:1 }}>
+              {f.label}
+              {i===0&&<span style={{ marginLeft:8, fontSize:9, color:"#f59e0b", background:"#f59e0b18", padding:"2px 8px", borderRadius:4, fontWeight:700 }}>BEST FOR {selectedCrop.label.toUpperCase()}</span>}
+              {isTSP&&i!==0&&<span style={{ marginLeft:8, fontSize:9, color:"#10b981", background:"#10b98118", padding:"2px 8px", borderRadius:4 }}>P SEPARATION</span>}
+              {isC&&!isTSP&&<span style={{ marginLeft:8, fontSize:9, color:f.color, background:f.color+"18", padding:"2px 8px", borderRadius:4 }}>COMPARED</span>}
+            </span>
+            <span style={{ color:i===0?"#f1f5f9":"#cbd5e1", fontSize:i===0?15:12, fontFamily:"'DM Mono',monospace", fontWeight:i===0?800:600, width:80, textAlign:"right" }}>{fmtE(f.margin)}</span>
+            <span style={{ color:mD>=0?"#10b981":"#f43f5e", fontSize:11, fontWeight:700, fontFamily:"'DM Mono',monospace", width:80, textAlign:"right" }}>{isTSP?MDASH:fmtK(mD)}</span>
+          </div>);
+        })}
       </div>
 
       {/* KPI table */}
@@ -2250,7 +2287,7 @@ function MathieuFarmPage({ region }) {
           <p style={{ color:"#475569", fontSize:10, margin:"4px 0 0" }}>These are full season results at harvest. All gross margins are positive because total revenue exceeds total input cost for every treatment.</p>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"180px repeat("+allTreatments.length+",1fr)", gap:0 }}>
-          {["Metric", ...allTreatments.map(t=>t.id==="TSP"?"TSP (P Separation)":t.label)].map((h,j)=>(
+          {["Metric", ...allTreatments.map(t=>t.id==="TSP"?"TSP + N (Separation)":t.label)].map((h,j)=>(
             <div key={j} style={{ padding:"10px 14px", background:"#060d1a", borderBottom:"1px solid #0d1520", fontSize:10, fontWeight:700, color:j===1?"#10b981":j>1?CHART_COLORS[allTreatments[j-1]?.id]||"#94a3b8":"#64748b", textTransform:"uppercase", letterSpacing:"0.08em", textAlign:j>0?"right":"left" }}>{h}</div>
           ))}
           {[{label:"Gross output (revenue)",key:"output"},{label:"Total input cost",key:"inputCost"},{label:"Gross margin (revenue "+MINUS+" cost)",key:"grossMargin"}].map((row,i)=>(
@@ -2477,29 +2514,6 @@ function MathieuFarmPage({ region }) {
             return lines.join(" ");
           })()}
         </p>
-      </div>
-
-      {/* Ranked */}
-      <div style={{ ...S.card, padding:0, overflow:"hidden" }}>
-        <div style={{ padding:"12px 18px", borderBottom:"1px solid #1a2436" }}>
-          <p style={{ color:"#cbd5e1", fontSize:11, fontWeight:700, margin:0 }}>All treatments ranked by gross margin for {selectedCrop.label} ({EUR} per hectare)</p>
-          <p style={{ color:"#475569", fontSize:9, margin:"3px 0 0" }}>Ranking reflects this specific crop and region. A different crop or region may produce a different ranking.</p>
-        </div>
-        {allRanked.map((f,i)=>{
-          const isTSP=f.id==="TSP"; const isC=currentFerts.includes(f.id); const mD=f.margin-tspFin.grossMargin;
-          return (<div key={f.id} style={{ display:"flex", alignItems:"center", gap:14, padding:"11px 18px", background:isTSP?"#10b98108":isC?(f.color+"08"):"transparent", borderLeft:"3px solid "+(isTSP?"#10b981":isC?f.color:"transparent") }}>
-            <span style={{ color:i===0?"#f59e0b":"#334155", fontSize:10, width:18, fontFamily:"'DM Mono',monospace", fontWeight:700 }}>#{i+1}</span>
-            <div style={{ width:6, height:6, borderRadius:2, background:f.color, flexShrink:0 }}/>
-            <span style={{ color:isTSP?"#10b981":isC?"#f1f5f9":"#94a3b8", fontSize:12, fontWeight:isTSP||isC||i===0?700:400, flex:1 }}>
-              {f.label}
-              {i===0&&<span style={{ marginLeft:8, fontSize:9, color:"#f59e0b", background:"#f59e0b18", padding:"1px 6px", borderRadius:4 }}>BEST FOR {selectedCrop.label.toUpperCase()}</span>}
-              {isTSP&&i!==0&&<span style={{ marginLeft:8, fontSize:9, color:"#10b981", background:"#10b98118", padding:"1px 6px", borderRadius:4 }}>P SEPARATION</span>}
-              {isC&&!isTSP&&<span style={{ marginLeft:8, fontSize:9, color:f.color, background:f.color+"18", padding:"1px 6px", borderRadius:4 }}>COMPARED</span>}
-            </span>
-            <span style={{ color:"#cbd5e1", fontSize:12, fontFamily:"'DM Mono',monospace", width:80, textAlign:"right" }}>{fmtE(f.margin)}</span>
-            <span style={{ color:mD>=0?"#10b981":"#f43f5e", fontSize:11, fontWeight:700, fontFamily:"'DM Mono',monospace", width:80, textAlign:"right" }}>{isTSP?MDASH:fmtK(mD)}</span>
-          </div>);
-        })}
       </div>
 
       {/* TAKEAWAYS */}
