@@ -1744,6 +1744,11 @@ function MathieuFarmPage({ region }) {
   const [outputZoom, setOutputZoom] = useState(null);
   const [cashZoom, setCashZoom] = useState(null);
 
+  // Drag-select zoom state (must be before any early return — Rules of Hooks)
+  const [dragStart, setDragStart] = useState(null);
+  const [dragEnd, setDragEnd] = useState(null);
+  const [activeChart, setActiveChart] = useState(null);
+
   if (region !== "France") return (
     <div style={{ display:"flex", alignItems:"center", justifyContent:"center", minHeight:400 }}>
       <p style={{ color:"#94a3b8" }}>Select France to run this simulation.</p>
@@ -1932,10 +1937,7 @@ function MathieuFarmPage({ region }) {
   const tspRank = allRanked.findIndex(f => f.id === "TSP") + 1;
   const tspIsBest = bestTreatment.id === "TSP";
 
-  // Drag-select zoom: user clicks and drags on chart to select a region, then zooms in
-  const [dragStart, setDragStart] = useState(null);
-  const [dragEnd, setDragEnd] = useState(null);
-  const [activeChart, setActiveChart] = useState(null);
+
 
   const handleDragStart = (chartId, e) => {
     if (e && e.activeLabel) { setDragStart(e.activeLabel); setDragEnd(null); setActiveChart(chartId); }
