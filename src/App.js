@@ -1823,25 +1823,49 @@ function MathieuFarmPage({ region }) {
   const selectedCrop = CROPS.find(c => c.id === crop) || CROPS[0];
   const regionDisplay = simRegion.replace(/^\(\d+\)\s*/,"");
   const sizeScale = farmSize / 120;
-  const rentCostPerHa = ((100 - ownedPct) / 100) * 180;
+  const isHighValue = selectedCrop.revenuePerHa > 2500;
+  const baseRentPerHa = isHighValue ? 260 : 180;
+  const rentCostPerHa = ((100 - ownedPct) / 100) * baseRentPerHa;
+
+  // Regional yield multiplier from MODEL1 FADN coefficients
+  const REGION_YIELD_MOD = {
+    "(131) Champagne-Ardenne":1.029,"(132) Picardie":1.002,"(133) Haute-Normandie":0.972,
+    "(134) Centre":0.917,"(135) Basse-Normandie":0.983,"(136) Bourgogne":1.004,
+    "(141) Nord-Pas-de-Calais":0.967,"(142) Lorraine":0.972,"(143) Alsace":0.966,
+    "(144) Franche-Comté":1.011,"(151) Pays de la Loire":0.946,"(152) Bretagne":1.002,
+    "(153) Poitou-Charentes":0.940,"(162) Aquitaine":0.842,"(163) Midi-Pyrénées":0.906,
+    "(164) Limousin":0.962,"(171) Rhône-Alpes":0.941,"(172) Auvergne":0.975,
+    "(181) Languedoc-Roussillon":0.879,"(182) PACA":0.922,"(183) Corse":0.903,
+    "(121) Île-de-France":1.000,
+  };
+  const regionYieldMod = REGION_YIELD_MOD[simRegion] || 1.0;
+  const sizeEfficiency = farmSize <= 50 ? 1.12 : farmSize <= 100 ? 1.04 : farmSize <= 200 ? 1.00 : farmSize <= 350 ? 0.96 : 0.93;
+  const inputPriceDiscount = farmSize > 200 ? 0.96 : farmSize > 100 ? 0.98 : 1.00;
+  const ageMod = farmerAge < 35 ? 1.04 : farmerAge < 45 ? 1.02 : farmerAge < 55 ? 1.00 : farmerAge < 65 ? 0.97 : 0.94;
 
   const computeFinancials = (fert, yearOffset = 0) => {
     const cropYieldMult = selectedCrop.yieldModByFert[fert.id] || 0.90;
     const cropDecay = selectedCrop.decayModByFert[fert.id] || 0.025;
     const yieldAdj = cropYieldMult * Math.pow(1 - cropDecay, yearOffset);
-    const revenuePerHa = selectedCrop.revenuePerHa * yieldAdj;
-    const isHighValue = selectedCrop.revenuePerHa > 2500;
-    const seedCost = isHighValue ? 180 : 85;
-    const labourCost = isHighValue ? 240 : 130;
-    const machineryCost = isHighValue ? 120 : 95;
-    const insuranceCost = isHighValue ? 85 : 52;
-    const miscCost = isHighValue ? 45 : 28;
-    const totalCostPerHa = fert.baseCostPerHa + seedCost + labourCost + machineryCost + insuranceCost + miscCost + rentCostPerHa;
+    const revenuePerHa = selectedCrop.revenuePerHa * yieldAdj * regionYieldMod * ageMod;
+    const seedCost = Math.round((isHighValue ? 180 : 85) * inputPriceDiscount);
+    const baseLabour = isHighValue ? 240 : 130;
+    const labourCost = Math.round(baseLabour * sizeEfficiency * (farmerAge > 60 ? 1.08 : 1.0));
+    const baseMachinery = isHighValue ? 120 : 95;
+    const machineryCost = Math.round(baseMachinery * (farmSize < 50 ? 1.25 : farmSize < 100 ? 1.08 : farmSize < 200 ? 1.00 : 0.92));
+    const insuranceCost = Math.round((isHighValue ? 85 : 52) * regionYieldMod);
+    const miscCost = Math.round((isHighValue ? 45 : 28) * (farmSize < 80 ? 1.10 : 1.00));
+    const fertCostPerHa = Math.round(fert.baseCostPerHa * inputPriceDiscount);
+    const totalCostPerHa = fertCostPerHa + seedCost + labourCost + machineryCost + insuranceCost + miscCost + rentCostPerHa;
     return {
       output: revenuePerHa,
       inputCost: totalCostPerHa,
+      fertCost: fertCostPerHa,
+      seedCost, labourCost, machineryCost, insuranceCost, miscCost,
       grossMargin: revenuePerHa - totalCostPerHa,
       rofi: revenuePerHa / totalCostPerHa,
+      totalFarmRevenue: revenuePerHa * farmSize,
+      totalFarmCost: totalCostPerHa * farmSize,
       totalFarmMargin: (revenuePerHa - totalCostPerHa) * farmSize,
     };
   };
@@ -1862,16 +1886,25 @@ function MathieuFarmPage({ region }) {
 
   const buildBalanceSheet = (fert) => {
     const fin = computeFinancials(fert);
-    const landValue = Math.round(8500 * (ownedPct/100) * sizeScale);
-    const machineryValue = Math.round(2400 * sizeScale);
+    // Land value: French arable ~8,000-9,500 €/ha (higher in IDF/Champagne, lower in South)
+    const baseLandVal = isHighValue ? 12000 : 8500;
+    const landValue = Math.round(baseLandVal * regionYieldMod * (ownedPct/100) * farmSize / 120);
+    // Machinery: scales with farm size but with diminishing marginal cost (shared equipment)
+    const machineryValue = Math.round((isHighValue ? 3200 : 2400) * Math.pow(sizeScale, 0.85));
+    // Crop inventory: inputs committed to ground, proportional to cost
     const inventoryValue = Math.round(fin.inputCost * sizeScale * 0.35);
-    const cashPosition = Math.round(Math.max(0, fin.grossMargin * sizeScale * 0.45));
+    // Cash: residual from prior season margin, younger farmers tend to hold less cash
+    const cashMod = farmerAge < 40 ? 0.30 : farmerAge < 55 ? 0.45 : 0.55;
+    const cashPosition = Math.round(Math.max(0, fin.grossMargin * sizeScale * cashMod));
+    // Receivables: harvest sold but not yet paid, proportional to output
     const receivables = Math.round(fin.output * sizeScale * 0.18);
     const totalAssets = landValue + machineryValue + inventoryValue + cashPosition + receivables;
-    const longTermDebt = Math.round(3200 * sizeScale);
+    // Debt: larger farms carry more structural debt; younger farmers more leveraged
+    const ageLeverage = farmerAge < 40 ? 1.25 : farmerAge < 55 ? 1.0 : 0.75;
+    const longTermDebt = Math.round((isHighValue ? 4200 : 3200) * sizeScale * ageLeverage);
     const rentObl = Math.round(rentCostPerHa * farmSize);
     const inputPayables = Math.round(fin.inputCost * sizeScale * 0.55);
-    const operatingLoan = Math.round(fin.inputCost * sizeScale * 0.30);
+    const operatingLoan = Math.round(fin.inputCost * sizeScale * (farmSize > 200 ? 0.22 : 0.30));
     const totalLiab = longTermDebt + rentObl + inputPayables + operatingLoan;
     return {
       assets: [
@@ -1895,18 +1928,19 @@ function MathieuFarmPage({ region }) {
 
   const buildPL = (fert) => {
     const fin = computeFinancials(fert);
-    const cropSales = Math.round(fin.output * 0.92);
-    const subsidies = Math.round(fin.output * 0.08);
+    // Revenue: crop sales + subsidies (CAP decoupled ~200-270 €/ha for field crops)
+    const subsidyPerHa = isHighValue ? fin.output * 0.04 : Math.min(270, fin.output * 0.08);
+    const cropSales = Math.round(fin.output);
+    const subsidies = Math.round(subsidyPerHa);
     const totalRevenue = cropSales + subsidies;
-    const isHighValue = selectedCrop.revenuePerHa > 2500;
     const expenses = [
-      { label:"Primary fertilizer program", value:fert.baseCostPerHa },
-      { label:"Seed and planting material", value:isHighValue ? 180 : 85 },
-      { label:"Labour and field operations", value:isHighValue ? 240 : 130 },
-      { label:"Machinery depreciation", value:isHighValue ? 120 : 95 },
+      { label:"Primary fertilizer program", value:fin.fertCost },
+      { label:"Seed and planting material", value:fin.seedCost },
+      { label:"Labour and field operations", value:fin.labourCost },
+      { label:"Machinery depreciation", value:fin.machineryCost },
       { label:"Land rent", value:Math.round(rentCostPerHa) },
-      { label:"Crop insurance", value:isHighValue ? 85 : 52 },
-      { label:"Administrative and miscellaneous", value:isHighValue ? 45 : 28 },
+      { label:"Crop insurance", value:fin.insuranceCost },
+      { label:"Administrative and miscellaneous", value:fin.miscCost },
     ];
     const totalExpense = expenses.reduce((s,e)=>s+e.value,0);
     return {
@@ -1937,7 +1971,7 @@ function MathieuFarmPage({ region }) {
   const tspRank = allRanked.findIndex(f => f.id === "TSP") + 1;
   const tspIsBest = bestTreatment.id === "TSP";
 
-
+  // Drag-select zoom: user clicks and drags on chart to select a region, then zooms in
 
   const handleDragStart = (chartId, e) => {
     if (e && e.activeLabel) { setDragStart(e.activeLabel); setDragEnd(null); setActiveChart(chartId); }
@@ -2287,6 +2321,55 @@ function MathieuFarmPage({ region }) {
       })()}
 
       {/* Revenue vs Cost side by side */}
+
+      {/* P&L — now directly after margin trajectory */}
+      <div style={{ ...S.card, padding:0, overflow:"hidden" }}>
+        <div className="dropdown-toggle" onClick={()=>setShowPL(!showPL)} style={{ padding:"20px 24px", display:"flex", alignItems:"center", justifyContent:"space-between", background:"#080e18" }}>
+          <p style={{ color:"#f1f5f9", fontSize:22, fontWeight:800, letterSpacing:"-0.02em", margin:0 }}>Profit & Loss Statement <span style={{color:"#475569",fontSize:12,fontWeight:400}}>({EUR}/ha {MIDDOT} {farmSize} ha {MIDDOT} {regionDisplay})</span></p>
+          <span style={{ color:"#64748b", fontSize:26, fontWeight:300, transform:showPL?"rotate(180deg)":"none", transition:"transform 0.2s" }}>{CARET}</span>
+        </div>
+        {showPL && (
+          <div style={{ padding:"0 18px 18px", animation:"fadeUp 0.3s ease" }}>
+            <p style={{ color:"#475569", fontSize:10, margin:"8px 0 12px", padding:"0 4px" }}>All values in {EUR}/ha. Parameters: {farmSize} ha, {farmerAge} y/o, {ownedPct}% owned, {regionDisplay}. Costs adjust for farm size (scale economies), region (yield/insurance), and farmer age (labour efficiency).</p>
+            <div style={{ display:"grid", gridTemplateColumns:"200px repeat("+allTreatments.length+",1fr)", gap:0 }}>
+              {["", ...allTreatments.map(t=>t.id==="TSP"?"TSP":t.label)].map((h,j)=>(<div key={j} style={{ padding:"8px 12px", background:"#060d1a", borderBottom:"2px solid #1a2436", fontSize:10, fontWeight:700, color:j===1?"#10b981":j>1?CHART_COLORS[allTreatments[j-1]?.id]:"#64748b", textTransform:"uppercase", textAlign:j>0?"right":"left" }}>{h}</div>))}
+              <div style={{ display:"contents" }}><div style={{ padding:"8px 12px", background:"#0a1628", gridColumn:"1 / -1", color:"#0ea5e9", fontSize:10, fontWeight:700, textTransform:"uppercase", borderBottom:"1px solid #1a2436" }}>Revenue</div></div>
+              {buildPL(TSP).revenue.map((r,i)=>(<div key={"r"+i} style={{ display:"contents" }}><div style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#94a3b8", fontSize:11 }}>{r.label}</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#cbd5e1", fontSize:12, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildPL(t).revenue[i].value)}</div>)}</div>))}
+              <div style={{ display:"contents" }}><div style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #1a2436", color:"#f1f5f9", fontSize:12, fontWeight:700 }}>Total revenue</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #1a2436", color:t.id==="TSP"?"#0ea5e9":"#cbd5e1", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildPL(t).totalRevenue)}</div>)}</div>
+              <div style={{ display:"contents" }}><div style={{ padding:"8px 12px", background:"#0a1628", gridColumn:"1 / -1", color:"#f43f5e", fontSize:10, fontWeight:700, textTransform:"uppercase", borderBottom:"1px solid #1a2436" }}>Operating expenses</div></div>
+              {buildPL(TSP).expenses.map((e,i)=>(<div key={"e"+i} style={{ display:"contents" }}><div style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#94a3b8", fontSize:11 }}>{e.label}</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#cbd5e1", fontSize:12, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildPL(t).expenses[i].value)}</div>)}</div>))}
+              <div style={{ display:"contents" }}><div style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #1a2436", color:"#f1f5f9", fontSize:12, fontWeight:700 }}>Total operating expenses</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #1a2436", color:"#f43f5e", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildPL(t).totalExpense)}</div>)}</div>
+              <div style={{ display:"contents" }}><div style={{ padding:"14px 12px", background:"#060d1a", borderTop:"2px solid #1a2436", color:"#f1f5f9", fontSize:14, fontWeight:800 }}>Net income</div>{allTreatments.map(t=>{const ni=buildPL(t).netIncome;const tNI=buildPL(TSP).netIncome;return(<div key={t.id} style={{ padding:"14px 12px", background:"#060d1a", borderTop:"2px solid #1a2436", textAlign:"right" }}><span style={{ color:t.id==="TSP"?"#10b981":"#cbd5e1", fontSize:16, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>{fmtE(ni)}</span>{t.id!=="TSP"&&<span style={{ color:ni>=tNI?"#10b981":"#f43f5e", fontSize:11, fontFamily:"'DM Mono',monospace", marginLeft:8 }}>({fmtK(ni-tNI)})</span>}</div>);})}</div>
+            </div>
+            <div style={{ marginTop:14, padding:"10px 14px", background:"#060d1a", border:"1px solid #1e293b", borderRadius:8 }}>
+              <p style={{ color:"#94a3b8", fontSize:11, margin:0, lineHeight:1.65 }}>Total farm net income: {allTreatments.map((t,j)=>{ const ni=buildPL(t).netIncome; return <span key={t.id} style={{color:j===0?"#10b981":CHART_COLORS[t.id],fontWeight:700,fontFamily:"'DM Mono',monospace"}}>{j>0?" · ":""}{t.id==="TSP"?"TSP":t.label}: {fmtE(ni * farmSize)}</span>;})}</p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Balance Sheet — now directly after P&L */}
+      <div style={{ ...S.card, padding:0, overflow:"hidden" }}>
+        <div className="dropdown-toggle" onClick={()=>setShowBS(!showBS)} style={{ padding:"20px 24px", display:"flex", alignItems:"center", justifyContent:"space-between", background:"#080e18" }}>
+          <p style={{ color:"#f1f5f9", fontSize:22, fontWeight:800, letterSpacing:"-0.02em", margin:0 }}>Balance Sheet <span style={{color:"#475569",fontSize:12,fontWeight:400}}>({farmSize} ha {MIDDOT} {ownedPct}% owned {MIDDOT} {regionDisplay})</span></p>
+          <span style={{ color:"#64748b", fontSize:26, fontWeight:300, transform:showBS?"rotate(180deg)":"none", transition:"transform 0.2s" }}>{CARET}</span>
+        </div>
+        {showBS && (
+          <div style={{ padding:"0 18px 18px", animation:"fadeUp 0.3s ease" }}>
+            <p style={{ color:"#475569", fontSize:10, margin:"8px 0 12px", padding:"0 4px" }}>Scaled balance sheet. Land value reflects regional market ({regionDisplay}), ownership ({ownedPct}%). Debt adjusts for farmer age ({farmerAge} y/o) and farm size ({farmSize} ha).</p>
+            <div style={{ display:"grid", gridTemplateColumns:"180px repeat("+allTreatments.length+",1fr)", gap:0 }}>
+              {["", ...allTreatments.map(t=>t.id==="TSP"?"TSP":t.label)].map((h,j)=>(<div key={j} style={{ padding:"8px 12px", background:"#060d1a", borderBottom:"2px solid #1a2436", fontSize:10, fontWeight:700, color:j===1?"#10b981":j>1?CHART_COLORS[allTreatments[j-1]?.id]:"#64748b", textTransform:"uppercase", textAlign:j>0?"right":"left" }}>{h}</div>))}
+              <div style={{ display:"contents" }}><div style={{ padding:"8px 12px", background:"#0a1628", gridColumn:"1 / -1", color:"#10b981", fontSize:10, fontWeight:700, textTransform:"uppercase", borderBottom:"1px solid #1a2436" }}>Assets</div></div>
+              {buildBalanceSheet(TSP).assets.map((a,i)=>(<div key={"a"+i} style={{ display:"contents" }}><div style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#94a3b8", fontSize:11 }}>{a.label}</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#cbd5e1", fontSize:12, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildBalanceSheet(t).assets[i].value)}</div>)}</div>))}
+              <div style={{ display:"contents" }}><div style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #1a2436", color:"#f1f5f9", fontSize:12, fontWeight:700 }}>Total assets</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #1a2436", color:"#10b981", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildBalanceSheet(t).totalAssets)}</div>)}</div>
+              <div style={{ display:"contents" }}><div style={{ padding:"8px 12px", background:"#0a1628", gridColumn:"1 / -1", color:"#f43f5e", fontSize:10, fontWeight:700, textTransform:"uppercase", borderBottom:"1px solid #1a2436" }}>Liabilities</div></div>
+              {buildBalanceSheet(TSP).liabilities.map((l,i)=>(<div key={"l"+i} style={{ display:"contents" }}><div style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#94a3b8", fontSize:11 }}>{l.label}</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#cbd5e1", fontSize:12, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildBalanceSheet(t).liabilities[i].value)}</div>)}</div>))}
+              <div style={{ display:"contents" }}><div style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #1a2436", color:"#f1f5f9", fontSize:12, fontWeight:700 }}>Total liabilities</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #1a2436", color:"#f43f5e", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildBalanceSheet(t).totalLiab)}</div>)}</div>
+              <div style={{ display:"contents" }}><div style={{ padding:"12px 12px", background:"#060d1a", color:"#f1f5f9", fontSize:13, fontWeight:800 }}>Owner's equity</div>{allTreatments.map(t=>{const eq=buildBalanceSheet(t).equity;const tEq=buildBalanceSheet(TSP).equity;return(<div key={t.id} style={{ padding:"12px 12px", background:"#060d1a", textAlign:"right" }}><span style={{ color:t.id==="TSP"?"#10b981":"#cbd5e1", fontSize:14, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>{fmtE(eq)}</span>{t.id!=="TSP"&&<span style={{ color:eq>=tEq?"#10b981":"#f43f5e", fontSize:10, fontFamily:"'DM Mono',monospace", marginLeft:8 }}>({fmtK(eq-tEq)})</span>}</div>);})}</div>
+            </div>
+          </div>
+        )}
+      </div>
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:14 }}>
         {(() => {
           const rawOut = buildMultiYear(TSP).map((r,i) => { const row={year:r.year,TSP:r.output}; currentFerts.forEach(id=>{const f=FERTILIZERS.find(x=>x.id===id);if(f)row[f.label]=buildMultiYear(f)[i].output;}); return row; });
@@ -2460,50 +2543,6 @@ function MathieuFarmPage({ region }) {
             {mkCard("Crop specific interpretation "+MDASH+" "+c.label, "#f59e0b", cropTexts[c.id]||"")}
           </div>);
         })()}
-      </div>
-
-      {/* Balance Sheet */}
-      <div style={{ ...S.card, padding:0, overflow:"hidden" }}>
-        <div className="dropdown-toggle" onClick={()=>setShowBS(!showBS)} style={{ padding:"20px 24px", display:"flex", alignItems:"center", justifyContent:"space-between", background:"#080e18" }}>
-          <p style={{ color:"#f1f5f9", fontSize:22, fontWeight:800, letterSpacing:"-0.02em", margin:0 }}>Balance Sheet</p>
-          <span style={{ color:"#64748b", fontSize:26, fontWeight:300, transform:showBS?"rotate(180deg)":"none", transition:"transform 0.2s" }}>{CARET}</span>
-        </div>
-        {showBS && (
-          <div style={{ padding:"0 18px 18px", animation:"fadeUp 0.3s ease" }}>
-            <div style={{ display:"grid", gridTemplateColumns:"180px repeat("+allTreatments.length+",1fr)", gap:0 }}>
-              {["", ...allTreatments.map(t=>t.id==="TSP"?"TSP":t.label)].map((h,j)=>(<div key={j} style={{ padding:"8px 12px", background:"#060d1a", borderBottom:"2px solid #1a2436", fontSize:10, fontWeight:700, color:j===1?"#10b981":j>1?CHART_COLORS[allTreatments[j-1]?.id]:"#64748b", textTransform:"uppercase", textAlign:j>0?"right":"left" }}>{h}</div>))}
-              <div style={{ display:"contents" }}><div style={{ padding:"8px 12px", background:"#0a1628", gridColumn:"1 / -1", color:"#10b981", fontSize:10, fontWeight:700, textTransform:"uppercase", borderBottom:"1px solid #1a2436" }}>Assets</div></div>
-              {buildBalanceSheet(TSP).assets.map((a,i)=>(<div key={"a"+i} style={{ display:"contents" }}><div style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#94a3b8", fontSize:11 }}>{a.label}</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#cbd5e1", fontSize:12, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildBalanceSheet(t).assets[i].value)}</div>)}</div>))}
-              <div style={{ display:"contents" }}><div style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #1a2436", color:"#f1f5f9", fontSize:12, fontWeight:700 }}>Total assets</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #1a2436", color:"#10b981", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildBalanceSheet(t).totalAssets)}</div>)}</div>
-              <div style={{ display:"contents" }}><div style={{ padding:"8px 12px", background:"#0a1628", gridColumn:"1 / -1", color:"#f43f5e", fontSize:10, fontWeight:700, textTransform:"uppercase", borderBottom:"1px solid #1a2436" }}>Liabilities</div></div>
-              {buildBalanceSheet(TSP).liabilities.map((l,i)=>(<div key={"l"+i} style={{ display:"contents" }}><div style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#94a3b8", fontSize:11 }}>{l.label}</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#cbd5e1", fontSize:12, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildBalanceSheet(t).liabilities[i].value)}</div>)}</div>))}
-              <div style={{ display:"contents" }}><div style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #1a2436", color:"#f1f5f9", fontSize:12, fontWeight:700 }}>Total liabilities</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #1a2436", color:"#f43f5e", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildBalanceSheet(t).totalLiab)}</div>)}</div>
-              <div style={{ display:"contents" }}><div style={{ padding:"12px 12px", background:"#060d1a", color:"#f1f5f9", fontSize:13, fontWeight:800 }}>Owner's equity</div>{allTreatments.map(t=>{const eq=buildBalanceSheet(t).equity;const tEq=buildBalanceSheet(TSP).equity;return(<div key={t.id} style={{ padding:"12px 12px", background:"#060d1a", textAlign:"right" }}><span style={{ color:t.id==="TSP"?"#10b981":"#cbd5e1", fontSize:14, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>{fmtE(eq)}</span>{t.id!=="TSP"&&<span style={{ color:eq>=tEq?"#10b981":"#f43f5e", fontSize:10, fontFamily:"'DM Mono',monospace", marginLeft:8 }}>({fmtK(eq-tEq)})</span>}</div>);})}</div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* P&L */}
-      <div style={{ ...S.card, padding:0, overflow:"hidden" }}>
-        <div className="dropdown-toggle" onClick={()=>setShowPL(!showPL)} style={{ padding:"20px 24px", display:"flex", alignItems:"center", justifyContent:"space-between", background:"#080e18" }}>
-          <p style={{ color:"#f1f5f9", fontSize:22, fontWeight:800, letterSpacing:"-0.02em", margin:0 }}>Profit & Loss Statement</p>
-          <span style={{ color:"#64748b", fontSize:26, fontWeight:300, transform:showPL?"rotate(180deg)":"none", transition:"transform 0.2s" }}>{CARET}</span>
-        </div>
-        {showPL && (
-          <div style={{ padding:"0 18px 18px", animation:"fadeUp 0.3s ease" }}>
-            <div style={{ display:"grid", gridTemplateColumns:"200px repeat("+allTreatments.length+",1fr)", gap:0 }}>
-              {["", ...allTreatments.map(t=>t.id==="TSP"?"TSP":t.label)].map((h,j)=>(<div key={j} style={{ padding:"8px 12px", background:"#060d1a", borderBottom:"2px solid #1a2436", fontSize:10, fontWeight:700, color:j===1?"#10b981":j>1?CHART_COLORS[allTreatments[j-1]?.id]:"#64748b", textTransform:"uppercase", textAlign:j>0?"right":"left" }}>{h}</div>))}
-              <div style={{ display:"contents" }}><div style={{ padding:"8px 12px", background:"#0a1628", gridColumn:"1 / -1", color:"#0ea5e9", fontSize:10, fontWeight:700, textTransform:"uppercase", borderBottom:"1px solid #1a2436" }}>Revenue</div></div>
-              {buildPL(TSP).revenue.map((r,i)=>(<div key={"r"+i} style={{ display:"contents" }}><div style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#94a3b8", fontSize:11 }}>{r.label}</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#cbd5e1", fontSize:12, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildPL(t).revenue[i].value)}</div>)}</div>))}
-              <div style={{ display:"contents" }}><div style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #1a2436", color:"#f1f5f9", fontSize:12, fontWeight:700 }}>Total revenue</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #1a2436", color:t.id==="TSP"?"#0ea5e9":"#cbd5e1", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildPL(t).totalRevenue)}</div>)}</div>
-              <div style={{ display:"contents" }}><div style={{ padding:"8px 12px", background:"#0a1628", gridColumn:"1 / -1", color:"#f43f5e", fontSize:10, fontWeight:700, textTransform:"uppercase", borderBottom:"1px solid #1a2436" }}>Operating expenses</div></div>
-              {buildPL(TSP).expenses.map((e,i)=>(<div key={"e"+i} style={{ display:"contents" }}><div style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#94a3b8", fontSize:11 }}>{e.label}</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#cbd5e1", fontSize:12, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildPL(t).expenses[i].value)}</div>)}</div>))}
-              <div style={{ display:"contents" }}><div style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #1a2436", color:"#f1f5f9", fontSize:12, fontWeight:700 }}>Total operating expenses</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #1a2436", color:"#f43f5e", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildPL(t).totalExpense)}</div>)}</div>
-              <div style={{ display:"contents" }}><div style={{ padding:"14px 12px", background:"#060d1a", borderTop:"2px solid #1a2436", color:"#f1f5f9", fontSize:14, fontWeight:800 }}>Net income</div>{allTreatments.map(t=>{const ni=buildPL(t).netIncome;const tNI=buildPL(TSP).netIncome;return(<div key={t.id} style={{ padding:"14px 12px", background:"#060d1a", borderTop:"2px solid #1a2436", textAlign:"right" }}><span style={{ color:t.id==="TSP"?"#10b981":"#cbd5e1", fontSize:16, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>{fmtE(ni)}</span>{t.id!=="TSP"&&<span style={{ color:ni>=tNI?"#10b981":"#f43f5e", fontSize:11, fontFamily:"'DM Mono',monospace", marginLeft:8 }}>({fmtK(ni-tNI)})</span>}</div>);})}</div>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* CTA */}
