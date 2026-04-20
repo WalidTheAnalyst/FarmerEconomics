@@ -97,8 +97,8 @@ const FARMER_PERSONAS = [
     ],
     segments: [
       { label:"Price sensitivity",  val:95, color:"#f43f5e" },
-      { label:"Agronomy focus",     val:18, color:"#2DB04B" },
-      { label:"Innovation adopt.",  val:12, color:"#10b981" },
+      { label:"Agronomy focus",     val:18, color:"#2DB84B" },
+      { label:"Innovation adopt.",  val:12, color:"#2DB84B" },
       { label:"Sustainability",     val:8,  color:"#a78bfa" },
       { label:"Coop loyalty",       val:40, color:"#f59e0b" },
     ],
@@ -139,8 +139,8 @@ const FARMER_PERSONAS = [
     ],
     segments: [
       { label:"Price sensitivity",  val:55, color:"#f43f5e" },
-      { label:"Agronomy focus",     val:62, color:"#2DB04B" },
-      { label:"Innovation adopt.",  val:45, color:"#10b981" },
+      { label:"Agronomy focus",     val:62, color:"#2DB84B" },
+      { label:"Innovation adopt.",  val:45, color:"#2DB84B" },
       { label:"Sustainability",     val:40, color:"#a78bfa" },
       { label:"Coop loyalty",       val:90, color:"#f59e0b" },
     ],
@@ -149,7 +149,7 @@ const FARMER_PERSONAS = [
     id: "precision-pioneer",
     nickname: "The Precision Pioneer",
     emoji: "🛰️",
-    color: "#2DB04B",
+    color: "#2DB84B",
     tagline: "GPS, VRA, et données avant tout",
     share: 11,
     farmSize: ">150 ha",
@@ -181,8 +181,8 @@ const FARMER_PERSONAS = [
     ],
     segments: [
       { label:"Price sensitivity",  val:35, color:"#f43f5e" },
-      { label:"Agronomy focus",     val:92, color:"#2DB04B" },
-      { label:"Innovation adopt.",  val:88, color:"#10b981" },
+      { label:"Agronomy focus",     val:92, color:"#2DB84B" },
+      { label:"Innovation adopt.",  val:88, color:"#2DB84B" },
       { label:"Sustainability",     val:65, color:"#a78bfa" },
       { label:"Coop loyalty",       val:55, color:"#f59e0b" },
     ],
@@ -191,7 +191,7 @@ const FARMER_PERSONAS = [
     id: "green-convert",
     nickname: "The Green Convert",
     emoji: "🌱",
-    color: "#10b981",
+    color: "#2DB84B",
     tagline: "Bas carbone et certification HVE",
     share: 9,
     farmSize: "30–120 ha",
@@ -223,8 +223,8 @@ const FARMER_PERSONAS = [
     ],
     segments: [
       { label:"Price sensitivity",  val:42, color:"#f43f5e" },
-      { label:"Agronomy focus",     val:70, color:"#2DB04B" },
-      { label:"Innovation adopt.",  val:72, color:"#10b981" },
+      { label:"Agronomy focus",     val:70, color:"#2DB84B" },
+      { label:"Innovation adopt.",  val:72, color:"#2DB84B" },
       { label:"Sustainability",     val:94, color:"#a78bfa" },
       { label:"Coop loyalty",       val:65, color:"#f59e0b" },
     ],
@@ -265,8 +265,8 @@ const FARMER_PERSONAS = [
     ],
     segments: [
       { label:"Price sensitivity",  val:78, color:"#f43f5e" },
-      { label:"Agronomy focus",     val:22, color:"#2DB04B" },
-      { label:"Innovation adopt.",  val:5,  color:"#10b981" },
+      { label:"Agronomy focus",     val:22, color:"#2DB84B" },
+      { label:"Innovation adopt.",  val:5,  color:"#2DB84B" },
       { label:"Sustainability",     val:15, color:"#a78bfa" },
       { label:"Coop loyalty",       val:50, color:"#f59e0b" },
     ],
@@ -307,8 +307,8 @@ const FARMER_PERSONAS = [
     ],
     segments: [
       { label:"Price sensitivity",  val:70, color:"#f43f5e" },
-      { label:"Agronomy focus",     val:78, color:"#2DB04B" },
-      { label:"Innovation adopt.",  val:75, color:"#10b981" },
+      { label:"Agronomy focus",     val:78, color:"#2DB84B" },
+      { label:"Innovation adopt.",  val:75, color:"#2DB84B" },
       { label:"Sustainability",     val:45, color:"#a78bfa" },
       { label:"Coop loyalty",       val:30, color:"#f59e0b" },
     ],
@@ -319,25 +319,25 @@ const FARMER_PERSONAS = [
 const MARKET_INTEL = {
   France: {
     kpis:[
-      { label:"P2O5 consumed",     value:"226 kt",  sub:"−44% vs 2017",      accent:"#2DB04B" },
+      { label:"P2O5 consumed",     value:"226 kt",  sub:"−44% vs 2017",      accent:"#2DB84B" },
       { label:"Agronomic gap",     value:"−157 kt", sub:"vs Comifer rec.",    accent:"#f59e0b" },
-      { label:"Addressable mkt",   value:"511 kt",  sub:"P2O5 by 2030",      accent:"#10b981" },
+      { label:"Addressable mkt",   value:"511 kt",  sub:"P2O5 by 2030",      accent:"#2DB84B" },
       { label:"Fert. cost share",  value:"14–16%",  sub:"of variable costs", accent:"#a78bfa" },
-      { label:"Morocco mkt share", value:"~62%",    sub:"DAP/MAP imports",   accent:"#10b981" },
+      { label:"Morocco mkt share", value:"~62%",    sub:"DAP/MAP imports",   accent:"#2DB84B" },
     ],
     productMix:[
       { name:"NPK/NP",  val2022:103, val2023:66, color:"#a78bfa" },
       { name:"PK",      val2022:74,  val2023:43, color:"#f59e0b" },
-      { name:"DAP/MAP", val2022:72,  val2023:55, color:"#2DB04B" },
-      { name:"TSP",     val2022:54,  val2023:25, color:"#10b981" },
-      { name:"Other P", val2022:39,  val2023:33, color:"#9DBF9F" },
+      { name:"DAP/MAP", val2022:72,  val2023:55, color:"#2DB84B" },
+      { name:"TSP",     val2022:54,  val2023:25, color:"#2DB84B" },
+      { name:"Other P", val2022:39,  val2023:33, color:"#6B8F72" },
     ],
     importOrigin:[
-      { name:"Morocco", value:69.4, color:"#10b981" },
+      { name:"Morocco", value:69.4, color:"#2DB84B" },
       { name:"Russia",  value:13.0, color:"#f87171" },
       { name:"Egypt",   value:11.5, color:"#f59e0b" },
-      { name:"Tunisia", value:2.0,  color:"#9DBF9F" },
-      { name:"Other",   value:1.0,  color:"#9DBF9F" },
+      { name:"Tunisia", value:2.0,  color:"#6B8F72" },
+      { name:"Other",   value:1.0,  color:"#6B8F72" },
     ],
     dynamics:[
       { type:"risk",     icon:"📉", label:"Consumption decline",         text:"P2O5 use fell ~44% from 2017 to 2023. Only ~50% of parcels receive mineral P — a structural agronomic gap versus Comifer recommendations." },
@@ -358,35 +358,35 @@ const MARKET_INTEL = {
       { type:"positive", icon:"🛰️", label:"Precision agronomy uptake", text:"VRA P application is growing on large cereal farms. Separated P programs are more compatible with VRA than blended NPK." },
     ],
     cropAgronomy:[
-      { crop:"Wheat",     area:4950, currentP:18, recP:55, product:"TSP",     color:"#2DB04B" },
-      { crop:"Barley",    area:1867, currentP:27, recP:55, product:"TSP",     color:"#2DB04B" },
+      { crop:"Wheat",     area:4950, currentP:18, recP:55, product:"TSP",     color:"#2DB84B" },
+      { crop:"Barley",    area:1867, currentP:27, recP:55, product:"TSP",     color:"#2DB84B" },
       { crop:"Rapeseed",  area:1230, currentP:34, recP:55, product:"TSP/PK",  color:"#a78bfa" },
       { crop:"Corn",      area:1456, currentP:39, recP:65, product:"DAP",     color:"#f59e0b" },
       { crop:"Sunflower", area:871,  currentP:25, recP:55, product:"TSP/PK",  color:"#a78bfa" },
-      { crop:"Potatoes",  area:211,  currentP:40, recP:40, product:"PK",      color:"#10b981" },
-      { crop:"Beet",      area:402,  currentP:35, recP:60, product:"PK",      color:"#10b981" },
+      { crop:"Potatoes",  area:211,  currentP:40, recP:40, product:"PK",      color:"#2DB84B" },
+      { crop:"Beet",      area:402,  currentP:35, recP:60, product:"PK",      color:"#2DB84B" },
     ],
     ownership:{
       kpis:[
-        { label:"Total farms",       value:"390k",  sub:"−19% since 2010",       accent:"#2DB04B" },
-        { label:"Avg. farm size",    value:"69 ha", sub:"up from 53 ha in 2010", accent:"#10b981" },
+        { label:"Total farms",       value:"390k",  sub:"−19% since 2010",       accent:"#2DB84B" },
+        { label:"Avg. farm size",    value:"69 ha", sub:"up from 53 ha in 2010", accent:"#2DB84B" },
         { label:"Operators >55 yrs", value:"43%",   sub:"succession risk",       accent:"#f43f5e" },
         { label:"Land leased",       value:"~75%",  sub:"of utilized agri. area",accent:"#f59e0b" },
         { label:"Coop volumes",      value:"~70%",  sub:"of fertilizer flows",   accent:"#a78bfa" },
       ],
       // Histogram data — farm count by size band (Agreste 2020)
       farmSizeHistogram:[
-        { range:"<5 ha",    farms:58, pct:15, fertVolPct:2,  color:"#9DBF9F" },
+        { range:"<5 ha",    farms:58, pct:15, fertVolPct:2,  color:"#6B8F72" },
         { range:"5–20 ha",  farms:89, pct:23, fertVolPct:6,  color:"#c8d3e0" },
-        { range:"20–50 ha", farms:70, pct:18, fertVolPct:12, color:"#9DBF9F" },
-        { range:"50–100 ha",farms:62, pct:16, fertVolPct:18, color:"#2DB04B" },
+        { range:"20–50 ha", farms:70, pct:18, fertVolPct:12, color:"#6B8F72" },
+        { range:"50–100 ha",farms:62, pct:16, fertVolPct:18, color:"#2DB84B" },
         { range:"100–200 ha",farms:55,pct:14, fertVolPct:24, color:"#818cf8" },
-        { range:">200 ha",  farms:56, pct:14, fertVolPct:38, color:"#10b981" },
+        { range:">200 ha",  farms:56, pct:14, fertVolPct:38, color:"#2DB84B" },
       ],
       tenure:[
         { name:"Primarily lessee", value:40, color:"#f59e0b" },
-        { name:"Mixed",            value:35, color:"#2DB04B" },
-        { name:"Owner-operator",   value:25, color:"#10b981" },
+        { name:"Mixed",            value:35, color:"#2DB84B" },
+        { name:"Owner-operator",   value:25, color:"#2DB84B" },
       ],
       implications:[
         { type:"risk",     icon:"⏱️", label:"Short lease horizons",        text:"~75% of land under lease. Tenants on 9-year bail rural leases have limited incentive to invest in long-term soil P building." },
@@ -405,9 +405,9 @@ const MARKET_INTEL = {
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active||!payload?.length) return null;
   return (
-    <div style={{ background:"#112B14", border:"1px solid #1C3D21", borderRadius:8, padding:"10px 14px", fontSize:12 }}>
-      <p style={{ color:"#9DBF9F", marginBottom:6 }}>{label}</p>
-      {payload.map((p,i)=><p key={i} style={{ color:p.color, margin:"2px 0" }}>{p.name}: <strong style={{ color:"#F0F8F1" }}>{typeof p.value==="number"?p.value.toFixed(1):p.value}</strong></p>)}
+    <div style={{ background:"#FFFFFF", border:"1px solid #D6E8DA", borderRadius:8, padding:"10px 14px", fontSize:12 }}>
+      <p style={{ color:"#6B8F72", marginBottom:6 }}>{label}</p>
+      {payload.map((p,i)=><p key={i} style={{ color:p.color, margin:"2px 0" }}>{p.name}: <strong style={{ color:"#0F2415" }}>{typeof p.value==="number"?p.value.toFixed(1):p.value}</strong></p>)}
     </div>
   );
 };
@@ -416,11 +416,11 @@ const CustomTooltip = ({ active, payload, label }) => {
 // ─── SHARED COMPONENTS ───────────────────────────────────────────────────────
 function KPICard({ label, value, sub, accent }) {
   return (
-    <div style={{ background:"linear-gradient(135deg,#112B14,#0A1E0C)", border:`1px solid ${accent}25`, borderRadius:14, padding:"16px 18px", flex:1, minWidth:120, position:"relative", overflow:"hidden" }}>
+    <div style={{ background:"linear-gradient(135deg,#FFFFFF,#F7F9F7)", border:`1px solid ${accent}25`, borderRadius:14, padding:"16px 18px", flex:1, minWidth:120, position:"relative", overflow:"hidden" }}>
       <div style={{ position:"absolute", top:-15, right:-15, width:60, height:60, borderRadius:"50%", background:accent+"08" }} />
-      <p style={{ color:"#9DBF9F", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:6 }}>{label}</p>
+      <p style={{ color:"#6B8F72", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:6 }}>{label}</p>
       <p style={{ color:accent, fontSize:22, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>{value}</p>
-      {sub && <p style={{ color:"#9DBF9F", fontSize:11, marginTop:4 }}>{sub}</p>}
+      {sub && <p style={{ color:"#6B8F72", fontSize:11, marginTop:4 }}>{sub}</p>}
     </div>
   );
 }
@@ -430,18 +430,18 @@ function SectionBadge({ label, color }) {
 }
 
 function InsightCard({ item }) {
-  const border={ positive:"#10b981", neutral:"#f59e0b", risk:"#f43f5e" };
-  const bg={ positive:"#0A1E0C", neutral:"#1A1200", risk:"#1A0808" };
+  const border={ positive:"#2DB84B", neutral:"#f59e0b", risk:"#f43f5e" };
+  const bg={ positive:"#EDF6EF", neutral:"#FFFBF0", risk:"#FFF5F5" };
   const c=border[item.type];
   return (
-    <div style={{ background:bg[item.type]||"#0E2612", border:`1px solid ${c}30`, borderLeft:`3px solid ${c}`, borderRadius:12, padding:"15px 16px", transition:"transform 0.15s,box-shadow 0.15s", cursor:"default" }}
+    <div style={{ background:bg[item.type]||"#F3F8F4", border:`1px solid ${c}30`, borderLeft:`3px solid ${c}`, borderRadius:12, padding:"15px 16px", transition:"transform 0.15s,box-shadow 0.15s", cursor:"default" }}
       onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-2px)";e.currentTarget.style.boxShadow=`0 8px 24px ${c}20`;}}
       onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow="none";}}>
       <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:7 }}>
         <span style={{ fontSize:15 }}>{item.icon}</span>
         <p style={{ fontSize:11, color:c, textTransform:"uppercase", letterSpacing:"0.06em", fontWeight:700, margin:0 }}>{item.label}</p>
       </div>
-      <p style={{ fontSize:12, color:"#9DBF9F", lineHeight:1.7, margin:0 }}>{item.text}</p>
+      <p style={{ fontSize:12, color:"#6B8F72", lineHeight:1.7, margin:0 }}>{item.text}</p>
     </div>
   );
 }
@@ -451,13 +451,13 @@ function AnimBar({ label, val2022, val2023, maxVal, color }) {
   return (
     <div style={{ marginBottom:13 }}>
       <div style={{ display:"flex", justifyContent:"space-between", marginBottom:4 }}>
-        <span style={{ color:"#9DBF9F", fontSize:12, fontWeight:500 }}>{label}</span>
-        <span style={{ color:"#9DBF9F", fontSize:11, fontFamily:"'DM Mono',monospace" }}>
-          {val2022} → <span style={{ color:isDown?"#f43f5e":"#10b981", fontWeight:700 }}>{val2023}</span>
-          <span style={{ color:isDown?"#f43f5e80":"#10b98180", fontSize:10, marginLeft:3 }}>{isDown?"▼":"▲"}</span>
+        <span style={{ color:"#6B8F72", fontSize:12, fontWeight:500 }}>{label}</span>
+        <span style={{ color:"#6B8F72", fontSize:11, fontFamily:"'DM Mono',monospace" }}>
+          {val2022} → <span style={{ color:isDown?"#f43f5e":"#2DB84B", fontWeight:700 }}>{val2023}</span>
+          <span style={{ color:isDown?"#f43f5e80":"#2DB84B80", fontSize:10, marginLeft:3 }}>{isDown?"▼":"▲"}</span>
         </span>
       </div>
-      <div style={{ position:"relative", height:10, background:"#1C3D21", borderRadius:5, overflow:"hidden" }}>
+      <div style={{ position:"relative", height:10, background:"#D6E8DA", borderRadius:5, overflow:"hidden" }}>
         <div style={{ position:"absolute", left:0, height:"100%", width:`${(val2022/maxVal)*100}%`, background:color+"30", borderRadius:5 }} />
         <div style={{ position:"absolute", left:0, height:"100%", width:`${(val2023/maxVal)*100}%`, background:`linear-gradient(90deg,${color},${color}bb)`, borderRadius:5 }} />
       </div>
@@ -478,8 +478,8 @@ function PersonaRadar({ persona }) {
   return (
     <ResponsiveContainer width="100%" height={220}>
       <RadarChart data={data}>
-        <PolarGrid stroke="#1C3D21" />
-        <PolarAngleAxis dataKey="axis" tick={{ fill:"#7DA882", fontSize:9 }} />
+        <PolarGrid stroke="#D6E8DA" />
+        <PolarAngleAxis dataKey="axis" tick={{ fill:"#6B8F72", fontSize:9 }} />
         <Radar name={persona.nickname} dataKey="val" stroke={persona.color} fill={persona.color} fillOpacity={0.25} strokeWidth={2} />
         <Tooltip content={<CustomTooltip />} />
       </RadarChart>
@@ -492,10 +492,10 @@ function ScoreBar({ label, val, color }) {
   return (
     <div style={{ marginBottom:8 }}>
       <div style={{ display:"flex", justifyContent:"space-between", marginBottom:3 }}>
-        <span style={{ color:"#9DBF9F", fontSize:11 }}>{label}</span>
+        <span style={{ color:"#6B8F72", fontSize:11 }}>{label}</span>
         <span style={{ color, fontSize:11, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>{val}/100</span>
       </div>
-      <div style={{ height:6, background:"#1C3D21", borderRadius:3 }}>
+      <div style={{ height:6, background:"#D6E8DA", borderRadius:3 }}>
         <div style={{ height:"100%", width:`${val}%`, background:`linear-gradient(90deg,${color},${color}88)`, borderRadius:3, transition:"width 0.6s ease" }} />
       </div>
     </div>
@@ -513,42 +513,42 @@ function LandingPage({ onEnter }) {
     setTimeout(()=>setBtn(true), 1900);
   }, []);
   return (
-    <div style={{ minHeight:"100vh", background:"#061508", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", fontFamily:"'DM Sans','Segoe UI',sans-serif", position:"relative", overflow:"hidden" }}>
+    <div style={{ minHeight:"100vh", background:"#F7F9F7", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", fontFamily:"'DM Sans','Segoe UI',sans-serif", position:"relative", overflow:"hidden" }}>
       <style>{`
         @keyframes lFadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
         @keyframes lOrbit{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
       `}</style>
-      <div style={{ position:"absolute", inset:0, backgroundImage:"linear-gradient(rgba(45,176,75,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(45,176,75,0.04) 1px,transparent 1px)", backgroundSize:"60px 60px" }}/>
-      <div style={{ position:"absolute", width:480, height:480, borderRadius:"50%", border:"1px solid rgba(45,176,75,0.06)", top:"50%", left:"50%", transform:"translate(-50%,-50%)", animation:"lOrbit 30s linear infinite", pointerEvents:"none" }}/>
-      <div style={{ position:"absolute", width:340, height:340, borderRadius:"50%", border:"1px solid rgba(45,176,75,0.05)", top:"50%", left:"50%", transform:"translate(-50%,-50%)", animation:"lOrbit 20s linear infinite reverse", pointerEvents:"none" }}/>
-      <div style={{ position:"absolute", width:500, height:500, borderRadius:"50%", background:"radial-gradient(circle,rgba(45,176,75,0.06) 0%,transparent 70%)", top:"50%", left:"50%", transform:"translate(-50%,-50%)", pointerEvents:"none" }}/>
+      <div style={{ position:"absolute", inset:0, backgroundImage:"linear-gradient(rgba(45,184,75,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(45,184,75,0.04) 1px,transparent 1px)", backgroundSize:"60px 60px" }}/>
+      <div style={{ position:"absolute", width:480, height:480, borderRadius:"50%", border:"1px solid rgba(45,184,75,0.06)", top:"50%", left:"50%", transform:"translate(-50%,-50%)", animation:"lOrbit 30s linear infinite", pointerEvents:"none" }}/>
+      <div style={{ position:"absolute", width:340, height:340, borderRadius:"50%", border:"1px solid rgba(45,184,75,0.05)", top:"50%", left:"50%", transform:"translate(-50%,-50%)", animation:"lOrbit 20s linear infinite reverse", pointerEvents:"none" }}/>
+      <div style={{ position:"absolute", width:500, height:500, borderRadius:"50%", background:"radial-gradient(circle,rgba(45,184,75,0.06) 0%,transparent 70%)", top:"50%", left:"50%", transform:"translate(-50%,-50%)", pointerEvents:"none" }}/>
       {/* Logo */}
       <div style={{ position:"absolute", top:32, left:40, display:"flex", alignItems:"center", gap:12, opacity:vis?1:0, transition:"opacity 0.8s ease" }}>
-        <div style={{ width:36, height:36, borderRadius:10, background:"linear-gradient(135deg,#2DB04B,#1A7A30)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:800, fontSize:12, color:"#fff", fontFamily:"'DM Mono',monospace", boxShadow:"0 0 16px #2DB04B30" }}>GMO</div>
-        <span style={{ color:"rgba(255,255,255,0.25)", fontSize:12, letterSpacing:"0.15em", textTransform:"uppercase" }}>OCP Nutricrops · Phosphorus Intelligence</span>
+        <div style={{ width:36, height:36, borderRadius:10, background:"linear-gradient(135deg,#2DB84B,#1A8A34)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:800, fontSize:12, color:"#FFFFFF", fontFamily:"'DM Mono',monospace", boxShadow:"0 0 16px #2DB84B30" }}>GMO</div>
+        <span style={{ color:"rgba(15,36,21,0.3)", fontSize:12, letterSpacing:"0.15em", textTransform:"uppercase" }}>OCP Nutricrops · Phosphorus Intelligence</span>
       </div>
       {/* Content */}
       <div style={{ textAlign:"center", maxWidth:720, padding:"0 32px", zIndex:10 }}>
         <div style={{ opacity:vis?1:0, transform:vis?"none":"translateY(12px)", transition:"opacity 0.9s ease,transform 0.9s ease", marginBottom:24 }}>
-          <span style={{ background:"rgba(45,176,75,0.1)", border:"1px solid rgba(45,176,75,0.2)", borderRadius:20, padding:"5px 16px", color:"rgba(45,176,75,0.9)", fontSize:11, fontWeight:600, letterSpacing:"0.12em", textTransform:"uppercase" }}>GMO · OCP Nutricrops</span>
+          <span style={{ background:"rgba(45,184,75,0.1)", border:"1px solid rgba(45,184,75,0.2)", borderRadius:20, padding:"5px 16px", color:"rgba(45,184,75,0.9)", fontSize:11, fontWeight:600, letterSpacing:"0.12em", textTransform:"uppercase" }}>GMO · OCP Nutricrops</span>
         </div>
-        <h1 style={{ opacity:vis?1:0, transform:vis?"none":"translateY(20px)", transition:"opacity 0.9s ease,transform 0.9s ease", fontSize:"clamp(26px,4vw,46px)", fontWeight:300, color:"rgba(255,255,255,0.92)", lineHeight:1.28, marginBottom:32, letterSpacing:"-0.02em" }}>
+        <h1 style={{ opacity:vis?1:0, transform:vis?"none":"translateY(20px)", transition:"opacity 0.9s ease,transform 0.9s ease", fontSize:"clamp(26px,4vw,46px)", fontWeight:300, color:"rgba(15,36,21,0.92)", lineHeight:1.28, marginBottom:32, letterSpacing:"-0.02em" }}>
           PhosStrat is GMO's quantitative<br/>
-          <span style={{ fontWeight:700, color:"#F0F8F1" }}>platform to better understand</span><br/>
-          <span style={{ color:"#2DB04B", fontWeight:600 }}>the farmer.</span>
+          <span style={{ fontWeight:700, color:"#0F2415" }}>platform to better understand</span><br/>
+          <span style={{ color:"#2DB84B", fontWeight:600 }}>the farmer.</span>
         </h1>
-        <div style={{ opacity:sub?1:0, transform:sub?"none":"translateY(10px)", transition:"opacity 0.8s ease,transform 0.8s ease", margin:"0 auto 28px", width:48, height:1, background:"linear-gradient(90deg,transparent,rgba(45,176,75,0.6),transparent)" }}/>
-        <p style={{ opacity:sub?1:0, transform:sub?"none":"translateY(10px)", transition:"opacity 0.8s ease,transform 0.8s ease", fontSize:15, color:"rgba(255,255,255,0.35)", fontWeight:300, lineHeight:1.8, marginBottom:48 }}>
+        <div style={{ opacity:sub?1:0, transform:sub?"none":"translateY(10px)", transition:"opacity 0.8s ease,transform 0.8s ease", margin:"0 auto 28px", width:48, height:1, background:"linear-gradient(90deg,transparent,rgba(45,184,75,0.6),transparent)" }}/>
+        <p style={{ opacity:sub?1:0, transform:sub?"none":"translateY(10px)", transition:"opacity 0.8s ease,transform 0.8s ease", fontSize:15, color:"rgba(15,36,21,0.45)", fontWeight:300, lineHeight:1.8, marginBottom:48 }}>
           P separation economics · Market intelligence · Agronomic modelling
         </p>
         <button onClick={onEnter}
-          style={{ opacity:btn?1:0, transform:btn?"none":"translateY(8px)", transition:"opacity 0.6s ease,transform 0.6s ease,background 0.2s,border-color 0.2s", background:"transparent", border:"1px solid rgba(45,176,75,0.5)", color:"rgba(45,176,75,0.9)", padding:"13px 40px", borderRadius:4, fontSize:13, fontWeight:600, letterSpacing:"0.1em", textTransform:"uppercase", cursor:"pointer" }}
-          onMouseEnter={e=>{ e.currentTarget.style.background="rgba(45,176,75,0.1)"; e.currentTarget.style.borderColor="rgba(45,176,75,0.9)"; e.currentTarget.style.color="#fff"; }}
-          onMouseLeave={e=>{ e.currentTarget.style.background="transparent"; e.currentTarget.style.borderColor="rgba(45,176,75,0.5)"; e.currentTarget.style.color="rgba(45,176,75,0.9)"; }}>
+          style={{ opacity:btn?1:0, transform:btn?"none":"translateY(8px)", transition:"opacity 0.6s ease,transform 0.6s ease,background 0.2s,border-color 0.2s", background:"transparent", border:"1px solid rgba(45,184,75,0.5)", color:"rgba(45,184,75,0.9)", padding:"13px 40px", borderRadius:4, fontSize:13, fontWeight:600, letterSpacing:"0.1em", textTransform:"uppercase", cursor:"pointer" }}
+          onMouseEnter={e=>{ e.currentTarget.style.background="rgba(45,184,75,0.1)"; e.currentTarget.style.borderColor="rgba(45,184,75,0.9)"; e.currentTarget.style.color="#fff"; }}
+          onMouseLeave={e=>{ e.currentTarget.style.background="transparent"; e.currentTarget.style.borderColor="rgba(45,184,75,0.5)"; e.currentTarget.style.color="rgba(45,184,75,0.9)"; }}>
           Enter Platform →
         </button>
       </div>
-      <div style={{ position:"absolute", bottom:32, left:"50%", transform:"translateX(-50%)", opacity:btn?0.4:0, transition:"opacity 0.8s ease", fontSize:11, color:"rgba(255,255,255,0.3)", letterSpacing:"0.1em", textTransform:"uppercase", display:"flex", gap:28 }}>
+      <div style={{ position:"absolute", bottom:32, left:"50%", transform:"translateX(-50%)", opacity:btn?0.4:0, transition:"opacity 0.8s ease", fontSize:11, color:"rgba(15,36,21,0.35)", letterSpacing:"0.1em", textTransform:"uppercase", display:"flex", gap:28 }}>
         <span>Agreste 2020</span><span>·</span><span>McKinsey Farmer Survey</span><span>·</span><span>ARVALIS</span><span>·</span><span>OCP Field Intelligence</span>
       </div>
     </div>
@@ -557,7 +557,7 @@ function LandingPage({ onEnter }) {
 
 // ─── FRANCE MAP (GeoJSON fetched at runtime) ──────────────────────────────────
 function heatColor(val, min, max) {
-  if (val===undefined||val===null||max===min) return "#1a2744";
+  if (val===undefined||val===null||max===min) return "#D6E8DA";
   const t=Math.max(0,Math.min(1,(val-min)/(max-min)));
   // Distinct palette: muted indigo → warm teal → bright amber-green
   const r=Math.round(38  + t*(180-38));
@@ -612,24 +612,24 @@ function FranceMap({ selectedRegion, onSelectRegion, heatValues }) {
   return(
     <svg viewBox={`0 0 ${W} ${H}`} style={{width:"100%",height:"auto",display:"block"}}>
       <defs><filter id="mGlow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-      {!loaded&&<text x={W/2} y={H/2} textAnchor="middle" fill="#2A5530" fontSize={12} fontFamily="DM Sans,sans-serif">Loading map…</text>}
+      {!loaded&&<text x={W/2} y={H/2} textAnchor="middle" fill="#B8D4BE" fontSize={12} fontFamily="DM Sans,sans-serif">Loading map…</text>}
       {Object.entries(paths).map(([name,d])=>{
         const [cx,cy]=cents[name]||[0,0];
         const isSel=selectedRegion===name,isHov=hovered===name,hasD=hasData(name);
         const hVal=heatValues?.[name];
-        const fill=isSel?"#ffffff":isHov?(hasD?"#A3F0B5":"#1A3A20"):(hasD?heatColor(hVal,minV,maxV):"#1a2744");
+        const fill=isSel?"#ffffff":isHov?(hasD?"#C8F0D0":"#D6E8DA"):(hasD?heatColor(hVal,minV,maxV):"#D6E8DA");
         return(
           <g key={name} style={{cursor:hasD?"pointer":"default",opacity:hasD?1:0.6}}
             onClick={()=>hasD&&onSelectRegion(name)}
             onMouseEnter={()=>setHovered(name)} onMouseLeave={()=>setHovered(null)}>
-            <path d={d} fill={fill} stroke={isSel?"#fff":isHov?"#A3F0B5":"#3A6640"} strokeWidth={isSel?2.5:1.2}
+            <path d={d} fill={fill} stroke={isSel?"#fff":isHov?"#C8F0D0":"#9BB5A0"} strokeWidth={isSel?2.5:1.2}
               filter={isSel?"url(#mGlow)":undefined} style={{transition:"fill 0.18s"}}/>
             {(isHov||isSel)&&(<>
               <text x={cx} y={cy-(hVal!==undefined?6:0)} textAnchor="middle" dominantBaseline="middle"
-                fontSize={isSel?8.5:8} fill={isSel?"#091C0C":"#F0F8F1"} fontWeight={700}
+                fontSize={isSel?8.5:8} fill={isSel?"#FFFFFF":"#0F2415"} fontWeight={700}
                 fontFamily="DM Sans,sans-serif" style={{pointerEvents:"none",userSelect:"none"}}>{name.substring(0,18)}</text>
               {hVal!==undefined&&<text x={cx} y={cy+8} textAnchor="middle" dominantBaseline="middle"
-                fontSize={7.5} fill={isSel?"#112B14":"#A8F0B5"} fontFamily="DM Mono,monospace"
+                fontSize={7.5} fill={isSel?"#FFFFFF":"#C8F0D0"} fontFamily="DM Mono,monospace"
                 style={{pointerEvents:"none",userSelect:"none"}}>{fmt2(hVal)}</text>}
             </>)}
           </g>
@@ -637,16 +637,16 @@ function FranceMap({ selectedRegion, onSelectRegion, heatValues }) {
       })}
       {vals.length>0&&(<g transform={`translate(12,${H-26})`}>
         <defs><linearGradient id="scBar" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#0f2035"/><stop offset="50%" stopColor="#2DB04B"/><stop offset="100%" stopColor="#10b981"/>
+          <stop offset="0%" stopColor="#0f2035"/><stop offset="50%" stopColor="#2DB84B"/><stop offset="100%" stopColor="#2DB84B"/>
         </linearGradient></defs>
         <rect x={0} y={0} width={110} height={7} rx={3} fill="url(#scBar)"/>
-        <text x={0}   y={17} fontSize={7} fill="#7DA882" fontFamily="DM Mono,sans-serif">{fmt2(minV)}</text>
-        <text x={55}  y={17} fontSize={7} fill="#7DA882" fontFamily="DM Mono,sans-serif" textAnchor="middle">low → high</text>
-        <text x={110} y={17} fontSize={7} fill="#7DA882" fontFamily="DM Mono,sans-serif" textAnchor="end">{fmt2(maxV)}</text>
+        <text x={0}   y={17} fontSize={7} fill="#6B8F72" fontFamily="DM Mono,sans-serif">{fmt2(minV)}</text>
+        <text x={55}  y={17} fontSize={7} fill="#6B8F72" fontFamily="DM Mono,sans-serif" textAnchor="middle">low → high</text>
+        <text x={110} y={17} fontSize={7} fill="#6B8F72" fontFamily="DM Mono,sans-serif" textAnchor="end">{fmt2(maxV)}</text>
       </g>)}
       <g transform={`translate(135,${H-24})`}>
-        <rect x={0} y={0} width={9} height={7} rx={1} fill="#0A1E0C" stroke="#1A3A20" strokeWidth={0.7}/>
-        <text x={12} y={7} fontSize={7} fill="#3A6640" fontFamily="DM Sans,sans-serif">No data yet</text>
+        <rect x={0} y={0} width={9} height={7} rx={1} fill="#F7F9F7" stroke="#D6E8DA" strokeWidth={0.7}/>
+        <text x={12} y={7} fontSize={7} fill="#9BB5A0" fontFamily="DM Sans,sans-serif">No data yet</text>
       </g>
     </svg>
   );
@@ -663,34 +663,34 @@ function RegionalPage(){
   const activeCrop   =availableCrops.includes(selectedCrop)?selectedCrop:availableCrops[0];
   const metricLabel  ={area:"Harvested Area",production:"Production",yield:"Yield"};
   const metricUnit   ={area:"Ha",production:"tonnes",yield:"t/Ha"};
-  const metricColor  ={area:"#2DB04B",production:"#10b981",yield:"#f59e0b"};
+  const metricColor  ={area:"#2DB84B",production:"#2DB84B",yield:"#f59e0b"};
   const chartData    =regionData&&regionData[metric]?YEARS.map((y,i)=>({year:y,value:regionData[metric][activeCrop]?.[i]??0})):[];
   const heatValues   =Object.fromEntries(availableRegions.map(r=>{const rd=REGIONAL_DATA[r];const c=rd?.crops.includes(activeCrop)?activeCrop:rd?.crops[0];const v=rd?.[metric]?.[c]?.[6]??null;return[r,v];}).filter(([,v])=>v!==null));
-  const cropColors   =["#2DB04B","#10b981","#f59e0b","#a78bfa","#f43f5e"];
+  const cropColors   =["#2DB84B","#2DB84B","#f59e0b","#a78bfa","#f43f5e"];
   const multiChart   =regionData?YEARS.map((y,i)=>({year:y,...Object.fromEntries(availableCrops.slice(0,5).map(c=>[c,regionData[metric][c]?.[i]??0]))})):[];
   const tickFmt      =v=>v>1000000?(v/1000000).toFixed(1)+"M":v>1000?(v/1000).toFixed(0)+"k":Number(v).toFixed(v<20?1:0);
   return(
     <div style={{display:"flex",flexDirection:"column",gap:16}}>
       {/* Controls */}
-      <div style={{background:"#0E2612",border:"1px solid #1C3D21",borderRadius:12,padding:"12px 16px",display:"flex",gap:20,flexWrap:"wrap",alignItems:"center"}}>
+      <div style={{background:"#F3F8F4",border:"1px solid #D6E8DA",borderRadius:12,padding:"12px 16px",display:"flex",gap:20,flexWrap:"wrap",alignItems:"center"}}>
         <div>
-          <p style={{color:"#9DBF9F",fontSize:10,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:7,fontWeight:600}}>Metric</p>
+          <p style={{color:"#6B8F72",fontSize:10,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:7,fontWeight:600}}>Metric</p>
           <div style={{display:"flex",gap:7}}>
             {Object.entries(metricLabel).map(([k,l])=>(
               <button key={k} onClick={()=>setMetric(k)}
-                style={{padding:"7px 16px",borderRadius:8,border:`2px solid ${metric===k?metricColor[k]:"#1C3D21"}`,background:metric===k?metricColor[k]+"22":"transparent",color:metric===k?metricColor[k]:"#7DA882",fontSize:12,fontWeight:metric===k?700:400,cursor:"pointer"}}>
+                style={{padding:"7px 16px",borderRadius:8,border:`2px solid ${metric===k?metricColor[k]:"#D6E8DA"}`,background:metric===k?metricColor[k]+"22":"transparent",color:metric===k?metricColor[k]:"#6B8F72",fontSize:12,fontWeight:metric===k?700:400,cursor:"pointer"}}>
                 {l} <span style={{opacity:0.6,fontSize:10}}>({metricUnit[k]})</span>
               </button>
             ))}
           </div>
         </div>
         <div>
-          <p style={{color:"#9DBF9F",fontSize:10,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:7,fontWeight:600}}>Crop</p>
+          <p style={{color:"#6B8F72",fontSize:10,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:7,fontWeight:600}}>Crop</p>
           <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
             {["Wheat","Barley","Rapeseed","Corn","Sunflower","Beet","Potatoes"].map(c=>{
               const avail=regionData?.crops.includes(c);
               return(<button key={c} onClick={()=>avail&&setSelectedCrop(c)}
-                style={{padding:"5px 12px",borderRadius:8,border:`1px solid ${activeCrop===c?"#F0F8F1":avail?"#2A5530":"#1C3D21"}`,background:activeCrop===c?"#F0F8F1":"transparent",color:activeCrop===c?"#091C0C":avail?"#9DBF9F":"#2d3748",fontSize:11,fontWeight:activeCrop===c?700:400,cursor:avail?"pointer":"default",opacity:avail?1:0.35}}>
+                style={{padding:"5px 12px",borderRadius:8,border:`1px solid ${activeCrop===c?"#0F2415":avail?"#B8D4BE":"#D6E8DA"}`,background:activeCrop===c?"#0F2415":"transparent",color:activeCrop===c?"#FFFFFF":avail?"#6B8F72":"#2d3748",fontSize:11,fontWeight:activeCrop===c?700:400,cursor:avail?"pointer":"default",opacity:avail?1:0.35}}>
                 {c}
               </button>);
             })}
@@ -703,7 +703,7 @@ function RegionalPage(){
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
             <div>
               <h3 className="card-title" style={{marginBottom:1}}>France — {metricLabel[metric]} · {activeCrop} · 2023</h3>
-              <p style={{color:"#9DBF9F",fontSize:10}}>Click a region to see its time series →</p>
+              <p style={{color:"#6B8F72",fontSize:10}}>Click a region to see its time series →</p>
             </div>
             {selectedRegion&&<span style={{background:metricColor[metric]+"20",border:`1px solid ${metricColor[metric]}40`,borderRadius:8,padding:"3px 10px",color:metricColor[metric],fontSize:11,fontWeight:700}}>{selectedRegion.substring(0,16)}</span>}
           </div>
@@ -713,7 +713,7 @@ function RegionalPage(){
           <div style={{display:"flex",flexWrap:"wrap",gap:5,marginTop:8}}>
             {availableRegions.map(r=>(
               <button key={r} onClick={()=>setSelectedRegion(r)}
-                style={{padding:"3px 8px",borderRadius:5,border:`1px solid ${selectedRegion===r?metricColor[metric]:"#1C3D21"}`,background:selectedRegion===r?metricColor[metric]+"20":"transparent",color:selectedRegion===r?metricColor[metric]:"#3A6640",fontSize:9,cursor:"pointer"}}>
+                style={{padding:"3px 8px",borderRadius:5,border:`1px solid ${selectedRegion===r?metricColor[metric]:"#D6E8DA"}`,background:selectedRegion===r?metricColor[metric]+"20":"transparent",color:selectedRegion===r?metricColor[metric]:"#9BB5A0",fontSize:9,cursor:"pointer"}}>
                 {r.split("-")[0].split("–")[0].trim().substring(0,14)}
               </button>
             ))}
@@ -723,13 +723,13 @@ function RegionalPage(){
         <div style={{display:"flex",flexDirection:"column",gap:14}}>
           <div className="card" style={{border:`1px solid ${metricColor[metric]}30`}}>
             <h3 className="card-title" style={{color:metricColor[metric]}}>{activeCrop} — {metricLabel[metric]} ({metricUnit[metric]}) · {selectedRegion}</h3>
-            <p style={{color:"#9DBF9F",fontSize:10,marginBottom:10}}>2017–2023 · Source: Agreste / Ministry of Agriculture</p>
+            <p style={{color:"#6B8F72",fontSize:10,marginBottom:10}}>2017–2023 · Source: Agreste / Ministry of Agriculture</p>
             <ResponsiveContainer width="100%" height={185}>
               <BarChart data={chartData} margin={{left:10,right:10}}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1C3D21" vertical={false}/>
-                <XAxis dataKey="year" tick={{fill:"#7DA882",fontSize:9}}/>
-                <YAxis tick={{fill:"#7DA882",fontSize:9}} tickFormatter={tickFmt}
-                  label={{value:metricUnit[metric],angle:-90,position:"insideLeft",fill:"#7DA882",fontSize:9,offset:6}}/>
+                <CartesianGrid strokeDasharray="3 3" stroke="#D6E8DA" vertical={false}/>
+                <XAxis dataKey="year" tick={{fill:"#6B8F72",fontSize:9}}/>
+                <YAxis tick={{fill:"#6B8F72",fontSize:9}} tickFormatter={tickFmt}
+                  label={{value:metricUnit[metric],angle:-90,position:"insideLeft",fill:"#6B8F72",fontSize:9,offset:6}}/>
                 <Tooltip content={<CustomTooltip/>} formatter={v=>[tickFmt(v)+" "+metricUnit[metric],metricLabel[metric]]}/>
                 <Bar dataKey="value" name={metricLabel[metric]} fill={metricColor[metric]} radius={[4,4,0,0]}>
                   {chartData.map((_,i)=><Cell key={i} fill={i===6?"#ffffff":metricColor[metric]} fillOpacity={i===6?1:0.7}/>)}
@@ -741,10 +741,10 @@ function RegionalPage(){
             <h3 className="card-title">All Crops — {metricLabel[metric]} ({metricUnit[metric]}) · {selectedRegion}</h3>
             <ResponsiveContainer width="100%" height={165}>
               <LineChart data={multiChart} margin={{left:10,right:10}}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1C3D21"/>
-                <XAxis dataKey="year" tick={{fill:"#7DA882",fontSize:9}}/>
-                <YAxis tick={{fill:"#7DA882",fontSize:9}} tickFormatter={tickFmt}
-                  label={{value:metricUnit[metric],angle:-90,position:"insideLeft",fill:"#7DA882",fontSize:9,offset:6}}/>
+                <CartesianGrid strokeDasharray="3 3" stroke="#D6E8DA"/>
+                <XAxis dataKey="year" tick={{fill:"#6B8F72",fontSize:9}}/>
+                <YAxis tick={{fill:"#6B8F72",fontSize:9}} tickFormatter={tickFmt}
+                  label={{value:metricUnit[metric],angle:-90,position:"insideLeft",fill:"#6B8F72",fontSize:9,offset:6}}/>
                 <Tooltip content={<CustomTooltip/>}/>
                 <Legend wrapperStyle={{fontSize:9}}/>
                 {availableCrops.slice(0,5).map((c,i)=><Line key={c} type="monotone" dataKey={c} stroke={cropColors[i]} strokeWidth={c===activeCrop?2.5:1.5} dot={false} strokeDasharray={c===activeCrop?undefined:"3 2"}/>)}
@@ -766,9 +766,9 @@ function MIFarmerBehaviorPage({ region }) {
   const persona = FARMER_PERSONAS.find(p=>p.id===activePersona) || FARMER_PERSONAS[0];
 
   const DECISION_DRIVERS = [
-    { id:"cost",    group:"Program Economics",     label:"Total fertilizer cost / ha", surveyScore:4.9, wtpPremium:60, wtpColor:"#10b981",
+    { id:"cost",    group:"Program Economics",     label:"Total fertilizer cost / ha", surveyScore:4.9, wtpPremium:60, wtpColor:"#2DB84B",
       insight:"Farmers evaluate at program level — total €/ha, not price per bag. A TSP+N separated program can be framed as cheaper per hectare than an equivalent NPK blend.",
-      ocpAngle:"Lead every commercial conversation with total program cost. Do not defend TSP price per tonne in isolation.", accentColor:"#10b981" },
+      ocpAngle:"Lead every commercial conversation with total program cost. Do not defend TSP price per tonne in isolation.", accentColor:"#2DB84B" },
     { id:"quality", group:"Agronomic Performance",  label:"Product quality — granules & consistency", surveyScore:4.7, wtpPremium:50, wtpColor:"#f59e0b",
       insight:"Granule quality directly affects spreading uniformity. Inconsistent granules create application risk that farmers attribute to the product, not the spreader.",
       ocpAngle:"OCP TSP granule specification is a demonstrable differentiator. Deploy side-by-side spreading trials with cooperative agronomists.", accentColor:"#f59e0b" },
@@ -789,18 +789,18 @@ function MIFarmerBehaviorPage({ region }) {
       ocpAngle:"Never let the negotiation anchor on price per bag. Reframe to €/ha total program cost and cost per tonne of yield gained.", accentColor:"#a78bfa" },
     { id:"delivery",group:"Secondary",              label:"Delivery reliability", surveyScore:3.9, wtpPremium:20, wtpColor:"#f43f5e",
       insight:"Below 40% WTP — table stakes, not a differentiator. Must be met; will not win a sale.",
-      ocpAngle:"Ensure logistics commitments are kept. Do not over-invest here as a competitive lever.", accentColor:"#7DA882" },
+      ocpAngle:"Ensure logistics commitments are kept. Do not over-invest here as a competitive lever.", accentColor:"#6B8F72" },
     { id:"sustain", group:"Sustainability",         label:"Sustainability / lower carbon", surveyScore:3.0, wtpPremium:25, wtpColor:"#f43f5e",
       insight:"Lowest score today. 25% WTP is concentrated among HVE-certified farms and younger operators. Growing, but not yet a mass-market purchase driver.",
       ocpAngle:"Low-cadmium, low-carbon positioning is a forward asset — target HVE farms now as reference customers. Do not lead with this for the mainstream.", accentColor:"#818cf8" },
   ];
 
   const INFLUENCERS = [
-    { label:"Cooperatives", pct:31, color:"#10b981", detail:"Cooperatives are the #1 decision influencer in France — no other country comes close. They control blending, logistics, credit, and agronomic advice. The cooperative agronomist is the de facto P product selector for 32% of French farmers." },
-    { label:"Agronomists / Technical advisors", pct:26, color:"#2DB04B", detail:"Cooperative agronomists overlap heavily with the cooperative channel — they are the technical gatekeepers within the coop structure. Winning their recommendation is the single most scalable commercial lever available to OCP in France." },
+    { label:"Cooperatives", pct:31, color:"#2DB84B", detail:"Cooperatives are the #1 decision influencer in France — no other country comes close. They control blending, logistics, credit, and agronomic advice. The cooperative agronomist is the de facto P product selector for 32% of French farmers." },
+    { label:"Agronomists / Technical advisors", pct:26, color:"#2DB84B", detail:"Cooperative agronomists overlap heavily with the cooperative channel — they are the technical gatekeepers within the coop structure. Winning their recommendation is the single most scalable commercial lever available to OCP in France." },
     { label:"Own decision", pct:18, color:"#a78bfa", detail:"Only 18% of French farmers decide alone — concentrated in large farms (>200ha), Consolidators and Precision Pioneers. These farmers can be approached directly and respond to agronomic data and bulk commercial terms." },
     { label:"Peer farmers", pct:15, color:"#f59e0b", detail:"Peer influence operates through local agricultural networks and field day observations. Reference farms producing visible yield results create pull-through demand in their local coop zone." },
-    { label:"Traders", pct:10, color:"#9DBF9F", detail:"Traders matter for commodity NPK. For differentiated P products like TSP, their influence is limited — they lack the agronomic credibility to recommend a separation program." },
+    { label:"Traders", pct:10, color:"#6B8F72", detail:"Traders matter for commodity NPK. For differentiated P products like TSP, their influence is limited — they lack the agronomic credibility to recommend a separation program." },
   ];
 
   const p2o5Chart = FARMER_PERSONAS.map(p=>({name:p.nickname.replace("The ",""),value:p.p2o5KgHa,fill:p.color}));
@@ -815,8 +815,8 @@ function MIFarmerBehaviorPage({ region }) {
   if (!topic) return (
     <div style={{ display:"flex", flexDirection:"column", gap:40, paddingTop:8 }}>
       <div>
-        <p style={{ color:"#9DBF9F", fontSize:10, textTransform:"uppercase", letterSpacing:"0.16em", fontWeight:600, marginBottom:12 }}>Farmer Behaviour · {region}</p>
-        <h2 style={{ color:"#F0F8F1", fontSize:26, fontWeight:700, letterSpacing:"-0.025em", lineHeight:1.25, margin:0 }}>What do you want to know about the farmer?</h2>
+        <p style={{ color:"#6B8F72", fontSize:10, textTransform:"uppercase", letterSpacing:"0.16em", fontWeight:600, marginBottom:12 }}>Farmer Behaviour · {region}</p>
+        <h2 style={{ color:"#0F2415", fontSize:26, fontWeight:700, letterSpacing:"-0.025em", lineHeight:1.25, margin:0 }}>What do you want to know about the farmer?</h2>
       </div>
 
       <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:12 }}>
@@ -824,7 +824,7 @@ function MIFarmerBehaviorPage({ region }) {
           {
             key:"drivers",
             num:"01",
-            color:"#2DB04B",
+            color:"#2DB84B",
             title:"Decision Drivers",
             desc:"What criteria determine which fertilizer product a French farmer buys — and how much they will pay for better performance.",
             src:"Simon-Kucher × OCP Voice of Customer",
@@ -833,7 +833,7 @@ function MIFarmerBehaviorPage({ region }) {
           {
             key:"premium",
             num:"02",
-            color:"#10b981",
+            color:"#2DB84B",
             title:"Premium Acceptance",
             desc:"Willingness-to-pay analysis by performance attribute — which gains justify a higher price and by how much.",
             src:"Coming soon",
@@ -851,22 +851,22 @@ function MIFarmerBehaviorPage({ region }) {
         ].map(card=>(
           <button key={card.key}
             onClick={()=>card.available&&setTopic(card.key)}
-            style={{ background:"#0C220F", border:`1px solid ${card.available?"#183820":"#111827"}`,
+            style={{ background:"#FFFFFF", border:`1px solid ${card.available?"#D6E8DA":"#111827"}`,
               borderRadius:12, padding:"28px 24px", cursor:card.available?"pointer":"default",
               textAlign:"left", transition:"border-color 0.15s, transform 0.15s", opacity:card.available?1:0.45,
               display:"flex", flexDirection:"column", gap:0 }}
             onMouseEnter={e=>{if(card.available){e.currentTarget.style.borderColor=card.color+"50";e.currentTarget.style.transform="translateY(-2px)";}}}
-            onMouseLeave={e=>{e.currentTarget.style.borderColor=card.available?"#183820":"#111827";e.currentTarget.style.transform="none";}}>
+            onMouseLeave={e=>{e.currentTarget.style.borderColor=card.available?"#D6E8DA":"#111827";e.currentTarget.style.transform="none";}}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:20 }}>
               <span style={{ color:card.color, fontSize:11, fontWeight:700, letterSpacing:"0.06em", fontFamily:"'DM Mono',monospace" }}>{card.num}</span>
               {!card.available
-                ? <span style={{background:"#1C3D21",color:"#9DBF9F",fontSize:9,fontWeight:600,padding:"2px 8px",borderRadius:4,letterSpacing:"0.06em"}}>COMING SOON</span>
+                ? <span style={{background:"#D6E8DA",color:"#6B8F72",fontSize:9,fontWeight:600,padding:"2px 8px",borderRadius:4,letterSpacing:"0.06em"}}>COMING SOON</span>
                 : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={card.color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               }
             </div>
             <p style={{ color:card.color, fontSize:11, textTransform:"uppercase", letterSpacing:"0.1em", fontWeight:600, marginBottom:10 }}>{card.title}</p>
-            <p style={{ color:"#9DBF9F", fontSize:13, lineHeight:1.7, marginBottom:20, flex:1 }}>{card.desc}</p>
-            <p style={{ color:"#c8d3e0", fontSize:10, borderTop:"1px solid #183820", paddingTop:14, marginTop:"auto" }}>{card.src}</p>
+            <p style={{ color:"#6B8F72", fontSize:13, lineHeight:1.7, marginBottom:20, flex:1 }}>{card.desc}</p>
+            <p style={{ color:"#c8d3e0", fontSize:10, borderTop:"1px solid #D6E8DA", paddingTop:14, marginTop:"auto" }}>{card.src}</p>
           </button>
         ))}
       </div>
@@ -877,11 +877,11 @@ function MIFarmerBehaviorPage({ region }) {
   if (topic==="archetypes") return (
     <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
       <div style={{ display:"flex", alignItems:"center", gap:14 }}>
-        <button onClick={()=>setTopic(null)} style={{ background:"transparent",border:"none",color:"#9DBF9F",fontSize:12,cursor:"pointer",display:"flex",alignItems:"center",gap:6,padding:0 }}>
+        <button onClick={()=>setTopic(null)} style={{ background:"transparent",border:"none",color:"#6B8F72",fontSize:12,cursor:"pointer",display:"flex",alignItems:"center",gap:6,padding:0 }}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
           Back
         </button>
-        <div style={{width:1,height:14,background:"#1C3D21"}}/>
+        <div style={{width:1,height:14,background:"#D6E8DA"}}/>
         <p style={{ color:"#a78bfa", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:600, margin:0 }}>Farmer Archetypes · France · 6 profiles</p>
         <p style={{ color:"#c8d3e0", fontSize:10, margin:0 }}>Agreste 2020 × McKinsey European Farmer Survey 2024 × FADN</p>
       </div>
@@ -891,8 +891,8 @@ function MIFarmerBehaviorPage({ region }) {
           <button key={p.id} onClick={()=>setActivePersona(p.id)}
             style={{ padding:"8px 16px", borderRadius:6, cursor:"pointer",
               background:activePersona===p.id?p.color+"20":"transparent",
-              border:`1px solid ${activePersona===p.id?p.color:"#1C3D21"}`,
-              color:activePersona===p.id?p.color:"#9DBF9F",
+              border:`1px solid ${activePersona===p.id?p.color:"#D6E8DA"}`,
+              color:activePersona===p.id?p.color:"#6B8F72",
               fontSize:12, fontWeight:activePersona===p.id?700:400, transition:"all 0.15s" }}>
             {p.nickname} <span style={{opacity:0.7}}>·</span> <span style={{fontFamily:"'DM Mono',monospace"}}>{p.share}%</span>
           </button>
@@ -902,8 +902,8 @@ function MIFarmerBehaviorPage({ region }) {
       <div style={{ display:"flex", gap:8, marginTop:4 }}>
         {[["grid","Overview"],["detail","Deep Dive"]].map(([k,l])=>(
           <button key={k} onClick={()=>setViewMode(k)}
-            style={{ padding:"5px 14px", borderRadius:6, border:`1px solid ${viewMode===k?"#9DBF9F":"#1C3D21"}`,
-              background:"transparent", color:viewMode===k?"#F0F8F1":"#7DA882", fontSize:11, cursor:"pointer" }}>
+            style={{ padding:"5px 14px", borderRadius:6, border:`1px solid ${viewMode===k?"#6B8F72":"#D6E8DA"}`,
+              background:"transparent", color:viewMode===k?"#0F2415":"#6B8F72", fontSize:11, cursor:"pointer" }}>
             {l}
           </button>
         ))}
@@ -913,13 +913,13 @@ function MIFarmerBehaviorPage({ region }) {
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
           <div className="chart-grid-2">
             <div className="card">
-              <p style={{ color:"#9DBF9F", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:4 }}>P2O5 Applied by Archetype (kg/ha)</p>
-              <p style={{ color:"#9DBF9F", fontSize:11, marginBottom:10 }}>vs Comifer recommendation: 55 kg/ha</p>
+              <p style={{ color:"#6B8F72", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:4 }}>P2O5 Applied by Archetype (kg/ha)</p>
+              <p style={{ color:"#6B8F72", fontSize:11, marginBottom:10 }}>vs Comifer recommendation: 55 kg/ha</p>
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={p2o5Chart} layout="vertical" margin={{ left:90, right:20 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1C3D21" horizontal={false}/>
-                  <XAxis type="number" domain={[0,60]} tick={{ fill:"#9DBF9F", fontSize:9 }}/>
-                  <YAxis type="category" dataKey="name" tick={{ fill:"#9DBF9F", fontSize:10 }} width={90}/>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#D6E8DA" horizontal={false}/>
+                  <XAxis type="number" domain={[0,60]} tick={{ fill:"#6B8F72", fontSize:9 }}/>
+                  <YAxis type="category" dataKey="name" tick={{ fill:"#6B8F72", fontSize:10 }} width={90}/>
                   <Tooltip content={<CustomTooltip/>}/>
                   <ReferenceLine x={55} stroke="#f59e0b60" strokeDasharray="4 4" label={{ value:"Rec.", fill:"#f59e0b", fontSize:9 }}/>
                   <Bar dataKey="value" name="P2O5 kg/ha" radius={[0,4,4,0]}>{p2o5Chart.map((d,i)=><Cell key={i} fill={d.fill}/>)}</Bar>
@@ -927,7 +927,7 @@ function MIFarmerBehaviorPage({ region }) {
               </ResponsiveContainer>
             </div>
             <div className="card">
-              <p style={{ color:"#9DBF9F", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:10 }}>Segment Share (%)</p>
+              <p style={{ color:"#6B8F72", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:10 }}>Segment Share (%)</p>
               <ResponsiveContainer width="100%" height={200}>
                 <PieChart>
                   <Pie data={FARMER_PERSONAS.map(p=>({name:p.nickname,value:p.share,color:p.color}))} cx="50%" cy="50%" innerRadius={50} outerRadius={85} dataKey="value" paddingAngle={2}>
@@ -940,7 +940,7 @@ function MIFarmerBehaviorPage({ region }) {
                 {FARMER_PERSONAS.map((p,i)=>(
                   <div key={i} style={{ display:"flex", alignItems:"center", gap:5 }}>
                     <div style={{ width:6,height:6,borderRadius:1,background:p.color }}/>
-                    <span style={{ color:"#9DBF9F", fontSize:10 }}>{p.nickname.replace("The ","")} {p.share}%</span>
+                    <span style={{ color:"#6B8F72", fontSize:10 }}>{p.nickname.replace("The ","")} {p.share}%</span>
                   </div>
                 ))}
               </div>
@@ -949,20 +949,20 @@ function MIFarmerBehaviorPage({ region }) {
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(265px,1fr))", gap:10 }}>
             {FARMER_PERSONAS.map((p,i)=>(
               <div key={i} onClick={()=>{setActivePersona(p.id);setViewMode("detail");}}
-                style={{ background:"#0C220F", border:`1px solid #183820`, borderTop:`2px solid ${p.color}`, borderRadius:10, padding:"16px", cursor:"pointer", transition:"border-color 0.15s" }}
+                style={{ background:"#FFFFFF", border:`1px solid #D6E8DA`, borderTop:`2px solid ${p.color}`, borderRadius:10, padding:"16px", cursor:"pointer", transition:"border-color 0.15s" }}
                 onMouseEnter={e=>e.currentTarget.style.borderColor=p.color+"40"}
-                onMouseLeave={e=>{e.currentTarget.style.borderColor="#183820";e.currentTarget.style.borderTopColor=p.color;}}>
+                onMouseLeave={e=>{e.currentTarget.style.borderColor="#D6E8DA";e.currentTarget.style.borderTopColor=p.color;}}>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
                   <div>
                     <p style={{ color:p.color, fontSize:13, fontWeight:700, margin:"0 0 2px" }}>{p.nickname}</p>
-                    <p style={{ color:"#9DBF9F", fontSize:10, fontStyle:"italic", margin:0 }}>{p.tagline}</p>
+                    <p style={{ color:"#6B8F72", fontSize:10, fontStyle:"italic", margin:0 }}>{p.tagline}</p>
                   </div>
                   <p style={{ color:p.color, fontSize:19, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>{p.share}%</p>
                 </div>
-                <p style={{ color:"#9DBF9F", fontSize:11, lineHeight:1.65, marginBottom:10 }}>{p.description.slice(0,105)}…</p>
-                <div style={{ display:"flex", justifyContent:"space-between", borderTop:"1px solid #183820", paddingTop:10 }}>
-                  <span style={{ color:"#9DBF9F", fontSize:10 }}>P applied: <span style={{ color:p.color, fontFamily:"'DM Mono',monospace" }}>{p.p2o5KgHa} kg/ha</span></span>
-                  <span style={{ color:"#9DBF9F", fontSize:10 }}>€{p.fertSpend}/ha</span>
+                <p style={{ color:"#6B8F72", fontSize:11, lineHeight:1.65, marginBottom:10 }}>{p.description.slice(0,105)}…</p>
+                <div style={{ display:"flex", justifyContent:"space-between", borderTop:"1px solid #D6E8DA", paddingTop:10 }}>
+                  <span style={{ color:"#6B8F72", fontSize:10 }}>P applied: <span style={{ color:p.color, fontFamily:"'DM Mono',monospace" }}>{p.p2o5KgHa} kg/ha</span></span>
+                  <span style={{ color:"#6B8F72", fontSize:10 }}>€{p.fertSpend}/ha</span>
                 </div>
               </div>
             ))}
@@ -972,60 +972,60 @@ function MIFarmerBehaviorPage({ region }) {
 
       {viewMode==="detail" && (
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
-          <div style={{ background:`linear-gradient(135deg,${persona.color}10,#0C220F)`, border:`1px solid ${persona.color}25`, borderRadius:14, padding:"24px" }}>
+          <div style={{ background:`linear-gradient(135deg,${persona.color}10,#FFFFFF)`, border:`1px solid ${persona.color}25`, borderRadius:14, padding:"24px" }}>
             <div style={{ display:"flex", alignItems:"flex-start", gap:20, flexWrap:"wrap" }}>
               <div style={{ flex:1, minWidth:200 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:6 }}>
                   <h2 style={{ color:persona.color, fontSize:20, fontWeight:800, margin:0 }}>{persona.nickname}</h2>
                   <span style={{ padding:"2px 10px", background:persona.color+"20", color:persona.color, borderRadius:4, fontSize:10, fontWeight:700 }}>{persona.share}% of French farmers</span>
                 </div>
-                <p style={{ color:"#9DBF9F", fontSize:12, fontStyle:"italic", marginBottom:10 }}>"{persona.tagline}"</p>
-                <p style={{ color:"#D4E8D6", fontSize:12, lineHeight:1.8, margin:0 }}>{persona.description}</p>
+                <p style={{ color:"#6B8F72", fontSize:12, fontStyle:"italic", marginBottom:10 }}>"{persona.tagline}"</p>
+                <p style={{ color:"#2C4A33", fontSize:12, lineHeight:1.8, margin:0 }}>{persona.description}</p>
               </div>
-              <div style={{ background:"#091C0C", border:`1px solid ${persona.color}20`, borderRadius:10, padding:"14px 18px", minWidth:200 }}>
-                <p style={{ color:"#9DBF9F", fontSize:9, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:8 }}>OCP Opportunity</p>
-                <p style={{ color:"#E8F2E9", fontSize:11, lineHeight:1.75 }}>{persona.ocpOpportunity}</p>
+              <div style={{ background:"#FFFFFF", border:`1px solid ${persona.color}20`, borderRadius:10, padding:"14px 18px", minWidth:200 }}>
+                <p style={{ color:"#6B8F72", fontSize:9, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:8 }}>OCP Opportunity</p>
+                <p style={{ color:"#2C4A33", fontSize:11, lineHeight:1.75 }}>{persona.ocpOpportunity}</p>
               </div>
             </div>
           </div>
           <div className="chart-grid-2">
             <div className="card">
-              <p style={{ color:"#9DBF9F", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:14 }}>Behavioral Profile</p>
+              <p style={{ color:"#6B8F72", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:14 }}>Behavioral Profile</p>
               <PersonaRadar persona={persona}/>
               <div style={{ display:"flex", flexDirection:"column", gap:6, marginTop:4 }}>
                 <ScoreBar label="Price Sensitivity"   val={persona.priceScore}     color="#f43f5e"/>
-                <ScoreBar label="Agronomy Focus"      val={persona.agronomyScore}  color="#2DB04B"/>
-                <ScoreBar label="Innovation"           val={persona.innovationScore} color="#10b981"/>
+                <ScoreBar label="Agronomy Focus"      val={persona.agronomyScore}  color="#2DB84B"/>
+                <ScoreBar label="Innovation"           val={persona.innovationScore} color="#2DB84B"/>
                 <ScoreBar label="Sustainability"       val={persona.sustainScore}   color="#a78bfa"/>
                 <ScoreBar label="Coop Loyalty"         val={persona.coopScore}      color="#f59e0b"/>
-                <ScoreBar label="Digital Adoption"     val={persona.digitalScore}   color="#7DA882"/>
+                <ScoreBar label="Digital Adoption"     val={persona.digitalScore}   color="#6B8F72"/>
               </div>
             </div>
             <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
               <div className="card">
-                <p style={{ color:"#9DBF9F", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:12 }}>Profile Facts</p>
+                <p style={{ color:"#6B8F72", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:12 }}>Profile Facts</p>
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:6 }}>
                   {[["Farm size",persona.farmSize],["Age range",persona.age],["Region",persona.region],["Tenure",persona.tenure],["Structure",persona.structure],["Channel",persona.channel]].map(([k,v])=>(
-                    <div key={k} style={{ background:"#0E2612", borderRadius:6, padding:"8px 10px" }}>
-                      <p style={{ color:"#9DBF9F", fontSize:9, textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:2 }}>{k}</p>
-                      <p style={{ color:"#E8F2E9", fontSize:11, fontWeight:500 }}>{v}</p>
+                    <div key={k} style={{ background:"#F3F8F4", borderRadius:6, padding:"8px 10px" }}>
+                      <p style={{ color:"#6B8F72", fontSize:9, textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:2 }}>{k}</p>
+                      <p style={{ color:"#2C4A33", fontSize:11, fontWeight:500 }}>{v}</p>
                     </div>
                   ))}
                 </div>
               </div>
               <div className="card">
-                <p style={{ color:"#9DBF9F", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:8 }}>Fertilizer Decision Logic</p>
+                <p style={{ color:"#6B8F72", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:8 }}>Fertilizer Decision Logic</p>
                 <p style={{ color:persona.color, fontSize:10, fontWeight:700, marginBottom:4 }}>Driver: {persona.decisionDriver}</p>
-                <p style={{ color:"#9DBF9F", fontSize:11, lineHeight:1.7 }}>{persona.fertiliserBehavior}</p>
+                <p style={{ color:"#6B8F72", fontSize:11, lineHeight:1.7 }}>{persona.fertiliserBehavior}</p>
               </div>
             </div>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(155px,1fr))", gap:8 }}>
             {persona.stats.map((s,i)=>(
-              <div key={i} style={{ background:"#0C220F", border:"1px solid #183820", borderRadius:8, padding:"12px" }}>
-                <p style={{ color:"#9DBF9F", fontSize:9, textTransform:"uppercase", letterSpacing:"0.07em", marginBottom:4 }}>{s.label}</p>
+              <div key={i} style={{ background:"#FFFFFF", border:"1px solid #D6E8DA", borderRadius:8, padding:"12px" }}>
+                <p style={{ color:"#6B8F72", fontSize:9, textTransform:"uppercase", letterSpacing:"0.07em", marginBottom:4 }}>{s.label}</p>
                 <p style={{ color:persona.color, fontSize:15, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>{s.value}</p>
-                <p style={{ color:"#9DBF9F", fontSize:9, marginTop:3 }}>{s.note}</p>
+                <p style={{ color:"#6B8F72", fontSize:9, marginTop:3 }}>{s.note}</p>
               </div>
             ))}
           </div>
@@ -1052,28 +1052,28 @@ function MIFarmerBehaviorPage({ region }) {
         {/* Back + breadcrumb */}
         <div style={{ display:"flex", alignItems:"center", gap:14 }}>
           <button onClick={()=>{setTopic(null);setDriverStep("overview");setActiveDriver(null);}}
-            style={{ background:"transparent",border:"none",color:"#9DBF9F",fontSize:12,cursor:"pointer",display:"flex",alignItems:"center",gap:6,padding:0 }}>
+            style={{ background:"transparent",border:"none",color:"#6B8F72",fontSize:12,cursor:"pointer",display:"flex",alignItems:"center",gap:6,padding:0 }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
             Back
           </button>
-          <div style={{width:1,height:14,background:"#1C3D21"}}/>
-          <p style={{ color:"#2DB04B", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:600, margin:0 }}>Farmer Decision Drivers · France</p>
+          <div style={{width:1,height:14,background:"#D6E8DA"}}/>
+          <p style={{ color:"#2DB84B", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:600, margin:0 }}>Farmer Decision Drivers · France</p>
           <p style={{ color:"#c8d3e0", fontSize:10, margin:0 }}>Source: Simon-Kucher × OCP Nutricrops Voice of Customer</p>
         </div>
 
         {/* Step navigator */}
-        <div style={{ display:"flex", gap:0, background:"#0C220F", border:"1px solid #183820", borderRadius:10, padding:4, width:"fit-content" }}>
+        <div style={{ display:"flex", gap:0, background:"#FFFFFF", border:"1px solid #D6E8DA", borderRadius:10, padding:4, width:"fit-content" }}>
           {STEPS.map((s,i)=>{
             const active = driverStep===s.id;
             const done = STEPS.indexOf(STEPS.find(x=>x.id===driverStep)) > i;
             return (
               <button key={s.id} onClick={()=>{setDriverStep(s.id);setActiveDriver(null);}}
                 style={{ padding:"8px 18px", borderRadius:7, border:"none", cursor:"pointer", transition:"all 0.15s",
-                  background:active?"#2DB04B20":"transparent",
-                  color:active?"#2DB04B":done?"#7DA882":"#3A6640",
+                  background:active?"#2DB84B20":"transparent",
+                  color:active?"#2DB84B":done?"#6B8F72":"#9BB5A0",
                   fontSize:12, fontWeight:active?700:400,
-                  borderRight: i<STEPS.length-1?"1px solid #183820":"none" }}>
-                <span style={{ color:done&&!active?"#2DB04B40":active?"#2DB04B":"#1A3A20", fontSize:10, marginRight:6, fontFamily:"'DM Mono',monospace" }}>{String(i+1).padStart(2,"0")}</span>
+                  borderRight: i<STEPS.length-1?"1px solid #D6E8DA":"none" }}>
+                <span style={{ color:done&&!active?"#2DB84B40":active?"#2DB84B":"#D6E8DA", fontSize:10, marginRight:6, fontFamily:"'DM Mono',monospace" }}>{String(i+1).padStart(2,"0")}</span>
                 {s.label}
               </button>
             );
@@ -1083,26 +1083,26 @@ function MIFarmerBehaviorPage({ region }) {
         {/* ── STEP 1: OVERVIEW ── */}
         {driverStep==="overview" && (
           <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
-            <div style={{ background:"#0C220F", border:"1px solid #183820", borderRadius:12, padding:"24px" }}>
-              <p style={{ color:"#F0F8F1", fontSize:15, fontWeight:700, marginBottom:16, lineHeight:1.4 }}>
-                French farmers rank <span style={{color:"#10b981"}}>total program cost per hectare</span> as their #1 purchase driver — not price per bag, not brand, not sustainability.
+            <div style={{ background:"#FFFFFF", border:"1px solid #D6E8DA", borderRadius:12, padding:"24px" }}>
+              <p style={{ color:"#0F2415", fontSize:15, fontWeight:700, marginBottom:16, lineHeight:1.4 }}>
+                French farmers rank <span style={{color:"#2DB84B"}}>total program cost per hectare</span> as their #1 purchase driver — not price per bag, not brand, not sustainability.
               </p>
-              <p style={{ color:"#9DBF9F", fontSize:13, lineHeight:1.8, marginBottom:0 }}>
+              <p style={{ color:"#6B8F72", fontSize:13, lineHeight:1.8, marginBottom:0 }}>
                 Agronomic performance comes immediately after: phosphorus efficiency, granule quality, and yield gain all score above 4.4 out of 5. Price per bag only ranks third. Sustainability scores last. The commercial implication is clear — the conversation must be framed at program economics, backed by agronomic proof.
               </p>
             </div>
 
             {/* Toggle: importance vs WTP */}
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-              <p style={{ color:"#9DBF9F", fontSize:11, fontWeight:600, margin:0 }}>
+              <p style={{ color:"#6B8F72", fontSize:11, fontWeight:600, margin:0 }}>
                 {viewMetric==="importance" ? "Purchase criteria ranked by importance score (1–5)" : "% of farmers who would accept a higher price if performance improved"}
               </p>
-              <div style={{ display:"flex", gap:0, background:"#091C0C", border:"1px solid #183820", borderRadius:7, padding:3 }}>
+              <div style={{ display:"flex", gap:0, background:"#FFFFFF", border:"1px solid #D6E8DA", borderRadius:7, padding:3 }}>
                 {[["importance","Importance"],["wtp","Willingness to Pay"]].map(([k,l])=>(
                   <button key={k} onClick={()=>setViewMetric(k)}
                     style={{ padding:"5px 14px", borderRadius:5, border:"none", cursor:"pointer", transition:"all 0.12s",
-                      background:viewMetric===k?"#2DB04B20":"transparent",
-                      color:viewMetric===k?"#2DB04B":"#7DA882", fontSize:11, fontWeight:viewMetric===k?700:400 }}>
+                      background:viewMetric===k?"#2DB84B20":"transparent",
+                      color:viewMetric===k?"#2DB84B":"#6B8F72", fontSize:11, fontWeight:viewMetric===k?700:400 }}>
                     {l}
                   </button>
                 ))}
@@ -1110,55 +1110,55 @@ function MIFarmerBehaviorPage({ region }) {
             </div>
 
             {/* Unified ranking visual */}
-            <div style={{ background:"#0C220F", border:"1px solid #183820", borderRadius:12, overflow:"hidden" }}>
+            <div style={{ background:"#FFFFFF", border:"1px solid #D6E8DA", borderRadius:12, overflow:"hidden" }}>
               {sortedDrivers.map((d,i)=>{
                 const val = viewMetric==="importance" ? d.surveyScore : d.wtpPremium;
                 const maxVal = viewMetric==="importance" ? 5 : 60;
                 const pct = val ? (val/maxVal)*100 : 0;
                 const isActive = activeDriver===d.id;
-                const groupColor = d.group==="Program Economics"?"#10b981":d.group==="Agronomic Performance"?"#f59e0b":d.group==="Price"?"#a78bfa":d.group==="Sustainability"?"#818cf8":"#7DA882";
+                const groupColor = d.group==="Program Economics"?"#2DB84B":d.group==="Agronomic Performance"?"#f59e0b":d.group==="Price"?"#a78bfa":d.group==="Sustainability"?"#818cf8":"#6B8F72";
 
                 return (
                   <div key={d.id}>
                     <div onClick={()=>setActiveDriver(isActive?null:d.id)}
                       style={{ display:"flex", alignItems:"center", gap:14, padding:"14px 20px",
                         background:isActive?"#0a1628":"transparent",
-                        borderBottom:"1px solid #0E2412",
+                        borderBottom:"1px solid #E8F2EA",
                         cursor:"pointer", transition:"background 0.12s" }}
-                      onMouseEnter={e=>{if(!isActive)e.currentTarget.style.background="#0A1E0C";}}
+                      onMouseEnter={e=>{if(!isActive)e.currentTarget.style.background="#F7F9F7";}}
                       onMouseLeave={e=>{if(!isActive)e.currentTarget.style.background="transparent";}}>
 
                       <span style={{ color:"#c8d3e0", fontSize:10, width:18, flexShrink:0, fontFamily:"'DM Mono',monospace", fontWeight:700 }}>#{i+1}</span>
 
                       <div style={{ flex:1, minWidth:0 }}>
-                        <p style={{ color:"#E8F2E9", fontSize:12, fontWeight:500, margin:0 }}>{d.label}</p>
+                        <p style={{ color:"#2C4A33", fontSize:12, fontWeight:500, margin:0 }}>{d.label}</p>
                         <span style={{ display:"inline-block", marginTop:3, padding:"1px 7px", background:groupColor+"15", color:groupColor, fontSize:9, fontWeight:600, borderRadius:3, letterSpacing:"0.04em" }}>{d.group}</span>
                       </div>
 
                       <div style={{ display:"flex", alignItems:"center", gap:10, flexShrink:0, width:200 }}>
-                        <div style={{ flex:1, height:4, background:"#1C3D21", borderRadius:2, overflow:"hidden" }}>
-                          {val && <div style={{ height:"100%", width:`${pct}%`, background:isActive?"#2DB04B":d.accentColor, borderRadius:2, transition:"width 0.3s" }}/>}
+                        <div style={{ flex:1, height:4, background:"#D6E8DA", borderRadius:2, overflow:"hidden" }}>
+                          {val && <div style={{ height:"100%", width:`${pct}%`, background:isActive?"#2DB84B":d.accentColor, borderRadius:2, transition:"width 0.3s" }}/>}
                         </div>
-                        <span style={{ color:isActive?"#2DB04B":d.accentColor, fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace", width:36, textAlign:"right" }}>
+                        <span style={{ color:isActive?"#2DB84B":d.accentColor, fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace", width:36, textAlign:"right" }}>
                           {viewMetric==="importance" ? d.surveyScore : (d.wtpPremium ? d.wtpPremium+"%" : "—")}
                         </span>
                       </div>
 
-                      <svg style={{ color:"#1C3D21", flexShrink:0, transition:"transform 0.15s", transform:isActive?"rotate(90deg)":"none" }} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                      <svg style={{ color:"#D6E8DA", flexShrink:0, transition:"transform 0.15s", transform:isActive?"rotate(90deg)":"none" }} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
                     </div>
 
                     {isActive && (
-                      <div style={{ padding:"16px 52px 16px 52px", background:"#060d18", borderBottom:"1px solid #0E2412" }}>
-                        <p style={{ color:"#9DBF9F", fontSize:12, lineHeight:1.75, marginBottom:10 }}>{d.insight}</p>
+                      <div style={{ padding:"16px 52px 16px 52px", background:"#F7F9F7", borderBottom:"1px solid #E8F2EA" }}>
+                        <p style={{ color:"#6B8F72", fontSize:12, lineHeight:1.75, marginBottom:10 }}>{d.insight}</p>
                         <div style={{ display:"flex", gap:8, alignItems:"flex-start" }}>
                           <div style={{ width:3, height:"100%", minHeight:40, background:d.accentColor, borderRadius:2, flexShrink:0, alignSelf:"stretch" }}/>
                           <div>
-                            <p style={{ color:"#9DBF9F", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:600, marginBottom:4 }}>OCP implication</p>
-                            <p style={{ color:"#D4E8D6", fontSize:12, lineHeight:1.75 }}>{d.ocpAngle}</p>
+                            <p style={{ color:"#6B8F72", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:600, marginBottom:4 }}>OCP implication</p>
+                            <p style={{ color:"#2C4A33", fontSize:12, lineHeight:1.75 }}>{d.ocpAngle}</p>
                           </div>
                         </div>
                         <button onClick={()=>{setDriverStep("explore");setActiveDriver(d.id);}}
-                          style={{ marginTop:12, background:"transparent", border:"1px solid #183820", color:"#9DBF9F", borderRadius:6, padding:"6px 14px", fontSize:11, cursor:"pointer" }}>
+                          style={{ marginTop:12, background:"transparent", border:"1px solid #D6E8DA", color:"#6B8F72", borderRadius:6, padding:"6px 14px", fontSize:11, cursor:"pointer" }}>
                           Explore this driver in detail →
                         </button>
                       </div>
@@ -1169,7 +1169,7 @@ function MIFarmerBehaviorPage({ region }) {
             </div>
 
             <button onClick={()=>setDriverStep("explore")}
-              style={{ alignSelf:"flex-end", display:"flex", alignItems:"center", gap:8, background:"#2DB04B15", border:"1px solid #2DB04B30", color:"#2DB04B", borderRadius:8, padding:"10px 20px", fontSize:12, fontWeight:600, cursor:"pointer" }}>
+              style={{ alignSelf:"flex-end", display:"flex", alignItems:"center", gap:8, background:"#2DB84B15", border:"1px solid #2DB84B30", color:"#2DB84B", borderRadius:8, padding:"10px 20px", fontSize:12, fontWeight:600, cursor:"pointer" }}>
               Explore each driver
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </button>
@@ -1181,19 +1181,19 @@ function MIFarmerBehaviorPage({ region }) {
           <div style={{ display:"flex", gap:14 }}>
             {/* Sidebar selector */}
             <div style={{ width:220, flexShrink:0, display:"flex", flexDirection:"column", gap:2 }}>
-              <p style={{ color:"#9DBF9F", fontSize:9, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8, fontWeight:600 }}>Select a driver</p>
+              <p style={{ color:"#6B8F72", fontSize:9, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8, fontWeight:600 }}>Select a driver</p>
               {sortedDrivers.map((d,i)=>{
                 const isActive = activeDriver===d.id;
                 return (
                   <button key={d.id} onClick={()=>setActiveDriver(d.id)}
                     style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 12px", borderRadius:7,
                       background:isActive?"#0a1628":"transparent",
-                      border:`1px solid ${isActive?"#2DB04B30":"transparent"}`,
+                      border:`1px solid ${isActive?"#2DB84B30":"transparent"}`,
                       cursor:"pointer", textAlign:"left", transition:"all 0.12s" }}
-                    onMouseEnter={e=>{if(!isActive)e.currentTarget.style.background="#0A1E0C";}}
+                    onMouseEnter={e=>{if(!isActive)e.currentTarget.style.background="#F7F9F7";}}
                     onMouseLeave={e=>{if(!isActive)e.currentTarget.style.background="transparent";}}>
                     <div style={{ width:4, height:4, borderRadius:"50%", background:d.accentColor, flexShrink:0 }}/>
-                    <p style={{ color:isActive?"#F0F8F1":"#9DBF9F", fontSize:11, margin:0, flex:1 }}>{d.label}</p>
+                    <p style={{ color:isActive?"#0F2415":"#6B8F72", fontSize:11, margin:0, flex:1 }}>{d.label}</p>
                     <span style={{ color:d.accentColor, fontSize:10, fontFamily:"'DM Mono',monospace", fontWeight:700 }}>{d.surveyScore}</span>
                   </button>
                 );
@@ -1203,7 +1203,7 @@ function MIFarmerBehaviorPage({ region }) {
             {/* Detail panel */}
             <div style={{ flex:1, minWidth:0 }}>
               {!activeDriver ? (
-                <div style={{ background:"#0C220F", border:"1px solid #183820", borderRadius:12, padding:"40px", display:"flex", alignItems:"center", justifyContent:"center", minHeight:300 }}>
+                <div style={{ background:"#FFFFFF", border:"1px solid #D6E8DA", borderRadius:12, padding:"40px", display:"flex", alignItems:"center", justifyContent:"center", minHeight:300 }}>
                   <p style={{ color:"#c8d3e0", fontSize:13 }}>Select a driver from the list to explore its details.</p>
                 </div>
               ) : (()=>{
@@ -1212,31 +1212,31 @@ function MIFarmerBehaviorPage({ region }) {
                 const importancePct = (d.surveyScore/5)*100;
                 const wtpPct = d.wtpPremium || 0;
                 const wtpBand = d.wtpPremium>=60?"High — strong premium acceptance":d.wtpPremium>=40?"Moderate — performance must be proven":d.wtpPremium?"Low — not a premium lever yet":"—";
-                const wtpBandColor = d.wtpPremium>=60?"#10b981":d.wtpPremium>=40?"#f59e0b":d.wtpPremium?"#f43f5e":"#7DA882";
+                const wtpBandColor = d.wtpPremium>=60?"#2DB84B":d.wtpPremium>=40?"#f59e0b":d.wtpPremium?"#f43f5e":"#6B8F72";
 
                 return (
                   <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
-                    <div style={{ background:"#0C220F", border:`1px solid ${d.accentColor}25`, borderRadius:12, padding:"24px" }}>
-                      <p style={{ color:"#9DBF9F", fontSize:9, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>{d.group}</p>
-                      <h3 style={{ color:"#F0F8F1", fontSize:17, fontWeight:700, margin:"0 0 16px", letterSpacing:"-0.02em" }}>{d.label}</h3>
-                      <p style={{ color:"#9DBF9F", fontSize:13, lineHeight:1.8, margin:0 }}>{d.insight}</p>
+                    <div style={{ background:"#FFFFFF", border:`1px solid ${d.accentColor}25`, borderRadius:12, padding:"24px" }}>
+                      <p style={{ color:"#6B8F72", fontSize:9, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>{d.group}</p>
+                      <h3 style={{ color:"#0F2415", fontSize:17, fontWeight:700, margin:"0 0 16px", letterSpacing:"-0.02em" }}>{d.label}</h3>
+                      <p style={{ color:"#6B8F72", fontSize:13, lineHeight:1.8, margin:0 }}>{d.insight}</p>
                     </div>
 
                     <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
-                      <div style={{ background:"#0C220F", border:"1px solid #183820", borderRadius:10, padding:"20px" }}>
-                        <p style={{ color:"#9DBF9F", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:12 }}>Importance score</p>
+                      <div style={{ background:"#FFFFFF", border:"1px solid #D6E8DA", borderRadius:10, padding:"20px" }}>
+                        <p style={{ color:"#6B8F72", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:12 }}>Importance score</p>
                         <p style={{ color:d.accentColor, fontSize:32, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"0 0 12px" }}>{d.surveyScore}<span style={{ fontSize:14, color:"#c8d3e0", fontWeight:400 }}> / 5</span></p>
-                        <div style={{ height:6, background:"#183820", borderRadius:3, overflow:"hidden" }}>
+                        <div style={{ height:6, background:"#D6E8DA", borderRadius:3, overflow:"hidden" }}>
                           <div style={{ height:"100%", width:`${importancePct}%`, background:d.accentColor, borderRadius:3 }}/>
                         </div>
                       </div>
-                      <div style={{ background:"#0C220F", border:"1px solid #183820", borderRadius:10, padding:"20px" }}>
-                        <p style={{ color:"#9DBF9F", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:12 }}>WTP for premium</p>
+                      <div style={{ background:"#FFFFFF", border:"1px solid #D6E8DA", borderRadius:10, padding:"20px" }}>
+                        <p style={{ color:"#6B8F72", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:12 }}>WTP for premium</p>
                         {d.wtpPremium ? (
                           <>
                             <p style={{ color:wtpBandColor, fontSize:32, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"0 0 4px" }}>{d.wtpPremium}%</p>
                             <p style={{ color:wtpBandColor, fontSize:10, fontWeight:600, margin:"0 0 8px" }}>{wtpBand}</p>
-                            <div style={{ height:6, background:"#183820", borderRadius:3, overflow:"hidden" }}>
+                            <div style={{ height:6, background:"#D6E8DA", borderRadius:3, overflow:"hidden" }}>
                               <div style={{ height:"100%", width:`${wtpPct}%`, background:wtpBandColor, borderRadius:3 }}/>
                             </div>
                           </>
@@ -1246,9 +1246,9 @@ function MIFarmerBehaviorPage({ region }) {
                       </div>
                     </div>
 
-                    <div style={{ background:"#0C220F", border:`1px solid ${d.accentColor}20`, borderLeft:`3px solid ${d.accentColor}`, borderRadius:"0 10px 10px 0", padding:"18px 20px" }}>
-                      <p style={{ color:"#9DBF9F", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:8 }}>OCP commercial implication</p>
-                      <p style={{ color:"#F0F8F1", fontSize:13, lineHeight:1.8, margin:0 }}>{d.ocpAngle}</p>
+                    <div style={{ background:"#FFFFFF", border:`1px solid ${d.accentColor}20`, borderLeft:`3px solid ${d.accentColor}`, borderRadius:"0 10px 10px 0", padding:"18px 20px" }}>
+                      <p style={{ color:"#6B8F72", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:8 }}>OCP commercial implication</p>
+                      <p style={{ color:"#0F2415", fontSize:13, lineHeight:1.8, margin:0 }}>{d.ocpAngle}</p>
                     </div>
                   </div>
                 );
@@ -1260,38 +1260,38 @@ function MIFarmerBehaviorPage({ region }) {
         {/* ── STEP 3: INFLUENCE ── */}
         {driverStep==="influence" && (
           <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
-            <div style={{ background:"#0C220F", border:"1px solid #183820", borderRadius:12, padding:"24px" }}>
-              <p style={{ color:"#F0F8F1", fontSize:15, fontWeight:700, marginBottom:12, lineHeight:1.4 }}>
-                In France, <span style={{color:"#10b981"}}>57% of fertilizer decisions</span> are controlled by cooperatives and their agronomists — no other country in the survey comes close.
+            <div style={{ background:"#FFFFFF", border:"1px solid #D6E8DA", borderRadius:12, padding:"24px" }}>
+              <p style={{ color:"#0F2415", fontSize:15, fontWeight:700, marginBottom:12, lineHeight:1.4 }}>
+                In France, <span style={{color:"#2DB84B"}}>57% of fertilizer decisions</span> are controlled by cooperatives and their agronomists — no other country in the survey comes close.
               </p>
-              <p style={{ color:"#9DBF9F", fontSize:13, lineHeight:1.8 }}>
+              <p style={{ color:"#6B8F72", fontSize:13, lineHeight:1.8 }}>
                 Local distributors and retailers account for 0% of influence in France, compared to 22% in India. This makes France a country where OCP must operate through the cooperative channel — not around it.
               </p>
             </div>
 
-            <p style={{ color:"#9DBF9F", fontSize:11, margin:0 }}>Click an influencer to see the commercial implication for OCP.</p>
+            <p style={{ color:"#6B8F72", fontSize:11, margin:0 }}>Click an influencer to see the commercial implication for OCP.</p>
 
             <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
               {INFLUENCERS.map((inf,i)=>{
                 const isActive = activeInfluencer===i;
                 return (
                   <div key={i} onClick={()=>setActiveInfluencer(isActive?null:i)}
-                    style={{ background:isActive?"#0a1628":"#0C220F", border:`1px solid ${isActive?"#2DB04B30":"#183820"}`, borderRadius:10, overflow:"hidden", cursor:"pointer", transition:"all 0.15s" }}>
+                    style={{ background:isActive?"#0a1628":"#FFFFFF", border:`1px solid ${isActive?"#2DB84B30":"#D6E8DA"}`, borderRadius:10, overflow:"hidden", cursor:"pointer", transition:"all 0.15s" }}>
                     <div style={{ display:"flex", alignItems:"center", gap:14, padding:"16px 20px" }}>
                       <div style={{ width:32, flexShrink:0 }}>
                         <p style={{ color:inf.color, fontSize:18, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0, lineHeight:1 }}>{inf.pct}%</p>
                       </div>
                       <div style={{ flex:1 }}>
-                        <div style={{ height:6, background:"#183820", borderRadius:3, overflow:"hidden", marginBottom:6 }}>
+                        <div style={{ height:6, background:"#D6E8DA", borderRadius:3, overflow:"hidden", marginBottom:6 }}>
                           <div style={{ height:"100%", width:`${inf.pct*2}%`, background:inf.color, borderRadius:3 }}/>
                         </div>
-                        <p style={{ color:isActive?"#F0F8F1":"#E8F2E9", fontSize:13, fontWeight:isActive?700:500, margin:0 }}>{inf.label}</p>
+                        <p style={{ color:isActive?"#0F2415":"#2C4A33", fontSize:13, fontWeight:isActive?700:500, margin:0 }}>{inf.label}</p>
                       </div>
-                      <svg style={{ color:"#1C3D21", transition:"transform 0.15s", transform:isActive?"rotate(90deg)":"none" }} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                      <svg style={{ color:"#D6E8DA", transition:"transform 0.15s", transform:isActive?"rotate(90deg)":"none" }} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
                     </div>
                     {isActive && (
-                      <div style={{ padding:"0 20px 18px 66px", borderTop:"1px solid #183820" }}>
-                        <p style={{ color:"#9DBF9F", fontSize:12, lineHeight:1.8, marginTop:14 }}>{inf.detail}</p>
+                      <div style={{ padding:"0 20px 18px 66px", borderTop:"1px solid #D6E8DA" }}>
+                        <p style={{ color:"#6B8F72", fontSize:12, lineHeight:1.8, marginTop:14 }}>{inf.detail}</p>
                       </div>
                     )}
                   </div>
@@ -1300,7 +1300,7 @@ function MIFarmerBehaviorPage({ region }) {
             </div>
 
             <button onClick={()=>setDriverStep("implication")}
-              style={{ alignSelf:"flex-end", display:"flex", alignItems:"center", gap:8, background:"#2DB04B15", border:"1px solid #2DB04B30", color:"#2DB04B", borderRadius:8, padding:"10px 20px", fontSize:12, fontWeight:600, cursor:"pointer" }}>
+              style={{ alignSelf:"flex-end", display:"flex", alignItems:"center", gap:8, background:"#2DB84B15", border:"1px solid #2DB84B30", color:"#2DB84B", borderRadius:8, padding:"10px 20px", fontSize:12, fontWeight:600, cursor:"pointer" }}>
               See OCP implication
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </button>
@@ -1310,32 +1310,32 @@ function MIFarmerBehaviorPage({ region }) {
         {/* ── STEP 4: OCP IMPLICATION ── */}
         {driverStep==="implication" && (
           <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
-            <div style={{ background:"#0C220F", border:"1px solid #183820", borderRadius:12, padding:"24px" }}>
-              <p style={{ color:"#10b981", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:700, marginBottom:12 }}>Strategic read-out for OCP Nutricrops · France</p>
-              <p style={{ color:"#F0F8F1", fontSize:15, fontWeight:700, lineHeight:1.5, marginBottom:0 }}>
+            <div style={{ background:"#FFFFFF", border:"1px solid #D6E8DA", borderRadius:12, padding:"24px" }}>
+              <p style={{ color:"#2DB84B", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:700, marginBottom:12 }}>Strategic read-out for OCP Nutricrops · France</p>
+              <p style={{ color:"#0F2415", fontSize:15, fontWeight:700, lineHeight:1.5, marginBottom:0 }}>
                 The data points to one route: win the cooperative agronomist first, then frame the TSP program around total €/ha cost and P efficiency — not price per tonne.
               </p>
             </div>
 
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
               {[
-                { num:"01", color:"#10b981", title:"Cooperatives gate the decision", body:"31% of decisions go through cooperatives — the highest of any country surveyed. Access at the coop level is not a distribution strategy, it is the only strategy that reaches scale in France." },
-                { num:"02", color:"#2DB04B", title:"Frame everything as program €/ha", body:"Total cost per hectare is the #1 purchase criterion. Every commercial interaction must anchor on what the full TSP+N program costs vs a standard NPK program — not what TSP costs per tonne." },
+                { num:"01", color:"#2DB84B", title:"Cooperatives gate the decision", body:"31% of decisions go through cooperatives — the highest of any country surveyed. Access at the coop level is not a distribution strategy, it is the only strategy that reaches scale in France." },
+                { num:"02", color:"#2DB84B", title:"Frame everything as program €/ha", body:"Total cost per hectare is the #1 purchase criterion. Every commercial interaction must anchor on what the full TSP+N program costs vs a standard NPK program — not what TSP costs per tonne." },
                 { num:"03", color:"#f59e0b", title:"Agronomic proof unlocks WTP", body:"Yield gain and P efficiency both carry 55% WTP premium if better performance is demonstrated. ARVALIS field trials and cooperative demonstration plots are the required proof vehicle." },
                 { num:"04", color:"#a78bfa", title:"Sustainability is a future asset", body:"Only 3.0 importance score today. Target HVE-certified farms as early reference customers. Do not lead with carbon positioning for the mainstream audience — it costs credibility." },
               ].map((item,i)=>(
-                <div key={i} style={{ background:"#0C220F", border:"1px solid #183820", borderRadius:10, padding:"20px", borderTop:`2px solid ${item.color}` }}>
+                <div key={i} style={{ background:"#FFFFFF", border:"1px solid #D6E8DA", borderRadius:10, padding:"20px", borderTop:`2px solid ${item.color}` }}>
                   <div style={{ display:"flex", justifyContent:"space-between", marginBottom:12 }}>
                     <span style={{ color:item.color, fontSize:10, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>{item.num}</span>
                   </div>
-                  <p style={{ color:"#F0F8F1", fontSize:13, fontWeight:600, marginBottom:8 }}>{item.title}</p>
-                  <p style={{ color:"#9DBF9F", fontSize:12, lineHeight:1.75, margin:0 }}>{item.body}</p>
+                  <p style={{ color:"#0F2415", fontSize:13, fontWeight:600, marginBottom:8 }}>{item.title}</p>
+                  <p style={{ color:"#6B8F72", fontSize:12, lineHeight:1.75, margin:0 }}>{item.body}</p>
                 </div>
               ))}
             </div>
 
-            <div style={{ background:"linear-gradient(135deg,#0a1f14,#0C220F)", border:"1px solid #10b98125", borderRadius:12, padding:"20px 24px" }}>
-              <p style={{ color:"#10b981", fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:10 }}>The sequenced entry play</p>
+            <div style={{ background:"linear-gradient(135deg,#0a1f14,#FFFFFF)", border:"1px solid #2DB84B25", borderRadius:12, padding:"20px 24px" }}>
+              <p style={{ color:"#2DB84B", fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:10 }}>The sequenced entry play</p>
               <div style={{ display:"flex", gap:0, alignItems:"stretch" }}>
                 {[
                   { step:"1", label:"Cooperative agronomist", desc:"Train on P efficiency and TSP program economics. Make them the internal champion." },
@@ -1345,11 +1345,11 @@ function MIFarmerBehaviorPage({ region }) {
                 ].map((s,i,arr)=>(
                   <div key={i} style={{ flex:1, display:"flex", flexDirection:"column" }}>
                     <div style={{ display:"flex", alignItems:"center", marginBottom:12 }}>
-                      <div style={{ width:28,height:28,borderRadius:"50%",background:"#10b98118",border:"1px solid #10b98130",display:"flex",alignItems:"center",justifyContent:"center",color:"#10b981",fontSize:11,fontWeight:700,flexShrink:0 }}>{s.step}</div>
-                      {i<arr.length-1&&<div style={{flex:1,height:1,background:"#10b98120",margin:"0 8px"}}/>}
+                      <div style={{ width:28,height:28,borderRadius:"50%",background:"#2DB84B18",border:"1px solid #2DB84B30",display:"flex",alignItems:"center",justifyContent:"center",color:"#2DB84B",fontSize:11,fontWeight:700,flexShrink:0 }}>{s.step}</div>
+                      {i<arr.length-1&&<div style={{flex:1,height:1,background:"#2DB84B20",margin:"0 8px"}}/>}
                     </div>
-                    <p style={{ color:"#F0F8F1", fontSize:11, fontWeight:600, marginBottom:4 }}>{s.label}</p>
-                    <p style={{ color:"#9DBF9F", fontSize:11, lineHeight:1.6 }}>{s.desc}</p>
+                    <p style={{ color:"#0F2415", fontSize:11, fontWeight:600, marginBottom:4 }}>{s.label}</p>
+                    <p style={{ color:"#6B8F72", fontSize:11, lineHeight:1.6 }}>{s.desc}</p>
                   </div>
                 ))}
               </div>
@@ -1500,8 +1500,8 @@ function QuantitativeEngineValuePage({ onContinue }) {
   }, []);
 
   const regions = [
-    { name:"Europe", color:"#2DB04B" },
-    { name:"Brazil", color:"#10b981" },
+    { name:"Europe", color:"#2DB84B" },
+    { name:"Brazil", color:"#2DB84B" },
     { name:"India", color:"#f59e0b" },
     { name:"Africa", color:"#f43f5e" },
     { name:"LATAM", color:"#a78bfa" },
@@ -1518,7 +1518,7 @@ function QuantitativeEngineValuePage({ onContinue }) {
   return (
     <div style={{
       minHeight:"calc(100vh - 130px)",
-      background:"#061508",
+      background:"#F7F9F7",
       display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
       position:"relative", overflow:"hidden",
       fontFamily:"'DM Sans',sans-serif",
@@ -1530,8 +1530,8 @@ function QuantitativeEngineValuePage({ onContinue }) {
         @keyframes lineReveal{ from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
         .value-cta { transition:all 0.3s ease; }
         .value-cta:hover {
-          background:#F0F8F1 !important;
-          color:#061508 !important;
+          background:#0F2415 !important;
+          color:#F7F9F7 !important;
           box-shadow:0 0 60px rgba(241,245,249,0.2) !important;
           transform:translateY(-2px) !important;
         }
@@ -1539,7 +1539,7 @@ function QuantitativeEngineValuePage({ onContinue }) {
 
       <div style={{
         position:"absolute", inset:0, pointerEvents:"none", zIndex:0,
-        background:"radial-gradient(ellipse at 30% 40%, rgba(45,176,75,0.04) 0%, transparent 60%), radial-gradient(ellipse at 70% 60%, rgba(45,176,75,0.03) 0%, transparent 50%)",
+        background:"radial-gradient(ellipse at 30% 40%, rgba(45,184,75,0.04) 0%, transparent 60%), radial-gradient(ellipse at 70% 60%, rgba(45,184,75,0.03) 0%, transparent 50%)",
       }}/>
 
       <div style={{ maxWidth:860, width:"100%", zIndex:10 }}>
@@ -1550,11 +1550,11 @@ function QuantitativeEngineValuePage({ onContinue }) {
           transition:"opacity 0.8s ease, transform 0.8s ease",
           marginBottom:40,
         }}>
-          <p style={{ color:"#10b981", fontSize:10, textTransform:"uppercase", letterSpacing:"0.22em", fontWeight:700, margin:"0 0 14px" }}>PhosStratOS · Quantitative Engine</p>
-          <h1 style={{ color:"#F0F8F1", fontSize:"clamp(32px,4vw,50px)", fontWeight:300, letterSpacing:"-0.04em", lineHeight:1.12, margin:"0 0 20px" }}>
+          <p style={{ color:"#2DB84B", fontSize:10, textTransform:"uppercase", letterSpacing:"0.22em", fontWeight:700, margin:"0 0 14px" }}>PhosStratOS · Quantitative Engine</p>
+          <h1 style={{ color:"#0F2415", fontSize:"clamp(32px,4vw,50px)", fontWeight:300, letterSpacing:"-0.04em", lineHeight:1.12, margin:"0 0 20px" }}>
             The <span style={{ fontWeight:800 }}>P Doctrine</span> is not a claim that phosphorus separation always wins.
           </h1>
-          <p style={{ color:"#7DA882", fontSize:15, lineHeight:1.85, maxWidth:720, margin:0 }}>
+          <p style={{ color:"#6B8F72", fontSize:15, lineHeight:1.85, maxWidth:720, margin:0 }}>
             It is the claim that when a farmer buys phosphorus separately from nitrogen and potassium, the financial outcome is transparent and the input decision is auditable. In some crops and regions, that transparency reveals TSP as the highest margin option. In others, it reveals that a compound product with bundled nitrogen produces better economics because the crop genuinely needs both nutrients at the same time. The engine quantifies which case applies.
           </p>
         </div>
@@ -1565,7 +1565,7 @@ function QuantitativeEngineValuePage({ onContinue }) {
           transition:"opacity 0.8s ease 0.2s, transform 0.8s ease 0.2s",
           marginBottom:32,
         }}>
-          <p style={{ color:"#9DBF9F", fontSize:11, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:600, margin:"0 0 14px" }}>Strategic regions</p>
+          <p style={{ color:"#6B8F72", fontSize:11, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:600, margin:"0 0 14px" }}>Strategic regions</p>
           <div style={{ display:"flex", flexWrap:"wrap", gap:8 }}>
             {regions.map(r => (
               <span key={r.name} style={{
@@ -1575,7 +1575,7 @@ function QuantitativeEngineValuePage({ onContinue }) {
               }}>{r.name}</span>
             ))}
           </div>
-          <p style={{ color:"#2A5530", fontSize:12, lineHeight:1.7, margin:"12px 0 0", maxWidth:700 }}>
+          <p style={{ color:"#B8D4BE", fontSize:12, lineHeight:1.7, margin:"12px 0 0", maxWidth:700 }}>
             Each region faces a different combination of soil chemistry, nitrogen regulation, crop mix, and farmer purchasing power. The engine does not assume one answer fits all. It computes the answer for each context and presents the honest result, whether or not that result favors separation.
           </p>
         </div>
@@ -1586,15 +1586,15 @@ function QuantitativeEngineValuePage({ onContinue }) {
           transition:"opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s",
           marginBottom:32,
         }}>
-          <p style={{ color:"#9DBF9F", fontSize:11, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:600, margin:"0 0 14px" }}>Business Units served</p>
+          <p style={{ color:"#6B8F72", fontSize:11, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:600, margin:"0 0 14px" }}>Business Units served</p>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap:12 }}>
             {bus.map(b => (
               <div key={b.name} style={{
-                background:"#0C220F", border:"1px solid #183820", borderRadius:12,
+                background:"#FFFFFF", border:"1px solid #D6E8DA", borderRadius:12,
                 padding:"16px 18px",
               }}>
-                <p style={{ color:"#F0F8F1", fontSize:13, fontWeight:700, margin:"0 0 6px" }}>{b.name}</p>
-                <p style={{ color:"#7DA882", fontSize:11, lineHeight:1.6, margin:0 }}>{b.role}</p>
+                <p style={{ color:"#0F2415", fontSize:13, fontWeight:700, margin:"0 0 6px" }}>{b.name}</p>
+                <p style={{ color:"#6B8F72", fontSize:11, lineHeight:1.6, margin:0 }}>{b.role}</p>
               </div>
             ))}
           </div>
@@ -1606,9 +1606,9 @@ function QuantitativeEngineValuePage({ onContinue }) {
           transition:"opacity 0.8s ease 0.5s, transform 0.8s ease 0.5s",
           marginBottom:36,
         }}>
-          <p style={{ color:"#9DBF9F", fontSize:11, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:600, margin:"0 0 12px" }}>How the engine works</p>
-          <div style={{ background:"#0C220F", border:"1px solid #183820", borderRadius:12, padding:"18px 22px" }}>
-            <p style={{ color:"#D4E8D6", fontSize:13, lineHeight:1.85, margin:0 }}>
+          <p style={{ color:"#6B8F72", fontSize:11, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:600, margin:"0 0 12px" }}>How the engine works</p>
+          <div style={{ background:"#FFFFFF", border:"1px solid #D6E8DA", borderRadius:12, padding:"18px 22px" }}>
+            <p style={{ color:"#2C4A33", fontSize:13, lineHeight:1.85, margin:0 }}>
               The engine runs a log-log econometric production model trained on panel data from 909 real French farms observed annually between 2014 and 2023 (FADN France, R² = 0.993). It takes a farm's structural parameters (size, crop, region, tenure structure, farmer age) and computes the revenue, input cost, gross margin, and return on fertilizer investment for every major phosphorus product on the market. TSP is always included as the separation reference, but the engine does not force TSP to rank first. When a crop's nitrogen demand is high enough that the bundled N in MAP or DAP produces a genuine yield advantage, the data shows it. The commercial team gets an honest answer, not a marketing claim.
             </p>
           </div>
@@ -1622,7 +1622,7 @@ function QuantitativeEngineValuePage({ onContinue }) {
         }}>
           <button className="value-cta" onClick={onContinue}
             style={{
-              background:"transparent", border:"2px solid #F0F8F1", color:"#F0F8F1",
+              background:"transparent", border:"2px solid #0F2415", color:"#0F2415",
               padding:"16px 44px", borderRadius:4, fontSize:12, fontWeight:800,
               letterSpacing:"0.14em", textTransform:"uppercase", cursor:"pointer",
             }}>
@@ -1650,7 +1650,7 @@ function MathieuIntroPage({ region, onEnterFarm }) {
 
   return (
     <div style={{
-      minHeight:"calc(100vh - 130px)", background:"#061508",
+      minHeight:"calc(100vh - 130px)", background:"#F7F9F7",
       display:"flex", alignItems:"center", justifyContent:"center",
       position:"relative", overflow:"hidden",
       fontFamily:"'DM Sans',sans-serif",
@@ -1670,24 +1670,24 @@ function MathieuIntroPage({ region, onEnterFarm }) {
         backgroundImage:"url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E\")",
         backgroundSize:"180px",
       }}/>
-      <div style={{ position:"absolute", inset:0, pointerEvents:"none", zIndex:0, background:"radial-gradient(ellipse at center, transparent 40%, rgba(4,8,15,0.7) 100%)" }}/>
+      <div style={{ position:"absolute", inset:0, pointerEvents:"none", zIndex:0, background:"radial-gradient(ellipse at center, transparent 40%, rgba(247,249,247,0.7) 100%)" }}/>
 
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:0, maxWidth:1000, width:"100%", padding:"0 40px", zIndex:10, alignItems:"center" }}>
         <div style={{ display:"flex", justifyContent:"center", alignItems:"center", opacity: phase >= 1 ? 1 : 0, transition:"opacity 1s ease" }}>
           <div style={{ position:"relative", width:320, height:420, borderRadius:4, overflow:"hidden", animation: phase >= 1 ? "breathe 6s ease-in-out infinite" : "none", boxShadow:"0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)" }}>
             <img src="/farmer.png" alt="Mathieu" style={{ position:"absolute", top:"-8%", left:"-4%", width:"108%", height:"108%", objectFit:"cover", objectPosition:"center 12%", display:"block", filter:"brightness(0.88) contrast(1.05)" }} onError={e => { e.target.style.display="none"; }}/>
-            <div style={{ position:"absolute", inset:0, background:"linear-gradient(to bottom, transparent 55%, rgba(4,8,15,0.85) 100%)" }}/>
+            <div style={{ position:"absolute", inset:0, background:"linear-gradient(to bottom, transparent 55%, rgba(247,249,247,0.85) 100%)" }}/>
             <div style={{ position:"absolute", bottom:0, left:0, right:0, padding:"18px 20px" }}>
-              <p style={{ color:"rgba(255,255,255,0.5)", fontSize:10, letterSpacing:"0.2em", textTransform:"uppercase", margin:"0 0 4px" }}>Champagne-Ardenne · France</p>
-              <p style={{ color:"#F0F8F1", fontSize:18, fontWeight:700, margin:0 }}>Mathieu</p>
+              <p style={{ color:"rgba(15,36,21,0.5)", fontSize:10, letterSpacing:"0.2em", textTransform:"uppercase", margin:"0 0 4px" }}>Champagne-Ardenne · France</p>
+              <p style={{ color:"#0F2415", fontSize:18, fontWeight:700, margin:0 }}>Mathieu</p>
             </div>
           </div>
         </div>
 
         <div style={{ display:"flex", flexDirection:"column", gap:28, paddingLeft:48 }}>
           <div style={{ opacity: phase >= 1 ? 1 : 0, transform: phase >= 1 ? "none" : "translateY(20px)", transition:"opacity 0.9s ease, transform 0.9s ease" }}>
-            <p style={{ color:"#9DBF9F", fontSize:11, textTransform:"uppercase", letterSpacing:"0.2em", fontWeight:600, margin:"0 0 14px" }}>GMO Business Unit · OCP Nutricrops</p>
-            <h1 style={{ color:"#F0F8F1", fontSize:"clamp(28px,3.5vw,44px)", fontWeight:300, letterSpacing:"-0.03em", lineHeight:1.15, margin:0 }}>
+            <p style={{ color:"#6B8F72", fontSize:11, textTransform:"uppercase", letterSpacing:"0.2em", fontWeight:600, margin:"0 0 14px" }}>GMO Business Unit · OCP Nutricrops</p>
+            <h1 style={{ color:"#0F2415", fontSize:"clamp(28px,3.5vw,44px)", fontWeight:300, letterSpacing:"-0.03em", lineHeight:1.15, margin:0 }}>
               This is <span style={{ fontWeight:800 }}>Mathieu.</span>
             </h1>
           </div>
@@ -1699,13 +1699,13 @@ function MathieuIntroPage({ region, onEnterFarm }) {
                 { text:"Every autumn, he commits capital to a fertilizer program before he knows what the season will bring. Every spring, he watches those costs compound while revenue stays months away.", delay:"0.3s" },
                 { text:"The question is whether a different phosphorus strategy would put more money in his pocket at harvest.", delay:"0.6s", accent:true },
               ].map((line, i) => (
-                <p key={i} style={{ color: line.accent ? "#E8F2E9" : "#7DA882", fontSize: line.accent ? 16 : 14, fontWeight: line.accent ? 600 : 400, lineHeight:1.75, margin:0, animation:`lineReveal 0.6s ${line.delay} ease both`, opacity:0, fontStyle: line.accent ? "italic" : "normal" }}>{line.text}</p>
+                <p key={i} style={{ color: line.accent ? "#2C4A33" : "#6B8F72", fontSize: line.accent ? 16 : 14, fontWeight: line.accent ? 600 : 400, lineHeight:1.75, margin:0, animation:`lineReveal 0.6s ${line.delay} ease both`, opacity:0, fontStyle: line.accent ? "italic" : "normal" }}>{line.text}</p>
               ))}
             </div>
           )}
 
           {phase >= 2 && (
-            <p style={{ color:"#2A5530", fontSize:12, lineHeight:1.7, margin:0, animation:"lineReveal 0.6s 1s ease both", opacity:0 }}>
+            <p style={{ color:"#B8D4BE", fontSize:12, lineHeight:1.7, margin:0, animation:"lineReveal 0.6s 1s ease both", opacity:0 }}>
               Built on data from nearly a thousand real French farms, this simulator estimates what each input decision does to Mathieu's output and income in real numbers. You will configure his farm, set his current treatment, and see what happens when he considers phosphorus separation.
             </p>
           )}
@@ -1713,10 +1713,10 @@ function MathieuIntroPage({ region, onEnterFarm }) {
           {phase >= 3 && (
             <div style={{ display:"flex", flexDirection:"column", gap:14, animation:"riseUp 0.7s ease both" }}>
               <button className="cta-btn" onClick={onEnterFarm}
-                style={{ alignSelf:"flex-start", background:"#F0F8F1", border:"none", color:"#061508", padding:"15px 40px", borderRadius:4, fontSize:12, fontWeight:800, letterSpacing:"0.14em", textTransform:"uppercase", cursor:"pointer", boxShadow:"0 0 40px rgba(241,245,249,0.15)" }}>
+                style={{ alignSelf:"flex-start", background:"#0F2415", border:"none", color:"#F7F9F7", padding:"15px 40px", borderRadius:4, fontSize:12, fontWeight:800, letterSpacing:"0.14em", textTransform:"uppercase", cursor:"pointer", boxShadow:"0 0 40px rgba(241,245,249,0.15)" }}>
                 {"Enter Mathieu's Farm →"}
               </button>
-              <p style={{ color:"#1A3A20", fontSize:10, letterSpacing:"0.1em", textTransform:"uppercase" }}>FADN France · 909 farms · Log-log production model</p>
+              <p style={{ color:"#D6E8DA", fontSize:10, letterSpacing:"0.1em", textTransform:"uppercase" }}>FADN France · 909 farms · Log-log production model</p>
             </div>
           )}
         </div>
@@ -1752,7 +1752,7 @@ function MathieuFarmPage({ region }) {
 
   if (region !== "France") return (
     <div style={{ display:"flex", alignItems:"center", justifyContent:"center", minHeight:400 }}>
-      <p style={{ color:"#9DBF9F" }}>Select France to run this simulation.</p>
+      <p style={{ color:"#6B8F72" }}>Select France to run this simulation.</p>
     </div>
   );
 
@@ -1853,12 +1853,12 @@ function MathieuFarmPage({ region }) {
   };
 
   const FERTILIZERS = [
-    { id:"TSP", label:"TSP + N", full:"TSP + "+Math.round(effectiveTspNRate)+" kg N/ha (urea)", p2o5:46, n:effectiveTspNRate, nDelivered:0, k:0, color:"#10b981", badge:"P Separation", badgeColor:"#10b981", costPerKg:0.78, baseCostPerHa:tspProgramCost },
-    { id:"MAP", label:"MAP", full:"MAP + supp. N (AN)", p2o5:48, n:11, nDelivered:30, k:0, color:"#2DB04B", badge:"High P", badgeColor:"#2DB04B", costPerKg:0.90, baseCostPerHa:calcProgramCost(205,"MAP") },
+    { id:"TSP", label:"TSP + N", full:"TSP + "+Math.round(effectiveTspNRate)+" kg N/ha (urea)", p2o5:46, n:effectiveTspNRate, nDelivered:0, k:0, color:"#2DB84B", badge:"P Separation", badgeColor:"#2DB84B", costPerKg:0.78, baseCostPerHa:tspProgramCost },
+    { id:"MAP", label:"MAP", full:"MAP + supp. N (AN)", p2o5:48, n:11, nDelivered:30, k:0, color:"#2DB84B", badge:"High P", badgeColor:"#2DB84B", costPerKg:0.90, baseCostPerHa:calcProgramCost(205,"MAP") },
     { id:"NPS", label:"NPS", full:"NPS + supp. N (AN)", p2o5:20, n:24, nDelivered:55, k:0, color:"#a78bfa", badge:"With Sulphur", badgeColor:"#a78bfa", costPerKg:0.72, baseCostPerHa:calcProgramCost(192,"NPS") },
     { id:"DAP", label:"DAP", full:"DAP + supp. N (AN)", p2o5:46, n:18, nDelivered:50, k:0, color:"#f59e0b", badge:"High N+P", badgeColor:"#f59e0b", costPerKg:0.95, baseCostPerHa:calcProgramCost(218,"DAP") },
     { id:"NPK1", label:"NPK 15-15-15", full:"NPK 15-15-15 + supp. N", p2o5:15, n:15, nDelivered:42, k:15, color:"#f43f5e", badge:"Blended", badgeColor:"#f43f5e", costPerKg:0.62, baseCostPerHa:calcProgramCost(230,"NPK1") },
-    { id:"NPK2", label:"NPK 10-10-10", full:"NPK 10-10-10 + supp. N", p2o5:10, n:10, nDelivered:35, k:10, color:"#7DA882", badge:"Economy", badgeColor:"#7DA882", costPerKg:0.48, baseCostPerHa:calcProgramCost(195,"NPK2") },
+    { id:"NPK2", label:"NPK 10-10-10", full:"NPK 10-10-10 + supp. N", p2o5:10, n:10, nDelivered:35, k:10, color:"#6B8F72", badge:"Economy", badgeColor:"#6B8F72", costPerKg:0.48, baseCostPerHa:calcProgramCost(195,"NPK2") },
     { id:"NPK3", label:"NPK 10-52-10", full:"High P Low N + supp. N", p2o5:52, n:10, nDelivered:22, k:10, color:"#818cf8", badge:"High P Low N", badgeColor:"#818cf8", costPerKg:1.02, baseCostPerHa:calcProgramCost(245,"NPK3") },
   ];
 
@@ -2001,7 +2001,7 @@ function MathieuFarmPage({ region }) {
   const P2O5 = "P\u2082O\u2085";
   const fmtE = n => n < 0 ? (MINUS+EUR+Math.round(Math.abs(n)).toLocaleString()) : (EUR+Math.round(n).toLocaleString());
   const fmtK = n => n >= 0 ? ("+"+EUR+Math.round(n).toLocaleString()) : (MINUS+EUR+Math.round(Math.abs(n)).toLocaleString());
-  const CHART_COLORS = { TSP:"#10b981", MAP:"#2DB04B", NPS:"#a78bfa", DAP:"#f59e0b", NPK1:"#f43f5e", NPK2:"#7DA882", NPK3:"#818cf8" };
+  const CHART_COLORS = { TSP:"#2DB84B", MAP:"#2DB84B", NPS:"#a78bfa", DAP:"#f59e0b", NPK1:"#f43f5e", NPK2:"#6B8F72", NPK3:"#818cf8" };
 
   const allTreatments = [TSP, ...FERTILIZERS.filter(f => currentFerts.includes(f.id) && f.id !== "TSP")];
   const tspFin = computeFinancials(TSP);
@@ -2030,18 +2030,18 @@ function MathieuFarmPage({ region }) {
   };
 
   const ResetZoomBtn = ({ zoom, setZoom }) => zoom ? (
-    <button onClick={()=>setZoom(null)} style={{ background:"#091C0C", border:"1px solid #2DB04B40", color:"#2DB04B", borderRadius:6, padding:"4px 12px", fontSize:10, fontWeight:600, cursor:"pointer", display:"flex", alignItems:"center", gap:5, flexShrink:0, transition:"all 0.15s" }}
-      onMouseEnter={e=>{e.currentTarget.style.background="#2DB04B20";}}
-      onMouseLeave={e=>{e.currentTarget.style.background="#091C0C";}}>
+    <button onClick={()=>setZoom(null)} style={{ background:"#FFFFFF", border:"1px solid #2DB84B40", color:"#2DB84B", borderRadius:6, padding:"4px 12px", fontSize:10, fontWeight:600, cursor:"pointer", display:"flex", alignItems:"center", gap:5, flexShrink:0, transition:"all 0.15s" }}
+      onMouseEnter={e=>{e.currentTarget.style.background="#2DB84B20";}}
+      onMouseLeave={e=>{e.currentTarget.style.background="#FFFFFF";}}>
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
       Reset zoom
     </button>
   ) : null;
 
   const S = {
-    card: { background:"#0C220F", border:"1px solid #183820", borderRadius:14, padding:"18px 20px" },
-    label: { color:"#9DBF9F", fontSize:9, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:600 },
-    h2: { color:"#F0F8F1", fontSize:17, fontWeight:700, letterSpacing:"-0.02em", margin:0 },
+    card: { background:"#FFFFFF", border:"1px solid #D6E8DA", borderRadius:14, padding:"18px 20px" },
+    label: { color:"#6B8F72", fontSize:9, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:600 },
+    h2: { color:"#0F2415", fontSize:17, fontWeight:700, letterSpacing:"-0.02em", margin:0 },
   };
 
   // =============== CONFIGURE ===============
@@ -2050,14 +2050,14 @@ function MathieuFarmPage({ region }) {
       <div style={{ fontFamily:"'DM Sans',sans-serif", display:"flex", flexDirection:"column", gap:0 }}>
         <style>{`
           @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
-          .crop-btn:hover { border-color:#10b981 !important; background:#10b98108 !important; }
+          .crop-btn:hover { border-color:#2DB84B !important; background:#2DB84B08 !important; }
           .enter-farm-btn { transition:all 0.2s; }
-          .enter-farm-btn:hover { background:#F0F8F1 !important; color:#061508 !important; transform:translateY(-2px); box-shadow:0 8px 32px rgba(241,245,249,0.12); }
+          .enter-farm-btn:hover { background:#0F2415 !important; color:#F7F9F7 !important; transform:translateY(-2px); box-shadow:0 8px 32px rgba(241,245,249,0.12); }
         `}</style>
         <div style={{ textAlign:"center", marginBottom:32, animation:"fadeUp 0.4s ease" }}>
-          <p style={{ color:"#10b981", fontSize:10, textTransform:"uppercase", letterSpacing:"0.18em", fontWeight:700, margin:"0 0 8px" }}>PhosStratOS · Farm Financial Simulator</p>
-          <h1 style={{ color:"#F0F8F1", fontSize:28, fontWeight:800, letterSpacing:"-0.03em", margin:"0 0 8px" }}>Configure Mathieu's Farm</h1>
-          <p style={{ color:"#7DA882", fontSize:13, margin:0, maxWidth:580, marginLeft:"auto", marginRight:"auto", lineHeight:1.7 }}>
+          <p style={{ color:"#2DB84B", fontSize:10, textTransform:"uppercase", letterSpacing:"0.18em", fontWeight:700, margin:"0 0 8px" }}>PhosStratOS · Farm Financial Simulator</p>
+          <h1 style={{ color:"#0F2415", fontSize:28, fontWeight:800, letterSpacing:"-0.03em", margin:"0 0 8px" }}>Configure Mathieu's Farm</h1>
+          <p style={{ color:"#6B8F72", fontSize:13, margin:0, maxWidth:580, marginLeft:"auto", marginRight:"auto", lineHeight:1.7 }}>
             Set the structural parameters. These determine baseline costs, revenue composition, and how input decisions translate into financial outcomes.
           </p>
         </div>
@@ -2065,26 +2065,26 @@ function MathieuFarmPage({ region }) {
           <div style={{ display:"flex", flexDirection:"column", gap:18 }}>
             <div style={{ ...S.card }}>
               <p style={{ ...S.label, margin:"0 0 12px" }}>Farm size (hectares)</p>
-              <input type="range" min={10} max={500} step={5} value={farmSize} onChange={e=>setFarmSize(Number(e.target.value))} style={{ width:"100%", accentColor:"#10b981" }}/>
+              <input type="range" min={10} max={500} step={5} value={farmSize} onChange={e=>setFarmSize(Number(e.target.value))} style={{ width:"100%", accentColor:"#2DB84B" }}/>
               <div style={{ display:"flex", justifyContent:"space-between", marginTop:8 }}>
-                <span style={{ color:"#2A5530", fontSize:10 }}>10 ha</span>
-                <span style={{ color:"#10b981", fontSize:18, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>{farmSize} ha</span>
-                <span style={{ color:"#2A5530", fontSize:10 }}>500 ha</span>
+                <span style={{ color:"#B8D4BE", fontSize:10 }}>10 ha</span>
+                <span style={{ color:"#2DB84B", fontSize:18, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>{farmSize} ha</span>
+                <span style={{ color:"#B8D4BE", fontSize:10 }}>500 ha</span>
               </div>
             </div>
             <div style={{ ...S.card }}>
               <p style={{ ...S.label, margin:"0 0 12px" }}>Region</p>
-              <select value={simRegion} onChange={e=>setSimRegion(e.target.value)} style={{ width:"100%", background:"#091C0C", border:"1.5px solid #183820", color:"#F0F8F1", borderRadius:8, padding:"10px 14px", fontSize:13, fontWeight:600 }}>
+              <select value={simRegion} onChange={e=>setSimRegion(e.target.value)} style={{ width:"100%", background:"#FFFFFF", border:"1.5px solid #D6E8DA", color:"#0F2415", borderRadius:8, padding:"10px 14px", fontSize:13, fontWeight:600 }}>
                 {REGIONS.map(r=><option key={r.value} value={r.value}>{r.display}</option>)}
               </select>
             </div>
             <div style={{ ...S.card }}>
               <p style={{ ...S.label, margin:"0 0 12px" }}>Farmer age</p>
-              <input type="range" min={18} max={90} step={1} value={farmerAge} onChange={e=>setFarmerAge(Number(e.target.value))} style={{ width:"100%", accentColor:"#2DB04B" }}/>
+              <input type="range" min={18} max={90} step={1} value={farmerAge} onChange={e=>setFarmerAge(Number(e.target.value))} style={{ width:"100%", accentColor:"#2DB84B" }}/>
               <div style={{ display:"flex", justifyContent:"space-between", marginTop:8 }}>
-                <span style={{ color:"#2A5530", fontSize:10 }}>18</span>
-                <span style={{ color:"#2DB04B", fontSize:18, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>{farmerAge} years</span>
-                <span style={{ color:"#2A5530", fontSize:10 }}>90</span>
+                <span style={{ color:"#B8D4BE", fontSize:10 }}>18</span>
+                <span style={{ color:"#2DB84B", fontSize:18, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>{farmerAge} years</span>
+                <span style={{ color:"#B8D4BE", fontSize:10 }}>90</span>
               </div>
             </div>
           </div>
@@ -2094,32 +2094,32 @@ function MathieuFarmPage({ region }) {
               <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:8 }}>
                 {CROPS.map(c => (
                   <button key={c.id} className="crop-btn" onClick={()=>setCrop(c.id)} style={{
-                    background: crop===c.id ? "#10b98112" : "#091C0C",
-                    border: "1.5px solid "+(crop===c.id ? "#10b981" : "#183820"),
+                    background: crop===c.id ? "#2DB84B12" : "#FFFFFF",
+                    border: "1.5px solid "+(crop===c.id ? "#2DB84B" : "#D6E8DA"),
                     borderRadius:10, padding:"12px 10px", cursor:"pointer", textAlign:"center",
                   }}>
                     <span style={{ fontSize:20, display:"block" }}>{c.icon}</span>
-                    <span style={{ color: crop===c.id ? "#10b981" : "#9DBF9F", fontSize:11, fontWeight:crop===c.id?700:500, display:"block", marginTop:4 }}>{c.label}</span>
-                    <span style={{ color:"#2A5530", fontSize:9, display:"block", marginTop:2 }}>P:{c.pDemand} {MIDDOT} N:{c.nDemand}</span>
+                    <span style={{ color: crop===c.id ? "#2DB84B" : "#6B8F72", fontSize:11, fontWeight:crop===c.id?700:500, display:"block", marginTop:4 }}>{c.label}</span>
+                    <span style={{ color:"#B8D4BE", fontSize:9, display:"block", marginTop:2 }}>P:{c.pDemand} {MIDDOT} N:{c.nDemand}</span>
                   </button>
                 ))}
               </div>
-              {selectedCrop && <p style={{ color:"#3A6640", fontSize:11, lineHeight:1.6, margin:"10px 0 0" }}>{selectedCrop.note}</p>}
+              {selectedCrop && <p style={{ color:"#9BB5A0", fontSize:11, lineHeight:1.6, margin:"10px 0 0" }}>{selectedCrop.note}</p>}
             </div>
             <div style={{ ...S.card }}>
               <p style={{ ...S.label, margin:"0 0 12px" }}>Ownership structure</p>
               <input type="range" min={0} max={100} step={5} value={ownedPct} onChange={e=>setOwnedPct(Number(e.target.value))} style={{ width:"100%", accentColor:"#f59e0b" }}/>
               <div style={{ display:"flex", justifyContent:"space-between", marginTop:8, alignItems:"center" }}>
                 <span style={{ color:"#f59e0b", fontSize:11, fontWeight:600 }}>Owned: {ownedPct}%</span>
-                <span style={{ color:"#9DBF9F", fontSize:11 }}>Rented: {100-ownedPct}%</span>
+                <span style={{ color:"#6B8F72", fontSize:11 }}>Rented: {100-ownedPct}%</span>
               </div>
-              <p style={{ color:"#2A5530", fontSize:10, margin:"8px 0 0" }}>Rent cost: {EUR}{Math.round(rentCostPerHa)}/ha/year</p>
+              <p style={{ color:"#B8D4BE", fontSize:10, margin:"8px 0 0" }}>Rent cost: {EUR}{Math.round(rentCostPerHa)}/ha/year</p>
             </div>
           </div>
         </div>
         <div style={{ display:"flex", justifyContent:"center", marginTop:28, animation:"fadeUp 0.5s 0.3s ease both" }}>
           <button className="enter-farm-btn" style={{
-            background:"transparent", border:"2px solid #F0F8F1", color:"#F0F8F1",
+            background:"transparent", border:"2px solid #0F2415", color:"#0F2415",
             padding:"16px 48px", borderRadius:4, fontSize:12, fontWeight:800,
             letterSpacing:"0.14em", textTransform:"uppercase", cursor:"pointer",
           }} onClick={()=>setPhase("narrative")}>
@@ -2138,20 +2138,20 @@ function MathieuFarmPage({ region }) {
         <style>{`
           @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
           .fert-option { transition:all 0.15s; cursor:pointer; }
-          .fert-option:hover { border-color:#2DB04B !important; background:#2DB04B08 !important; }
+          .fert-option:hover { border-color:#2DB84B !important; background:#2DB84B08 !important; }
           .run-btn { transition:all 0.25s; }
-          .run-btn:hover { background:#F0F8F1 !important; color:#061508 !important; transform:translateY(-2px); box-shadow:0 8px 40px rgba(241,245,249,0.15); }
+          .run-btn:hover { background:#0F2415 !important; color:#F7F9F7 !important; transform:translateY(-2px); box-shadow:0 8px 40px rgba(241,245,249,0.15); }
         `}</style>
-        <button onClick={()=>setPhase("configure")} style={{ background:"none", border:"none", color:"#3A6640", fontSize:11, cursor:"pointer", padding:0, marginBottom:24 }}>{LARR} Back to farm configuration</button>
+        <button onClick={()=>setPhase("configure")} style={{ background:"none", border:"none", color:"#9BB5A0", fontSize:11, cursor:"pointer", padding:0, marginBottom:24 }}>{LARR} Back to farm configuration</button>
 
         <div style={{ animation:"fadeUp 0.5s ease" }}>
-          <p style={{ color:"#7DA882", fontSize:11, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:600, margin:"0 0 14px" }}>{selectedCrop.icon} {selectedCrop.label} {MIDDOT} {regionDisplay} {MIDDOT} {farmSize} ha</p>
-          <h2 style={{ color:"#F0F8F1", fontSize:26, fontWeight:300, letterSpacing:"-0.02em", lineHeight:1.3, margin:"0 0 10px" }}>
-            Today, Mathieu uses <span style={{ fontWeight:800, color: selectedFerts.length > 0 ? "#2DB04B" : "#3A6640" }}>
+          <p style={{ color:"#6B8F72", fontSize:11, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:600, margin:"0 0 14px" }}>{selectedCrop.icon} {selectedCrop.label} {MIDDOT} {regionDisplay} {MIDDOT} {farmSize} ha</p>
+          <h2 style={{ color:"#0F2415", fontSize:26, fontWeight:300, letterSpacing:"-0.02em", lineHeight:1.3, margin:"0 0 10px" }}>
+            Today, Mathieu uses <span style={{ fontWeight:800, color: selectedFerts.length > 0 ? "#2DB84B" : "#9BB5A0" }}>
               {selectedFerts.length > 0 ? selectedFerts.map(f=>f.label).join(" and ") : "..."}
             </span>
           </h2>
-          <p style={{ color:"#7DA882", fontSize:14, lineHeight:1.7, margin:"0 0 24px" }}>
+          <p style={{ color:"#6B8F72", fontSize:14, lineHeight:1.7, margin:"0 0 24px" }}>
             Select one or more products that represent his current fertilizer program. TSP will always be included as the separation reference.
           </p>
         </div>
@@ -2163,15 +2163,15 @@ function MathieuFarmPage({ region }) {
               <div key={f.id} className="fert-option" onClick={()=>{
                 setCurrentFerts(prev => sel ? prev.filter(x=>x!==f.id) : [...prev, f.id]);
               }} style={{
-                background: sel ? (f.color+"10") : "#0C220F",
-                border: "1.5px solid "+(sel ? f.color : "#183820"),
+                background: sel ? (f.color+"10") : "#FFFFFF",
+                border: "1.5px solid "+(sel ? f.color : "#D6E8DA"),
                 borderRadius:12, padding:"14px 16px",
                 display:"flex", alignItems:"center", gap:12,
               }}>
-                <div style={{ width:8, height:8, borderRadius:"50%", background: sel ? f.color : "#183820", flexShrink:0, transition:"all 0.15s" }}/>
+                <div style={{ width:8, height:8, borderRadius:"50%", background: sel ? f.color : "#D6E8DA", flexShrink:0, transition:"all 0.15s" }}/>
                 <div>
-                  <p style={{ color: sel ? "#F0F8F1" : "#9DBF9F", fontSize:13, fontWeight:sel?700:500, margin:0 }}>{f.label}</p>
-                  <p style={{ color:"#3A6640", fontSize:10, margin:0 }}>{P2O5}: {f.p2o5}% {MIDDOT} N: {f.n}% {MIDDOT} {EUR}{f.baseCostPerHa}/ha</p>
+                  <p style={{ color: sel ? "#0F2415" : "#6B8F72", fontSize:13, fontWeight:sel?700:500, margin:0 }}>{f.label}</p>
+                  <p style={{ color:"#9BB5A0", fontSize:10, margin:0 }}>{P2O5}: {f.p2o5}% {MIDDOT} N: {f.n}% {MIDDOT} {EUR}{f.baseCostPerHa}/ha</p>
                 </div>
                 <span style={{ marginLeft:"auto", fontSize:10, color:f.badgeColor, background:f.badgeColor+"18", padding:"2px 8px", borderRadius:6, fontWeight:600 }}>{f.badge}</span>
               </div>
@@ -2181,12 +2181,12 @@ function MathieuFarmPage({ region }) {
 
         {currentFerts.length > 0 && (
           <div style={{ animation:"fadeUp 0.4s ease" }}>
-            <p style={{ color:"#E8F2E9", fontSize:18, fontWeight:300, lineHeight:1.5, margin:"0 0 24px" }}>
-              But today, Mathieu wants to check if <span style={{ fontWeight:700, color:"#10b981" }}>switching to TSP</span> will benefit him economically {MDASH} or whether his current program is already the better choice.
+            <p style={{ color:"#2C4A33", fontSize:18, fontWeight:300, lineHeight:1.5, margin:"0 0 24px" }}>
+              But today, Mathieu wants to check if <span style={{ fontWeight:700, color:"#2DB84B" }}>switching to TSP</span> will benefit him economically {MDASH} or whether his current program is already the better choice.
             </p>
             <div style={{ display:"flex", justifyContent:"center" }}>
               <button className="run-btn" onClick={()=>setPhase("results")} style={{
-                background:"transparent", border:"2px solid #10b981", color:"#10b981",
+                background:"transparent", border:"2px solid #2DB84B", color:"#2DB84B",
                 padding:"16px 44px", borderRadius:4, fontSize:12, fontWeight:800,
                 letterSpacing:"0.14em", textTransform:"uppercase", cursor:"pointer",
               }}>
@@ -2207,74 +2207,74 @@ function MathieuFarmPage({ region }) {
         .dropdown-toggle { cursor:pointer; transition:background 0.15s; }
         .dropdown-toggle:hover { background:#0a1628 !important; }
         .restart-btn { transition:all 0.2s; }
-        .restart-btn:hover { background:#F0F8F1 !important; color:#061508 !important; transform:translateY(-2px); }
-        .back-link:hover { color:#F0F8F1 !important; }
+        .restart-btn:hover { background:#0F2415 !important; color:#F7F9F7 !important; transform:translateY(-2px); }
+        .back-link:hover { color:#0F2415 !important; }
       `}</style>
 
       {/* TOP BAR */}
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
         <div style={{ display:"flex", gap:12 }}>
-          <button className="back-link" onClick={()=>setPhase("narrative")} style={{ background:"none", border:"none", color:"#3A6640", fontSize:11, cursor:"pointer", padding:0, transition:"all 0.15s" }}>{LARR} Change treatment</button>
-          <button className="back-link" onClick={()=>setPhase("configure")} style={{ background:"none", border:"none", color:"#2A5530", fontSize:11, cursor:"pointer", padding:0, transition:"all 0.15s" }}>{LARR} Reconfigure farm</button>
+          <button className="back-link" onClick={()=>setPhase("narrative")} style={{ background:"none", border:"none", color:"#9BB5A0", fontSize:11, cursor:"pointer", padding:0, transition:"all 0.15s" }}>{LARR} Change treatment</button>
+          <button className="back-link" onClick={()=>setPhase("configure")} style={{ background:"none", border:"none", color:"#B8D4BE", fontSize:11, cursor:"pointer", padding:0, transition:"all 0.15s" }}>{LARR} Reconfigure farm</button>
         </div>
       </div>
 
       {/* LIVE PARAMETER CONTROLS - always sticky */}
       <div style={{
-        background:"linear-gradient(135deg, #091C0C 0%, #0a1628 100%)",
-        border:"1.5px solid #2DB04B30",
+        background:"linear-gradient(135deg, #FFFFFF 0%, #0a1628 100%)",
+        border:"1.5px solid #2DB84B30",
         borderRadius:14, padding:"14px 18px",
         position:"sticky", top:0, zIndex:50,
         boxShadow:"0 4px 24px rgba(0,0,0,0.5)",
       }}>
-        <p style={{ color:"#2DB04B", fontSize:9, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, margin:"0 0 10px" }}>Live parameters {MDASH} all results update instantly</p>
+        <p style={{ color:"#2DB84B", fontSize:9, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, margin:"0 0 10px" }}>Live parameters {MDASH} all results update instantly</p>
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr 1fr 1fr", gap:12 }}>
           <div>
-            <p style={{ color:"#9DBF9F", fontSize:10, fontWeight:600, margin:"0 0 5px" }}>Farm size</p>
-            <input type="range" min={10} max={500} step={5} value={farmSize} onChange={e=>setFarmSize(Number(e.target.value))} style={{ width:"100%", accentColor:"#10b981" }}/>
-            <p style={{ color:"#10b981", fontSize:12, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"3px 0 0", textAlign:"center" }}>{farmSize} ha</p>
+            <p style={{ color:"#6B8F72", fontSize:10, fontWeight:600, margin:"0 0 5px" }}>Farm size</p>
+            <input type="range" min={10} max={500} step={5} value={farmSize} onChange={e=>setFarmSize(Number(e.target.value))} style={{ width:"100%", accentColor:"#2DB84B" }}/>
+            <p style={{ color:"#2DB84B", fontSize:12, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"3px 0 0", textAlign:"center" }}>{farmSize} ha</p>
           </div>
           <div>
-            <p style={{ color:"#9DBF9F", fontSize:10, fontWeight:600, margin:"0 0 5px" }}>Farmer age</p>
-            <input type="range" min={18} max={90} step={1} value={farmerAge} onChange={e=>setFarmerAge(Number(e.target.value))} style={{ width:"100%", accentColor:"#2DB04B" }}/>
-            <p style={{ color:"#2DB04B", fontSize:12, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"3px 0 0", textAlign:"center" }}>{farmerAge} yrs</p>
+            <p style={{ color:"#6B8F72", fontSize:10, fontWeight:600, margin:"0 0 5px" }}>Farmer age</p>
+            <input type="range" min={18} max={90} step={1} value={farmerAge} onChange={e=>setFarmerAge(Number(e.target.value))} style={{ width:"100%", accentColor:"#2DB84B" }}/>
+            <p style={{ color:"#2DB84B", fontSize:12, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"3px 0 0", textAlign:"center" }}>{farmerAge} yrs</p>
           </div>
           <div>
-            <p style={{ color:"#9DBF9F", fontSize:10, fontWeight:600, margin:"0 0 5px" }}>Owned / Rented</p>
+            <p style={{ color:"#6B8F72", fontSize:10, fontWeight:600, margin:"0 0 5px" }}>Owned / Rented</p>
             <input type="range" min={0} max={100} step={5} value={ownedPct} onChange={e=>setOwnedPct(Number(e.target.value))} style={{ width:"100%", accentColor:"#f59e0b" }}/>
             <p style={{ color:"#f59e0b", fontSize:12, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"3px 0 0", textAlign:"center" }}>{ownedPct}% / {100-ownedPct}%</p>
           </div>
           <div>
-            <p style={{ color:"#9DBF9F", fontSize:10, fontWeight:600, margin:"0 0 5px" }}>Crop</p>
-            <select value={crop} onChange={e=>{setCrop(e.target.value);setTspNRate(null);}} style={{ width:"100%", background:"#0C220F", border:"1.5px solid #183820", color:"#F0F8F1", borderRadius:8, padding:"5px 8px", fontSize:11, fontWeight:600 }}>
+            <p style={{ color:"#6B8F72", fontSize:10, fontWeight:600, margin:"0 0 5px" }}>Crop</p>
+            <select value={crop} onChange={e=>{setCrop(e.target.value);setTspNRate(null);}} style={{ width:"100%", background:"#FFFFFF", border:"1.5px solid #D6E8DA", color:"#0F2415", borderRadius:8, padding:"5px 8px", fontSize:11, fontWeight:600 }}>
               {CROPS.map(c=><option key={c.id} value={c.id}>{c.icon} {c.label}</option>)}
             </select>
           </div>
           <div>
-            <p style={{ color:"#9DBF9F", fontSize:10, fontWeight:600, margin:"0 0 5px" }}>Region</p>
-            <select value={simRegion} onChange={e=>setSimRegion(e.target.value)} style={{ width:"100%", background:"#0C220F", border:"1.5px solid #183820", color:"#F0F8F1", borderRadius:8, padding:"5px 8px", fontSize:11, fontWeight:600 }}>
+            <p style={{ color:"#6B8F72", fontSize:10, fontWeight:600, margin:"0 0 5px" }}>Region</p>
+            <select value={simRegion} onChange={e=>setSimRegion(e.target.value)} style={{ width:"100%", background:"#FFFFFF", border:"1.5px solid #D6E8DA", color:"#0F2415", borderRadius:8, padding:"5px 8px", fontSize:11, fontWeight:600 }}>
               {REGIONS.map(r=><option key={r.value} value={r.value}>{r.display}</option>)}
             </select>
           </div>
           <div>
-            <p style={{ color:"#10b981", fontSize:10, fontWeight:600, margin:"0 0 5px" }}>TSP + N rate</p>
-            <input type="range" min={0} max={300} step={10} value={effectiveTspNRate} onChange={e=>setTspNRate(Number(e.target.value))} style={{ width:"100%", accentColor:"#10b981" }}/>
-            <p style={{ color:"#10b981", fontSize:11, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"3px 0 0", textAlign:"center" }}>{Math.round(effectiveTspNRate)} kg N/ha</p>
-            <p style={{ color:"#2A5530", fontSize:8, margin:"2px 0 0", textAlign:"center" }}>Rec: {selectedCrop.cropNReq} {MIDDOT} {EUR}{Math.round(tspNCost)} N + {EUR}{extraPassCost} pass</p>
+            <p style={{ color:"#2DB84B", fontSize:10, fontWeight:600, margin:"0 0 5px" }}>TSP + N rate</p>
+            <input type="range" min={0} max={300} step={10} value={effectiveTspNRate} onChange={e=>setTspNRate(Number(e.target.value))} style={{ width:"100%", accentColor:"#2DB84B" }}/>
+            <p style={{ color:"#2DB84B", fontSize:11, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:"3px 0 0", textAlign:"center" }}>{Math.round(effectiveTspNRate)} kg N/ha</p>
+            <p style={{ color:"#B8D4BE", fontSize:8, margin:"2px 0 0", textAlign:"center" }}>Rec: {selectedCrop.cropNReq} {MIDDOT} {EUR}{Math.round(tspNCost)} N + {EUR}{extraPassCost} pass</p>
           </div>
         </div>
       </div>
 
       {/* Context summary */}
-      <div style={{ display:"flex", alignItems:"center", gap:14, padding:"14px 18px", background:"linear-gradient(135deg,#091C0C,#0C220F)", border:"1.5px solid #18382050", borderRadius:14, animation:"fadeUp 0.4s ease" }}>
-        <div style={{ width:40, height:40, borderRadius:"50%", background:"#2DB04B15", border:"2px solid #2DB04B40", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2DB04B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+      <div style={{ display:"flex", alignItems:"center", gap:14, padding:"14px 18px", background:"linear-gradient(135deg,#FFFFFF,#FFFFFF)", border:"1.5px solid #D6E8DA50", borderRadius:14, animation:"fadeUp 0.4s ease" }}>
+        <div style={{ width:40, height:40, borderRadius:"50%", background:"#2DB84B15", border:"2px solid #2DB84B40", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2DB84B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
         </div>
         <div>
-          <p style={{ color:"#D4E8D6", fontSize:13, fontWeight:700, margin:0 }}>
+          <p style={{ color:"#2C4A33", fontSize:13, fontWeight:700, margin:0 }}>
             {selectedCrop.label} {MIDDOT} {regionDisplay} {MDASH} {allTreatments.length} treatments compared
           </p>
-          <p style={{ color:"#7DA882", fontSize:11, margin:0 }}>
+          <p style={{ color:"#6B8F72", fontSize:11, margin:0 }}>
             {farmSize} ha {MIDDOT} {farmerAge} y/o {MIDDOT} {ownedPct}% owned {MIDDOT} TSP program: {EUR}{Math.round(tspProgramCost)}/ha (TSP {EUR}178 + N {EUR}{Math.round(tspNCost)} + pass {EUR}{extraPassCost})
           </p>
         </div>
@@ -2282,66 +2282,66 @@ function MathieuFarmPage({ region }) {
 
       {/* ── RANKING — the big picture, shown first ── */}
       <div style={{ ...S.card, padding:0, overflow:"hidden", border:`1.5px solid ${bestTreatment.color}30` }}>
-        <div style={{ padding:"18px 20px", borderBottom:"1px solid #183820", background:`linear-gradient(135deg,${bestTreatment.color}08,#0C220F)` }}>
-          <p style={{ color:"#F0F8F1", fontSize:15, fontWeight:700, margin:"0 0 4px" }}>Treatment ranking {MDASH} {selectedCrop.label} {MIDDOT} {regionDisplay}</p>
-          <p style={{ color:"#3A6640", fontSize:10, margin:0 }}>Ranked by gross margin ({EUR}/ha). TSP + N includes {Math.round(effectiveTspNRate)} kg N/ha via ammonium nitrate + extra pass cost. All other treatments compared at their standard formulation.</p>
+        <div style={{ padding:"18px 20px", borderBottom:"1px solid #D6E8DA", background:`linear-gradient(135deg,${bestTreatment.color}08,#FFFFFF)` }}>
+          <p style={{ color:"#0F2415", fontSize:15, fontWeight:700, margin:"0 0 4px" }}>Treatment ranking {MDASH} {selectedCrop.label} {MIDDOT} {regionDisplay}</p>
+          <p style={{ color:"#9BB5A0", fontSize:10, margin:0 }}>Ranked by gross margin ({EUR}/ha). TSP + N includes {Math.round(effectiveTspNRate)} kg N/ha via ammonium nitrate + extra pass cost. All other treatments compared at their standard formulation.</p>
         </div>
         {allRanked.map((f,i)=>{
           const isTSP=f.id==="TSP"; const isC=currentFerts.includes(f.id); const mD=f.margin-tspFin.grossMargin;
-          return (<div key={f.id} style={{ display:"flex", alignItems:"center", gap:14, padding:i===0?"14px 20px":"11px 20px", background:i===0?bestTreatment.color+"08":isTSP?"#10b98106":isC?(f.color+"06"):"transparent", borderLeft:"3px solid "+(i===0?bestTreatment.color:isTSP?"#10b981":isC?f.color:"transparent"), borderBottom:i<allRanked.length-1?"1px solid #0d1520":"none" }}>
-            <span style={{ color:i===0?"#f59e0b":i<3?"#9DBF9F":"#2A5530", fontSize:i===0?14:11, width:22, fontFamily:"'DM Mono',monospace", fontWeight:700 }}>#{i+1}</span>
+          return (<div key={f.id} style={{ display:"flex", alignItems:"center", gap:14, padding:i===0?"14px 20px":"11px 20px", background:i===0?bestTreatment.color+"08":isTSP?"#2DB84B06":isC?(f.color+"06"):"transparent", borderLeft:"3px solid "+(i===0?bestTreatment.color:isTSP?"#2DB84B":isC?f.color:"transparent"), borderBottom:i<allRanked.length-1?"1px solid #0d1520":"none" }}>
+            <span style={{ color:i===0?"#f59e0b":i<3?"#6B8F72":"#B8D4BE", fontSize:i===0?14:11, width:22, fontFamily:"'DM Mono',monospace", fontWeight:700 }}>#{i+1}</span>
             <div style={{ width:8, height:8, borderRadius:2, background:f.color, flexShrink:0 }}/>
-            <span style={{ color:isTSP?"#10b981":i===0?"#F0F8F1":isC?"#E8F2E9":"#9DBF9F", fontSize:i===0?14:12, fontWeight:isTSP||isC||i===0?700:400, flex:1 }}>
+            <span style={{ color:isTSP?"#2DB84B":i===0?"#0F2415":isC?"#2C4A33":"#6B8F72", fontSize:i===0?14:12, fontWeight:isTSP||isC||i===0?700:400, flex:1 }}>
               {f.label}
               {i===0&&<span style={{ marginLeft:8, fontSize:9, color:"#f59e0b", background:"#f59e0b18", padding:"2px 8px", borderRadius:4, fontWeight:700 }}>BEST FOR {selectedCrop.label.toUpperCase()}</span>}
-              {isTSP&&i!==0&&<span style={{ marginLeft:8, fontSize:9, color:"#10b981", background:"#10b98118", padding:"2px 8px", borderRadius:4 }}>P SEPARATION</span>}
+              {isTSP&&i!==0&&<span style={{ marginLeft:8, fontSize:9, color:"#2DB84B", background:"#2DB84B18", padding:"2px 8px", borderRadius:4 }}>P SEPARATION</span>}
               {isC&&!isTSP&&<span style={{ marginLeft:8, fontSize:9, color:f.color, background:f.color+"18", padding:"2px 8px", borderRadius:4 }}>COMPARED</span>}
             </span>
-            <span style={{ color:i===0?"#F0F8F1":"#D4E8D6", fontSize:i===0?15:12, fontFamily:"'DM Mono',monospace", fontWeight:i===0?800:600, width:80, textAlign:"right" }}>{fmtE(f.margin)}</span>
-            <span style={{ color:mD>=0?"#10b981":"#f43f5e", fontSize:11, fontWeight:700, fontFamily:"'DM Mono',monospace", width:80, textAlign:"right" }}>{isTSP?MDASH:fmtK(mD)}</span>
+            <span style={{ color:i===0?"#0F2415":"#2C4A33", fontSize:i===0?15:12, fontFamily:"'DM Mono',monospace", fontWeight:i===0?800:600, width:80, textAlign:"right" }}>{fmtE(f.margin)}</span>
+            <span style={{ color:mD>=0?"#2DB84B":"#f43f5e", fontSize:11, fontWeight:700, fontFamily:"'DM Mono',monospace", width:80, textAlign:"right" }}>{isTSP?MDASH:fmtK(mD)}</span>
           </div>);
         })}
       </div>
 
       {/* KPI table */}
       <div style={{ ...S.card, padding:0, overflow:"hidden" }}>
-        <div style={{ padding:"14px 18px", borderBottom:"1px solid #183820" }}>
-          <p style={{ color:"#D4E8D6", fontSize:13, fontWeight:700, margin:0 }}>Treatment comparison {MDASH} end of season financial metrics ({EUR} per hectare)</p>
-          <p style={{ color:"#3A6640", fontSize:10, margin:"4px 0 0" }}>These are full season results at harvest. All gross margins are positive because total revenue exceeds total input cost for every treatment.</p>
+        <div style={{ padding:"14px 18px", borderBottom:"1px solid #D6E8DA" }}>
+          <p style={{ color:"#2C4A33", fontSize:13, fontWeight:700, margin:0 }}>Treatment comparison {MDASH} end of season financial metrics ({EUR} per hectare)</p>
+          <p style={{ color:"#9BB5A0", fontSize:10, margin:"4px 0 0" }}>These are full season results at harvest. All gross margins are positive because total revenue exceeds total input cost for every treatment.</p>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"180px repeat("+allTreatments.length+",1fr)", gap:0 }}>
           {["Metric", ...allTreatments.map(t=>t.id==="TSP"?"TSP + N (Separation)":t.label)].map((h,j)=>(
-            <div key={j} style={{ padding:"10px 14px", background:"#091C0C", borderBottom:"1px solid #0d1520", fontSize:10, fontWeight:700, color:j===1?"#10b981":j>1?CHART_COLORS[allTreatments[j-1]?.id]||"#9DBF9F":"#7DA882", textTransform:"uppercase", letterSpacing:"0.08em", textAlign:j>0?"right":"left" }}>{h}</div>
+            <div key={j} style={{ padding:"10px 14px", background:"#FFFFFF", borderBottom:"1px solid #0d1520", fontSize:10, fontWeight:700, color:j===1?"#2DB84B":j>1?CHART_COLORS[allTreatments[j-1]?.id]||"#6B8F72":"#6B8F72", textTransform:"uppercase", letterSpacing:"0.08em", textAlign:j>0?"right":"left" }}>{h}</div>
           ))}
           {[{label:"Gross output (revenue)",key:"output"},{label:"Total input cost",key:"inputCost"},{label:"Gross margin (revenue "+MINUS+" cost)",key:"grossMargin"}].map((row,i)=>(
             <div key={i} style={{ display:"contents" }}>
-              <div style={{ padding:"12px 14px", borderBottom:"1px solid #0d1520", color:"#9DBF9F", fontSize:12 }}>{row.label}</div>
+              <div style={{ padding:"12px 14px", borderBottom:"1px solid #0d1520", color:"#6B8F72", fontSize:12 }}>{row.label}</div>
               {allTreatments.map((t,j)=>{
-                const fin=computeFinancials(t); const val=fin[row.key]; const diff=val-tspFin[row.key]; const diffColor=row.key==="inputCost"?(diff<=0?"#10b981":"#f43f5e"):(diff>=0?"#10b981":"#f43f5e");
+                const fin=computeFinancials(t); const val=fin[row.key]; const diff=val-tspFin[row.key]; const diffColor=row.key==="inputCost"?(diff<=0?"#2DB84B":"#f43f5e"):(diff>=0?"#2DB84B":"#f43f5e");
                 return (<div key={t.id} style={{ padding:"12px 14px", borderBottom:"1px solid #0d1520", textAlign:"right" }}>
-                  <span style={{ color:j===0?"#10b981":"#D4E8D6", fontSize:13, fontWeight:j===0?700:600, fontFamily:"'DM Mono',monospace" }}>{fmtE(val)}</span>
+                  <span style={{ color:j===0?"#2DB84B":"#2C4A33", fontSize:13, fontWeight:j===0?700:600, fontFamily:"'DM Mono',monospace" }}>{fmtE(val)}</span>
                   {j>0 && <span style={{ color:diffColor, fontSize:10, fontFamily:"'DM Mono',monospace", marginLeft:8 }}>({fmtK(diff)})</span>}
                 </div>);
               })}
             </div>
           ))}
           <div style={{ display:"contents" }}>
-            <div style={{ padding:"12px 14px", background:"#0a1628", color:"#F0F8F1", fontSize:12, fontWeight:700 }}>Return on fertilizer investment</div>
+            <div style={{ padding:"12px 14px", background:"#0a1628", color:"#0F2415", fontSize:12, fontWeight:700 }}>Return on fertilizer investment</div>
             {allTreatments.map((t,j)=>{
               const fin=computeFinancials(t);
               return (<div key={t.id} style={{ padding:"12px 14px", background:"#0a1628", textAlign:"right" }}>
-                <span style={{ color:j===0?"#10b981":"#D4E8D6", fontSize:14, fontWeight:j===0?800:700, fontFamily:"'DM Mono',monospace" }}>{fin.rofi.toFixed(2)}x</span>
-                {j>0 && <span style={{ color:fin.rofi>=tspFin.rofi?"#10b981":"#f43f5e", fontSize:10, fontFamily:"'DM Mono',monospace", marginLeft:8 }}>({fin.rofi>=tspFin.rofi?"+":MINUS}{Math.abs(fin.rofi-tspFin.rofi).toFixed(2)})</span>}
+                <span style={{ color:j===0?"#2DB84B":"#2C4A33", fontSize:14, fontWeight:j===0?800:700, fontFamily:"'DM Mono',monospace" }}>{fin.rofi.toFixed(2)}x</span>
+                {j>0 && <span style={{ color:fin.rofi>=tspFin.rofi?"#2DB84B":"#f43f5e", fontSize:10, fontFamily:"'DM Mono',monospace", marginLeft:8 }}>({fin.rofi>=tspFin.rofi?"+":MINUS}{Math.abs(fin.rofi-tspFin.rofi).toFixed(2)})</span>}
               </div>);
             })}
           </div>
           <div style={{ display:"contents" }}>
-            <div style={{ padding:"12px 14px", background:"#091C0C", color:"#F0F8F1", fontSize:12, fontWeight:700, borderTop:"2px solid #183820" }}>Total farm margin ({farmSize} ha)</div>
+            <div style={{ padding:"12px 14px", background:"#FFFFFF", color:"#0F2415", fontSize:12, fontWeight:700, borderTop:"2px solid #D6E8DA" }}>Total farm margin ({farmSize} ha)</div>
             {allTreatments.map((t,j)=>{
               const fin=computeFinancials(t); const tfm=fin.totalFarmMargin; const tspTfm=tspFin.totalFarmMargin;
-              return (<div key={t.id} style={{ padding:"12px 14px", background:"#091C0C", textAlign:"right", borderTop:"2px solid #183820" }}>
-                <span style={{ color:j===0?"#10b981":"#D4E8D6", fontSize:14, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>{fmtE(tfm)}</span>
-                {j>0 && <span style={{ color:tfm>=tspTfm?"#10b981":"#f43f5e", fontSize:10, fontFamily:"'DM Mono',monospace", marginLeft:8 }}>({fmtK(tfm-tspTfm)})</span>}
+              return (<div key={t.id} style={{ padding:"12px 14px", background:"#FFFFFF", textAlign:"right", borderTop:"2px solid #D6E8DA" }}>
+                <span style={{ color:j===0?"#2DB84B":"#2C4A33", fontSize:14, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>{fmtE(tfm)}</span>
+                {j>0 && <span style={{ color:tfm>=tspTfm?"#2DB84B":"#f43f5e", fontSize:10, fontFamily:"'DM Mono',monospace", marginLeft:8 }}>({fmtK(tfm-tspTfm)})</span>}
               </div>);
             })}
           </div>
@@ -2356,8 +2356,8 @@ function MathieuFarmPage({ region }) {
           <div style={{ ...S.card }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:4 }}>
               <div>
-                <p style={{ color:"#D4E8D6", fontSize:13, fontWeight:700, margin:0 }}>Gross margin trajectory {MDASH} five seasons ({EUR} per hectare)</p>
-                <p style={{ color:"#3A6640", fontSize:10, margin:"4px 0 0" }}>These are positive end of season margins. Click and drag on the chart to select a region and zoom in.</p>
+                <p style={{ color:"#2C4A33", fontSize:13, fontWeight:700, margin:0 }}>Gross margin trajectory {MDASH} five seasons ({EUR} per hectare)</p>
+                <p style={{ color:"#9BB5A0", fontSize:10, margin:"4px 0 0" }}>These are positive end of season margins. Click and drag on the chart to select a region and zoom in.</p>
               </div>
               <ResetZoomBtn zoom={marginZoom} setZoom={setMarginZoom} />
             </div>
@@ -2366,14 +2366,14 @@ function MathieuFarmPage({ region }) {
                 onMouseDown={e=>handleDragStart("margin",e)}
                 onMouseMove={e=>handleDragMove("margin",e)}
                 onMouseUp={()=>handleDragEnd("margin",rawData.map(d=>d.year),setMarginZoom)}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#183820"/>
-                <XAxis dataKey="year" tick={{fill:"#7DA882",fontSize:11}} axisLine={{stroke:"#183820"}}/>
-                <YAxis tick={{fill:"#7DA882",fontSize:10}} axisLine={{stroke:"#183820"}} tickFormatter={v=>EUR+v} domain={['dataMin - 20','dataMax + 20']} allowDataOverflow={true}/>
-                <Tooltip contentStyle={{background:"#0A1E0C",border:"1px solid #183820",borderRadius:8,fontSize:11}} formatter={(v,name)=>[EUR+Math.round(v).toLocaleString()+"/ha",name]}/>
-                <Legend wrapperStyle={{fontSize:11,color:"#9DBF9F"}}/>
-                {(dragStart && dragEnd && activeChart==="margin") && <ReferenceArea x1={dragStart} x2={dragEnd} strokeOpacity={0.3} fill="#2DB04B" fillOpacity={0.15}/>}
-                <Line type="monotone" dataKey="TSP" stroke="#10b981" strokeWidth={3} dot={{r:5,fill:"#10b981",strokeWidth:2,stroke:"#061508"}} activeDot={{r:7}}/>
-                {currentFerts.map(id=>{const f=FERTILIZERS.find(x=>x.id===id);return f?<Line key={id} type="monotone" dataKey={f.label} stroke={CHART_COLORS[id]||"#9DBF9F"} strokeWidth={2} dot={{r:4,fill:CHART_COLORS[id]||"#9DBF9F",strokeWidth:2,stroke:"#061508"}} activeDot={{r:6}} strokeDasharray="6 3"/>:null;})}
+                <CartesianGrid strokeDasharray="3 3" stroke="#D6E8DA"/>
+                <XAxis dataKey="year" tick={{fill:"#6B8F72",fontSize:11}} axisLine={{stroke:"#E8F2EA"}}/>
+                <YAxis tick={{fill:"#6B8F72",fontSize:10}} axisLine={{stroke:"#E8F2EA"}} tickFormatter={v=>EUR+v} domain={['dataMin - 20','dataMax + 20']} allowDataOverflow={true}/>
+                <Tooltip contentStyle={{background:"#F7F9F7",border:"1px solid #D6E8DA",borderRadius:8,fontSize:11}} formatter={(v,name)=>[EUR+Math.round(v).toLocaleString()+"/ha",name]}/>
+                <Legend wrapperStyle={{fontSize:11,color:"#6B8F72"}}/>
+                {(dragStart && dragEnd && activeChart==="margin") && <ReferenceArea x1={dragStart} x2={dragEnd} strokeOpacity={0.3} fill="#2DB84B" fillOpacity={0.15}/>}
+                <Line type="monotone" dataKey="TSP" stroke="#2DB84B" strokeWidth={3} dot={{r:5,fill:"#2DB84B",strokeWidth:2,stroke:"#F7F9F7"}} activeDot={{r:7}}/>
+                {currentFerts.map(id=>{const f=FERTILIZERS.find(x=>x.id===id);return f?<Line key={id} type="monotone" dataKey={f.label} stroke={CHART_COLORS[id]||"#6B8F72"} strokeWidth={2} dot={{r:4,fill:CHART_COLORS[id]||"#6B8F72",strokeWidth:2,stroke:"#F7F9F7"}} activeDot={{r:6}} strokeDasharray="6 3"/>:null;})}
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -2384,25 +2384,25 @@ function MathieuFarmPage({ region }) {
 
       {/* P&L — now directly after margin trajectory */}
       <div style={{ ...S.card, padding:0, overflow:"hidden" }}>
-        <div className="dropdown-toggle" onClick={()=>setShowPL(!showPL)} style={{ padding:"20px 24px", display:"flex", alignItems:"center", justifyContent:"space-between", background:"#0C220F" }}>
-          <p style={{ color:"#F0F8F1", fontSize:22, fontWeight:800, letterSpacing:"-0.02em", margin:0 }}>Profit & Loss Statement <span style={{color:"#3A6640",fontSize:12,fontWeight:400}}>({EUR}/ha {MIDDOT} {farmSize} ha {MIDDOT} {regionDisplay})</span></p>
-          <span style={{ color:"#7DA882", fontSize:26, fontWeight:300, transform:showPL?"rotate(180deg)":"none", transition:"transform 0.2s" }}>{CARET}</span>
+        <div className="dropdown-toggle" onClick={()=>setShowPL(!showPL)} style={{ padding:"20px 24px", display:"flex", alignItems:"center", justifyContent:"space-between", background:"#FFFFFF" }}>
+          <p style={{ color:"#0F2415", fontSize:22, fontWeight:800, letterSpacing:"-0.02em", margin:0 }}>Profit & Loss Statement <span style={{color:"#9BB5A0",fontSize:12,fontWeight:400}}>({EUR}/ha {MIDDOT} {farmSize} ha {MIDDOT} {regionDisplay})</span></p>
+          <span style={{ color:"#6B8F72", fontSize:26, fontWeight:300, transform:showPL?"rotate(180deg)":"none", transition:"transform 0.2s" }}>{CARET}</span>
         </div>
         {showPL && (
           <div style={{ padding:"0 18px 18px", animation:"fadeUp 0.3s ease" }}>
-            <p style={{ color:"#3A6640", fontSize:10, margin:"8px 0 12px", padding:"0 4px" }}>All values in {EUR}/ha. Parameters: {farmSize} ha, {farmerAge} y/o, {ownedPct}% owned, {regionDisplay}. Costs adjust for farm size (scale economies), region (yield/insurance), and farmer age (labour efficiency).</p>
+            <p style={{ color:"#9BB5A0", fontSize:10, margin:"8px 0 12px", padding:"0 4px" }}>All values in {EUR}/ha. Parameters: {farmSize} ha, {farmerAge} y/o, {ownedPct}% owned, {regionDisplay}. Costs adjust for farm size (scale economies), region (yield/insurance), and farmer age (labour efficiency).</p>
             <div style={{ display:"grid", gridTemplateColumns:"200px repeat("+allTreatments.length+",1fr)", gap:0 }}>
-              {["", ...allTreatments.map(t=>t.id==="TSP"?"TSP":t.label)].map((h,j)=>(<div key={j} style={{ padding:"8px 12px", background:"#091C0C", borderBottom:"2px solid #183820", fontSize:10, fontWeight:700, color:j===1?"#10b981":j>1?CHART_COLORS[allTreatments[j-1]?.id]:"#7DA882", textTransform:"uppercase", textAlign:j>0?"right":"left" }}>{h}</div>))}
-              <div style={{ display:"contents" }}><div style={{ padding:"8px 12px", background:"#0a1628", gridColumn:"1 / -1", color:"#2DB04B", fontSize:10, fontWeight:700, textTransform:"uppercase", borderBottom:"1px solid #183820" }}>Revenue</div></div>
-              {buildPL(TSP).revenue.map((r,i)=>(<div key={"r"+i} style={{ display:"contents" }}><div style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#9DBF9F", fontSize:11 }}>{r.label}</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#D4E8D6", fontSize:12, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildPL(t).revenue[i].value)}</div>)}</div>))}
-              <div style={{ display:"contents" }}><div style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #183820", color:"#F0F8F1", fontSize:12, fontWeight:700 }}>Total revenue</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #183820", color:t.id==="TSP"?"#2DB04B":"#D4E8D6", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildPL(t).totalRevenue)}</div>)}</div>
-              <div style={{ display:"contents" }}><div style={{ padding:"8px 12px", background:"#0a1628", gridColumn:"1 / -1", color:"#f43f5e", fontSize:10, fontWeight:700, textTransform:"uppercase", borderBottom:"1px solid #183820" }}>Operating expenses</div></div>
-              {buildPL(TSP).expenses.map((e,i)=>(<div key={"e"+i} style={{ display:"contents" }}><div style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#9DBF9F", fontSize:11 }}>{e.label}</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#D4E8D6", fontSize:12, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildPL(t).expenses[i].value)}</div>)}</div>))}
-              <div style={{ display:"contents" }}><div style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #183820", color:"#F0F8F1", fontSize:12, fontWeight:700 }}>Total operating expenses</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #183820", color:"#f43f5e", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildPL(t).totalExpense)}</div>)}</div>
-              <div style={{ display:"contents" }}><div style={{ padding:"14px 12px", background:"#091C0C", borderTop:"2px solid #183820", color:"#F0F8F1", fontSize:14, fontWeight:800 }}>Net income</div>{allTreatments.map(t=>{const ni=buildPL(t).netIncome;const tNI=buildPL(TSP).netIncome;return(<div key={t.id} style={{ padding:"14px 12px", background:"#091C0C", borderTop:"2px solid #183820", textAlign:"right" }}><span style={{ color:t.id==="TSP"?"#10b981":"#D4E8D6", fontSize:16, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>{fmtE(ni)}</span>{t.id!=="TSP"&&<span style={{ color:ni>=tNI?"#10b981":"#f43f5e", fontSize:11, fontFamily:"'DM Mono',monospace", marginLeft:8 }}>({fmtK(ni-tNI)})</span>}</div>);})}</div>
+              {["", ...allTreatments.map(t=>t.id==="TSP"?"TSP":t.label)].map((h,j)=>(<div key={j} style={{ padding:"8px 12px", background:"#FFFFFF", borderBottom:"2px solid #D6E8DA", fontSize:10, fontWeight:700, color:j===1?"#2DB84B":j>1?CHART_COLORS[allTreatments[j-1]?.id]:"#6B8F72", textTransform:"uppercase", textAlign:j>0?"right":"left" }}>{h}</div>))}
+              <div style={{ display:"contents" }}><div style={{ padding:"8px 12px", background:"#0a1628", gridColumn:"1 / -1", color:"#2DB84B", fontSize:10, fontWeight:700, textTransform:"uppercase", borderBottom:"1px solid #D6E8DA" }}>Revenue</div></div>
+              {buildPL(TSP).revenue.map((r,i)=>(<div key={"r"+i} style={{ display:"contents" }}><div style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#6B8F72", fontSize:11 }}>{r.label}</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#2C4A33", fontSize:12, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildPL(t).revenue[i].value)}</div>)}</div>))}
+              <div style={{ display:"contents" }}><div style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #D6E8DA", color:"#0F2415", fontSize:12, fontWeight:700 }}>Total revenue</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #D6E8DA", color:t.id==="TSP"?"#2DB84B":"#2C4A33", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildPL(t).totalRevenue)}</div>)}</div>
+              <div style={{ display:"contents" }}><div style={{ padding:"8px 12px", background:"#0a1628", gridColumn:"1 / -1", color:"#f43f5e", fontSize:10, fontWeight:700, textTransform:"uppercase", borderBottom:"1px solid #D6E8DA" }}>Operating expenses</div></div>
+              {buildPL(TSP).expenses.map((e,i)=>(<div key={"e"+i} style={{ display:"contents" }}><div style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#6B8F72", fontSize:11 }}>{e.label}</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#2C4A33", fontSize:12, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildPL(t).expenses[i].value)}</div>)}</div>))}
+              <div style={{ display:"contents" }}><div style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #D6E8DA", color:"#0F2415", fontSize:12, fontWeight:700 }}>Total operating expenses</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #D6E8DA", color:"#f43f5e", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildPL(t).totalExpense)}</div>)}</div>
+              <div style={{ display:"contents" }}><div style={{ padding:"14px 12px", background:"#FFFFFF", borderTop:"2px solid #D6E8DA", color:"#0F2415", fontSize:14, fontWeight:800 }}>Net income</div>{allTreatments.map(t=>{const ni=buildPL(t).netIncome;const tNI=buildPL(TSP).netIncome;return(<div key={t.id} style={{ padding:"14px 12px", background:"#FFFFFF", borderTop:"2px solid #D6E8DA", textAlign:"right" }}><span style={{ color:t.id==="TSP"?"#2DB84B":"#2C4A33", fontSize:16, fontWeight:800, fontFamily:"'DM Mono',monospace" }}>{fmtE(ni)}</span>{t.id!=="TSP"&&<span style={{ color:ni>=tNI?"#2DB84B":"#f43f5e", fontSize:11, fontFamily:"'DM Mono',monospace", marginLeft:8 }}>({fmtK(ni-tNI)})</span>}</div>);})}</div>
             </div>
-            <div style={{ marginTop:14, padding:"10px 14px", background:"#091C0C", border:"1px solid #1C3D21", borderRadius:8 }}>
-              <p style={{ color:"#9DBF9F", fontSize:11, margin:0, lineHeight:1.65 }}>Total farm net income: {allTreatments.map((t,j)=>{ const ni=buildPL(t).netIncome; return <span key={t.id} style={{color:j===0?"#10b981":CHART_COLORS[t.id],fontWeight:700,fontFamily:"'DM Mono',monospace"}}>{j>0?" · ":""}{t.id==="TSP"?"TSP":t.label}: {fmtE(ni * farmSize)}</span>;})}</p>
+            <div style={{ marginTop:14, padding:"10px 14px", background:"#FFFFFF", border:"1px solid #D6E8DA", borderRadius:8 }}>
+              <p style={{ color:"#6B8F72", fontSize:11, margin:0, lineHeight:1.65 }}>Total farm net income: {allTreatments.map((t,j)=>{ const ni=buildPL(t).netIncome; return <span key={t.id} style={{color:j===0?"#2DB84B":CHART_COLORS[t.id],fontWeight:700,fontFamily:"'DM Mono',monospace"}}>{j>0?" · ":""}{t.id==="TSP"?"TSP":t.label}: {fmtE(ni * farmSize)}</span>;})}</p>
             </div>
           </div>
         )}
@@ -2410,22 +2410,22 @@ function MathieuFarmPage({ region }) {
 
       {/* Balance Sheet — now directly after P&L */}
       <div style={{ ...S.card, padding:0, overflow:"hidden" }}>
-        <div className="dropdown-toggle" onClick={()=>setShowBS(!showBS)} style={{ padding:"20px 24px", display:"flex", alignItems:"center", justifyContent:"space-between", background:"#0C220F" }}>
-          <p style={{ color:"#F0F8F1", fontSize:22, fontWeight:800, letterSpacing:"-0.02em", margin:0 }}>Balance Sheet <span style={{color:"#3A6640",fontSize:12,fontWeight:400}}>({farmSize} ha {MIDDOT} {ownedPct}% owned {MIDDOT} {regionDisplay})</span></p>
-          <span style={{ color:"#7DA882", fontSize:26, fontWeight:300, transform:showBS?"rotate(180deg)":"none", transition:"transform 0.2s" }}>{CARET}</span>
+        <div className="dropdown-toggle" onClick={()=>setShowBS(!showBS)} style={{ padding:"20px 24px", display:"flex", alignItems:"center", justifyContent:"space-between", background:"#FFFFFF" }}>
+          <p style={{ color:"#0F2415", fontSize:22, fontWeight:800, letterSpacing:"-0.02em", margin:0 }}>Balance Sheet <span style={{color:"#9BB5A0",fontSize:12,fontWeight:400}}>({farmSize} ha {MIDDOT} {ownedPct}% owned {MIDDOT} {regionDisplay})</span></p>
+          <span style={{ color:"#6B8F72", fontSize:26, fontWeight:300, transform:showBS?"rotate(180deg)":"none", transition:"transform 0.2s" }}>{CARET}</span>
         </div>
         {showBS && (
           <div style={{ padding:"0 18px 18px", animation:"fadeUp 0.3s ease" }}>
-            <p style={{ color:"#3A6640", fontSize:10, margin:"8px 0 12px", padding:"0 4px" }}>Scaled balance sheet. Land value reflects regional market ({regionDisplay}), ownership ({ownedPct}%). Debt adjusts for farmer age ({farmerAge} y/o) and farm size ({farmSize} ha).</p>
+            <p style={{ color:"#9BB5A0", fontSize:10, margin:"8px 0 12px", padding:"0 4px" }}>Scaled balance sheet. Land value reflects regional market ({regionDisplay}), ownership ({ownedPct}%). Debt adjusts for farmer age ({farmerAge} y/o) and farm size ({farmSize} ha).</p>
             <div style={{ display:"grid", gridTemplateColumns:"180px repeat("+allTreatments.length+",1fr)", gap:0 }}>
-              {["", ...allTreatments.map(t=>t.id==="TSP"?"TSP":t.label)].map((h,j)=>(<div key={j} style={{ padding:"8px 12px", background:"#091C0C", borderBottom:"2px solid #183820", fontSize:10, fontWeight:700, color:j===1?"#10b981":j>1?CHART_COLORS[allTreatments[j-1]?.id]:"#7DA882", textTransform:"uppercase", textAlign:j>0?"right":"left" }}>{h}</div>))}
-              <div style={{ display:"contents" }}><div style={{ padding:"8px 12px", background:"#0a1628", gridColumn:"1 / -1", color:"#10b981", fontSize:10, fontWeight:700, textTransform:"uppercase", borderBottom:"1px solid #183820" }}>Assets</div></div>
-              {buildBalanceSheet(TSP).assets.map((a,i)=>(<div key={"a"+i} style={{ display:"contents" }}><div style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#9DBF9F", fontSize:11 }}>{a.label}</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#D4E8D6", fontSize:12, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildBalanceSheet(t).assets[i].value)}</div>)}</div>))}
-              <div style={{ display:"contents" }}><div style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #183820", color:"#F0F8F1", fontSize:12, fontWeight:700 }}>Total assets</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #183820", color:"#10b981", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildBalanceSheet(t).totalAssets)}</div>)}</div>
-              <div style={{ display:"contents" }}><div style={{ padding:"8px 12px", background:"#0a1628", gridColumn:"1 / -1", color:"#f43f5e", fontSize:10, fontWeight:700, textTransform:"uppercase", borderBottom:"1px solid #183820" }}>Liabilities</div></div>
-              {buildBalanceSheet(TSP).liabilities.map((l,i)=>(<div key={"l"+i} style={{ display:"contents" }}><div style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#9DBF9F", fontSize:11 }}>{l.label}</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#D4E8D6", fontSize:12, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildBalanceSheet(t).liabilities[i].value)}</div>)}</div>))}
-              <div style={{ display:"contents" }}><div style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #183820", color:"#F0F8F1", fontSize:12, fontWeight:700 }}>Total liabilities</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #183820", color:"#f43f5e", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildBalanceSheet(t).totalLiab)}</div>)}</div>
-              <div style={{ display:"contents" }}><div style={{ padding:"12px 12px", background:"#091C0C", color:"#F0F8F1", fontSize:13, fontWeight:800 }}>Owner's equity</div>{allTreatments.map(t=>{const eq=buildBalanceSheet(t).equity;const tEq=buildBalanceSheet(TSP).equity;return(<div key={t.id} style={{ padding:"12px 12px", background:"#091C0C", textAlign:"right" }}><span style={{ color:t.id==="TSP"?"#10b981":"#D4E8D6", fontSize:14, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>{fmtE(eq)}</span>{t.id!=="TSP"&&<span style={{ color:eq>=tEq?"#10b981":"#f43f5e", fontSize:10, fontFamily:"'DM Mono',monospace", marginLeft:8 }}>({fmtK(eq-tEq)})</span>}</div>);})}</div>
+              {["", ...allTreatments.map(t=>t.id==="TSP"?"TSP":t.label)].map((h,j)=>(<div key={j} style={{ padding:"8px 12px", background:"#FFFFFF", borderBottom:"2px solid #D6E8DA", fontSize:10, fontWeight:700, color:j===1?"#2DB84B":j>1?CHART_COLORS[allTreatments[j-1]?.id]:"#6B8F72", textTransform:"uppercase", textAlign:j>0?"right":"left" }}>{h}</div>))}
+              <div style={{ display:"contents" }}><div style={{ padding:"8px 12px", background:"#0a1628", gridColumn:"1 / -1", color:"#2DB84B", fontSize:10, fontWeight:700, textTransform:"uppercase", borderBottom:"1px solid #D6E8DA" }}>Assets</div></div>
+              {buildBalanceSheet(TSP).assets.map((a,i)=>(<div key={"a"+i} style={{ display:"contents" }}><div style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#6B8F72", fontSize:11 }}>{a.label}</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#2C4A33", fontSize:12, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildBalanceSheet(t).assets[i].value)}</div>)}</div>))}
+              <div style={{ display:"contents" }}><div style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #D6E8DA", color:"#0F2415", fontSize:12, fontWeight:700 }}>Total assets</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #D6E8DA", color:"#2DB84B", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildBalanceSheet(t).totalAssets)}</div>)}</div>
+              <div style={{ display:"contents" }}><div style={{ padding:"8px 12px", background:"#0a1628", gridColumn:"1 / -1", color:"#f43f5e", fontSize:10, fontWeight:700, textTransform:"uppercase", borderBottom:"1px solid #D6E8DA" }}>Liabilities</div></div>
+              {buildBalanceSheet(TSP).liabilities.map((l,i)=>(<div key={"l"+i} style={{ display:"contents" }}><div style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#6B8F72", fontSize:11 }}>{l.label}</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"8px 12px", borderBottom:"1px solid #0d1520", color:"#2C4A33", fontSize:12, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildBalanceSheet(t).liabilities[i].value)}</div>)}</div>))}
+              <div style={{ display:"contents" }}><div style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #D6E8DA", color:"#0F2415", fontSize:12, fontWeight:700 }}>Total liabilities</div>{allTreatments.map(t=><div key={t.id} style={{ padding:"10px 12px", background:"#0a1628", borderBottom:"2px solid #D6E8DA", color:"#f43f5e", fontSize:13, fontWeight:700, fontFamily:"'DM Mono',monospace", textAlign:"right" }}>{fmtE(buildBalanceSheet(t).totalLiab)}</div>)}</div>
+              <div style={{ display:"contents" }}><div style={{ padding:"12px 12px", background:"#FFFFFF", color:"#0F2415", fontSize:13, fontWeight:800 }}>Owner's equity</div>{allTreatments.map(t=>{const eq=buildBalanceSheet(t).equity;const tEq=buildBalanceSheet(TSP).equity;return(<div key={t.id} style={{ padding:"12px 12px", background:"#FFFFFF", textAlign:"right" }}><span style={{ color:t.id==="TSP"?"#2DB84B":"#2C4A33", fontSize:14, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>{fmtE(eq)}</span>{t.id!=="TSP"&&<span style={{ color:eq>=tEq?"#2DB84B":"#f43f5e", fontSize:10, fontFamily:"'DM Mono',monospace", marginLeft:8 }}>({fmtK(eq-tEq)})</span>}</div>);})}</div>
             </div>
           </div>
         )}
@@ -2437,7 +2437,7 @@ function MathieuFarmPage({ region }) {
           return (
             <div style={{ ...S.card }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:6 }}>
-                <p style={{ color:"#2DB04B", fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", margin:0 }}>Gross output {MDASH} five seasons</p>
+                <p style={{ color:"#2DB84B", fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", margin:0 }}>Gross output {MDASH} five seasons</p>
                 <ResetZoomBtn zoom={outputZoom} setZoom={setOutputZoom} />
               </div>
               <ResponsiveContainer width="100%" height={240}>
@@ -2445,10 +2445,10 @@ function MathieuFarmPage({ region }) {
                   onMouseDown={e=>handleDragStart("output",e)}
                   onMouseMove={e=>handleDragMove("output",e)}
                   onMouseUp={()=>handleDragEnd("output",rawOut.map(d=>d.year),setOutputZoom)}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#183820"/><XAxis dataKey="year" tick={{fill:"#7DA882",fontSize:9}} axisLine={{stroke:"#183820"}}/><YAxis tick={{fill:"#7DA882",fontSize:9}} axisLine={{stroke:"#183820"}} tickFormatter={v=>EUR+v} domain={['dataMin - 40','dataMax + 40']}/>
-                  <Tooltip contentStyle={{background:"#0A1E0C",border:"1px solid #183820",borderRadius:8,fontSize:10}} formatter={(v,name)=>[EUR+Math.round(v).toLocaleString()+"/ha",name]}/>
-                  {(dragStart && dragEnd && activeChart==="output") && <ReferenceArea x1={dragStart} x2={dragEnd} strokeOpacity={0.3} fill="#2DB04B" fillOpacity={0.15}/>}
-                  <Bar dataKey="TSP" fill="#10b981" radius={[3,3,0,0]}/>{currentFerts.map(id=>{const f=FERTILIZERS.find(x=>x.id===id);return f?<Bar key={id} dataKey={f.label} fill={CHART_COLORS[id]||"#9DBF9F"} radius={[3,3,0,0]} opacity={0.75}/>:null;})}
+                  <CartesianGrid strokeDasharray="3 3" stroke="#D6E8DA"/><XAxis dataKey="year" tick={{fill:"#6B8F72",fontSize:9}} axisLine={{stroke:"#E8F2EA"}}/><YAxis tick={{fill:"#6B8F72",fontSize:9}} axisLine={{stroke:"#E8F2EA"}} tickFormatter={v=>EUR+v} domain={['dataMin - 40','dataMax + 40']}/>
+                  <Tooltip contentStyle={{background:"#F7F9F7",border:"1px solid #D6E8DA",borderRadius:8,fontSize:10}} formatter={(v,name)=>[EUR+Math.round(v).toLocaleString()+"/ha",name]}/>
+                  {(dragStart && dragEnd && activeChart==="output") && <ReferenceArea x1={dragStart} x2={dragEnd} strokeOpacity={0.3} fill="#2DB84B" fillOpacity={0.15}/>}
+                  <Bar dataKey="TSP" fill="#2DB84B" radius={[3,3,0,0]}/>{currentFerts.map(id=>{const f=FERTILIZERS.find(x=>x.id===id);return f?<Bar key={id} dataKey={f.label} fill={CHART_COLORS[id]||"#6B8F72"} radius={[3,3,0,0]} opacity={0.75}/>:null;})}
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -2501,25 +2501,25 @@ function MathieuFarmPage({ region }) {
             <div style={{ ...S.card }}>
               <div style={{ marginBottom:6 }}>
                 <p style={{ color:"#f43f5e", fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", margin:0 }}>Fertilizer program cost trajectory ({EUR}/ha) {MDASH} 5 seasons</p>
-                <p style={{ color:"#3A6640", fontSize:9, margin:"3px 0 0" }}>TSP + N starts higher (extra pass, conservative first-year dose) but drops as the farmer optimises. Compounds start lower but rise as N waste accumulates.</p>
+                <p style={{ color:"#9BB5A0", fontSize:9, margin:"3px 0 0" }}>TSP + N starts higher (extra pass, conservative first-year dose) but drops as the farmer optimises. Compounds start lower but rise as N waste accumulates.</p>
               </div>
               <ResponsiveContainer width="100%" height={280}>
                 <LineChart data={costTrajectory} margin={{left:10,right:10}}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#183820"/>
-                  <XAxis dataKey="season" tick={{fill:"#7DA882",fontSize:10}} axisLine={{stroke:"#183820"}}/>
-                  <YAxis tick={{fill:"#7DA882",fontSize:9}} axisLine={{stroke:"#183820"}} tickFormatter={v=>EUR+v}/>
-                  <Tooltip contentStyle={{background:"#0A1E0C",border:"1px solid #183820",borderRadius:8,fontSize:10}} formatter={(v,name)=>[EUR+v+"/ha",name]}/>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#D6E8DA"/>
+                  <XAxis dataKey="season" tick={{fill:"#6B8F72",fontSize:10}} axisLine={{stroke:"#E8F2EA"}}/>
+                  <YAxis tick={{fill:"#6B8F72",fontSize:9}} axisLine={{stroke:"#E8F2EA"}} tickFormatter={v=>EUR+v}/>
+                  <Tooltip contentStyle={{background:"#F7F9F7",border:"1px solid #D6E8DA",borderRadius:8,fontSize:10}} formatter={(v,name)=>[EUR+v+"/ha",name]}/>
                   <Legend wrapperStyle={{fontSize:10}}/>
-                  {crossSeason && <ReferenceLine x={"Season "+crossSeason} stroke="#10b98160" strokeDasharray="4 4" label={{value:"Crossover",fill:"#10b981",fontSize:9,position:"top"}}/>}
-                  <Line type="monotone" dataKey="TSP + N" stroke="#10b981" strokeWidth={3} dot={{r:5,fill:"#10b981",strokeWidth:2,stroke:"#061508"}}/>
-                  {currentFerts.map(id=>{const f=FERTILIZERS.find(x=>x.id===id);return f?<Line key={id} type="monotone" dataKey={f.label} stroke={CHART_COLORS[id]||"#9DBF9F"} strokeWidth={2} dot={{r:4,fill:CHART_COLORS[id]||"#9DBF9F",strokeWidth:2,stroke:"#061508"}} strokeDasharray="6 3"/>:null;})}
+                  {crossSeason && <ReferenceLine x={"Season "+crossSeason} stroke="#2DB84B60" strokeDasharray="4 4" label={{value:"Crossover",fill:"#2DB84B",fontSize:9,position:"top"}}/>}
+                  <Line type="monotone" dataKey="TSP + N" stroke="#2DB84B" strokeWidth={3} dot={{r:5,fill:"#2DB84B",strokeWidth:2,stroke:"#F7F9F7"}}/>
+                  {currentFerts.map(id=>{const f=FERTILIZERS.find(x=>x.id===id);return f?<Line key={id} type="monotone" dataKey={f.label} stroke={CHART_COLORS[id]||"#6B8F72"} strokeWidth={2} dot={{r:4,fill:CHART_COLORS[id]||"#6B8F72",strokeWidth:2,stroke:"#F7F9F7"}} strokeDasharray="6 3"/>:null;})}
                 </LineChart>
               </ResponsiveContainer>
-              <div style={{ marginTop:8, padding:"10px 14px", background:"#0A1E0C", border:"1px solid #10b98130", borderRadius:8 }}>
-                <p style={{ color:"#D4E8D6", fontSize:11, lineHeight:1.75, margin:0 }}>
-                  <span style={{color:"#10b981",fontWeight:700}}>TSP + N</span> starts at {EUR}{tspS1}/ha (season 1 premium: extra pass + conservative N dose) and drops to {EUR}{tspS5}/ha by season 5 (<span style={{color:"#10b981"}}>{MINUS}{tspDrop}%</span>).
+              <div style={{ marginTop:8, padding:"10px 14px", background:"#EDF6EF", border:"1px solid #2DB84B30", borderRadius:8 }}>
+                <p style={{ color:"#2C4A33", fontSize:11, lineHeight:1.75, margin:0 }}>
+                  <span style={{color:"#2DB84B",fontWeight:700}}>TSP + N</span> starts at {EUR}{tspS1}/ha (season 1 premium: extra pass + conservative N dose) and drops to {EUR}{tspS5}/ha by season 5 (<span style={{color:"#2DB84B"}}>{MINUS}{tspDrop}%</span>).
                   {worstComp.label && <> <span style={{color:CHART_COLORS[currentFerts.find(id=>FERTILIZERS.find(x=>x.id===id)?.label===worstComp.label)]||"#f43f5e",fontWeight:700}}>{worstComp.label}</span> rises from {EUR}{worstComp.s1} to {EUR}{worstComp.v}/ha (<span style={{color:"#f43f5e"}}>+{Math.round((worstComp.v/worstComp.s1 - 1)*100)}%</span>) as bundled N loss compounds.</>}
-                  {crossSeason && <> The lines cross at <span style={{color:"#10b981",fontWeight:700}}>season {crossSeason}</span> {MDASH} from that point on, TSP + N is the cheaper program.</>}
+                  {crossSeason && <> The lines cross at <span style={{color:"#2DB84B",fontWeight:700}}>season {crossSeason}</span> {MDASH} from that point on, TSP + N is the cheaper program.</>}
                 </p>
               </div>
             </div>
@@ -2531,10 +2531,10 @@ function MathieuFarmPage({ region }) {
       <div style={{ ...S.card }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:4 }}>
           <div>
-            <p style={{ color:"#D4E8D6", fontSize:13, fontWeight:700, margin:0 }}>Growing season cumulative cash position {MDASH} October to July ({EUR} per hectare)</p>
+            <p style={{ color:"#2C4A33", fontSize:13, fontWeight:700, margin:0 }}>Growing season cumulative cash position {MDASH} October to July ({EUR} per hectare)</p>
             <div style={{ margin:"8px 0", padding:"8px 14px", background:"#f59e0b10", border:"1px solid #f59e0b30", borderRadius:8, display:"inline-block" }}>
               <p style={{ color:"#f59e0b", fontSize:11, fontWeight:700, margin:0 }}>This is NOT the final margin. This is the running cash position during the growing season.</p>
-              <p style={{ color:"#9DBF9F", fontSize:10, margin:"4px 0 0" }}>Costs accumulate from sowing (October) while harvest revenue arrives in summer (June/July). The negative values in early months are normal: they represent capital committed before any revenue is earned. Every treatment ends the season positive.</p>
+              <p style={{ color:"#6B8F72", fontSize:10, margin:"4px 0 0" }}>Costs accumulate from sowing (October) while harvest revenue arrives in summer (June/July). The negative values in early months are normal: they represent capital committed before any revenue is earned. Every treatment ends the season positive.</p>
             </div>
           </div>
           <ResetZoomBtn zoom={cashZoom} setZoom={setCashZoom} />
@@ -2548,13 +2548,13 @@ function MathieuFarmPage({ region }) {
                 onMouseDown={e=>handleDragStart("cash",e)}
                 onMouseMove={e=>handleDragMove("cash",e)}
                 onMouseUp={()=>handleDragEnd("cash",rawCash.map(d=>d.month),setCashZoom)}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#183820"/><XAxis dataKey="month" tick={{fill:"#7DA882",fontSize:10}} axisLine={{stroke:"#183820"}}/><YAxis tick={{fill:"#7DA882",fontSize:10}} axisLine={{stroke:"#183820"}} tickFormatter={v=>EUR+v}/>
-                <Tooltip contentStyle={{background:"#0A1E0C",border:"1px solid #183820",borderRadius:8,fontSize:10}} formatter={(v,name)=>[EUR+Math.round(v).toLocaleString()+"/ha (cumulative cash)",name]}/>
-                <Legend wrapperStyle={{fontSize:10,color:"#9DBF9F"}}/>
+                <CartesianGrid strokeDasharray="3 3" stroke="#D6E8DA"/><XAxis dataKey="month" tick={{fill:"#6B8F72",fontSize:10}} axisLine={{stroke:"#E8F2EA"}}/><YAxis tick={{fill:"#6B8F72",fontSize:10}} axisLine={{stroke:"#E8F2EA"}} tickFormatter={v=>EUR+v}/>
+                <Tooltip contentStyle={{background:"#F7F9F7",border:"1px solid #D6E8DA",borderRadius:8,fontSize:10}} formatter={(v,name)=>[EUR+Math.round(v).toLocaleString()+"/ha (cumulative cash)",name]}/>
+                <Legend wrapperStyle={{fontSize:10,color:"#6B8F72"}}/>
                 <ReferenceLine y={0} stroke="#f43f5e50" strokeDasharray="4 4" label={{value:"breakeven",fill:"#f43f5e80",fontSize:9}}/>
-                {(dragStart && dragEnd && activeChart==="cash") && <ReferenceArea x1={dragStart} x2={dragEnd} strokeOpacity={0.3} fill="#2DB04B" fillOpacity={0.15}/>}
-                <Area type="monotone" dataKey="TSP" stroke="#10b981" fill="#10b98120" strokeWidth={2}/>
-                {currentFerts.map(id=>{const f=FERTILIZERS.find(x=>x.id===id);return f?<Area key={id} type="monotone" dataKey={f.label} stroke={CHART_COLORS[id]||"#9DBF9F"} fill={(CHART_COLORS[id]||"#9DBF9F")+"15"} strokeWidth={1.5} strokeDasharray="4 3"/>:null;})}
+                {(dragStart && dragEnd && activeChart==="cash") && <ReferenceArea x1={dragStart} x2={dragEnd} strokeOpacity={0.3} fill="#2DB84B" fillOpacity={0.15}/>}
+                <Area type="monotone" dataKey="TSP" stroke="#2DB84B" fill="#2DB84B20" strokeWidth={2}/>
+                {currentFerts.map(id=>{const f=FERTILIZERS.find(x=>x.id===id);return f?<Area key={id} type="monotone" dataKey={f.label} stroke={CHART_COLORS[id]||"#6B8F72"} fill={(CHART_COLORS[id]||"#6B8F72")+"15"} strokeWidth={1.5} strokeDasharray="4 3"/>:null;})}
               </AreaChart>
             </ResponsiveContainer>
           );
@@ -2562,9 +2562,9 @@ function MathieuFarmPage({ region }) {
       </div>
 
       {/* Commentary */}
-      <div style={{ background:"#0C220F", border:"1px solid #183820", borderRadius:14, padding:"18px 22px" }}>
-        <p style={{ color:"#9DBF9F", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:700, marginBottom:10 }}>Financial analysis</p>
-        <p style={{ color:"#D4E8D6", fontSize:13, lineHeight:1.9, margin:0 }}>
+      <div style={{ background:"#FFFFFF", border:"1px solid #D6E8DA", borderRadius:14, padding:"18px 22px" }}>
+        <p style={{ color:"#6B8F72", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:700, marginBottom:10 }}>Financial analysis</p>
+        <p style={{ color:"#2C4A33", fontSize:13, lineHeight:1.9, margin:0 }}>
           {(() => {
             const lines = [];
             lines.push("Under the current parameters for "+regionDisplay+" ("+selectedCrop.label+", "+farmSize+" ha, "+ownedPct+"% owned), TSP achieves a gross margin of "+fmtE(tspFin.grossMargin)+" per hectare with a ROFI of "+tspFin.rofi.toFixed(2)+"x. TSP ranks #"+tspRank+" out of "+FERTILIZERS.length+" treatments for this crop and region combination.");
@@ -2587,9 +2587,9 @@ function MathieuFarmPage({ region }) {
       </div>
 
       {/* TAKEAWAYS */}
-      <div style={{ background:"linear-gradient(135deg, #091C0C 0%, #0a1628 100%)", border:"1.5px solid #183820", borderRadius:16, padding:"24px 28px" }}>
-        <p style={{ color:"#F0F8F1", fontSize:22, fontWeight:800, letterSpacing:"-0.02em", margin:"0 0 6px" }}>What this means for OCP Nutricrops</p>
-        <p style={{ color:"#7DA882", fontSize:12, margin:"0 0 20px", lineHeight:1.6 }}>
+      <div style={{ background:"linear-gradient(135deg, #FFFFFF 0%, #0a1628 100%)", border:"1.5px solid #D6E8DA", borderRadius:16, padding:"24px 28px" }}>
+        <p style={{ color:"#0F2415", fontSize:22, fontWeight:800, letterSpacing:"-0.02em", margin:"0 0 6px" }}>What this means for OCP Nutricrops</p>
+        <p style={{ color:"#6B8F72", fontSize:12, margin:"0 0 20px", lineHeight:1.6 }}>
           Interpretation specific to {selectedCrop.label.toLowerCase()} grown in {regionDisplay}, France. Conclusions are scoped to the European context and depend on crop nutrient demand profile and farm cost structure.
         </p>
         {(()=>{
@@ -2597,7 +2597,7 @@ function MathieuFarmPage({ region }) {
           const tspY5 = computeFinancials(TSP, 4).grossMargin;
           const bestY5 = computeFinancials(allRanked[0], 4).grossMargin;
           const tspWinsLong = tspY5 > bestY5;
-          const mkCard = (title, color, text) => (<div key={title} style={{ background:"#0C220F", borderRadius:12, padding:"16px 20px" }}><p style={{ color:color, fontSize:13, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, margin:"0 0 10px" }}>{title}</p><p style={{ color:"#D4E8D6", fontSize:12, lineHeight:1.8, margin:0 }}>{text}</p></div>);
+          const mkCard = (title, color, text) => (<div key={title} style={{ background:"#FFFFFF", borderRadius:12, padding:"16px 20px" }}><p style={{ color:color, fontSize:13, textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:700, margin:"0 0 10px" }}>{title}</p><p style={{ color:"#2C4A33", fontSize:12, lineHeight:1.8, margin:0 }}>{text}</p></div>);
 
           const europeText = tspIsBest
             ? "For "+c.label.toLowerCase()+" in "+regionDisplay+", TSP delivers the highest gross margin of all treatments at "+fmtE(tspFin.grossMargin)+" per hectare. The commercial team can present this as a direct economic argument. At "+farmSize+" hectares, switching to TSP represents a total farm margin of "+fmtE(tspFin.grossMargin * farmSize)+"."
@@ -2621,9 +2621,9 @@ function MathieuFarmPage({ region }) {
           };
 
           return (<div style={{ display:"flex", flexDirection:"column", gap:14 }}>
-            {mkCard("OCP Europe "+MDASH+" Regional commercial team", "#2DB04B", europeText)}
-            {mkCard("Customization BU", "#10b981", customText)}
-            {mkCard("Nutrition Solutions BU", "#10b981", nutritionText)}
+            {mkCard("OCP Europe "+MDASH+" Regional commercial team", "#2DB84B", europeText)}
+            {mkCard("Customization BU", "#2DB84B", customText)}
+            {mkCard("Nutrition Solutions BU", "#2DB84B", nutritionText)}
             {mkCard("Crop specific interpretation "+MDASH+" "+c.label, "#f59e0b", cropTexts[c.id]||"")}
           </div>);
         })()}
@@ -2631,8 +2631,8 @@ function MathieuFarmPage({ region }) {
 
       {/* CTA */}
       <div style={{ display:"flex", justifyContent:"center", paddingTop:4, gap:16 }}>
-        <button className="restart-btn" onClick={()=>setPhase("narrative")} style={{ background:"transparent", border:"1.5px solid #2DB04B", color:"#2DB04B", padding:"14px 36px", borderRadius:8, fontSize:13, fontWeight:700, cursor:"pointer", transition:"all 0.2s" }}>{LARR} Change treatment</button>
-        <button className="restart-btn" onClick={()=>{setPhase("configure");setCurrentFerts([]);}} style={{ background:"transparent", border:"1.5px solid #E8F2E9", color:"#E8F2E9", padding:"14px 36px", borderRadius:8, fontSize:13, fontWeight:700, cursor:"pointer", transition:"all 0.2s" }}>{LARR} New farm configuration</button>
+        <button className="restart-btn" onClick={()=>setPhase("narrative")} style={{ background:"transparent", border:"1.5px solid #2DB84B", color:"#2DB84B", padding:"14px 36px", borderRadius:8, fontSize:13, fontWeight:700, cursor:"pointer", transition:"all 0.2s" }}>{LARR} Change treatment</button>
+        <button className="restart-btn" onClick={()=>{setPhase("configure");setCurrentFerts([]);}} style={{ background:"transparent", border:"1.5px solid #2C4A33", color:"#2C4A33", padding:"14px 36px", borderRadius:8, fontSize:13, fontWeight:700, cursor:"pointer", transition:"all 0.2s" }}>{LARR} New farm configuration</button>
       </div>
     </div>
   );
@@ -2642,7 +2642,7 @@ function MathieuFarmPage({ region }) {
 
 // ─── MARKET INTELLIGENCE PAGES ────────────────────────────────────────────────
 function MIPlaceholder({ region }) {
-  return <div style={{ display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:300,gap:12 }}><p style={{ fontSize:40 }}>🌍</p><p style={{ fontSize:15,color:"#9DBF9F" }}>No market intelligence data for {region}.</p><p style={{ fontSize:12,color:"#9DBF9F" }}>Available: {Object.keys(MARKET_INTEL).join(", ")}</p></div>;
+  return <div style={{ display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:300,gap:12 }}><p style={{ fontSize:40 }}>🌍</p><p style={{ fontSize:15,color:"#6B8F72" }}>No market intelligence data for {region}.</p><p style={{ fontSize:12,color:"#6B8F72" }}>Available: {Object.keys(MARKET_INTEL).join(", ")}</p></div>;
 }
 
 // ─── FARMER P&L PAGE ──────────────────────────────────────────────────────────
@@ -2650,7 +2650,7 @@ function MIPlaceholder({ region }) {
 // Average per farm, SOP above 25k€, values in €/ha
 const FARMER_PL_DATA = {
   "Cereals & Oilseeds": {
-    color:"#2DB04B", emoji:"🌾", farms:48140, uaa:134.81, uta:1.30, nonsalUta:1.17,
+    color:"#2DB84B", emoji:"🌾", farms:48140, uaa:134.81, uta:1.30, nonsalUta:1.17,
     totalOutput:1685.41,
     revenue:{ total:1412.14,
       sales:{ total:1366.96, cropSales:1278.76 },
@@ -2669,7 +2669,7 @@ const FARMER_PL_DATA = {
     },
   },
   "General Crops": {
-    color:"#10b981", emoji:"🥕", farms:24745, uaa:111.88, uta:1.99, nonsalUta:1.29,
+    color:"#2DB84B", emoji:"🥕", farms:24745, uaa:111.88, uta:1.99, nonsalUta:1.29,
     totalOutput:3641.04,
     revenue:{ total:3225.69,
       sales:{ total:3120.22, cropSales:2420.90 },
@@ -2748,30 +2748,30 @@ function MIFarmerPLPage() {
     { name:"Total output", value:d.totalOutput, fill:d.color },
     { name:"Crop costs",   value:-d.costs.cropSpecific.total, fill:"#f43f5e" },
     { name:"Other op.",    value:-d.costs.otherOp.total, fill:"#f59e0b" },
-    { name:"Livestock",    value:-d.costs.livestockSpecific.total, fill:"#7DA882" },
-    { name:"Financial",    value:-d.costs.financial, fill:"#3A6640" },
-    { name:"Net income",   value:netIncome, fill:netIncome>=0?"#10b981":"#ef4444" },
+    { name:"Livestock",    value:-d.costs.livestockSpecific.total, fill:"#6B8F72" },
+    { name:"Financial",    value:-d.costs.financial, fill:"#9BB5A0" },
+    { name:"Net income",   value:netIncome, fill:netIncome>=0?"#2DB84B":"#ef4444" },
   ];
 
   // Cost breakdown for donut
   const costPie = [
-    { name:"Fertilisers",    value:d.costs.cropSpecific.fertilisers,   color:"#2DB04B" },
+    { name:"Fertilisers",    value:d.costs.cropSpecific.fertilisers,   color:"#2DB84B" },
     { name:"Seeds",          value:d.costs.cropSpecific.seeds,          color:"#818cf8" },
     { name:"Crop prot.",     value:d.costs.cropSpecific.cropProtection, color:"#f43f5e" },
     { name:"Land rent",      value:d.costs.otherOp.landRent,            color:"#f59e0b" },
-    { name:"Labour",         value:d.costs.otherOp.labour,              color:"#10b981" },
-    { name:"Depreciation",   value:d.costs.otherOp.depreciation,        color:"#9DBF9F" },
+    { name:"Labour",         value:d.costs.otherOp.labour,              color:"#2DB84B" },
+    { name:"Depreciation",   value:d.costs.otherOp.depreciation,        color:"#6B8F72" },
     { name:"Energy",         value:d.costs.otherOp.energy,              color:"#a78bfa" },
-    { name:"Livestock",      value:d.costs.livestockSpecific.total,     color:"#9DBF9F" },
-    { name:"Financial",      value:d.costs.financial,                   color:"#9DBF9F" },
+    { name:"Livestock",      value:d.costs.livestockSpecific.total,     color:"#6B8F72" },
+    { name:"Financial",      value:d.costs.financial,                   color:"#6B8F72" },
   ].filter(x=>x.value>0);
 
   // P&L row component
   const Row = ({ label, value, indent=0, bold=false, header=false, sign=false, expandKey=null, children=null, color=null, dimmed=false }) => {
     const isOpen = expanded[expandKey];
-    const textColor = header?"#2DB04B":bold?"#F0F8F1":dimmed?"#3A6640":"#9DBF9F";
-    const valColor = color||(header?d.color:bold?"#F0F8F1":"#9DBF9F");
-    const bg = header?"#0A1A0C":bold?"#0A1E0C":"transparent";
+    const textColor = header?"#2DB84B":bold?"#0F2415":dimmed?"#9BB5A0":"#6B8F72";
+    const valColor = color||(header?d.color:bold?"#0F2415":"#6B8F72");
+    const bg = header?"#F3F8F4":bold?"#F7F9F7":"transparent";
     const displayVal = sign && value>0 ? "+"+fmtV(value) : fmtV(value);
     return (
       <>
@@ -2781,12 +2781,12 @@ function MIFarmerPLPage() {
             paddingLeft: 14+indent*16 }}
           onMouseEnter={e=>{if(!bold&&!header)e.currentTarget.style.background="#0a1018";}}
           onMouseLeave={e=>{if(!bold&&!header)e.currentTarget.style.background=bg;}}>
-          {expandKey && <span style={{color:"#9DBF9F",fontSize:10,marginRight:7,width:10,flexShrink:0}}>{isOpen?"▼":"▶"}</span>}
-          {!expandKey && indent>0 && <span style={{color:"#1A3A20",marginRight:7,width:10,flexShrink:0}}>└</span>}
+          {expandKey && <span style={{color:"#6B8F72",fontSize:10,marginRight:7,width:10,flexShrink:0}}>{isOpen?"▼":"▶"}</span>}
+          {!expandKey && indent>0 && <span style={{color:"#D6E8DA",marginRight:7,width:10,flexShrink:0}}>└</span>}
           {!expandKey && indent===0 && <span style={{width:17,flexShrink:0}}/>}
           <span style={{ flex:1, fontSize:header?12:bold?12:11, fontWeight:header||bold?700:400, color:textColor, fontStyle:dimmed?"italic":"normal" }}>{label}</span>
           <span style={{ fontSize:bold||header?12:11, fontWeight:bold||header?700:500, fontFamily:"'DM Mono',monospace", color:valColor, width:96, textAlign:"right" }}>{displayVal}</span>
-          <span style={{ fontSize:10, color:"#9DBF9F", width:46, textAlign:"right", fontFamily:"'DM Mono',monospace" }}>{pctRev(Math.abs(value))}</span>
+          <span style={{ fontSize:10, color:"#6B8F72", width:46, textAlign:"right", fontFamily:"'DM Mono',monospace" }}>{pctRev(Math.abs(value))}</span>
         </div>
         {expandKey && isOpen && children}
       </>
@@ -2794,8 +2794,8 @@ function MIFarmerPLPage() {
   };
 
   const Divider = ({ label }) => (
-    <div style={{ background:"#091C0C", padding:"4px 14px 3px", borderBottom:"1px solid #0d1829" }}>
-      <span style={{ color:"#9DBF9F", fontSize:9, textTransform:"uppercase", letterSpacing:"0.1em" }}>{label}</span>
+    <div style={{ background:"#FFFFFF", padding:"4px 14px 3px", borderBottom:"1px solid #0d1829" }}>
+      <span style={{ color:"#6B8F72", fontSize:9, textTransform:"uppercase", letterSpacing:"0.1em" }}>{label}</span>
     </div>
   );
 
@@ -2805,8 +2805,8 @@ function MIFarmerPLPage() {
       {/* Header */}
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", flexWrap:"wrap", gap:14 }}>
         <div>
-          <h2 style={{ color:"#F0F8F1", fontSize:17, fontWeight:800, marginBottom:3 }}>Farmer P&L — Average per farm · €/Ha <span style={{color:"#9DBF9F",fontWeight:400,fontSize:13}}>(2024)</span></h2>
-          <p style={{ color:"#9DBF9F", fontSize:11 }}>Source: FADN / RICA France · Standard Output &gt; 25k€ · Values in €/Ha unless stated</p>
+          <h2 style={{ color:"#0F2415", fontSize:17, fontWeight:800, marginBottom:3 }}>Farmer P&L — Average per farm · €/Ha <span style={{color:"#6B8F72",fontWeight:400,fontSize:13}}>(2024)</span></h2>
+          <p style={{ color:"#6B8F72", fontSize:11 }}>Source: FADN / RICA France · Standard Output &gt; 25k€ · Values in €/Ha unless stated</p>
         </div>
 
       </div>
@@ -2818,7 +2818,7 @@ function MIFarmerPLPage() {
             style={{ display:"flex", alignItems:"center", gap:7, padding:"9px 16px", borderRadius:10,
               border:`2px solid ${farmType===key?val.color:val.color+"28"}`,
               background:farmType===key?val.color+"18":"transparent",
-              color:farmType===key?val.color:"#9DBF9F",
+              color:farmType===key?val.color:"#6B8F72",
               fontSize:12, fontWeight:farmType===key?700:400, cursor:"pointer", transition:"all 0.15s" }}>
             <span style={{fontSize:15}}>{val.emoji}</span> {key}
           </button>
@@ -2826,7 +2826,7 @@ function MIFarmerPLPage() {
       </div>
 
       {/* Farm characteristics strip */}
-      <div style={{ background:"#0A1A0C", border:"1px solid #1C3D21", borderRadius:10, padding:"10px 16px", display:"flex", gap:24, flexWrap:"wrap" }}>
+      <div style={{ background:"#F3F8F4", border:"1px solid #D6E8DA", borderRadius:10, padding:"10px 16px", display:"flex", gap:24, flexWrap:"wrap" }}>
         {[
           {label:"Farms represented",   val:d.farms.toLocaleString()+" farms"},
           {label:"Utilised agri. area",  val:d.uaa+" ha / farm"},
@@ -2834,8 +2834,8 @@ function MIFarmerPLPage() {
           {label:"of which non-salaried",val:d.nonsalUta+" UTA"},
         ].map((item,i)=>(
           <div key={i}>
-            <p style={{ color:"#9DBF9F", fontSize:9, textTransform:"uppercase", letterSpacing:"0.07em", marginBottom:2 }}>{item.label}</p>
-            <p style={{ color:"#9DBF9F", fontSize:12, fontFamily:"'DM Mono',monospace" }}>{item.val}</p>
+            <p style={{ color:"#6B8F72", fontSize:9, textTransform:"uppercase", letterSpacing:"0.07em", marginBottom:2 }}>{item.label}</p>
+            <p style={{ color:"#6B8F72", fontSize:12, fontFamily:"'DM Mono',monospace" }}>{item.val}</p>
           </div>
         ))}
       </div>
@@ -2844,22 +2844,22 @@ function MIFarmerPLPage() {
       <div className="kpi-row">
         <KPICard label="Total current output" value={"€"+d.totalOutput.toLocaleString()+"/ha"} sub="net of livestock purchases" accent={d.color}/>
         <KPICard label="Total current costs"  value={"€"+d.totalCosts.toLocaleString()+"/ha"} sub={((d.totalCosts/d.totalOutput)*100).toFixed(0)+"% of output"} accent="#f43f5e"/>
-        <KPICard label="Net income"           value={(netIncome>=0?"+":"-")+"€"+Math.abs(netIncome).toFixed(0)+"/ha"} sub="total output − total costs" accent={netIncome>=0?"#10b981":"#f43f5e"}/>
-        <KPICard label="Fertilisers & soil"   value={"€"+d.costs.cropSpecific.fertilisers+"/ha"} sub={fertPct+"% of total costs"} accent="#2DB04B"/>
+        <KPICard label="Net income"           value={(netIncome>=0?"+":"-")+"€"+Math.abs(netIncome).toFixed(0)+"/ha"} sub="total output − total costs" accent={netIncome>=0?"#2DB84B":"#f43f5e"}/>
+        <KPICard label="Fertilisers & soil"   value={"€"+d.costs.cropSpecific.fertilisers+"/ha"} sub={fertPct+"% of total costs"} accent="#2DB84B"/>
       </div>
 
       <div className="chart-grid-2">
         {/* Output vs costs bar chart */}
         <div className="card">
           <h3 className="card-title">Output vs Costs breakdown (€/ha)</h3>
-          <p style={{ color:"#9DBF9F", fontSize:11, marginBottom:10 }}>Net income = Total output − Total costs</p>
+          <p style={{ color:"#6B8F72", fontSize:11, marginBottom:10 }}>Net income = Total output − Total costs</p>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={barData} margin={{ left:8, right:8, bottom:10 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1C3D21" vertical={false}/>
-              <XAxis dataKey="name" tick={{ fill:"#7DA882", fontSize:9 }} angle={-12} textAnchor="end" height={38}/>
-              <YAxis tick={{ fill:"#7DA882", fontSize:9 }} tickFormatter={v=>v>=0?"€"+(v/1000).toFixed(0)+"k":"−€"+(-v/1000).toFixed(0)+"k"}/>
+              <CartesianGrid strokeDasharray="3 3" stroke="#D6E8DA" vertical={false}/>
+              <XAxis dataKey="name" tick={{ fill:"#6B8F72", fontSize:9 }} angle={-12} textAnchor="end" height={38}/>
+              <YAxis tick={{ fill:"#6B8F72", fontSize:9 }} tickFormatter={v=>v>=0?"€"+(v/1000).toFixed(0)+"k":"−€"+(-v/1000).toFixed(0)+"k"}/>
               <Tooltip content={<CustomTooltip/>} formatter={v=>["€"+Math.abs(v).toLocaleString(),""]}/>
-              <ReferenceLine y={0} stroke="#2A5530" strokeWidth={1}/>
+              <ReferenceLine y={0} stroke="#B8D4BE" strokeWidth={1}/>
               <Bar dataKey="value" radius={[4,4,0,0]}>{barData.map((d2,i)=><Cell key={i} fill={d2.fill}/>)}</Bar>
             </BarChart>
           </ResponsiveContainer>
@@ -2880,7 +2880,7 @@ function MIFarmerPLPage() {
             {costPie.map((e,i)=>(
               <div key={i} style={{ display:"flex", alignItems:"center", gap:5 }}>
                 <div style={{ width:7,height:7,borderRadius:2,background:e.color }}/>
-                <span style={{ color:"#9DBF9F", fontSize:10 }}>{e.name} <span style={{ color:e.color, fontFamily:"'DM Mono',monospace" }}>{((e.value/d.totalCosts)*100).toFixed(0)}%</span></span>
+                <span style={{ color:"#6B8F72", fontSize:10 }}>{e.name} <span style={{ color:e.color, fontFamily:"'DM Mono',monospace" }}>{((e.value/d.totalCosts)*100).toFixed(0)}%</span></span>
               </div>
             ))}
           </div>
@@ -2890,10 +2890,10 @@ function MIFarmerPLPage() {
       {/* ── FULL P&L TABLE — exact FADN structure, all expandable ── */}
       <div className="card" style={{ padding:0, overflow:"hidden" }}>
         {/* Header row */}
-        <div style={{ display:"flex", padding:"10px 14px 10px 31px", background:"#091C0C", borderBottom:"2px solid #1C3D21" }}>
-          <span style={{ flex:1, color:"#9DBF9F", fontSize:10, textTransform:"uppercase", letterSpacing:"0.06em" }}>Line item</span>
-          <span style={{ color:"#9DBF9F", fontSize:10, textTransform:"uppercase", letterSpacing:"0.06em", width:96, textAlign:"right" }}>€ / ha</span>
-          <span style={{ color:"#9DBF9F", fontSize:10, textTransform:"uppercase", letterSpacing:"0.06em", width:46, textAlign:"right" }}>% out.</span>
+        <div style={{ display:"flex", padding:"10px 14px 10px 31px", background:"#FFFFFF", borderBottom:"2px solid #D6E8DA" }}>
+          <span style={{ flex:1, color:"#6B8F72", fontSize:10, textTransform:"uppercase", letterSpacing:"0.06em" }}>Line item</span>
+          <span style={{ color:"#6B8F72", fontSize:10, textTransform:"uppercase", letterSpacing:"0.06em", width:96, textAlign:"right" }}>€ / ha</span>
+          <span style={{ color:"#6B8F72", fontSize:10, textTransform:"uppercase", letterSpacing:"0.06em", width:46, textAlign:"right" }}>% out.</span>
         </div>
 
         {/* TOTAL CURRENT OUTPUT — top line */}
@@ -2922,7 +2922,7 @@ function MIFarmerPLPage() {
         {/* TOTAL CURRENT COSTS */}
         <Row label="Total current costs" value={-d.totalCosts} bold header color="#f43f5e" expandKey="costs">
           <Row label="= Cost specific to crops" value={-d.costs.cropSpecific.total} indent={1} bold expandKey="cropCosts">
-            <Row label="Fertilisers and soil amendments" value={-d.costs.cropSpecific.fertilisers}   color="#2DB04B" indent={2}/>
+            <Row label="Fertilisers and soil amendments" value={-d.costs.cropSpecific.fertilisers}   color="#2DB84B" indent={2}/>
             <Row label="Seeds and seedlings"             value={-d.costs.cropSpecific.seeds}          indent={2}/>
             <Row label="Crop protection products"        value={-d.costs.cropSpecific.cropProtection} indent={2}/>
           </Row>
@@ -2939,22 +2939,22 @@ function MIFarmerPLPage() {
         </Row>
 
         {/* NET INCOME — bottom line */}
-        <div style={{ display:"flex", alignItems:"center", padding:"12px 14px 12px 31px", background:"#0a1628", borderTop:"2px solid #1C3D21" }}>
-          <span style={{ flex:1, fontSize:13, fontWeight:800, color:"#F0F8F1" }}>Net income (total output − total costs)</span>
-          <span style={{ fontSize:15, fontWeight:800, fontFamily:"'DM Mono',monospace", color:netIncome>=0?"#10b981":"#f43f5e", width:96, textAlign:"right" }}>
+        <div style={{ display:"flex", alignItems:"center", padding:"12px 14px 12px 31px", background:"#0a1628", borderTop:"2px solid #D6E8DA" }}>
+          <span style={{ flex:1, fontSize:13, fontWeight:800, color:"#0F2415" }}>Net income (total output − total costs)</span>
+          <span style={{ fontSize:15, fontWeight:800, fontFamily:"'DM Mono',monospace", color:netIncome>=0?"#2DB84B":"#f43f5e", width:96, textAlign:"right" }}>
             {netIncome>=0?"+ ":"− "}€{Math.abs(netIncome).toFixed(0)}
           </span>
-          <span style={{ fontSize:11, fontWeight:700, fontFamily:"'DM Mono',monospace", color:netIncome>=0?"#10b98180":"#f43f5e80", width:46, textAlign:"right" }}>
+          <span style={{ fontSize:11, fontWeight:700, fontFamily:"'DM Mono',monospace", color:netIncome>=0?"#2DB84B80":"#f43f5e80", width:46, textAlign:"right" }}>
             {((netIncome/d.totalOutput)*100).toFixed(1)}%
           </span>
         </div>
       </div>
 
       {/* Fertiliser in context */}
-      <div style={{ background:`linear-gradient(135deg,#0e2535,#0C220F)`, border:"1px solid #2DB04B30", borderRadius:12, padding:"16px 20px" }}>
-        <p style={{ color:"#2DB04B", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:8, fontWeight:700 }}>🧪 Fertilisers in context — {farmType} {d.emoji}</p>
-        <p style={{ color:"#9DBF9F", fontSize:12, lineHeight:1.75 }}>
-          Fertilisers & soil amendments represent <span style={{ color:"#2DB04B", fontWeight:700 }}>€{d.costs.cropSpecific.fertilisers}/ha</span> ({fertPct}% of total costs). Against total output of €{d.totalOutput.toLocaleString()}/ha, this represents {((d.costs.cropSpecific.fertilisers/d.totalOutput)*100).toFixed(1)}% of farm revenue — a relatively small share where agronomic improvements from P separation can generate a net positive return even at a modest yield uplift.
+      <div style={{ background:`linear-gradient(135deg,#0e2535,#FFFFFF)`, border:"1px solid #2DB84B30", borderRadius:12, padding:"16px 20px" }}>
+        <p style={{ color:"#2DB84B", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:8, fontWeight:700 }}>🧪 Fertilisers in context — {farmType} {d.emoji}</p>
+        <p style={{ color:"#6B8F72", fontSize:12, lineHeight:1.75 }}>
+          Fertilisers & soil amendments represent <span style={{ color:"#2DB84B", fontWeight:700 }}>€{d.costs.cropSpecific.fertilisers}/ha</span> ({fertPct}% of total costs). Against total output of €{d.totalOutput.toLocaleString()}/ha, this represents {((d.costs.cropSpecific.fertilisers/d.totalOutput)*100).toFixed(1)}% of farm revenue — a relatively small share where agronomic improvements from P separation can generate a net positive return even at a modest yield uplift.
         </p>
       </div>
     </div>
@@ -2970,15 +2970,15 @@ function MIMarketDynamicsPage({ region }) {
   const maxMix=Math.max(...intel.productMix.map(r=>r.val2022));
 
   const MACRO_KPIS = [
-    { label:"Population", value:"68.4 M", unit:"habitants", year:"2024", accent:"#2DB04B" },
-    { label:"Agriculture / GDP", value:"1.43%", unit:"share of GDP", year:"2024", accent:"#10b981" },
+    { label:"Population", value:"68.4 M", unit:"habitants", year:"2024", accent:"#2DB84B" },
+    { label:"Agriculture / GDP", value:"1.43%", unit:"share of GDP", year:"2024", accent:"#2DB84B" },
     { label:"P2O5 consumed", value:"226 kt", unit:"nutrient", year:"2023", accent:"#f59e0b" },
     { label:"Total agri. land", value:"27 000 kha", unit:"utilised area", year:"2024", accent:"#a78bfa" },
   ];
 
   const RECOS = [
-    { icon:"📢", color:"#2DB04B", title:"Rebuild P consumption", body:"Quantify the agronomic gap, run campaigns on the economic value of balanced P fertilization using Comifer/BDAT data. Partner with coops, INRAE and Arvalis for multi-year field trials — flagship farms that prove yield and soil fertility benefits." },
-    { icon:"🌾", color:"#10b981", title:"Position TSP as the reference low-carbon P", body:"Make 'High P / Low N' the default narrative for French broad-acre crops — winter cereals, rapeseed, pulses. Build a portfolio around it: high-P NPs, DAP, customized PK/NP blends that enable N/P decoupling." },
+    { icon:"📢", color:"#2DB84B", title:"Rebuild P consumption", body:"Quantify the agronomic gap, run campaigns on the economic value of balanced P fertilization using Comifer/BDAT data. Partner with coops, INRAE and Arvalis for multi-year field trials — flagship farms that prove yield and soil fertility benefits." },
+    { icon:"🌾", color:"#2DB84B", title:"Position TSP as the reference low-carbon P", body:"Make 'High P / Low N' the default narrative for French broad-acre crops — winter cereals, rapeseed, pulses. Build a portfolio around it: high-P NPs, DAP, customized PK/NP blends that enable N/P decoupling." },
     { icon:"🤝", color:"#f59e0b", title:"Co-design blends with major coops", body:"Use regional soil data and crop requirements to create PK and PK+ products with secondary nutrients and micronutrients. Consider an industrial JV for PK blending to compete directly with ICL and Timac on semi-specialty products." },
     { icon:"🛰️", color:"#a78bfa", title:"Build a farmer-centric service layer", body:"Local agronomy team + digital offering around soil testing, mapping and precision tools (BeApi etc). Regular workshops, field days and Ferti-tour roadshows with coops and private retailers." },
     { icon:"🏗️", color:"#818cf8", title:"Go direct-to-coop in France", body:"Create a local commercial subsidiary. Formalize long-term partnerships with key purchasing groups, offer flexible contracting and consignment stock. Co-brand customized blends to bypass importers and improve netbacks." },
@@ -2991,11 +2991,11 @@ function MIMarketDynamicsPage({ region }) {
       {/* Macro KPIs — clean, no data period header */}
       <div style={{ display:"flex",gap:12,flexWrap:"wrap" }}>
         {MACRO_KPIS.map((k,i)=>(
-          <div key={i} style={{ background:"linear-gradient(135deg,#112B14,#0A1E0C)",border:`1px solid ${k.accent}25`,borderRadius:14,padding:"16px 20px",flex:"1 1 150px",minWidth:140,position:"relative",overflow:"hidden" }}>
+          <div key={i} style={{ background:"linear-gradient(135deg,#FFFFFF,#F7F9F7)",border:`1px solid ${k.accent}25`,borderRadius:14,padding:"16px 20px",flex:"1 1 150px",minWidth:140,position:"relative",overflow:"hidden" }}>
             <div style={{ position:"absolute",top:-12,right:-12,width:50,height:50,borderRadius:"50%",background:k.accent+"08" }}/>
-            <p style={{ color:"#9DBF9F",fontSize:10,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:6 }}>{k.label}</p>
+            <p style={{ color:"#6B8F72",fontSize:10,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:6 }}>{k.label}</p>
             <p style={{ color:k.accent,fontSize:22,fontWeight:800,fontFamily:"'DM Mono',monospace",margin:0 }}>{k.value}</p>
-            <p style={{ color:"#9DBF9F",fontSize:11,marginTop:3 }}>{k.unit}</p>
+            <p style={{ color:"#6B8F72",fontSize:11,marginTop:3 }}>{k.unit}</p>
             <span style={{ position:"absolute",bottom:10,right:12,color:k.accent+"60",fontSize:10,fontFamily:"'DM Mono',monospace" }}>{k.year}</span>
           </div>
         ))}
@@ -3005,14 +3005,14 @@ function MIMarketDynamicsPage({ region }) {
       <div className="chart-grid-2">
         <div className="card">
           <h3 className="card-title">P2O5 Consumption by Product — kt</h3>
-          <p style={{color:"#9DBF9F",fontSize:10,marginBottom:10}}>2022 → 2023 · Source: Agreste / UNIFA</p>
+          <p style={{color:"#6B8F72",fontSize:10,marginBottom:10}}>2022 → 2023 · Source: Agreste / UNIFA</p>
           <div style={{ display:"flex",flexDirection:"column",gap:12,marginTop:4 }}>
             {intel.productMix.map((row,i)=><AnimBar key={i} label={row.name} val2022={row.val2022} val2023={row.val2023} maxVal={maxMix} color={row.color} />)}
           </div>
         </div>
         <div className="card">
           <h3 className="card-title">DAP/MAP Import Origin — kt P2O5</h3>
-          <p style={{color:"#9DBF9F",fontSize:10,marginBottom:6}}>2024 · Source: UNIFA / French Customs</p>
+          <p style={{color:"#6B8F72",fontSize:10,marginBottom:6}}>2024 · Source: UNIFA / French Customs</p>
           <ResponsiveContainer width="100%" height={195}>
             <PieChart>
                 <Pie data={intel.importOrigin} cx="50%" cy="50%" outerRadius={78} dataKey="value"
@@ -3032,20 +3032,20 @@ function MIMarketDynamicsPage({ region }) {
                 <Tooltip formatter={(v,n)=>[`${v} kt`,n]} />
               </PieChart>
           </ResponsiveContainer>
-          <div style={{ display:"flex",flexWrap:"wrap",gap:8,marginTop:4 }}>{intel.importOrigin.map((d,i)=><div key={i} style={{ display:"flex",alignItems:"center",gap:5 }}><div style={{ width:8,height:8,borderRadius:2,background:d.color }}/><span style={{ color:"#9DBF9F",fontSize:11 }}>{d.name} {d.value}kt</span></div>)}</div>
+          <div style={{ display:"flex",flexWrap:"wrap",gap:8,marginTop:4 }}>{intel.importOrigin.map((d,i)=><div key={i} style={{ display:"flex",alignItems:"center",gap:5 }}><div style={{ width:8,height:8,borderRadius:2,background:d.color }}/><span style={{ color:"#6B8F72",fontSize:11 }}>{d.name} {d.value}kt</span></div>)}</div>
         </div>
       </div>
 
       {/* ── EXECUTIVE BRIEF ── */}
-      <div style={{ background:"linear-gradient(135deg,#0C220F,#060b14)", border:"1px solid #1C3D21", borderRadius:16, overflow:"hidden" }}>
+      <div style={{ background:"linear-gradient(135deg,#FFFFFF,#060b14)", border:"1px solid #D6E8DA", borderRadius:16, overflow:"hidden" }}>
 
         {/* Header */}
-        <div style={{ padding:"18px 24px 16px", borderBottom:"1px solid #1C3D21", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+        <div style={{ padding:"18px 24px 16px", borderBottom:"1px solid #D6E8DA", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
           <div>
-            <p style={{ color:"#9DBF9F", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:700, marginBottom:4 }}>Executive Brief</p>
-            <p style={{ color:"#F0F8F1", fontSize:16, fontWeight:700, margin:0 }}>What is happening in France — the P market in 2024</p>
+            <p style={{ color:"#6B8F72", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:700, marginBottom:4 }}>Executive Brief</p>
+            <p style={{ color:"#0F2415", fontSize:16, fontWeight:700, margin:0 }}>What is happening in France — the P market in 2024</p>
           </div>
-          <span style={{ color:"#1C3D21", fontSize:11, fontStyle:"italic" }}>France · P fertilizer</span>
+          <span style={{ color:"#D6E8DA", fontSize:11, fontStyle:"italic" }}>France · P fertilizer</span>
         </div>
 
         {/* Narrative body — one flowing story, not boxes */}
@@ -3053,49 +3053,49 @@ function MIMarketDynamicsPage({ region }) {
 
           {/* Act 1 */}
           <div style={{ display:"flex", gap:16, alignItems:"flex-start" }}>
-            <div style={{ flexShrink:0, width:28, height:28, borderRadius:"50%", background:"#2DB04B20", border:"1px solid #2DB04B40", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, marginTop:2 }}>1</div>
+            <div style={{ flexShrink:0, width:28, height:28, borderRadius:"50%", background:"#2DB84B20", border:"1px solid #2DB84B40", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, marginTop:2 }}>1</div>
             <div>
-              <p style={{ color:"#E8F2E9", fontSize:14, fontWeight:600, marginBottom:6 }}>The soil is being mined — quietly, at scale</p>
-              <p style={{ color:"#9DBF9F", fontSize:13, lineHeight:1.85, margin:0 }}>
-                Since 2021, P applications in France have fallen by roughly 29%. Today, <span style={{color:"#F0F8F1",fontWeight:600}}>only half of French parcels receive any mineral P at all</span>. Farmers are not replacing what crops take out. The agronomic gap versus Comifer recommendations is now 157 kt P₂O₅ — the equivalent of leaving an entire year's TSP import sitting in the ground unplanted.
+              <p style={{ color:"#2C4A33", fontSize:14, fontWeight:600, marginBottom:6 }}>The soil is being mined — quietly, at scale</p>
+              <p style={{ color:"#6B8F72", fontSize:13, lineHeight:1.85, margin:0 }}>
+                Since 2021, P applications in France have fallen by roughly 29%. Today, <span style={{color:"#0F2415",fontWeight:600}}>only half of French parcels receive any mineral P at all</span>. Farmers are not replacing what crops take out. The agronomic gap versus Comifer recommendations is now 157 kt P₂O₅ — the equivalent of leaving an entire year's TSP import sitting in the ground unplanted.
               </p>
             </div>
           </div>
 
-          <div style={{ height:1, background:"#1C3D21", marginLeft:44 }}/>
+          <div style={{ height:1, background:"#D6E8DA", marginLeft:44 }}/>
 
           {/* Act 2 */}
           <div style={{ display:"flex", gap:16, alignItems:"flex-start" }}>
             <div style={{ flexShrink:0, width:28, height:28, borderRadius:"50%", background:"#f59e0b20", border:"1px solid #f59e0b40", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, marginTop:2, color:"#f59e0b" }}>2</div>
             <div>
-              <p style={{ color:"#E8F2E9", fontSize:14, fontWeight:600, marginBottom:6 }}>Prices broke the habit — and farmers didn't recover it</p>
-              <p style={{ color:"#9DBF9F", fontSize:13, lineHeight:1.85, margin:0 }}>
-                The 2022 price spike created a scissors effect: input costs doubled while margins compressed. Farmers responded rationally — they <span style={{color:"#F0F8F1",fontWeight:600}}>protected nitrogen and cut P and K</span>. The problem is that this became a habit. Even as prices normalised, the behaviour stuck. P is now the first line item cut when budgets tighten.
+              <p style={{ color:"#2C4A33", fontSize:14, fontWeight:600, marginBottom:6 }}>Prices broke the habit — and farmers didn't recover it</p>
+              <p style={{ color:"#6B8F72", fontSize:13, lineHeight:1.85, margin:0 }}>
+                The 2022 price spike created a scissors effect: input costs doubled while margins compressed. Farmers responded rationally — they <span style={{color:"#0F2415",fontWeight:600}}>protected nitrogen and cut P and K</span>. The problem is that this became a habit. Even as prices normalised, the behaviour stuck. P is now the first line item cut when budgets tighten.
               </p>
             </div>
           </div>
 
-          <div style={{ height:1, background:"#1C3D21", marginLeft:44 }}/>
+          <div style={{ height:1, background:"#D6E8DA", marginLeft:44 }}/>
 
           {/* Act 3 */}
           <div style={{ display:"flex", gap:16, alignItems:"flex-start" }}>
-            <div style={{ flexShrink:0, width:28, height:28, borderRadius:"50%", background:"#10b98120", border:"1px solid #10b98140", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, marginTop:2, color:"#10b981" }}>3</div>
+            <div style={{ flexShrink:0, width:28, height:28, borderRadius:"50%", background:"#2DB84B20", border:"1px solid #2DB84B40", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, marginTop:2, color:"#2DB84B" }}>3</div>
             <div>
-              <p style={{ color:"#E8F2E9", fontSize:14, fontWeight:600, marginBottom:6 }}>Who controls the market? Coops — and Morocco is well placed</p>
-              <p style={{ color:"#9DBF9F", fontSize:13, lineHeight:1.85, margin:0 }}>
-                France produces no TSP or DAP domestically. Everything is imported. <span style={{color:"#10b981",fontWeight:600}}>Morocco (OCP) already holds ~62% of the DAP/MAP import market</span>. But the real gatekeepers are the large purchasing cooperatives — Inoxa, Axereal, InVivo — which control blending, warehousing and agronomy advice for ~70% of fertilizer volumes. Access without them is nearly impossible.
+              <p style={{ color:"#2C4A33", fontSize:14, fontWeight:600, marginBottom:6 }}>Who controls the market? Coops — and Morocco is well placed</p>
+              <p style={{ color:"#6B8F72", fontSize:13, lineHeight:1.85, margin:0 }}>
+                France produces no TSP or DAP domestically. Everything is imported. <span style={{color:"#2DB84B",fontWeight:600}}>Morocco (OCP) already holds ~62% of the DAP/MAP import market</span>. But the real gatekeepers are the large purchasing cooperatives — Inoxa, Axereal, InVivo — which control blending, warehousing and agronomy advice for ~70% of fertilizer volumes. Access without them is nearly impossible.
               </p>
             </div>
           </div>
 
-          <div style={{ height:1, background:"#1C3D21", marginLeft:44 }}/>
+          <div style={{ height:1, background:"#D6E8DA", marginLeft:44 }}/>
 
           {/* Act 4 */}
           <div style={{ display:"flex", gap:16, alignItems:"flex-start" }}>
             <div style={{ flexShrink:0, width:28, height:28, borderRadius:"50%", background:"#a78bfa20", border:"1px solid #a78bfa40", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, marginTop:2, color:"#a78bfa" }}>4</div>
             <div>
-              <p style={{ color:"#E8F2E9", fontSize:14, fontWeight:600, marginBottom:6 }}>The market is moving toward value — and regulation favours clean P</p>
-              <p style={{ color:"#9DBF9F", fontSize:13, lineHeight:1.85, margin:0 }}>
+              <p style={{ color:"#2C4A33", fontSize:14, fontWeight:600, marginBottom:6 }}>The market is moving toward value — and regulation favours clean P</p>
+              <p style={{ color:"#6B8F72", fontSize:13, lineHeight:1.85, margin:0 }}>
                 Standard NPKs are losing share. Farmers and coops are shifting to NPK+ grades — blends with sulphur, micronutrients and biostimulants. At the same time, EU heavy metal and carbon regulations are tightening. <span style={{color:"#a78bfa",fontWeight:600}}>OCP's low-cadmium Moroccan P is structurally advantaged</span> — not as a marketing claim, but as a regulatory compliance asset for the next decade.
               </p>
             </div>
@@ -3103,35 +3103,35 @@ function MIMarketDynamicsPage({ region }) {
         </div>
 
         {/* So what CTA */}
-        <div style={{ borderTop:"1px solid #1C3D21" }}>
+        <div style={{ borderTop:"1px solid #D6E8DA" }}>
           {!recoOpen ? (
             <button onClick={()=>setRecoOpen(true)}
               style={{ width:"100%", padding:"18px 24px", background:"transparent", border:"none", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"space-between", gap:16, transition:"background 0.15s" }}
               onMouseEnter={e=>e.currentTarget.style.background="#0f1f14"}
               onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
               <div style={{ textAlign:"left" }}>
-                <p style={{ color:"#10b981", fontSize:12, fontWeight:700, marginBottom:4 }}>So what does this mean for OCP Nutricrops?</p>
-                <p style={{ color:"#9DBF9F", fontSize:12, margin:0 }}>6 strategic plays that follow directly from this brief — from rebuilding P consumption to owning the regulatory narrative.</p>
+                <p style={{ color:"#2DB84B", fontSize:12, fontWeight:700, marginBottom:4 }}>So what does this mean for OCP Nutricrops?</p>
+                <p style={{ color:"#6B8F72", fontSize:12, margin:0 }}>6 strategic plays that follow directly from this brief — from rebuilding P consumption to owning the regulatory narrative.</p>
               </div>
-              <div style={{ flexShrink:0, background:"#10b98120", border:"1px solid #10b98140", borderRadius:8, padding:"8px 16px", display:"flex", alignItems:"center", gap:8 }}>
-                <span style={{ color:"#10b981", fontSize:12, fontWeight:700 }}>Discover</span>
-                <span style={{ color:"#10b981", fontSize:16 }}>→</span>
+              <div style={{ flexShrink:0, background:"#2DB84B20", border:"1px solid #2DB84B40", borderRadius:8, padding:"8px 16px", display:"flex", alignItems:"center", gap:8 }}>
+                <span style={{ color:"#2DB84B", fontSize:12, fontWeight:700 }}>Discover</span>
+                <span style={{ color:"#2DB84B", fontSize:16 }}>→</span>
               </div>
             </button>
           ) : (
             <div style={{ padding:"20px 24px" }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
-                <p style={{ color:"#10b981", fontSize:12, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em" }}>Strategic recommendations — OCP Nutricrops · France</p>
-                <button onClick={()=>setRecoOpen(false)} style={{ background:"transparent", border:"1px solid #1C3D21", color:"#c8d3e0", borderRadius:6, padding:"4px 12px", fontSize:11, cursor:"pointer" }}>← hide</button>
+                <p style={{ color:"#2DB84B", fontSize:12, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em" }}>Strategic recommendations — OCP Nutricrops · France</p>
+                <button onClick={()=>setRecoOpen(false)} style={{ background:"transparent", border:"1px solid #D6E8DA", color:"#c8d3e0", borderRadius:6, padding:"4px 12px", fontSize:11, cursor:"pointer" }}>← hide</button>
               </div>
               <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))", gap:12 }}>
                 {RECOS.map((r,i)=>(
-                  <div key={i} style={{ background:"#091C0C", border:`1px solid ${r.color}25`, borderLeft:`3px solid ${r.color}`, borderRadius:10, padding:"14px 16px" }}>
+                  <div key={i} style={{ background:"#FFFFFF", border:`1px solid ${r.color}25`, borderLeft:`3px solid ${r.color}`, borderRadius:10, padding:"14px 16px" }}>
                     <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
                       <span style={{ fontSize:15 }}>{r.icon}</span>
                       <p style={{ color:r.color, fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.05em", margin:0 }}>{r.title}</p>
                     </div>
-                    <p style={{ color:"#9DBF9F", fontSize:12, lineHeight:1.75, margin:0 }}>{r.body}</p>
+                    <p style={{ color:"#6B8F72", fontSize:12, lineHeight:1.75, margin:0 }}>{r.body}</p>
                   </div>
                 ))}
               </div>
@@ -3151,14 +3151,14 @@ function MIFarmerBSPage() {
 
   const BS_DATA = {
     "Cereals & Oilseeds": {
-      color:"#2DB04B", emoji:"🌾", note:"Céréales et oléoprotéagineux — Average per farm · €/Ha · 2024",
+      color:"#2DB84B", emoji:"🌾", note:"Céréales et oléoprotéagineux — Average per farm · €/Ha · 2024",
       assets:{ fixed:{ total:1671.98, items:{ "Land":372.38,"Land improvements":22.03,"Buildings":187.52,"Specialised installations":67.50,"Machinery":769.75,"Plantations (incl. forest)":4.75,"Breeding livestock":35.09,"Other fixed assets":213.00 }}, current:{ total:1539.65, items:{ "Inventories & work in progress":637.34,"of which current livestock":23.74,"Receivables":476.89,"Cash & equivalents":425.49,"Asset accruals":18.99 }}, total:3230.62 },
       equity:{ total:1959.65, items:{ "Initial individual capital":1241.67,"Change in initial capital":700.84,"Investment subsidies":17.14 }},
       debt:{ total:1269.19, items:{ "Long & medium-term debt":803.50,"Short-term borrowings & other financial liabilities":119.13,"Trade & other payables":346.64,"Liability accruals":1.85 }},
       totalLE:3230.62, ratios:{ gosHa:0.35, gosAWU:40.57, profitHa:0.10, profitAWU:11.97, debtRatio:39.29, marginRate:25.01 }
     },
     "General Crops": {
-      color:"#10b981", emoji:"🌱", note:"Grandes cultures — Average per farm · €/Ha · 2024",
+      color:"#2DB84B", emoji:"🌱", note:"Grandes cultures — Average per farm · €/Ha · 2024",
       assets:{ fixed:{ total:3060.96, items:{ "Land":344.48,"Land improvements":18.32,"Buildings":462.91,"Specialised installations":191.46,"Machinery":1091.17,"Plantations (incl. forest)":16.98,"Breeding livestock":76.24,"Other fixed assets":859.40 }}, current:{ total:2754.20, items:{ "Inventories & work in progress":1115.75,"of which current livestock":60.60,"Receivables":954.95,"Cash & equivalents":683.50,"Asset accruals":54.70 }}, total:5869.86 },
       equity:{ total:3389.97, items:{ "Initial individual capital":1929.66,"Change in initial capital":1405.52,"Investment subsidies":54.70 }},
       debt:{ total:2472.74, items:{ "Long & medium-term debt":1595.19,"Short-term borrowings & other financial liabilities":166.16,"Trade & other payables":711.39,"Liability accruals":7.15 }},
@@ -3194,21 +3194,21 @@ function MIFarmerBSPage() {
 
   const BSRow = ({ label, value, indent=0, bold=false, header=false, expandKey=null, children=null, color=null }) => {
     const isOpen = expandedBS[expandKey];
-    const textColor = header?"#2DB04B":bold?"#F0F8F1":"#9DBF9F";
-    const valColor = color||(header?d.color:bold?"#F0F8F1":"#9DBF9F");
-    const bg = header?"#0A1A0C":bold?"#0A1E0C":"transparent";
+    const textColor = header?"#2DB84B":bold?"#0F2415":"#6B8F72";
+    const valColor = color||(header?d.color:bold?"#0F2415":"#6B8F72");
+    const bg = header?"#F3F8F4":bold?"#F7F9F7":"transparent";
     return (
       <>
         <div onClick={expandKey?()=>toggleBS(expandKey):undefined}
           style={{ display:"flex", alignItems:"center", padding:`${header||bold?"9px":"6px"} 14px`, background:bg, borderBottom:"1px solid #0d1829", cursor:expandKey?"pointer":"default", paddingLeft:14+indent*16 }}
           onMouseEnter={e=>{if(!bold&&!header)e.currentTarget.style.background="#0a1018";}}
           onMouseLeave={e=>{if(!bold&&!header)e.currentTarget.style.background=bg;}}>
-          {expandKey&&<span style={{color:"#9DBF9F",fontSize:10,marginRight:7,width:10,flexShrink:0}}>{isOpen?"▼":"▶"}</span>}
-          {!expandKey&&indent>0&&<span style={{color:"#9DBF9F",marginRight:7,width:10,flexShrink:0}}>└</span>}
+          {expandKey&&<span style={{color:"#6B8F72",fontSize:10,marginRight:7,width:10,flexShrink:0}}>{isOpen?"▼":"▶"}</span>}
+          {!expandKey&&indent>0&&<span style={{color:"#6B8F72",marginRight:7,width:10,flexShrink:0}}>└</span>}
           {!expandKey&&indent===0&&<span style={{width:17,flexShrink:0}}/>}
           <span style={{ flex:1, fontSize:header?12:bold?12:11, fontWeight:header||bold?700:400, color:textColor }}>{label}</span>
           <span style={{ fontSize:bold||header?12:11, fontWeight:bold||header?700:500, fontFamily:"'DM Mono',monospace", color:valColor, width:96, textAlign:"right" }}>{fmtV(value)}</span>
-          <span style={{ fontSize:10, color:"#9DBF9F", width:58, textAlign:"right", fontFamily:"'DM Mono',monospace" }}>{((value/d.assets.total)*100).toFixed(1)}%</span>
+          <span style={{ fontSize:10, color:"#6B8F72", width:58, textAlign:"right", fontFamily:"'DM Mono',monospace" }}>{((value/d.assets.total)*100).toFixed(1)}%</span>
         </div>
         {expandKey&&isOpen&&children}
       </>
@@ -3218,36 +3218,36 @@ function MIFarmerBSPage() {
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
       <div>
-        <h2 style={{ color:"#F0F8F1", fontSize:17, fontWeight:800, marginBottom:3 }}>Farmer Balance Sheet — Average per farm · €/Ha <span style={{color:"#9DBF9F",fontWeight:400,fontSize:13}}>(2024)</span></h2>
-        <p style={{ color:"#9DBF9F", fontSize:11 }}>Source: FADN / RICA France · Cereals, general crops, market gardening and viticulture · Values in €/Ha</p>
+        <h2 style={{ color:"#0F2415", fontSize:17, fontWeight:800, marginBottom:3 }}>Farmer Balance Sheet — Average per farm · €/Ha <span style={{color:"#6B8F72",fontWeight:400,fontSize:13}}>(2024)</span></h2>
+        <p style={{ color:"#6B8F72", fontSize:11 }}>Source: FADN / RICA France · Cereals, general crops, market gardening and viticulture · Values in €/Ha</p>
       </div>
       <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
         {Object.entries(BS_DATA).map(([key,val])=>(
           <button key={key} onClick={()=>setFarmType(key)}
-            style={{ display:"flex", alignItems:"center", gap:7, padding:"9px 16px", borderRadius:10, border:`2px solid ${farmType===key?val.color:val.color+"28"}`, background:farmType===key?val.color+"18":"transparent", color:farmType===key?val.color:"#9DBF9F", fontSize:12, fontWeight:farmType===key?700:400, cursor:"pointer", transition:"all 0.15s" }}>
+            style={{ display:"flex", alignItems:"center", gap:7, padding:"9px 16px", borderRadius:10, border:`2px solid ${farmType===key?val.color:val.color+"28"}`, background:farmType===key?val.color+"18":"transparent", color:farmType===key?val.color:"#6B8F72", fontSize:12, fontWeight:farmType===key?700:400, cursor:"pointer", transition:"all 0.15s" }}>
             <span style={{fontSize:15}}>{val.emoji}</span> {key}
           </button>
         ))}
       </div>
-      <div style={{ background:"#0A1A0C", border:"1px solid #1C3D21", borderRadius:8, padding:"8px 14px" }}>
-        <span style={{ color:"#9DBF9F", fontSize:11, fontStyle:"italic" }}>{d.note}</span>
+      <div style={{ background:"#F3F8F4", border:"1px solid #D6E8DA", borderRadius:8, padding:"8px 14px" }}>
+        <span style={{ color:"#6B8F72", fontSize:11, fontStyle:"italic" }}>{d.note}</span>
       </div>
       <div className="kpi-row">
         <KPICard label="Total Assets"  value={fmtV(d.assets.total)+"/ha"} sub="fixed + current assets" accent={d.color}/>
-        <KPICard label="Total Equity"  value={fmtV(d.equity.total)+"/ha"} sub={((d.equity.total/d.assets.total)*100).toFixed(0)+"% of total assets"} accent="#10b981"/>
+        <KPICard label="Total Equity"  value={fmtV(d.equity.total)+"/ha"} sub={((d.equity.total/d.assets.total)*100).toFixed(0)+"% of total assets"} accent="#2DB84B"/>
         <KPICard label="Total Debt"    value={fmtV(d.debt.total)+"/ha"}   sub={`Debt ratio: ${d.ratios.debtRatio}%`} accent="#f43f5e"/>
         <KPICard label="Fixed Assets"  value={fmtV(d.assets.fixed.total)+"/ha"} sub={((d.assets.fixed.total/d.assets.total)*100).toFixed(0)+"% of total assets"} accent="#a78bfa"/>
       </div>
 
       {/* Balance sheet waterfall */}
       <div className="card">
-        <p style={{ color:"#9DBF9F", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:4 }}>Balance Sheet Structure — Assets vs Equity & Liabilities (€/Ha)</p>
-        <p style={{ color:"#9DBF9F", fontSize:11, marginBottom:16 }}>Both sides of the balance sheet displayed proportionally to total assets.</p>
+        <p style={{ color:"#6B8F72", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:4 }}>Balance Sheet Structure — Assets vs Equity & Liabilities (€/Ha)</p>
+        <p style={{ color:"#6B8F72", fontSize:11, marginBottom:16 }}>Both sides of the balance sheet displayed proportionally to total assets.</p>
         <div style={{ display:"flex", gap:16 }}>
           <div style={{ flex:1 }}>
-            <p style={{ color:"#9DBF9F", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8, fontWeight:700 }}>Assets — {fmtV(d.assets.total)}</p>
+            <p style={{ color:"#6B8F72", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8, fontWeight:700 }}>Assets — {fmtV(d.assets.total)}</p>
             {[
-              {label:"Land", val:d.assets.fixed.items["Land"], color:"#2DB04B"},
+              {label:"Land", val:d.assets.fixed.items["Land"], color:"#2DB84B"},
               {label:"Machinery", val:d.assets.fixed.items["Machinery"], color:"#5CC96E"},
               {label:"Buildings", val:d.assets.fixed.items["Buildings"], color:"#7dd3fc"},
               {label:"Spec. installations", val:d.assets.fixed.items["Specialised installations"], color:"#bae6fd"},
@@ -3258,20 +3258,20 @@ function MIFarmerBSPage() {
               {label:"Other current", val:d.assets.current.items["Asset accruals"]||0, color:"#ede9fe"},
             ].map((item,i)=>{ const pct=(item.val/d.assets.total)*100; return (
               <div key={i} style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
-                <span style={{ color:"#9DBF9F", fontSize:10, width:110, flexShrink:0, textAlign:"right" }}>{item.label}</span>
-                <div style={{ flex:1, height:16, background:"#1C3D21", borderRadius:3, overflow:"hidden" }}>
+                <span style={{ color:"#6B8F72", fontSize:10, width:110, flexShrink:0, textAlign:"right" }}>{item.label}</span>
+                <div style={{ flex:1, height:16, background:"#D6E8DA", borderRadius:3, overflow:"hidden" }}>
                   <div style={{ height:"100%", width:`${pct}%`, background:item.color, borderRadius:3 }}/>
                 </div>
-                <span style={{ color:"#E8F2E9", fontSize:10, fontFamily:"'DM Mono',monospace", width:64, flexShrink:0 }}>{fmtV(item.val)}</span>
-                <span style={{ color:"#9DBF9F", fontSize:9, width:30, flexShrink:0 }}>{pct.toFixed(0)}%</span>
+                <span style={{ color:"#2C4A33", fontSize:10, fontFamily:"'DM Mono',monospace", width:64, flexShrink:0 }}>{fmtV(item.val)}</span>
+                <span style={{ color:"#6B8F72", fontSize:9, width:30, flexShrink:0 }}>{pct.toFixed(0)}%</span>
               </div>
             );})}
           </div>
-          <div style={{ width:1, background:"#1C3D21", flexShrink:0 }}/>
+          <div style={{ width:1, background:"#D6E8DA", flexShrink:0 }}/>
           <div style={{ flex:1 }}>
-            <p style={{ color:"#9DBF9F", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8, fontWeight:700 }}>Equity & Liabilities — {fmtV(d.totalLE)}</p>
+            <p style={{ color:"#6B8F72", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8, fontWeight:700 }}>Equity & Liabilities — {fmtV(d.totalLE)}</p>
             {[
-              {label:"Initial capital", val:d.equity.items["Initial individual capital"], color:"#10b981"},
+              {label:"Initial capital", val:d.equity.items["Initial individual capital"], color:"#2DB84B"},
               {label:"Capital growth", val:d.equity.items["Change in initial capital"], color:"#34d399"},
               {label:"Invest. subsidies", val:d.equity.items["Investment subsidies"], color:"#6ee7b7"},
               {label:"LT/MT debt", val:d.debt.items["Long & medium-term debt"], color:"#f43f5e"},
@@ -3280,23 +3280,23 @@ function MIFarmerBSPage() {
               {label:"Accruals", val:d.debt.items["Liability accruals"], color:"#fecdd3"},
             ].map((item,i)=>{ const pct=(item.val/d.assets.total)*100; return (
               <div key={i} style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
-                <span style={{ color:"#9DBF9F", fontSize:10, width:110, flexShrink:0, textAlign:"right" }}>{item.label}</span>
-                <div style={{ flex:1, height:16, background:"#1C3D21", borderRadius:3, overflow:"hidden" }}>
+                <span style={{ color:"#6B8F72", fontSize:10, width:110, flexShrink:0, textAlign:"right" }}>{item.label}</span>
+                <div style={{ flex:1, height:16, background:"#D6E8DA", borderRadius:3, overflow:"hidden" }}>
                   <div style={{ height:"100%", width:`${pct}%`, background:item.color, borderRadius:3 }}/>
                 </div>
-                <span style={{ color:"#E8F2E9", fontSize:10, fontFamily:"'DM Mono',monospace", width:64, flexShrink:0 }}>{fmtV(item.val)}</span>
-                <span style={{ color:"#9DBF9F", fontSize:9, width:30, flexShrink:0 }}>{pct.toFixed(0)}%</span>
+                <span style={{ color:"#2C4A33", fontSize:10, fontFamily:"'DM Mono',monospace", width:64, flexShrink:0 }}>{fmtV(item.val)}</span>
+                <span style={{ color:"#6B8F72", fontSize:9, width:30, flexShrink:0 }}>{pct.toFixed(0)}%</span>
               </div>
             );})}
           </div>
         </div>
-        <div style={{ marginTop:16, paddingTop:12, borderTop:"1px solid #1C3D21" }}>
+        <div style={{ marginTop:16, paddingTop:12, borderTop:"1px solid #D6E8DA" }}>
           <div style={{ display:"flex", justifyContent:"space-between", marginBottom:5 }}>
-            <span style={{ color:"#10b981", fontSize:11, fontWeight:600 }}>Equity: {((d.equity.total/d.assets.total)*100).toFixed(0)}%</span>
+            <span style={{ color:"#2DB84B", fontSize:11, fontWeight:600 }}>Equity: {((d.equity.total/d.assets.total)*100).toFixed(0)}%</span>
             <span style={{ color:"#f43f5e", fontSize:11, fontWeight:600 }}>Debt: {d.ratios.debtRatio}%</span>
           </div>
-          <div style={{ height:8, background:"#1C3D21", borderRadius:4, overflow:"hidden", display:"flex" }}>
-            <div style={{ height:"100%", width:`${(d.equity.total/d.assets.total)*100}%`, background:"#10b981" }}/>
+          <div style={{ height:8, background:"#D6E8DA", borderRadius:4, overflow:"hidden", display:"flex" }}>
+            <div style={{ height:"100%", width:`${(d.equity.total/d.assets.total)*100}%`, background:"#2DB84B" }}/>
             <div style={{ height:"100%", flex:1, background:"#f43f5e" }}/>
           </div>
         </div>
@@ -3304,42 +3304,42 @@ function MIFarmerBSPage() {
 
       <div className="chart-grid-2">
         <div className="card">
-          <p style={{ color:"#9DBF9F", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:4 }}>Fixed Asset Breakdown (€/Ha)</p>
-          <p style={{ color:"#9DBF9F", fontSize:11, marginBottom:12 }}>Long-term productive capital stock decomposition.</p>
+          <p style={{ color:"#6B8F72", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:4 }}>Fixed Asset Breakdown (€/Ha)</p>
+          <p style={{ color:"#6B8F72", fontSize:11, marginBottom:12 }}>Long-term productive capital stock decomposition.</p>
           {Object.entries(d.assets.fixed.items).map(([name,val],i)=>{ const pct=(val/d.assets.fixed.total)*100; return (
             <div key={i} style={{ marginBottom:8 }}>
               <div style={{ display:"flex", justifyContent:"space-between", marginBottom:3 }}>
-                <span style={{ color:"#E8F2E9", fontSize:11 }}>{name}</span>
-                <span style={{ color:d.color, fontSize:11, fontFamily:"'DM Mono',monospace", fontWeight:600 }}>{fmtV(val)} <span style={{ color:"#9DBF9F", fontWeight:400 }}>({pct.toFixed(0)}%)</span></span>
+                <span style={{ color:"#2C4A33", fontSize:11 }}>{name}</span>
+                <span style={{ color:d.color, fontSize:11, fontFamily:"'DM Mono',monospace", fontWeight:600 }}>{fmtV(val)} <span style={{ color:"#6B8F72", fontWeight:400 }}>({pct.toFixed(0)}%)</span></span>
               </div>
-              <div style={{ height:5, background:"#1C3D21", borderRadius:3, overflow:"hidden" }}>
+              <div style={{ height:5, background:"#D6E8DA", borderRadius:3, overflow:"hidden" }}>
                 <div style={{ height:"100%", width:`${pct}%`, background:d.color, borderRadius:3 }}/>
               </div>
             </div>
           );})}
         </div>
         <div className="card">
-          <p style={{ color:"#9DBF9F", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:4 }}>Debt Maturity Profile (€/Ha)</p>
-          <p style={{ color:"#9DBF9F", fontSize:11, marginBottom:12 }}>Decomposition of total debt by maturity — key indicator of refinancing risk and cash pressure.</p>
+          <p style={{ color:"#6B8F72", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, marginBottom:4 }}>Debt Maturity Profile (€/Ha)</p>
+          <p style={{ color:"#6B8F72", fontSize:11, marginBottom:12 }}>Decomposition of total debt by maturity — key indicator of refinancing risk and cash pressure.</p>
           {[
             {label:"Long & medium-term debt", val:d.debt.items["Long & medium-term debt"], color:"#f43f5e", note:"Structural — machinery, building & land loans (7–15yr)"},
             {label:"Short-term borrowings", val:d.debt.items["Short-term borrowings & other financial liabilities"], color:"#f59e0b", note:"Working capital lines — renewed annually"},
             {label:"Trade & other payables", val:d.debt.items["Trade & other payables"], color:"#a78bfa", note:"Deferred input payments — coops, seeds, fertilizers"},
-            {label:"Liability accruals", val:d.debt.items["Liability accruals"], color:"#9DBF9F", note:"Accrued charges not yet settled"},
+            {label:"Liability accruals", val:d.debt.items["Liability accruals"], color:"#6B8F72", note:"Accrued charges not yet settled"},
           ].map((item,i)=>{ const pct=(item.val/d.debt.total)*100; return (
             <div key={i} style={{ marginBottom:10 }}>
               <div style={{ display:"flex", justifyContent:"space-between", marginBottom:3 }}>
-                <span style={{ color:"#E8F2E9", fontSize:11 }}>{item.label}</span>
+                <span style={{ color:"#2C4A33", fontSize:11 }}>{item.label}</span>
                 <span style={{ color:item.color, fontSize:11, fontFamily:"'DM Mono',monospace", fontWeight:600 }}>{fmtV(item.val)} ({pct.toFixed(0)}%)</span>
               </div>
-              <div style={{ height:5, background:"#1C3D21", borderRadius:3, overflow:"hidden", marginBottom:3 }}>
+              <div style={{ height:5, background:"#D6E8DA", borderRadius:3, overflow:"hidden", marginBottom:3 }}>
                 <div style={{ height:"100%", width:`${pct}%`, background:item.color, borderRadius:3 }}/>
               </div>
-              <p style={{ color:"#9DBF9F", fontSize:10, margin:0 }}>{item.note}</p>
+              <p style={{ color:"#6B8F72", fontSize:10, margin:0 }}>{item.note}</p>
             </div>
           );})}
-          <div style={{ marginTop:10, padding:"10px 12px", background:"#091C0C", border:"1px solid #1C3D21", borderLeft:`3px solid #f43f5e`, borderRadius:"0 8px 8px 0" }}>
-            <p style={{ color:"#9DBF9F", fontSize:11, margin:0, lineHeight:1.65 }}>
+          <div style={{ marginTop:10, padding:"10px 12px", background:"#FFFFFF", border:"1px solid #D6E8DA", borderLeft:`3px solid #f43f5e`, borderRadius:"0 8px 8px 0" }}>
+            <p style={{ color:"#6B8F72", fontSize:11, margin:0, lineHeight:1.65 }}>
               Long-term debt is <span style={{color:"#f43f5e",fontWeight:600}}>{((d.debt.items["Long & medium-term debt"]/d.debt.total)*100).toFixed(0)}%</span> of total debt — predominantly structural. Short-term obligations (borrowings + payables) are <span style={{color:"#f59e0b",fontWeight:600}}>{(((d.debt.items["Short-term borrowings & other financial liabilities"]+d.debt.items["Trade & other payables"])/d.debt.total)*100).toFixed(0)}%</span>, reflecting the seasonal input purchasing cycle.
             </p>
           </div>
@@ -3347,47 +3347,47 @@ function MIFarmerBSPage() {
       </div>
 
       {/* BS Table */}
-      <div style={{ background:"#0A1E0C", border:"1px solid #1C3D21", borderRadius:14, overflow:"hidden" }}>
-        <div style={{ display:"flex", alignItems:"center", padding:"12px 14px", background:"#091C0C", borderBottom:"1px solid #1C3D21" }}>
+      <div style={{ background:"#F7F9F7", border:"1px solid #D6E8DA", borderRadius:14, overflow:"hidden" }}>
+        <div style={{ display:"flex", alignItems:"center", padding:"12px 14px", background:"#FFFFFF", borderBottom:"1px solid #D6E8DA" }}>
           <span style={{width:17,flexShrink:0}}/>
-          <span style={{ flex:1, color:"#9DBF9F", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em" }}>Line item</span>
-          <span style={{ width:96, textAlign:"right", color:"#9DBF9F", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em" }}>€ / ha</span>
-          <span style={{ width:58, textAlign:"right", color:"#9DBF9F", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em" }}>% total</span>
+          <span style={{ flex:1, color:"#6B8F72", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em" }}>Line item</span>
+          <span style={{ width:96, textAlign:"right", color:"#6B8F72", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em" }}>€ / ha</span>
+          <span style={{ width:58, textAlign:"right", color:"#6B8F72", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em" }}>% total</span>
         </div>
-        <div style={{padding:"5px 0 2px",background:"#091C0C",borderBottom:"1px solid #0d1829"}}><span style={{paddingLeft:14,color:"#9DBF9F",fontSize:9,textTransform:"uppercase",letterSpacing:"0.1em"}}>Assets</span></div>
+        <div style={{padding:"5px 0 2px",background:"#FFFFFF",borderBottom:"1px solid #0d1829"}}><span style={{paddingLeft:14,color:"#6B8F72",fontSize:9,textTransform:"uppercase",letterSpacing:"0.1em"}}>Assets</span></div>
         <BSRow label="Fixed Assets" value={d.assets.fixed.total} bold expandKey="assets">{Object.entries(d.assets.fixed.items).map(([k,v],i)=><BSRow key={i} label={k} value={v} indent={1}/>)}</BSRow>
         <BSRow label="Current Assets" value={d.assets.current.total} bold expandKey="equity">{Object.entries(d.assets.current.items).map(([k,v],i)=><BSRow key={i} label={k} value={v} indent={1}/>)}</BSRow>
         <BSRow label="TOTAL ASSETS" value={d.assets.total} bold header color={d.color}/>
-        <div style={{padding:"5px 0 2px",background:"#091C0C",borderBottom:"1px solid #0d1829",marginTop:4}}><span style={{paddingLeft:14,color:"#9DBF9F",fontSize:9,textTransform:"uppercase",letterSpacing:"0.1em"}}>Equity & Liabilities</span></div>
+        <div style={{padding:"5px 0 2px",background:"#FFFFFF",borderBottom:"1px solid #0d1829",marginTop:4}}><span style={{paddingLeft:14,color:"#6B8F72",fontSize:9,textTransform:"uppercase",letterSpacing:"0.1em"}}>Equity & Liabilities</span></div>
         <BSRow label="Equity" value={d.equity.total} bold expandKey="debt">{Object.entries(d.equity.items).map(([k,v],i)=><BSRow key={i} label={k} value={v} indent={1}/>)}</BSRow>
         <BSRow label="Total Debt" value={d.debt.total} bold color="#f43f5e">{Object.entries(d.debt.items).map(([k,v],i)=><BSRow key={i} label={k} value={v} indent={1}/>)}</BSRow>
         <BSRow label="TOTAL LIABILITIES & EQUITY" value={d.totalLE} bold header color={d.color}/>
       </div>
 
       {/* Ratios */}
-      <div style={{ background:"#0A1E0C", border:"1px solid #1C3D21", borderRadius:14, overflow:"hidden" }}>
-        <div style={{ padding:"12px 16px 10px", background:"#091C0C", borderBottom:"1px solid #1C3D21" }}>
-          <p style={{ color:"#9DBF9F", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, margin:0 }}>Key Financial Ratios</p>
-          <p style={{ color:"#9DBF9F", fontSize:10, margin:"3px 0 0" }}>Click ⓘ for definition</p>
+      <div style={{ background:"#F7F9F7", border:"1px solid #D6E8DA", borderRadius:14, overflow:"hidden" }}>
+        <div style={{ padding:"12px 16px 10px", background:"#FFFFFF", borderBottom:"1px solid #D6E8DA" }}>
+          <p style={{ color:"#6B8F72", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", fontWeight:700, margin:0 }}>Key Financial Ratios</p>
+          <p style={{ color:"#6B8F72", fontSize:10, margin:"3px 0 0" }}>Click ⓘ for definition</p>
         </div>
         <div style={{ padding:16, display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))", gap:12 }}>
           {[
-            {key:"gosHa",     value:d.ratios.gosHa.toFixed(2)+" k€/ha",    accent:"#2DB04B"},
+            {key:"gosHa",     value:d.ratios.gosHa.toFixed(2)+" k€/ha",    accent:"#2DB84B"},
             {key:"gosAWU",    value:d.ratios.gosAWU.toFixed(2)+" k€/UTA",  accent:"#5CC96E"},
-            {key:"profitHa",  value:d.ratios.profitHa.toFixed(2)+" k€/ha", accent:"#10b981"},
+            {key:"profitHa",  value:d.ratios.profitHa.toFixed(2)+" k€/ha", accent:"#2DB84B"},
             {key:"profitAWU", value:d.ratios.profitAWU.toFixed(2)+" k€/UTA",accent:"#4ade80"},
             {key:"debtRatio", value:d.ratios.debtRatio.toFixed(1)+"%",      accent:"#f43f5e"},
             {key:"marginRate",value:d.ratios.marginRate.toFixed(1)+"%",     accent:"#f59e0b"},
           ].map(r=>{
             const tip=RATIO_TOOLTIPS[r.key]; const isOpen=activeTooltip===r.key;
             return (
-              <div key={r.key} style={{ background:"#0A1A0C", border:`1px solid ${r.accent}20`, borderRadius:10, padding:"12px 14px" }}>
+              <div key={r.key} style={{ background:"#F3F8F4", border:`1px solid ${r.accent}20`, borderRadius:10, padding:"12px 14px" }}>
                 <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:6 }}>
-                  <p style={{ color:"#9DBF9F", fontSize:10, textTransform:"uppercase", letterSpacing:"0.07em", margin:0, flex:1, paddingRight:6 }}>{tip.label}</p>
+                  <p style={{ color:"#6B8F72", fontSize:10, textTransform:"uppercase", letterSpacing:"0.07em", margin:0, flex:1, paddingRight:6 }}>{tip.label}</p>
                   <button onClick={()=>setActiveTooltip(isOpen?null:r.key)} style={{ background:"transparent", border:`1px solid ${r.accent}40`, borderRadius:"50%", width:18, height:18, display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", flexShrink:0, color:r.accent, fontSize:10, fontWeight:700, fontFamily:"serif", lineHeight:1 }}>i</button>
                 </div>
                 <p style={{ color:r.accent, fontSize:22, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>{r.value}</p>
-                {isOpen&&<div style={{ marginTop:10, padding:"10px 12px", background:"#091C0C", border:`1px solid ${r.accent}30`, borderRadius:8 }}><p style={{ color:"#9DBF9F", fontSize:11, lineHeight:1.75, margin:0 }}>{tip.desc}</p></div>}
+                {isOpen&&<div style={{ marginTop:10, padding:"10px 12px", background:"#FFFFFF", border:`1px solid ${r.accent}30`, borderRadius:8 }}><p style={{ color:"#6B8F72", fontSize:11, lineHeight:1.75, margin:0 }}>{tip.desc}</p></div>}
               </div>
             );
           })}
@@ -3415,11 +3415,11 @@ function MIStrategyPage({ region }) {
           <h3 className="card-title">Competitive Positioning Radar — France</h3>
           <ResponsiveContainer width="100%" height={240}>
             <RadarChart data={compRadar}>
-              <PolarGrid stroke="#1C3D21" />
-              <PolarAngleAxis dataKey="axis" tick={{ fill:"#7DA882",fontSize:9 }} />
-              <Radar name="OCP"  dataKey="OCP"  stroke="#10b981" fill="#10b981" fillOpacity={0.2} strokeWidth={2} />
+              <PolarGrid stroke="#D6E8DA" />
+              <PolarAngleAxis dataKey="axis" tick={{ fill:"#6B8F72",fontSize:9 }} />
+              <Radar name="OCP"  dataKey="OCP"  stroke="#2DB84B" fill="#2DB84B" fillOpacity={0.2} strokeWidth={2} />
               <Radar name="ICL"  dataKey="ICL"  stroke="#f59e0b" fill="#f59e0b" fillOpacity={0.15} strokeWidth={1.5} />
-              <Radar name="Yara" dataKey="Yara" stroke="#7DA882" fill="#7DA882" fillOpacity={0.1}  strokeWidth={1.5} />
+              <Radar name="Yara" dataKey="Yara" stroke="#6B8F72" fill="#6B8F72" fillOpacity={0.1}  strokeWidth={1.5} />
               <Legend wrapperStyle={{ fontSize:10 }} />
               <Tooltip content={<CustomTooltip />} />
             </RadarChart>
@@ -3435,31 +3435,31 @@ function MIStrategyPage({ region }) {
 function MIAgronomyPage({ region }) {
   const intel=MARKET_INTEL[region];
   if (!intel) return <MIPlaceholder region={region} />;
-  const tagColor={"TSP":{bg:"#0e2a38",text:"#2DB04B"},"TSP/PK":{bg:"#0e2a38",text:"#2DB04B"},"DAP":{bg:"#1e1030",text:"#a78bfa"},"PK":{bg:"#0e2218",text:"#10b981"}};
+  const tagColor={"TSP":{bg:"#0e2a38",text:"#2DB84B"},"TSP/PK":{bg:"#0e2a38",text:"#2DB84B"},"DAP":{bg:"#1e1030",text:"#a78bfa"},"PK":{bg:"#0e2218",text:"#2DB84B"}};
   return (
     <div style={{ display:"flex",flexDirection:"column",gap:20 }}>
-      <div><h3 style={{ color:"#9DBF9F",fontSize:11,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:14 }}>Agronomic Insights</h3><div className="chart-grid-2">{intel.agronomy.map((item,i)=><InsightCard key={i} item={item} />)}</div></div>
+      <div><h3 style={{ color:"#6B8F72",fontSize:11,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:14 }}>Agronomic Insights</h3><div className="chart-grid-2">{intel.agronomy.map((item,i)=><InsightCard key={i} item={item} />)}</div></div>
       <div className="card">
         <h3 className="card-title">Crop Agronomy — Current vs Recommended P2O5 (kg/ha)</h3>
         <div style={{ display:"flex",flexDirection:"column",gap:12,marginTop:4 }}>
           {intel.cropAgronomy.map((row,i)=>{
-            const gap=row.currentP-row.recP, gapColor=gap>=0?"#10b981":gap>-15?"#f59e0b":"#f43f5e";
-            const tc=tagColor[row.product]||{bg:"#1C3D21",text:"#9DBF9F"};
+            const gap=row.currentP-row.recP, gapColor=gap>=0?"#2DB84B":gap>-15?"#f59e0b":"#f43f5e";
+            const tc=tagColor[row.product]||{bg:"#D6E8DA",text:"#6B8F72"};
             return (
-              <div key={i} style={{ background:"#0E2612",borderRadius:10,padding:"11px 13px" }}>
+              <div key={i} style={{ background:"#F3F8F4",borderRadius:10,padding:"11px 13px" }}>
                 <div style={{ display:"flex",alignItems:"center",gap:10,marginBottom:7,flexWrap:"wrap" }}>
-                  <span style={{ color:"#E8F2E9",fontSize:13,fontWeight:600,minWidth:75 }}>{row.crop}</span>
+                  <span style={{ color:"#2C4A33",fontSize:13,fontWeight:600,minWidth:75 }}>{row.crop}</span>
                   <span style={{ padding:"2px 7px",borderRadius:4,fontSize:10,fontWeight:600,background:tc.bg,color:tc.text }}>{row.product}</span>
                   <span style={{ color:gapColor,fontSize:11,fontFamily:"'DM Mono',monospace",fontWeight:700 }}>Gap: {gap>=0?"0":gap} kg/ha</span>
-                  <span style={{ color:"#9DBF9F",fontSize:10,marginLeft:"auto" }}>{row.area.toLocaleString()} kha</span>
+                  <span style={{ color:"#6B8F72",fontSize:10,marginLeft:"auto" }}>{row.area.toLocaleString()} kha</span>
                 </div>
-                <div style={{ position:"relative",height:8,background:"#1C3D21",borderRadius:4,overflow:"hidden",marginBottom:5 }}>
+                <div style={{ position:"relative",height:8,background:"#D6E8DA",borderRadius:4,overflow:"hidden",marginBottom:5 }}>
                   <div style={{ position:"absolute",left:0,height:"100%",width:`${(row.recP/100)*100}%`,background:gapColor+"30",borderRadius:4 }} />
                   <div style={{ position:"absolute",left:0,height:"100%",width:`${(row.currentP/100)*100}%`,background:gapColor,borderRadius:4 }} />
                 </div>
                 <div style={{ display:"flex",justifyContent:"space-between" }}>
-                  <span style={{ color:"#9DBF9F",fontSize:10 }}>Current: <span style={{ color:gapColor,fontFamily:"'DM Mono',monospace" }}>{row.currentP}</span> kg/ha</span>
-                  <span style={{ color:"#9DBF9F",fontSize:10 }}>Rec: <span style={{ color:"#9DBF9F",fontFamily:"'DM Mono',monospace" }}>{row.recP}</span> kg/ha</span>
+                  <span style={{ color:"#6B8F72",fontSize:10 }}>Current: <span style={{ color:gapColor,fontFamily:"'DM Mono',monospace" }}>{row.currentP}</span> kg/ha</span>
+                  <span style={{ color:"#6B8F72",fontSize:10 }}>Rec: <span style={{ color:"#6B8F72",fontFamily:"'DM Mono',monospace" }}>{row.recP}</span> kg/ha</span>
                 </div>
               </div>
             );
@@ -3477,28 +3477,28 @@ function RegionSelectPage({ onSelect }) {
   const [hov, setHov] = useState(null);
 
   const REGIONS = [
-    { code:"France", flag:"🇫🇷", label:"France",  available:true,  color:"#2DB04B" },
+    { code:"France", flag:"🇫🇷", label:"France",  available:true,  color:"#2DB84B" },
     { code:"India",  flag:"🇮🇳", label:"India",   available:false, color:"#f59e0b" },
   ];
 
   return (
-    <div style={{ minHeight:"100vh", background:"#061508", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", fontFamily:"'DM Sans','Segoe UI',sans-serif", position:"relative", overflow:"hidden" }}>
+    <div style={{ minHeight:"100vh", background:"#F7F9F7", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", fontFamily:"'DM Sans','Segoe UI',sans-serif", position:"relative", overflow:"hidden" }}>
       <style>{`
         @keyframes rFadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
         .rc { transition:all 0.2s ease; }
         .rc:hover { transform:translateY(-4px) !important; }
       `}</style>
 
-      <div style={{ position:"absolute", inset:0, backgroundImage:"linear-gradient(rgba(45,176,75,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(45,176,75,0.025) 1px,transparent 1px)", backgroundSize:"60px 60px", pointerEvents:"none" }}/>
+      <div style={{ position:"absolute", inset:0, backgroundImage:"linear-gradient(rgba(45,184,75,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(45,184,75,0.025) 1px,transparent 1px)", backgroundSize:"60px 60px", pointerEvents:"none" }}/>
 
       <div style={{ position:"absolute", top:28, left:36, display:"flex", alignItems:"center", gap:10 }}>
-        <div style={{ width:32, height:32, borderRadius:8, background:"linear-gradient(135deg,#2DB04B,#1A7A30)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:800, fontSize:11, color:"#fff", fontFamily:"'DM Mono',monospace" }}>GMO</div>
-        <span style={{ color:"rgba(255,255,255,0.12)", fontSize:11, letterSpacing:"0.12em", textTransform:"uppercase" }}>PhosStratOS · OCP Nutricrops</span>
+        <div style={{ width:32, height:32, borderRadius:8, background:"linear-gradient(135deg,#2DB84B,#1A8A34)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:800, fontSize:11, color:"#0F2415", fontFamily:"'DM Mono',monospace" }}>GMO</div>
+        <span style={{ color:"rgba(15,36,21,0.3)", fontSize:11, letterSpacing:"0.12em", textTransform:"uppercase" }}>PhosStratOS · OCP Nutricrops</span>
       </div>
 
       <div style={{ textAlign:"center", marginBottom:52, animation:"rFadeUp 0.6s ease both" }}>
-        <p style={{ color:"#2DB04B", fontSize:10, textTransform:"uppercase", letterSpacing:"0.2em", fontWeight:700, marginBottom:14 }}>Farmer Economics</p>
-        <h1 style={{ color:"#F0F8F1", fontSize:"clamp(18px,2.8vw,32px)", fontWeight:300, letterSpacing:"-0.02em", lineHeight:1.4, margin:0 }}>
+        <p style={{ color:"#2DB84B", fontSize:10, textTransform:"uppercase", letterSpacing:"0.2em", fontWeight:700, marginBottom:14 }}>Farmer Economics</p>
+        <h1 style={{ color:"#0F2415", fontSize:"clamp(18px,2.8vw,32px)", fontWeight:300, letterSpacing:"-0.02em", lineHeight:1.4, margin:0 }}>
           Which country would you like to<br/>
           <span style={{ fontWeight:800 }}>explore farmer economics about?</span>
         </h1>
@@ -3512,8 +3512,8 @@ function RegionSelectPage({ onSelect }) {
             onMouseEnter={() => r.available && setHov(r.code)}
             onMouseLeave={() => setHov(null)}
             style={{
-              background:"#0C220F",
-              border:`1px solid ${hov===r.code ? r.color+"60" : "#183820"}`,
+              background:"#FFFFFF",
+              border:`1px solid ${hov===r.code ? r.color+"60" : "#D6E8DA"}`,
               borderRadius:16, overflow:"hidden",
               cursor: r.available ? "pointer" : "default",
               opacity: r.available ? 1 : 0.35,
@@ -3537,14 +3537,14 @@ function RegionSelectPage({ onSelect }) {
                   transition:"filter 0.2s" }}
                 onError={e => { e.target.style.display="none"; }}
               />
-              <div style={{ position:"absolute", inset:0, background: hov===r.code ? `linear-gradient(to bottom,transparent 40%,${r.color}30)` : "linear-gradient(to bottom,transparent 50%,rgba(4,8,15,0.7))" }}/>
+              <div style={{ position:"absolute", inset:0, background: hov===r.code ? `linear-gradient(to bottom,transparent 40%,${r.color}30)` : "linear-gradient(to bottom,transparent 50%,rgba(247,249,247,0.7))" }}/>
             </div>
 
             {/* Label */}
             <div style={{ padding:"16px 20px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-              <p style={{ color: hov===r.code ? r.color : "#E8F2E9", fontSize:15, fontWeight:700, margin:0, transition:"color 0.2s" }}>{r.label}</p>
+              <p style={{ color: hov===r.code ? r.color : "#2C4A33", fontSize:15, fontWeight:700, margin:0, transition:"color 0.2s" }}>{r.label}</p>
               {r.available && (
-                <svg style={{ color: hov===r.code ? r.color : "#2A5530", transition:"color 0.2s, transform 0.2s", transform: hov===r.code ? "translateX(3px)" : "none" }} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                <svg style={{ color: hov===r.code ? r.color : "#B8D4BE", transition:"color 0.2s, transform 0.2s", transform: hov===r.code ? "translateX(3px)" : "none" }} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               )}
             </div>
           </div>
@@ -3571,19 +3571,19 @@ function HubPage({ onChoose }) {
   );
 
   return (
-    <div style={{ minHeight:"100vh", background:"#061508", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", fontFamily:"'DM Sans','Segoe UI',sans-serif", padding:"40px 24px" }}>
+    <div style={{ minHeight:"100vh", background:"#F7F9F7", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", fontFamily:"'DM Sans','Segoe UI',sans-serif", padding:"40px 24px" }}>
       <style>{`@keyframes hubFade{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}`}</style>
 
       <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:60, animation:"hubFade 0.6s ease both" }}>
-        <div style={{ width:40,height:40,borderRadius:10,background:"linear-gradient(135deg,#2DB04B,#1A7A30)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:12,color:"#fff",fontFamily:"'DM Mono',monospace",boxShadow:"0 0 20px #2DB04B40" }}>GMO</div>
+        <div style={{ width:40,height:40,borderRadius:10,background:"linear-gradient(135deg,#2DB84B,#1A8A34)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:12,color:"#0F2415",fontFamily:"'DM Mono',monospace",boxShadow:"0 0 20px #2DB84B40" }}>GMO</div>
         <div>
-          <p style={{ color:"#F0F8F1",fontWeight:800,fontSize:17,letterSpacing:"-0.03em",margin:0 }}>PhosStratOS</p>
-          <p style={{ color:"#9DBF9F",fontSize:12,margin:0 }}>OCP Nutricrops · P Separation Intelligence</p>
+          <p style={{ color:"#0F2415",fontWeight:800,fontSize:17,letterSpacing:"-0.03em",margin:0 }}>PhosStratOS</p>
+          <p style={{ color:"#6B8F72",fontSize:12,margin:0 }}>OCP Nutricrops · P Separation Intelligence</p>
         </div>
       </div>
 
-      <p style={{ color:"#F0F8F1",fontSize:24,fontWeight:300,marginBottom:8,letterSpacing:"-0.01em",animation:"hubFade 0.6s 0.1s ease both",opacity:0 }}>Select your workspace</p>
-      <p style={{ color:"#9DBF9F",fontSize:13,marginBottom:56,animation:"hubFade 0.6s 0.2s ease both",opacity:0 }}>France · Phosphorus Separation Intelligence</p>
+      <p style={{ color:"#0F2415",fontSize:24,fontWeight:300,marginBottom:8,letterSpacing:"-0.01em",animation:"hubFade 0.6s 0.1s ease both",opacity:0 }}>Select your workspace</p>
+      <p style={{ color:"#6B8F72",fontSize:13,marginBottom:56,animation:"hubFade 0.6s 0.2s ease both",opacity:0 }}>France · Phosphorus Separation Intelligence</p>
 
       <div style={{ display:"flex", gap:16, flexWrap:"nowrap", justifyContent:"center", width:"100%", maxWidth:840 }}>
         {[
@@ -3592,7 +3592,7 @@ function HubPage({ onChoose }) {
             Icon:QuantIcon,
             label:"WORKSPACE A",
             title:"Quantitative Engine",
-            color:"#2DB04B",
+            color:"#2DB84B",
             desc:"Simulate P separation scenarios, model agronomic response across soil types, and analyse P&L by crop and region.",
             tags:["Scenario Simulator","P&L Explorer","Agronomic Response","Model Insights"],
             delay:"0.25s",
@@ -3602,7 +3602,7 @@ function HubPage({ onChoose }) {
             Icon:IntelIcon,
             label:"WORKSPACE B",
             title:"Market Intelligence",
-            color:"#10b981",
+            color:"#2DB84B",
             desc:"Farmer decision drivers, market fundamentals, competitive landscape, and regional crop analytics for France.",
             tags:["Market Fundamentals","Farmer Behaviour","Competitive Landscape","Regional Analysis"],
             delay:"0.4s",
@@ -3614,8 +3614,8 @@ function HubPage({ onChoose }) {
             onMouseLeave={() => setHov(null)}
             style={{
               flex:"1 1 0", maxWidth:410,
-              background: hov===card.key ? `linear-gradient(150deg,${card.color}12,#0C220F 60%)` : "#0C220F",
-              border:`1px solid ${hov===card.key ? card.color+"40" : "#183820"}`,
+              background: hov===card.key ? `linear-gradient(150deg,${card.color}12,#FFFFFF 60%)` : "#FFFFFF",
+              border:`1px solid ${hov===card.key ? card.color+"40" : "#D6E8DA"}`,
               borderRadius:16, padding:"36px 32px",
               cursor:"pointer",
               transition:"all 0.2s ease",
@@ -3627,22 +3627,22 @@ function HubPage({ onChoose }) {
             <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:28 }}>
               <div>
                 <p style={{ color:card.color,fontSize:10,textTransform:"uppercase",letterSpacing:"0.14em",fontWeight:600,margin:0,marginBottom:10 }}>{card.label}</p>
-                <p style={{ color:"#F0F8F1",fontSize:20,fontWeight:700,letterSpacing:"-0.025em",margin:0,lineHeight:1.2 }}>{card.title}</p>
+                <p style={{ color:"#0F2415",fontSize:20,fontWeight:700,letterSpacing:"-0.025em",margin:0,lineHeight:1.2 }}>{card.title}</p>
               </div>
               <div style={{ width:44,height:44,borderRadius:10,background:card.color+"14",border:`1px solid ${card.color}20`,display:"flex",alignItems:"center",justifyContent:"center",color:card.color,flexShrink:0 }}>
                 <card.Icon />
               </div>
             </div>
 
-            <p style={{ color:"#9DBF9F",fontSize:13,lineHeight:1.75,marginBottom:28 }}>{card.desc}</p>
+            <p style={{ color:"#6B8F72",fontSize:13,lineHeight:1.75,marginBottom:28 }}>{card.desc}</p>
 
             <div style={{ display:"flex",flexWrap:"wrap",gap:6,marginBottom:32 }}>
               {card.tags.map(t => (
-                <span key={t} style={{ background:"#ffffff08",border:"1px solid #ffffff0f",borderRadius:4,padding:"3px 10px",color:"#9DBF9F",fontSize:10,fontWeight:500 }}>{t}</span>
+                <span key={t} style={{ background:"#ffffff08",border:"1px solid #ffffff0f",borderRadius:4,padding:"3px 10px",color:"#6B8F72",fontSize:10,fontWeight:500 }}>{t}</span>
               ))}
             </div>
 
-            <div style={{ display:"flex",alignItems:"center",gap:8,color:hov===card.key?card.color:"#c8d3e0",fontSize:12,fontWeight:600,transition:"color 0.2s",borderTop:"1px solid #183820",paddingTop:20 }}>
+            <div style={{ display:"flex",alignItems:"center",gap:8,color:hov===card.key?card.color:"#c8d3e0",fontSize:12,fontWeight:600,transition:"color 0.2s",borderTop:"1px solid #D6E8DA",paddingTop:20 }}>
               Enter workspace
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </div>
@@ -3675,29 +3675,29 @@ export default function App() {
     {key:"regions",   label:"Regional Analysis",     short:"Regions"        },
   ];
 
-  const secColor   = section==="quant"?"#2DB04B":section==="intel"?"#10b981":"#a78bfa";
+  const secColor   = section==="quant"?"#2DB84B":section==="intel"?"#2DB84B":"#a78bfa";
 
   if (!hasEntered) return <LandingPage onEnter={() => setHasEntered(true)} />;
   if (!regionSelected) return <RegionSelectPage onSelect={r => { setRegion(r); setRegionSelected(true); }} />;
   if (!hubDone) return <HubPage onChoose={s => { setSection(s); setHubDone(true); setMathieuPhase("intro"); }} />;
 
   return (
-    <div style={{ minHeight:"100vh",background:"#091C0C",color:"#E8F2E9",fontFamily:"'DM Sans','Segoe UI',sans-serif" }}>
+    <div style={{ minHeight:"100vh",background:"#FFFFFF",color:"#2C4A33",fontFamily:"'DM Sans','Segoe UI',sans-serif" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-        ::-webkit-scrollbar{width:4px;height:4px;} ::-webkit-scrollbar-track{background:#112B14;} ::-webkit-scrollbar-thumb{background:#1C3D21;border-radius:3px;}
+        ::-webkit-scrollbar{width:4px;height:4px;} ::-webkit-scrollbar-track{background:#FFFFFF;} ::-webkit-scrollbar-thumb{background:#D6E8DA;border-radius:3px;}
         input[type=range]{height:4px;}
-        select{background:#1C3D21;color:#E8F2E9;border:1px solid #2A5530;border-radius:6px;padding:6px 10px;font-size:13px;cursor:pointer;outline:none;max-width:130px;}
-        select:hover{border-color:#2DB04B;}
-        .card{background:#112B14;border:1px solid #1C3D21;border-radius:14px;padding:18px;}
-        .card-title{color:#9DBF9F;font-size:11px;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:14px;}
+        select{background:#D6E8DA;color:#2C4A33;border:1px solid #B8D4BE;border-radius:6px;padding:6px 10px;font-size:13px;cursor:pointer;outline:none;max-width:130px;}
+        select:hover{border-color:#2DB84B;}
+        .card{background:#FFFFFF;border:1px solid #D6E8DA;border-radius:14px;padding:18px;}
+        .card-title{color:#6B8F72;font-size:11px;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:14px;}
         .kpi-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;}
         .chart-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
         .simulator-grid{display:grid;grid-template-columns:280px 1fr;gap:20px;}
-        .app-sidebar{width:210px;flex-shrink:0;border-left:1px solid #1C3D21;padding:16px;background:#0E2612;}
+        .app-sidebar{width:210px;flex-shrink:0;border-left:1px solid #D6E8DA;padding:16px;background:#F3F8F4;}
         .sidebar-overlay{display:none;}
-        .subnav{background:#0A1A0C;border-bottom:1px solid #0E2412;padding:0 16px;display:flex;overflow-x:auto;}
+        .subnav{background:#F3F8F4;border-bottom:1px solid #E8F2EA;padding:0 16px;display:flex;overflow-x:auto;}
         .subnav::-webkit-scrollbar{height:0;}
         .sec-label-full{display:inline;} .sec-label-short{display:none;}
         @media(max-width:640px){
@@ -3707,7 +3707,7 @@ export default function App() {
           .kpi-row>div{min-width:calc(50% - 4px);flex:1 1 calc(50% - 4px);}
           .app-sidebar{position:fixed;top:0;right:0;bottom:0;z-index:200;width:240px;transform:translateX(100%);transition:transform 0.25s ease;overflow-y:auto;}
           .app-sidebar.open{transform:translateX(0);box-shadow:-4px 0 24px #000a;}
-          .sidebar-overlay{display:block;position:fixed;inset:0;z-index:199;background:#00000080;opacity:0;pointer-events:none;transition:opacity 0.25s;}
+          .sidebar-overlay{display:block;position:fixed;inset:0;z-index:199;background:#F7F9F780;opacity:0;pointer-events:none;transition:opacity 0.25s;}
           .sidebar-overlay.open{opacity:1;pointer-events:all;}
           .sec-label-full{display:none;} .sec-label-short{display:inline;}
           .page-content{padding:14px !important;}
@@ -3715,34 +3715,34 @@ export default function App() {
       `}</style>
 
       {/* ── HEADER ── */}
-      <div style={{ borderBottom:"1px solid #1C3D21",padding:"0 16px",display:"flex",alignItems:"center",justifyContent:"space-between",height:50,background:"#0E2612",position:"sticky",top:0,zIndex:100 }}>
+      <div style={{ borderBottom:"1px solid #D6E8DA",padding:"0 16px",display:"flex",alignItems:"center",justifyContent:"space-between",height:50,background:"#FFFFFF",position:"sticky",top:0,zIndex:100 }}>
         <div style={{ display:"flex",alignItems:"center",gap:10 }}>
-          <div style={{ width:32,height:32,borderRadius:8,background:"linear-gradient(135deg,#2DB04B,#1A7A30)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:11,color:"#fff",letterSpacing:"-0.5px",fontFamily:"'DM Mono',monospace",boxShadow:"0 0 10px #2DB04B40",flexShrink:0 }}>GMO</div>
+          <div style={{ width:32,height:32,borderRadius:8,background:"linear-gradient(135deg,#2DB84B,#1A8A34)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:11,color:"#FFFFFF",letterSpacing:"-0.5px",fontFamily:"'DM Mono',monospace",boxShadow:"0 0 10px #2DB84B40",flexShrink:0 }}>GMO</div>
           <div>
-            <span style={{ fontWeight:800,fontSize:14,letterSpacing:"-0.03em",color:"#F0F8F1" }}>PhosStratOS</span>
-            <span style={{ color:"#9DBF9F",fontSize:11,marginLeft:8 }} className="sec-label-full">P Separation Intelligence</span>
+            <span style={{ fontWeight:800,fontSize:14,letterSpacing:"-0.03em",color:"#0F2415" }}>PhosStratOS</span>
+            <span style={{ color:"#6B8F72",fontSize:11,marginLeft:8 }} className="sec-label-full">P Separation Intelligence</span>
           </div>
         </div>
         <div style={{ display:"flex",gap:8,alignItems:"center" }}>
           {section!=="atlas"&&(
             <div style={{ position:"relative" }}>
               <button onClick={()=>setCountryOpen(o=>!o)}
-                style={{ display:"flex",alignItems:"center",gap:8,background:"#1C3D21",border:"1px solid #2DB04B40",borderRadius:8,padding:"6px 12px",cursor:"pointer",color:"#E8F2E9",fontSize:13,fontWeight:600 }}>
-                <div style={{width:6,height:6,borderRadius:"50%",background:"#10b981",boxShadow:"0 0 6px #10b981",flexShrink:0}}/>
+                style={{ display:"flex",alignItems:"center",gap:8,background:"#D6E8DA",border:"1px solid #2DB84B40",borderRadius:8,padding:"6px 12px",cursor:"pointer",color:"#2C4A33",fontSize:13,fontWeight:600 }}>
+                <div style={{width:6,height:6,borderRadius:"50%",background:"#2DB84B",boxShadow:"0 0 6px #2DB84B",flexShrink:0}}/>
                 <span>{region}</span>
-                <span style={{color:"#9DBF9F",fontSize:10,marginLeft:2}}>▾</span>
+                <span style={{color:"#6B8F72",fontSize:10,marginLeft:2}}>▾</span>
               </button>
               {countryOpen&&(
-                <div style={{ position:"absolute",top:"calc(100% + 6px)",right:0,background:"#112B14",border:"1px solid #1C3D21",borderRadius:10,overflow:"hidden",zIndex:200,minWidth:180,boxShadow:"0 8px 24px #000a" }}>
+                <div style={{ position:"absolute",top:"calc(100% + 6px)",right:0,background:"#FFFFFF",border:"1px solid #D6E8DA",borderRadius:10,overflow:"hidden",zIndex:200,minWidth:180,boxShadow:"0 8px 24px #000a" }}>
                   <div style={{padding:"6px 0"}}>
                     {[{code:"France",flag:"🇫🇷",active:true},{code:"India",flag:"🇮🇳",active:false}].map(c=>(
                       <button key={c.code} onClick={()=>{if(c.active){setRegion(c.code);setCountryOpen(false);}}}
                         style={{ width:"100%",display:"flex",alignItems:"center",gap:10,padding:"9px 16px",background:"none",border:"none",cursor:c.active?"pointer":"not-allowed",textAlign:"left",opacity:c.active?1:0.5 }}
-                        onMouseEnter={e=>{if(c.active)e.currentTarget.style.background="#1C3D21";}}
+                        onMouseEnter={e=>{if(c.active)e.currentTarget.style.background="#D6E8DA";}}
                         onMouseLeave={e=>{e.currentTarget.style.background="none";}}>
                         <span style={{fontSize:16}}>{c.flag}</span>
-                        <span style={{color:region===c.code?"#10b981":"#E8F2E9",fontSize:13,fontWeight:region===c.code?700:400,flex:1}}>{c.code}</span>
-                        {region===c.code&&<span style={{color:"#10b981",fontSize:11}}>✓</span>}
+                        <span style={{color:region===c.code?"#2DB84B":"#2C4A33",fontSize:13,fontWeight:region===c.code?700:400,flex:1}}>{c.code}</span>
+                        {region===c.code&&<span style={{color:"#2DB84B",fontSize:11}}>✓</span>}
                         {!c.active&&<span style={{background:"#f59e0b20",color:"#f59e0b",fontSize:9,fontWeight:700,padding:"1px 6px",borderRadius:10,border:"1px solid #f59e0b40"}}>SOON</span>}
                       </button>
                     ))}
@@ -3751,21 +3751,21 @@ export default function App() {
               )}
             </div>
           )}
-          {section!=="atlas"&&<button onClick={()=>setSidebarOpen(o=>!o)} style={{ background:"#1C3D21",border:"1px solid #2A5530",color:"#9DBF9F",padding:"6px 10px",borderRadius:6,fontSize:18,cursor:"pointer",lineHeight:1 }}>☰</button>}
+          {section!=="atlas"&&<button onClick={()=>setSidebarOpen(o=>!o)} style={{ background:"#D6E8DA",border:"1px solid #B8D4BE",color:"#6B8F72",padding:"6px 10px",borderRadius:6,fontSize:18,cursor:"pointer",lineHeight:1 }}>☰</button>}
         </div>
       </div>
 
       {/* ── SECTION SWITCHER ── */}
-      <div style={{ background:"#091C0C",borderBottom:"1px solid #1C3D21",padding:"0 20px",display:"flex",alignItems:"center",gap:4,overflowX:"auto" }}>
+      <div style={{ background:"#FFFFFF",borderBottom:"1px solid #D6E8DA",padding:"0 20px",display:"flex",alignItems:"center",gap:4,overflowX:"auto" }}>
         <div style={{ display:"flex",gap:4,padding:"8px 0",flex:1 }}>
           {[
-            {key:"quant",full:"Quantitative Engine",short:"Quant",color:"#2DB04B",
+            {key:"quant",full:"Quantitative Engine",short:"Quant",color:"#2DB84B",
               icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>},
-            {key:"intel",full:"Market Intelligence",short:"Intel",color:"#10b981",
+            {key:"intel",full:"Market Intelligence",short:"Intel",color:"#2DB84B",
               icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M3 12h3m12 0h3M12 3v3m0 12v3m-6.4-2.4 2.1-2.1m8.6-8.6 2.1-2.1M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1"/></svg>},
           ].map(s=>(
             <button key={s.key} onClick={()=>{setSection(s.key);if(s.key==="quant")setMathieuPhase("intro");}}
-              style={{ padding:"9px 20px", background:section===s.key?s.color+"22":"#112B14", border:`1px solid ${section===s.key?s.color:s.color+"20"}`, borderRadius:8, color:section===s.key?s.color:"#c8d3e0", fontSize:13,fontWeight:700,cursor:"pointer", display:"flex",alignItems:"center",gap:8,whiteSpace:"nowrap", transition:"all 0.15s", boxShadow:section===s.key?`0 0 16px ${s.color}22`:"none" }}>
+              style={{ padding:"9px 20px", background:section===s.key?s.color+"22":"#FFFFFF", border:`1px solid ${section===s.key?s.color:s.color+"20"}`, borderRadius:8, color:section===s.key?s.color:"#c8d3e0", fontSize:13,fontWeight:700,cursor:"pointer", display:"flex",alignItems:"center",gap:8,whiteSpace:"nowrap", transition:"all 0.15s", boxShadow:section===s.key?`0 0 16px ${s.color}22`:"none" }}>
               <span style={{ display:"flex",alignItems:"center" }}>{s.icon}</span>
               <span className="sec-label-full">{s.full}</span>
               <span className="sec-label-short">{s.short}</span>
@@ -3773,7 +3773,7 @@ export default function App() {
           ))}
         </div>
         <button onClick={()=>setSection("atlas")}
-          style={{ padding:"9px 18px", background:section==="atlas"?"#a78bfa22":"#112B14", border:`1px solid ${section==="atlas"?"#a78bfa":"#a78bfa20"}`, borderRadius:8, color:section==="atlas"?"#a78bfa":"#3A6640", fontSize:13,fontWeight:700,cursor:"pointer", display:"flex",alignItems:"center",gap:8,whiteSpace:"nowrap", transition:"all 0.15s", boxShadow:section==="atlas"?"0 0 16px #a78bfa22":"none" }}>
+          style={{ padding:"9px 18px", background:section==="atlas"?"#a78bfa22":"#FFFFFF", border:`1px solid ${section==="atlas"?"#a78bfa":"#a78bfa20"}`, borderRadius:8, color:section==="atlas"?"#a78bfa":"#9BB5A0", fontSize:13,fontWeight:700,cursor:"pointer", display:"flex",alignItems:"center",gap:8,whiteSpace:"nowrap", transition:"all 0.15s", boxShadow:section==="atlas"?"0 0 16px #a78bfa22":"none" }}>
           <span style={{display:"flex",alignItems:"center"}}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z"/><path d="M12 2c-2.8 2.8-4 6-4 10s1.2 7.2 4 10"/><path d="M12 2c2.8 2.8 4 6 4 10s-1.2 7.2-4 10"/><path d="M2 12h20"/></svg>
           </span>
@@ -3791,7 +3791,7 @@ export default function App() {
             <div className="subnav">
               {intelPages.map(p=>{
                 const active=intelPage===p.key;
-                return <button key={p.key} onClick={()=>setIntelPage(p.key)} style={{ padding:"8px 14px",background:"transparent",border:"none",borderBottom:active?`2px solid ${secColor}`:"2px solid transparent",color:active?secColor:"#7DA882",fontSize:12,fontWeight:active?600:400,cursor:"pointer",whiteSpace:"nowrap" }}>{p.short}</button>;
+                return <button key={p.key} onClick={()=>setIntelPage(p.key)} style={{ padding:"8px 14px",background:"transparent",border:"none",borderBottom:active?`2px solid ${secColor}`:"2px solid transparent",color:active?secColor:"#6B8F72",fontSize:12,fontWeight:active?600:400,cursor:"pointer",whiteSpace:"nowrap" }}>{p.short}</button>;
               })}
             </div>
           )}
@@ -3800,8 +3800,8 @@ export default function App() {
               {section==="intel" && (
                 <div style={{ display:"flex",alignItems:"center",gap:10,marginBottom:20,flexWrap:"wrap" }}>
                   <SectionBadge label="Market Intelligence" color={secColor} />
-                  <h1 style={{ fontSize:16,fontWeight:800,color:"#F0F8F1",letterSpacing:"-0.02em" }}>{intelPages.find(p=>p.key===intelPage)?.label}</h1>
-                  <span style={{ color:"#9DBF9F",fontSize:12 }}>{region}</span>
+                  <h1 style={{ fontSize:16,fontWeight:800,color:"#0F2415",letterSpacing:"-0.02em" }}>{intelPages.find(p=>p.key===intelPage)?.label}</h1>
+                  <span style={{ color:"#6B8F72",fontSize:12 }}>{region}</span>
                 </div>
               )}
 
@@ -3812,14 +3812,14 @@ export default function App() {
               {section==="quant" && mathieuPhase==="farm" && (
                 <>
                   <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:20 }}>
-                    <button onClick={()=>setMathieuPhase("intro")} style={{ display:"flex",alignItems:"center",gap:6,background:"transparent",border:"none",color:"#9DBF9F",fontSize:12,cursor:"pointer",padding:0 }}>
+                    <button onClick={()=>setMathieuPhase("intro")} style={{ display:"flex",alignItems:"center",gap:6,background:"transparent",border:"none",color:"#6B8F72",fontSize:12,cursor:"pointer",padding:0 }}>
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                       Back to Mathieu
                     </button>
-                    <div style={{width:1,height:14,background:"#1C3D21"}}/>
-                    <SectionBadge label="Quantitative Engine" color="#2DB04B" />
-                    <span style={{ color:"#F0F8F1",fontSize:14,fontWeight:700 }}>Mathieu's Farm Simulation</span>
-                    <span style={{ color:"#9DBF9F",fontSize:12 }}>{region}</span>
+                    <div style={{width:1,height:14,background:"#D6E8DA"}}/>
+                    <SectionBadge label="Quantitative Engine" color="#2DB84B" />
+                    <span style={{ color:"#0F2415",fontSize:14,fontWeight:700 }}>Mathieu's Farm Simulation</span>
+                    <span style={{ color:"#6B8F72",fontSize:12 }}>{region}</span>
                   </div>
                   <MathieuFarmPage region={region} />
                 </>
@@ -3837,10 +3837,10 @@ export default function App() {
             <div className={`sidebar-overlay ${sidebarOpen?"open":""}`} onClick={()=>setSidebarOpen(false)} />
             <div className={`app-sidebar ${sidebarOpen?"open":""}`}>
               <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14 }}>
-                <h3 style={{ color:"#9DBF9F",fontSize:10,textTransform:"uppercase",letterSpacing:"0.1em" }}>Navigation</h3>
-                <button onClick={()=>setSidebarOpen(false)} style={{ background:"transparent",border:"none",color:"#9DBF9F",fontSize:16,cursor:"pointer" }}>✕</button>
+                <h3 style={{ color:"#6B8F72",fontSize:10,textTransform:"uppercase",letterSpacing:"0.1em" }}>Navigation</h3>
+                <button onClick={()=>setSidebarOpen(false)} style={{ background:"transparent",border:"none",color:"#6B8F72",fontSize:16,cursor:"pointer" }}>✕</button>
               </div>
-              <div style={{ marginTop:16,borderTop:"1px solid #1C3D21",paddingTop:14 }}>
+              <div style={{ marginTop:16,borderTop:"1px solid #D6E8DA",paddingTop:14 }}>
                 <button onClick={()=>{setSection("atlas");setSidebarOpen(false);}} style={{ width:"100%",background:"#a78bfa10",border:"1px solid #a78bfa30",color:"#a78bfa",padding:"8px",borderRadius:8,fontSize:12,cursor:"pointer" }}>◈ Open ATLAS</button>
               </div>
             </div>
