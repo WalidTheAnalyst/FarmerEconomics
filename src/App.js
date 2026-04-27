@@ -865,7 +865,7 @@ function MIFarmerBehaviorPage({ region }) {
               }
             </div>
             <p style={{ color:card.color, fontSize:11, textTransform:"uppercase", letterSpacing:"0.1em", fontWeight:600, marginBottom:10 }}>{card.title}</p>
-            <p style={{ color:"#6B8F72", fontSize:13, lineHeight:1.7, marginBottom:20, flex:1 }}>{card.desc}</p>
+            <p style={{ color:"#2C4A33", fontSize:13, lineHeight:1.7, marginBottom:20, flex:1 }}>{card.desc}</p>
             <p style={{ color:"#c8d3e0", fontSize:10, borderTop:"1px solid #D6E8DA", paddingTop:14, marginTop:"auto" }}>{card.src}</p>
           </button>
         ))}
@@ -1087,7 +1087,7 @@ function MIFarmerBehaviorPage({ region }) {
               <p style={{ color:"#0F2415", fontSize:15, fontWeight:700, marginBottom:16, lineHeight:1.4 }}>
                 French farmers rank <span style={{color:"#2DB84B"}}>total program cost per hectare</span> as their #1 purchase driver — not price per bag, not brand, not sustainability.
               </p>
-              <p style={{ color:"#6B8F72", fontSize:13, lineHeight:1.8, marginBottom:0 }}>
+              <p style={{ color:"#2C4A33", fontSize:13, lineHeight:1.8, marginBottom:0 }}>
                 Agronomic performance comes immediately after: phosphorus efficiency, granule quality, and yield gain all score above 4.4 out of 5. Price per bag only ranks third. Sustainability scores last. The commercial implication is clear — the conversation must be framed at program economics, backed by agronomic proof.
               </p>
             </div>
@@ -1149,7 +1149,7 @@ function MIFarmerBehaviorPage({ region }) {
 
                     {isActive && (
                       <div style={{ padding:"16px 52px 16px 52px", background:"#F7F9F7", borderBottom:"1px solid #E8F2EA" }}>
-                        <p style={{ color:"#6B8F72", fontSize:12, lineHeight:1.75, marginBottom:10 }}>{d.insight}</p>
+                        <p style={{ color:"#2C4A33", fontSize:12, lineHeight:1.75, marginBottom:10 }}>{d.insight}</p>
                         <div style={{ display:"flex", gap:8, alignItems:"flex-start" }}>
                           <div style={{ width:3, height:"100%", minHeight:40, background:d.accentColor, borderRadius:2, flexShrink:0, alignSelf:"stretch" }}/>
                           <div>
@@ -1219,7 +1219,7 @@ function MIFarmerBehaviorPage({ region }) {
                     <div style={{ background:"#FFFFFF", border:`1px solid ${d.accentColor}25`, borderRadius:12, padding:"24px" }}>
                       <p style={{ color:"#6B8F72", fontSize:9, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>{d.group}</p>
                       <h3 style={{ color:"#0F2415", fontSize:17, fontWeight:700, margin:"0 0 16px", letterSpacing:"-0.02em" }}>{d.label}</h3>
-                      <p style={{ color:"#6B8F72", fontSize:13, lineHeight:1.8, margin:0 }}>{d.insight}</p>
+                      <p style={{ color:"#2C4A33", fontSize:13, lineHeight:1.8, margin:0 }}>{d.insight}</p>
                     </div>
 
                     <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
@@ -1264,7 +1264,7 @@ function MIFarmerBehaviorPage({ region }) {
               <p style={{ color:"#0F2415", fontSize:15, fontWeight:700, marginBottom:12, lineHeight:1.4 }}>
                 In France, <span style={{color:"#2DB84B"}}>57% of fertilizer decisions</span> are controlled by cooperatives and their agronomists — no other country in the survey comes close.
               </p>
-              <p style={{ color:"#6B8F72", fontSize:13, lineHeight:1.8 }}>
+              <p style={{ color:"#2C4A33", fontSize:13, lineHeight:1.8 }}>
                 Local distributors and retailers account for 0% of influence in France, compared to 22% in India. This makes France a country where OCP must operate through the cooperative channel — not around it.
               </p>
             </div>
@@ -1291,7 +1291,7 @@ function MIFarmerBehaviorPage({ region }) {
                     </div>
                     {isActive && (
                       <div style={{ padding:"0 20px 18px 66px", borderTop:"1px solid #D6E8DA" }}>
-                        <p style={{ color:"#6B8F72", fontSize:12, lineHeight:1.8, marginTop:14 }}>{inf.detail}</p>
+                        <p style={{ color:"#2C4A33", fontSize:12, lineHeight:1.8, marginTop:14 }}>{inf.detail}</p>
                       </div>
                     )}
                   </div>
@@ -1329,12 +1329,12 @@ function MIFarmerBehaviorPage({ region }) {
                     <span style={{ color:item.color, fontSize:10, fontWeight:700, fontFamily:"'DM Mono',monospace" }}>{item.num}</span>
                   </div>
                   <p style={{ color:"#0F2415", fontSize:13, fontWeight:600, marginBottom:8 }}>{item.title}</p>
-                  <p style={{ color:"#6B8F72", fontSize:12, lineHeight:1.75, margin:0 }}>{item.body}</p>
+                  <p style={{ color:"#2C4A33", fontSize:12, lineHeight:1.75, margin:0 }}>{item.body}</p>
                 </div>
               ))}
             </div>
 
-            <div style={{ background:"linear-gradient(135deg,#0a1f14,#FFFFFF)", border:"1px solid #2DB84B25", borderRadius:12, padding:"20px 24px" }}>
+            <div style={{ background:"linear-gradient(135deg, #F0F7F1 0%, #FFFFFF 100%)", border:"1px solid #2DB84B25", borderRadius:12, padding:"20px 24px" }}>
               <p style={{ color:"#2DB84B", fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:10 }}>The sequenced entry play</p>
               <div style={{ display:"flex", gap:0, alignItems:"stretch" }}>
                 {[
@@ -1554,7 +1554,7 @@ function QuantitativeEngineValuePage({ onContinue }) {
           <h1 style={{ color:"#0F2415", fontSize:"clamp(32px,4vw,50px)", fontWeight:300, letterSpacing:"-0.04em", lineHeight:1.12, margin:"0 0 20px" }}>
             The <span style={{ fontWeight:800 }}>P Doctrine</span> is not a claim that phosphorus separation always wins.
           </h1>
-          <p style={{ color:"#6B8F72", fontSize:15, lineHeight:1.85, maxWidth:720, margin:0 }}>
+          <p style={{ color:"#2C4A33", fontSize:15, lineHeight:1.85, maxWidth:720, margin:0 }}>
             It is the claim that when a farmer buys phosphorus separately from nitrogen and potassium, the financial outcome is transparent and the input decision is auditable. In some crops and regions, that transparency reveals TSP as the highest margin option. In others, it reveals that a compound product with bundled nitrogen produces better economics because the crop genuinely needs both nutrients at the same time. The engine quantifies which case applies.
           </p>
         </div>
@@ -2057,7 +2057,7 @@ function MathieuFarmPage({ region }) {
         <div style={{ textAlign:"center", marginBottom:32, animation:"fadeUp 0.4s ease" }}>
           <p style={{ color:"#2DB84B", fontSize:10, textTransform:"uppercase", letterSpacing:"0.18em", fontWeight:700, margin:"0 0 8px" }}>PhosStratOS · Farm Financial Simulator</p>
           <h1 style={{ color:"#0F2415", fontSize:28, fontWeight:800, letterSpacing:"-0.03em", margin:"0 0 8px" }}>Configure Mathieu's Farm</h1>
-          <p style={{ color:"#6B8F72", fontSize:13, margin:0, maxWidth:580, marginLeft:"auto", marginRight:"auto", lineHeight:1.7 }}>
+          <p style={{ color:"#2C4A33", fontSize:13, margin:0, maxWidth:580, marginLeft:"auto", marginRight:"auto", lineHeight:1.7 }}>
             Set the structural parameters. These determine baseline costs, revenue composition, and how input decisions translate into financial outcomes.
           </p>
         </div>
@@ -2151,7 +2151,7 @@ function MathieuFarmPage({ region }) {
               {selectedFerts.length > 0 ? selectedFerts.map(f=>f.label).join(" and ") : "..."}
             </span>
           </h2>
-          <p style={{ color:"#6B8F72", fontSize:14, lineHeight:1.7, margin:"0 0 24px" }}>
+          <p style={{ color:"#2C4A33", fontSize:14, lineHeight:1.7, margin:"0 0 24px" }}>
             Select one or more products that represent his current fertilizer program. TSP will always be included as the separation reference.
           </p>
         </div>
@@ -2221,7 +2221,7 @@ function MathieuFarmPage({ region }) {
 
       {/* LIVE PARAMETER CONTROLS - always sticky */}
       <div style={{
-        background:"linear-gradient(135deg, #FFFFFF 0%, #0a1628 100%)",
+        background:"linear-gradient(135deg, #FFFFFF 0%, #F7F9F7 100%)",
         border:"1.5px solid #2DB84B30",
         borderRadius:14, padding:"14px 18px",
         position:"sticky", top:0, zIndex:50,
@@ -2587,9 +2587,9 @@ function MathieuFarmPage({ region }) {
       </div>
 
       {/* TAKEAWAYS */}
-      <div style={{ background:"linear-gradient(135deg, #FFFFFF 0%, #0a1628 100%)", border:"1.5px solid #D6E8DA", borderRadius:16, padding:"24px 28px" }}>
+      <div style={{ background:"linear-gradient(135deg, #FFFFFF 0%, #F7F9F7 100%)", border:"1.5px solid #D6E8DA", borderRadius:16, padding:"24px 28px" }}>
         <p style={{ color:"#0F2415", fontSize:22, fontWeight:800, letterSpacing:"-0.02em", margin:"0 0 6px" }}>What this means for OCP Nutricrops</p>
-        <p style={{ color:"#6B8F72", fontSize:12, margin:"0 0 20px", lineHeight:1.6 }}>
+        <p style={{ color:"#2C4A33", fontSize:12, margin:"0 0 20px", lineHeight:1.6 }}>
           Interpretation specific to {selectedCrop.label.toLowerCase()} grown in {regionDisplay}, France. Conclusions are scoped to the European context and depend on crop nutrient demand profile and farm cost structure.
         </p>
         {(()=>{
@@ -2951,9 +2951,9 @@ function MIFarmerPLPage() {
       </div>
 
       {/* Fertiliser in context */}
-      <div style={{ background:`linear-gradient(135deg,#0e2535,#FFFFFF)`, border:"1px solid #2DB84B30", borderRadius:12, padding:"16px 20px" }}>
+      <div style={{ background:`linear-gradient(135deg, #F0F7F1 0%, #FFFFFF 100%)`, border:"1px solid #2DB84B30", borderRadius:12, padding:"16px 20px" }}>
         <p style={{ color:"#2DB84B", fontSize:11, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:8, fontWeight:700 }}>🧪 Fertilisers in context — {farmType} {d.emoji}</p>
-        <p style={{ color:"#6B8F72", fontSize:12, lineHeight:1.75 }}>
+        <p style={{ color:"#2C4A33", fontSize:12, lineHeight:1.75 }}>
           Fertilisers & soil amendments represent <span style={{ color:"#2DB84B", fontWeight:700 }}>€{d.costs.cropSpecific.fertilisers}/ha</span> ({fertPct}% of total costs). Against total output of €{d.totalOutput.toLocaleString()}/ha, this represents {((d.costs.cropSpecific.fertilisers/d.totalOutput)*100).toFixed(1)}% of farm revenue — a relatively small share where agronomic improvements from P separation can generate a net positive return even at a modest yield uplift.
         </p>
       </div>
@@ -3037,7 +3037,7 @@ function MIMarketDynamicsPage({ region }) {
       </div>
 
       {/* ── EXECUTIVE BRIEF ── */}
-      <div style={{ background:"linear-gradient(135deg,#FFFFFF,#060b14)", border:"1px solid #D6E8DA", borderRadius:16, overflow:"hidden" }}>
+      <div style={{ background:"linear-gradient(135deg, #FFFFFF 0%, #F7F9F7 100%)", border:"1px solid #D6E8DA", borderRadius:16, overflow:"hidden" }}>
 
         {/* Header */}
         <div style={{ padding:"18px 24px 16px", borderBottom:"1px solid #D6E8DA", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
@@ -3056,7 +3056,7 @@ function MIMarketDynamicsPage({ region }) {
             <div style={{ flexShrink:0, width:28, height:28, borderRadius:"50%", background:"#2DB84B20", border:"1px solid #2DB84B40", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, marginTop:2 }}>1</div>
             <div>
               <p style={{ color:"#2C4A33", fontSize:14, fontWeight:600, marginBottom:6 }}>The soil is being mined — quietly, at scale</p>
-              <p style={{ color:"#6B8F72", fontSize:13, lineHeight:1.85, margin:0 }}>
+              <p style={{ color:"#2C4A33", fontSize:13, lineHeight:1.85, margin:0 }}>
                 Since 2021, P applications in France have fallen by roughly 29%. Today, <span style={{color:"#0F2415",fontWeight:600}}>only half of French parcels receive any mineral P at all</span>. Farmers are not replacing what crops take out. The agronomic gap versus Comifer recommendations is now 157 kt P₂O₅ — the equivalent of leaving an entire year's TSP import sitting in the ground unplanted.
               </p>
             </div>
@@ -3069,7 +3069,7 @@ function MIMarketDynamicsPage({ region }) {
             <div style={{ flexShrink:0, width:28, height:28, borderRadius:"50%", background:"#f59e0b20", border:"1px solid #f59e0b40", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, marginTop:2, color:"#f59e0b" }}>2</div>
             <div>
               <p style={{ color:"#2C4A33", fontSize:14, fontWeight:600, marginBottom:6 }}>Prices broke the habit — and farmers didn't recover it</p>
-              <p style={{ color:"#6B8F72", fontSize:13, lineHeight:1.85, margin:0 }}>
+              <p style={{ color:"#2C4A33", fontSize:13, lineHeight:1.85, margin:0 }}>
                 The 2022 price spike created a scissors effect: input costs doubled while margins compressed. Farmers responded rationally — they <span style={{color:"#0F2415",fontWeight:600}}>protected nitrogen and cut P and K</span>. The problem is that this became a habit. Even as prices normalised, the behaviour stuck. P is now the first line item cut when budgets tighten.
               </p>
             </div>
@@ -3082,7 +3082,7 @@ function MIMarketDynamicsPage({ region }) {
             <div style={{ flexShrink:0, width:28, height:28, borderRadius:"50%", background:"#2DB84B20", border:"1px solid #2DB84B40", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, marginTop:2, color:"#2DB84B" }}>3</div>
             <div>
               <p style={{ color:"#2C4A33", fontSize:14, fontWeight:600, marginBottom:6 }}>Who controls the market? Coops — and Morocco is well placed</p>
-              <p style={{ color:"#6B8F72", fontSize:13, lineHeight:1.85, margin:0 }}>
+              <p style={{ color:"#2C4A33", fontSize:13, lineHeight:1.85, margin:0 }}>
                 France produces no TSP or DAP domestically. Everything is imported. <span style={{color:"#2DB84B",fontWeight:600}}>Morocco (OCP) already holds ~62% of the DAP/MAP import market</span>. But the real gatekeepers are the large purchasing cooperatives — Inoxa, Axereal, InVivo — which control blending, warehousing and agronomy advice for ~70% of fertilizer volumes. Access without them is nearly impossible.
               </p>
             </div>
@@ -3095,7 +3095,7 @@ function MIMarketDynamicsPage({ region }) {
             <div style={{ flexShrink:0, width:28, height:28, borderRadius:"50%", background:"#a78bfa20", border:"1px solid #a78bfa40", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, marginTop:2, color:"#a78bfa" }}>4</div>
             <div>
               <p style={{ color:"#2C4A33", fontSize:14, fontWeight:600, marginBottom:6 }}>The market is moving toward value — and regulation favours clean P</p>
-              <p style={{ color:"#6B8F72", fontSize:13, lineHeight:1.85, margin:0 }}>
+              <p style={{ color:"#2C4A33", fontSize:13, lineHeight:1.85, margin:0 }}>
                 Standard NPKs are losing share. Farmers and coops are shifting to NPK+ grades — blends with sulphur, micronutrients and biostimulants. At the same time, EU heavy metal and carbon regulations are tightening. <span style={{color:"#a78bfa",fontWeight:600}}>OCP's low-cadmium Moroccan P is structurally advantaged</span> — not as a marketing claim, but as a regulatory compliance asset for the next decade.
               </p>
             </div>
@@ -3131,7 +3131,7 @@ function MIMarketDynamicsPage({ region }) {
                       <span style={{ fontSize:15 }}>{r.icon}</span>
                       <p style={{ color:r.color, fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.05em", margin:0 }}>{r.title}</p>
                     </div>
-                    <p style={{ color:"#6B8F72", fontSize:12, lineHeight:1.75, margin:0 }}>{r.body}</p>
+                    <p style={{ color:"#2C4A33", fontSize:12, lineHeight:1.75, margin:0 }}>{r.body}</p>
                   </div>
                 ))}
               </div>
@@ -3634,7 +3634,7 @@ function HubPage({ onChoose }) {
               </div>
             </div>
 
-            <p style={{ color:"#6B8F72",fontSize:13,lineHeight:1.75,marginBottom:28 }}>{card.desc}</p>
+            <p style={{ color:"#2C4A33", fontSize:13,lineHeight:1.75,marginBottom:28 }}>{card.desc}</p>
 
             <div style={{ display:"flex",flexWrap:"wrap",gap:6,marginBottom:32 }}>
               {card.tags.map(t => (
