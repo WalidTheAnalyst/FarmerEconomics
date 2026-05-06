@@ -472,7 +472,7 @@ function CountrySelector({ onSelect }) {
       <div style={{ textAlign: "center", marginBottom: 48, animation: "cFadeUp 0.6s ease both" }}>
         <p style={{ color: T.green, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.2em", fontWeight: 700, marginBottom: 14 }}>Farmer Economics Engine</p>
         <h1 style={{ color: T.text, fontSize: "clamp(18px,2.8vw,32px)", fontWeight: 300, letterSpacing: "-0.02em", lineHeight: 1.4, margin: 0 }}>
-          Which farmer do you want to<br /><span style={{ fontWeight: 800 }}>step inside?</span>
+          Which farms do you want to<br /><span style={{ fontWeight: 800 }}>step inside?</span>
         </h1>
         <p style={{ color: T.textMuted, fontSize: 13, marginTop: 10, maxWidth: 480, margin: "10px auto 0" }}>Each country opens a separate quantitative engine calibrated to local crops, soils, cost structures and fertilisation practices.</p>
       </div>
