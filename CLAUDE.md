@@ -5,9 +5,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-npm start        # Dev server at http://localhost:3000
-npm test         # Run tests (Jest, watch mode)
-npm run build    # Production build
+npm start              # Dev server at http://localhost:3000
+npm test               # Run tests (Jest, watch mode)
+npm test -- --watchAll=false          # Run tests once (CI mode)
+npm test -- -t "test name"            # Run a single test by name
+npm run build          # Production build
 ```
 
 No linting script is configured beyond CRA's built-in ESLint (`extends: ["react-app", "react-app/jest"]`). ESLint runs automatically during `npm start` and `npm run build`.
