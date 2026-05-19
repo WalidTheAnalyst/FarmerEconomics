@@ -1285,20 +1285,265 @@ function MathieuFarmPage() {
 
 
 // ═══════════════════════════════════════════════════════════════════════════
-// BRAZIL FARMER ECONOMICS SECTION — price-shock profitability model
+// BRAZIL DECK — McKinsey-style strategic phosphate research tool
 // ═══════════════════════════════════════════════════════════════════════════
-function BrazilFarmerEconomicsSection() {
-  const [regionKey, setRegionKey] = useState('National');
+
+const DECK_CROPS = [
+  { id: 'soybean', label: 'Soybeans', img: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=1200&q=80&fit=crop' },
+  { id: 'corn',    label: 'Corn',     img: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200&q=80&fit=crop' },
+  { id: 'cotton',  label: 'Cotton',   img: 'https://images.unsplash.com/photo-1595435742946-2b2d91f5c7c6?w=1200&q=80&fit=crop' },
+  { id: 'coffee',  label: 'Coffee',   img: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=1200&q=80&fit=crop' },
+];
+
+const DECK_SLIDE_LABELS = ['Brazil Context', 'Snapshot', 'Cost Breakdown', 'Fert. Shock', 'So What'];
+
+// McKinsey visual constants — no gradients, no shadows, flat grid
+const MCK = {
+  bg:    '#FFFFFF',
+  bgOff: '#F6F6F6',
+  line:  '#D8D8D8',
+  text:  '#1A1A1A',
+  mid:   '#4A4A4A',
+  dim:   '#888888',
+  blue:  '#005A8E',
+  teal:  '#007373',
+  red:   '#B30000',
+  amber: '#C97A00',
+  green: '#006633',
+  // cost category palette (Tableau-inspired, distinct)
+  seeds: '#4E79A7',
+  fert:  '#F28E2B',
+  agro:  '#E15759',
+  labor: '#76B7B2',
+  land:  '#59A14F',
+};
+
+// ─── Crop Landing Page ─────────────────────────────────────────────────────
+function BrazilCropLanding({ onSelect }) {
+  const [hovered, setHovered] = useState(null);
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gridTemplateRows: 'repeat(2,280px)' }}>
+      {DECK_CROPS.map(c => (
+        <div
+          key={c.id}
+          onClick={() => onSelect(c.id)}
+          onMouseEnter={() => setHovered(c.id)}
+          onMouseLeave={() => setHovered(null)}
+          style={{
+            position: 'relative',
+            backgroundImage: `url(${c.img})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            cursor: 'pointer',
+            overflow: 'hidden',
+          }}
+        >
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: hovered === c.id ? 'rgba(0,0,0,0.48)' : 'rgba(0,0,0,0.28)',
+            transition: 'background 0.25s',
+          }} />
+          <div style={{ position: 'absolute', bottom: 28, left: 32 }}>
+            <p style={{
+              color: '#FFFFFF', fontSize: 26, fontWeight: 700,
+              letterSpacing: '-0.02em', margin: 0, lineHeight: 1,
+            }}>{c.label}</p>
+            {c.id !== 'soybean' && (
+              <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 10, marginTop: 7, letterSpacing: '0.1em', textTransform: 'uppercase' }}>Data coming Q3 2026</p>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ─── Control Bar ───────────────────────────────────────────────────────────
+function BrazilControlBar({ crop, setCrop, region, setRegion, currency, setCurrency }) {
+  const bar = { display: 'flex', alignItems: 'center', gap: 0, background: '#1A1A1A', color: '#FFF', height: 48, padding: '0 32px', fontSize: 12 };
+  const lbl = { color: '#777', fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.12em', marginRight: 8 };
+  const sel = { background: 'transparent', color: '#FFF', border: '1px solid #444', borderRadius: 2, padding: '4px 8px', fontSize: 11, cursor: 'pointer', outline: 'none' };
+  const div = <div style={{ width: 1, height: 24, background: '#444', margin: '0 24px' }} />;
+  return (
+    <div style={bar}>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <span style={lbl}>Crop</span>
+        <select style={sel} value={crop} onChange={e => setCrop(e.target.value)}>
+          {DECK_CROPS.map(c => <option key={c.id} value={c.id} style={{ background: '#1A1A1A' }}>{c.label}</option>)}
+        </select>
+      </div>
+      {div}
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <span style={lbl}>Region</span>
+        <select style={sel} value={region} onChange={e => setRegion(e.target.value)}>
+          {BRAZIL_PROF_REGIONS.map(r => <option key={r.id} value={r.id} style={{ background: '#1A1A1A' }}>{r.label}</option>)}
+        </select>
+      </div>
+      {div}
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <span style={lbl}>Currency</span>
+        {['USD', 'BRL'].map((c, i) => (
+          <button key={c} onClick={() => setCurrency(c)} style={{
+            background: currency === c ? '#FFFFFF' : 'transparent',
+            color: currency === c ? '#1A1A1A' : '#888',
+            border: '1px solid #444',
+            borderRadius: 0,
+            marginLeft: i === 0 ? 0 : -1,
+            padding: '3px 11px', fontSize: 11, cursor: 'pointer',
+            fontWeight: currency === c ? 700 : 400,
+          }}>{c}</button>
+        ))}
+      </div>
+      {div}
+      <span style={{ color: '#777', fontSize: 11 }}>Season 2025/26</span>
+    </div>
+  );
+}
+
+// ─── Slide 1 — Brazil Market Context ──────────────────────────────────────
+function Slide1() {
+  const facts = [
+    { stat: '#1', desc: 'Brazil is the world\'s largest soybean exporter, accounting for 53% of global trade — a position built on Cerrado expansion and aggressive input adoption since 2000.' },
+    { stat: '9.2%', desc: 'Phosphate fertilizer consumption CAGR 2015–2024 in Brazil, outpacing all major agricultural economies — driven by soybean area expansion into MATOPIBA frontier zones.' },
+    { stat: '84%', desc: 'Share of Brazil\'s phosphate requirements met by imports, with Morocco (OCP) as the dominant supplier — creating structural price transmission from CFR Brazil to farm gate.' },
+    { stat: '39M ha', desc: 'Soybean planted area in the 2024/25 season — the world\'s largest single-crop footprint, intensifying demand for high-P starter programs across all major regions.' },
+  ];
+  const implications = [
+    'Any CFR Brazil price spike transmits directly into farm-gate DAP/MAP costs within 2–3 weeks. Brazilian farmers have no buffer from domestic phosphate production — import dependency is structural, not cyclical.',
+    'Mato Grosso and MATOPIBA account for 68% of new soybean area expansion. These frontier soils require heavier P loading than consolidated Cerrado farms, sustaining volume growth for OCP through the decade.',
+    'With net margins compressed below $80/ha in 4 of the last 9 seasons, price-sensitive procurement windows are narrowing. OCP\'s value messaging must shift from cost to agronomic ROI to sustain premium positioning.',
+  ];
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0, height: '100%' }}>
+      <div style={{ paddingRight: 48, borderRight: `1px solid ${MCK.line}` }}>
+        <p style={{ color: MCK.dim, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 32 }}>BRAZIL — MARKET CONTEXT</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 26 }}>
+          {facts.map((f, i) => (
+            <div key={i} style={{ display: 'grid', gridTemplateColumns: '72px 1fr', gap: 20, alignItems: 'start' }}>
+              <p style={{ color: MCK.blue, fontSize: 32, fontWeight: 800, letterSpacing: '-0.03em', margin: 0, lineHeight: 1 }}>{f.stat}</p>
+              <p style={{ color: MCK.mid, fontSize: 12.5, lineHeight: 1.6, margin: 0 }}>{f.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div style={{ paddingLeft: 48 }}>
+        <p style={{ color: MCK.dim, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 32 }}>STRATEGIC IMPLICATIONS</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 26 }}>
+          {implications.map((text, i) => (
+            <div key={i} style={{ display: 'flex', gap: 16 }}>
+              <div style={{ width: 3, minHeight: 20, flexShrink: 0, background: MCK.blue, marginTop: 3 }} />
+              <p style={{ color: MCK.text, fontSize: 13.5, lineHeight: 1.65, margin: 0 }}>{text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Slide 2 — Snapshot ───────────────────────────────────────────────────
+function Slide2({ region, currency }) {
+  const b   = BRAZIL_PROF_BASELINE[region] || BRAZIL_PROF_BASELINE.National;
+  const fx  = currency === 'BRL' ? FX_BRL_USD : 1;
+  const sym = currency === 'BRL' ? 'R$' : '$';
+  const fixed = b.seeds + b.fertilizers + b.agrochemicals + b.labor + b.operations +
+    b.maintenance + b.depreciation + b.landRental + b.financialExpenses + b.other;
+  const netInc = b.revenue - fixed;
+  const refYield = 3.4;
+  const breakEven = (fixed / refYield * fx).toFixed(0);
+  const kpis = [
+    { label: 'Revenue / ha', value: sym + Math.round(b.revenue * fx).toLocaleString(), note: '25/26 season · ' + region, neg: false },
+    { label: 'Net Income / ha', value: (netInc < 0 ? '(' + sym + Math.round(Math.abs(netInc) * fx).toLocaleString() + ')' : sym + Math.round(netInc * fx).toLocaleString()), note: netInc >= 0 ? 'Positive — above break-even' : 'Loss-making at current prices', neg: netInc < 0 },
+    { label: 'Break-even Price', value: sym + Number(breakEven).toLocaleString() + '/t', note: 'At ' + refYield + ' t/ha reference yield', neg: false },
+  ];
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
+      <p style={{ color: MCK.dim, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 48 }}>FARMER ECONOMICS — SNAPSHOT · {region.toUpperCase()} · SOYBEANS</p>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', borderTop: `1px solid ${MCK.line}` }}>
+        {kpis.map((k, i) => (
+          <div key={i} style={{ padding: '40px 0', paddingRight: i < 2 ? 40 : 0, paddingLeft: i > 0 ? 40 : 0, borderRight: i < 2 ? `1px solid ${MCK.line}` : 'none' }}>
+            <p style={{ color: MCK.dim, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 16 }}>{k.label}</p>
+            <p style={{ color: k.neg ? MCK.red : MCK.text, fontSize: 52, fontWeight: 800, letterSpacing: '-0.04em', margin: 0, lineHeight: 1, fontFamily: "'DM Mono',monospace" }}>{k.value}</p>
+            <p style={{ color: k.neg ? MCK.red : MCK.dim, fontSize: 12, marginTop: 14, lineHeight: 1.4 }}>{k.note}</p>
+          </div>
+        ))}
+      </div>
+      <p style={{ color: MCK.dim, fontSize: 11, marginTop: 40, borderTop: `1px solid ${MCK.line}`, paddingTop: 16 }}>
+        Source: CVA × OCP Brazil Profitability Model · Soybean · 25/26 season baseline · USD/ha unless toggled
+      </p>
+    </div>
+  );
+}
+
+// ─── Slide 3 — Cost Breakdown ─────────────────────────────────────────────
+function Slide3({ region, currency }) {
+  const hist = BRAZIL_PROF_HISTORICAL[region] || BRAZIL_PROF_HISTORICAL.National;
+  const fx   = currency === 'BRL' ? FX_BRL_USD : 1;
+  const sym  = currency === 'BRL' ? 'R$' : '$';
+  const chartData = hist.map(d => ({
+    season: d.s,
+    Seeds:           +(d.seeds * fx).toFixed(1),
+    Fertilizers:     +(d.fert  * fx).toFixed(1),
+    Agrochemicals:   +(d.agro  * fx).toFixed(1),
+    Labor:           +(d.labor * fx).toFixed(1),
+    'Land & Rental': +(d.land  * fx).toFixed(1),
+    _netInc: d.netInc * fx,
+  }));
+  const COLORS = {
+    Seeds:           MCK.seeds,
+    Fertilizers:     MCK.fert,
+    Agrochemicals:   MCK.agro,
+    Labor:           MCK.labor,
+    'Land & Rental': MCK.land,
+  };
+  const S3Tooltip = ({ active, payload, label }) => {
+    if (!active || !payload?.length) return null;
+    const row = chartData.find(d => d.season === label);
+    return (
+      <div style={{ background: '#fff', border: `1px solid ${MCK.line}`, padding: '12px 16px', fontSize: 12 }}>
+        <p style={{ fontWeight: 700, marginBottom: 8, color: MCK.text }}>{label}</p>
+        {payload.filter(p => COLORS[p.dataKey]).map((p, i) => (
+          <p key={i} style={{ color: p.fill, margin: '2px 0' }}>{p.dataKey}: <strong>{sym}{p.value.toFixed(0)}</strong></p>
+        ))}
+        {row && <p style={{ color: row._netInc >= 0 ? MCK.green : MCK.red, marginTop: 6, fontWeight: 700, borderTop: `1px solid ${MCK.line}`, paddingTop: 6 }}>Net Income: {sym}{row._netInc.toFixed(0)}</p>}
+      </div>
+    );
+  };
+  return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <p style={{ color: MCK.dim, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 6 }}>PRODUCTION COST STRUCTURE · {region.toUpperCase()} · {sym}/HA</p>
+      <p style={{ color: MCK.mid, fontSize: 13, marginBottom: 20 }}>Stacked cost per hectare across seasons 17/18 – 25/26 — five major categories</p>
+      <div style={{ flex: 1, minHeight: 0 }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={chartData} margin={{ top: 8, right: 16, bottom: 8, left: 8 }} barCategoryGap="38%">
+            <CartesianGrid strokeDasharray="2 4" stroke={MCK.line} vertical={false} />
+            <XAxis dataKey="season" tick={{ fill: MCK.dim, fontSize: 11 }} axisLine={{ stroke: MCK.line }} tickLine={false} />
+            <YAxis tick={{ fill: MCK.dim, fontSize: 11 }} tickFormatter={v => sym + v} axisLine={false} tickLine={false} width={54} />
+            <Tooltip content={<S3Tooltip />} />
+            <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 11, color: MCK.dim, paddingTop: 8 }} />
+            {Object.entries(COLORS).map(([k, c], idx, arr) => (
+              <Bar key={k} dataKey={k} stackId="cost" fill={c} radius={idx === arr.length - 1 ? [2, 2, 0, 0] : [0, 0, 0, 0]} />
+            ))}
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}
+
+// ─── Slide 4 — Fertilizer Shock Scenario ─────────────────────────────────
+function Slide4({ region, currency }) {
   const [dapCurrent, setDapCurrent] = useState(713);
-  const [dapTarget,  setDapTarget]  = useState(1300);
+  const [dapTarget,  setDapTarget]  = useState(1100);
   const [mapCurrent, setMapCurrent] = useState(699);
-  const [mapTarget,  setMapTarget]  = useState(1300);
+  const [mapTarget,  setMapTarget]  = useState(1100);
 
-  const regionDef = BRAZIL_PROF_REGIONS.find(r => r.id === regionKey);
-  const baseline  = BRAZIL_PROF_BASELINE[regionKey];
-  const histData  = BRAZIL_PROF_HISTORICAL[regionKey];
+  const regionDef = BRAZIL_PROF_REGIONS.find(r => r.id === region) || BRAZIL_PROF_REGIONS[0];
+  const baseline  = BRAZIL_PROF_BASELINE[region] || BRAZIL_PROF_BASELINE.National;
+  const fx  = currency === 'BRL' ? FX_BRL_USD : 1;
+  const sym = currency === 'BRL' ? 'R$' : '$';
 
-  const prof = useMemo(() => {
+  const shock = useMemo(() => {
     const bDap = regionDef.dapRate * dapCurrent / 1000;
     const aDap = regionDef.dapRate * dapTarget  / 1000;
     const bMap = regionDef.mapRate * mapCurrent / 1000;
@@ -1308,646 +1553,214 @@ function BrazilFarmerEconomicsSection() {
       baseline.depreciation + baseline.landRental + baseline.financialExpenses + baseline.other;
     const beforeGM = baseline.revenue - fixed - bDap - bMap;
     const afterGM  = baseline.revenue - fixed - aDap - aMap;
-    const lines = [
-      { label:'Revenue',            before: baseline.revenue,            after: baseline.revenue,            change: 0,               type:'revenue' },
-      { label:'Seeds',              before: baseline.seeds,              after: baseline.seeds,              change: 0,               type:'cost'    },
-      { label:'Fertilizers (base)', before: baseline.fertilizers,        after: baseline.fertilizers,        change: 0,               type:'cost'    },
-      { label:'DAP cost',           before: bDap,                        after: aDap,                        change: aDap - bDap,     type:'fert'    },
-      { label:'MAP cost',           before: bMap,                        after: aMap,                        change: aMap - bMap,     type:'fert'    },
-      { label:'Agrochemicals',      before: baseline.agrochemicals,      after: baseline.agrochemicals,      change: 0,               type:'cost'    },
-      { label:'Labor',              before: baseline.labor,              after: baseline.labor,              change: 0,               type:'cost'    },
-      { label:'Operations',         before: baseline.operations,         after: baseline.operations,         change: 0,               type:'cost'    },
-      { label:'Maintenance',        before: baseline.maintenance,        after: baseline.maintenance,        change: 0,               type:'cost'    },
-      { label:'Depreciation',       before: baseline.depreciation,       after: baseline.depreciation,       change: 0,               type:'cost'    },
-      { label:'Land Rental',        before: baseline.landRental,         after: baseline.landRental,         change: 0,               type:'cost'    },
-      { label:'Fin. Expenses',      before: baseline.financialExpenses,  after: baseline.financialExpenses,  change: 0,               type:'cost'    },
-      { label:'Other',              before: baseline.other,              after: baseline.other,              change: 0,               type:'cost'    },
-      { label:'GROSS MARGIN',       before: beforeGM,                    after: afterGM,                     change: afterGM-beforeGM, type:'margin' },
-    ];
-    return { bDap, aDap, bMap, aMap, beforeGM, afterGM, delta: afterGM - beforeGM,
-      dapDelta: -(aDap - bDap), mapDelta: -(aMap - bMap), lines };
+    const dapDelta = aDap - bDap;
+    const mapDelta = aMap - bMap;
+    return { beforeGM, afterGM, delta: afterGM - beforeGM, dapDelta, mapDelta };
   }, [regionDef, baseline, dapCurrent, dapTarget, mapCurrent, mapTarget]);
 
-  const insights = useMemo(() => {
-    const { beforeGM, delta, dapDelta, mapDelta, bDap, aDap, bMap, aMap } = prof;
-    const gmPct = beforeGM !== 0 ? Math.abs(delta / beforeGM * 100).toFixed(0) : '—';
-    const fertBefore = ((baseline.fertilizers + bDap + bMap) / baseline.revenue * 100).toFixed(0);
-    const fertAfter  = ((baseline.fertilizers + aDap + aMap) / baseline.revenue * 100).toFixed(0);
-    const worstRegion = BRAZIL_PROF_REGIONS.reduce((worst, r) => {
-      const b = BRAZIL_PROF_BASELINE[r.id];
-      const bd = r.dapRate * dapCurrent / 1000; const ad = r.dapRate * dapTarget / 1000;
-      const bm = r.mapRate * mapCurrent / 1000; const am = r.mapRate * mapTarget / 1000;
-      const fixd = b.seeds+b.fertilizers+b.agrochemicals+b.labor+b.operations+b.maintenance+b.depreciation+b.landRental+b.financialExpenses+b.other;
-      const d = (b.revenue-fixd-ad-am) - (b.revenue-fixd-bd-bm);
-      return d < worst.delta ? { id: r.id, label: r.label, delta: d } : worst;
-    }, { id:'', label:'', delta: 0 });
-    const lastThreeFert = histData.slice(-3).reduce((s, d) => s + d.fert, 0) / 3;
-    return [
-      { type: delta < 0 ? 'risk' : 'positive',
-        label: 'Combined shock impact',
-        text: `DAP ($${dapCurrent}→$${dapTarget}/t) and MAP ($${mapCurrent}→$${mapTarget}/t) erode ${regionKey} gross margin by $${Math.abs(delta).toFixed(0)}/ha — ${gmPct}% of the pre-shock baseline.` },
-      { type: 'neutral',
-        label: 'Fertilizer revenue burden',
-        text: `Base + DAP + MAP rises from ${fertBefore}% to ${fertAfter}% of revenue/ha. DAP accounts for $${Math.abs(dapDelta).toFixed(0)} of the shock; MAP adds $${Math.abs(mapDelta).toFixed(0)}.` },
-      { type: 'risk',
-        label: 'Most exposed region',
-        text: `${worstRegion.label} bears the steepest impact at $${Math.abs(worstRegion.delta).toFixed(0)}/ha, driven by higher application rates${worstRegion.id === regionKey ? ' — this is the current region' : ''}.` },
-      { type: 'neutral',
-        label: 'Historical fertilizer cost',
-        text: `${regionKey} averaged $${lastThreeFert.toFixed(0)}/ha in total fertilizer spend over the last 3 seasons. The shock adds $${(aDap + aMap - bDap - bMap).toFixed(0)}/ha on top of the observed program.` },
-    ];
-  }, [prof, regionKey, baseline, dapCurrent, dapTarget, mapCurrent, mapTarget, histData]);
-
-  const n2 = v => Math.abs(v).toFixed(0);
-  const sgn = v => (v >= 0 ? '+' : '−') + '$' + n2(v);
-  const inputStyle = (accent) => ({
-    width: '100%', background: T.card, border: `1.5px solid ${accent}40`,
-    color: accent === T.rose ? T.rose : T.text, borderRadius: 6,
-    padding: '7px 10px', fontFamily: "'DM Mono',monospace", fontSize: 13, fontWeight: 600,
-    outline: 'none',
-  });
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      <style>{`.pfe-input:focus{border-color:${T.green}!important;}`}</style>
-
-      {/* ── CONTROLS ──────────────────────────────────────────────────── */}
-      <div className="card" style={{ padding: '14px 18px' }}>
-        <p style={{ color: T.green, fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.16em', fontWeight: 700, marginBottom: 12 }}>
-          Price-shock analysis · 25/26 soybean baseline · USD/ha
-        </p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(160px,auto) minmax(130px,auto) 1fr 1fr', gap: 16, alignItems: 'end' }}>
-          <div>
-            <p style={{ color: T.textMuted, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6, fontWeight: 600 }}>Region</p>
-            <select value={regionKey} onChange={e => setRegionKey(e.target.value)}>
-              {BRAZIL_PROF_REGIONS.map(r => <option key={r.id} value={r.id}>{r.label}</option>)}
-            </select>
-          </div>
-          <div>
-            <p style={{ color: T.textMuted, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6, fontWeight: 600 }}>Crop</p>
-            <select defaultValue="soybeans">
-              <option value="soybeans">Soybeans</option>
-            </select>
-          </div>
-          {/* DAP */}
-          <div>
-            <p style={{ color: T.textMuted, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6, fontWeight: 600 }}>DAP price (USD/t)</p>
-            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-              <div style={{ flex: 1 }}>
-                <p style={{ fontSize: 9, color: T.textFaint, marginBottom: 3 }}>Current</p>
-                <input className="pfe-input" type="number" value={dapCurrent} min={100} max={3000} step={10}
-                  onChange={e => setDapCurrent(+e.target.value)} style={inputStyle(T.border)} />
-              </div>
-              <span style={{ color: T.textFaint, fontSize: 13, paddingTop: 14 }}>→</span>
-              <div style={{ flex: 1 }}>
-                <p style={{ fontSize: 9, color: T.rose, marginBottom: 3 }}>Target</p>
-                <input className="pfe-input" type="number" value={dapTarget} min={100} max={3000} step={10}
-                  onChange={e => setDapTarget(+e.target.value)} style={inputStyle(T.rose)} />
-              </div>
-            </div>
-          </div>
-          {/* MAP */}
-          <div>
-            <p style={{ color: T.textMuted, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6, fontWeight: 600 }}>MAP price (USD/t)</p>
-            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-              <div style={{ flex: 1 }}>
-                <p style={{ fontSize: 9, color: T.textFaint, marginBottom: 3 }}>Current</p>
-                <input className="pfe-input" type="number" value={mapCurrent} min={100} max={3000} step={10}
-                  onChange={e => setMapCurrent(+e.target.value)} style={inputStyle(T.border)} />
-              </div>
-              <span style={{ color: T.textFaint, fontSize: 13, paddingTop: 14 }}>→</span>
-              <div style={{ flex: 1 }}>
-                <p style={{ fontSize: 9, color: T.rose, marginBottom: 3 }}>Target</p>
-                <input className="pfe-input" type="number" value={mapTarget} min={100} max={3000} step={10}
-                  onChange={e => setMapTarget(+e.target.value)} style={inputStyle(T.rose)} />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ── KPI STRIP ─────────────────────────────────────────────────── */}
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-        <KPICard label="Gross Margin — Before" value={'$'+n2(prof.beforeGM)+'/ha'} accent={prof.beforeGM >= 0 ? T.green : T.rose} sub="25/26 · current prices" />
-        <KPICard label="Gross Margin — After"  value={'$'+n2(prof.afterGM)+'/ha'}  accent={prof.afterGM  >= 0 ? T.green : T.rose} sub="At target prices" />
-        <KPICard label="Total impact"           value={sgn(prof.delta)+'/ha'}       accent={prof.delta >= 0 ? T.green : T.rose}    sub="Gross margin delta" />
-        <KPICard label="DAP exposure"           value={'$'+n2(prof.dapDelta)+'/ha'} accent={T.amber} sub={regionDef.dapRate.toFixed(0)+' kg/ha · '+dapCurrent+'→'+dapTarget+' $/t'} />
-        <KPICard label="MAP exposure"           value={'$'+n2(prof.mapDelta)+'/ha'} accent={T.violet} sub={regionDef.mapRate.toFixed(0)+' kg/ha · '+mapCurrent+'→'+mapTarget+' $/t'} />
-      </div>
-
-      {/* ── P&L WATERFALL + DELTA CHART ───────────────────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 14 }}>
-
-        {/* Table */}
-        <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-          <div style={{ padding: '13px 18px', borderBottom: `1px solid ${T.border}`, background: `linear-gradient(135deg,${T.card},${T.bg})` }}>
-            <p style={{ color: T.textMid, fontSize: 13, fontWeight: 700, margin: 0 }}>P&L waterfall — USD/ha</p>
-            <p style={{ color: T.textDim, fontSize: 10, marginTop: 3 }}>{regionKey} · Soybeans · 25/26 baseline · DAP ${dapCurrent}→${dapTarget} · MAP ${mapCurrent}→${mapTarget}</p>
-          </div>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
-            <thead>
-              <tr>
-                {[['Line item','left',200],['Before','right',80],['After','right',80],['Change','right',110]].map(([h,a,w]) => (
-                  <th key={h} style={{ width:w, padding:'7px 14px', color:T.textDim, fontSize:9, fontWeight:700, textTransform:'uppercase', letterSpacing:'0.07em', textAlign:a, background:T.panel, borderBottom:`1px solid ${T.border}` }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {prof.lines.map((row) => {
-                const isMargin  = row.type === 'margin';
-                const isFert    = row.type === 'fert';
-                const isRevenue = row.type === 'revenue';
-                const maxAbs    = Math.max(...prof.lines.map(l => Math.abs(l.change)));
-                const barPct    = maxAbs > 0 ? (Math.abs(row.change) / maxAbs) * 100 : 0;
-                const chgColor  = row.change < 0 ? T.rose : row.change > 0 ? T.green : T.textFaint;
-                const rowBg     = isMargin ? `linear-gradient(90deg,${T.panel},${T.bg})` : isFert ? '#FFF9F0' : 'transparent';
-                return (
-                  <tr key={row.label} style={{ borderBottom:`1px solid ${T.borderSubtle}`, background:rowBg, transition:'background 0.2s' }}>
-                    <td style={{ padding:'9px 14px', color: isMargin ? T.text : isFert ? '#b45309' : T.textMid, fontWeight: isMargin ? 800 : isFert ? 600 : 400 }}>
-                      {isFert && <span style={{ color:'#d97706', marginRight:5, fontSize:10 }}>●</span>}
-                      {row.label}
-                    </td>
-                    <td style={{ padding:'9px 14px', textAlign:'right', fontFamily:"'DM Mono',monospace", fontSize:12,
-                      color: isRevenue ? T.green : isMargin ? (row.before >= 0 ? T.green : T.rose) : T.textMid,
-                      fontWeight: isMargin ? 800 : 400 }}>
-                      {isRevenue ? '+' : isMargin ? '' : '−'}{isRevenue ? row.before.toFixed(0) : row.before.toFixed(0)}
-                    </td>
-                    <td style={{ padding:'9px 14px', textAlign:'right', fontFamily:"'DM Mono',monospace", fontSize:12,
-                      color: isRevenue ? T.green : isMargin ? (row.after >= 0 ? T.green : T.rose) : isFert && row.after > row.before ? T.rose : T.textMid,
-                      fontWeight: isMargin ? 800 : 400 }}>
-                      {isRevenue ? '+' : isMargin ? '' : '−'}{row.after.toFixed(0)}
-                    </td>
-                    <td style={{ padding:'9px 14px', textAlign:'right' }}>
-                      <div style={{ display:'flex', alignItems:'center', justifyContent:'flex-end', gap:8 }}>
-                        {row.change !== 0 && (
-                          <div style={{ width:44, height:5, background:T.bg, borderRadius:3, overflow:'hidden', flexShrink:0 }}>
-                            <div style={{ height:'100%', width:`${barPct}%`, background:chgColor, borderRadius:3, transition:'width 0.35s ease' }} />
-                          </div>
-                        )}
-                        <span style={{ fontFamily:"'DM Mono',monospace", color:chgColor, fontSize:11, fontWeight:700, minWidth:54, textAlign:'right' }}>
-                          {row.change === 0 ? '—' : (row.change > 0 ? '+' : '−')+'$'+n2(row.change)}
-                        </span>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-          <div style={{ padding:'10px 14px', background:T.bg, borderTop:`1px solid ${T.border}` }}>
-            <p style={{ color:T.textDim, fontSize:10, margin:0, lineHeight:1.55 }}>
-              <span style={{ color:'#d97706', fontWeight:600 }}>● Dynamic lines</span> — DAP and MAP costs recalculate live. All other line items are fixed at the 25/26 observed baseline.
-            </p>
-          </div>
-        </div>
-
-        {/* Delta chart + application rate cards */}
-        <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
-          <div className="card" style={{ flex:1 }}>
-            <p style={{ color:T.textMuted, fontSize:10, textTransform:'uppercase', fontWeight:700, marginBottom:4 }}>Impact per driver (USD/ha)</p>
-            <p style={{ color:T.textDim, fontSize:10, marginBottom:10 }}>Negative = gross margin erosion. Zero bars = no price change on that line.</p>
-            <ResponsiveContainer width="100%" height={220}>
-              <BarChart
-                data={[
-                  { label:'DAP',       val: prof.dapDelta },
-                  { label:'MAP',       val: prof.mapDelta },
-                  { label:'Net total', val: prof.delta    },
-                ]}
-                margin={{ top:6, right:12, bottom:6, left:8 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke={T.border} />
-                <XAxis dataKey="label" tick={{ fill:T.textMuted, fontSize:11 }} />
-                <YAxis tick={{ fill:T.textDim, fontSize:10 }} tickFormatter={v => '$'+Math.round(v)} />
-                <Tooltip
-                  contentStyle={{ background:T.card, border:`1px solid ${T.border}`, borderRadius:8, fontSize:11 }}
-                  formatter={(v) => ['$'+Math.abs(v).toFixed(0)+'/ha '+( v < 0 ? '(worse)' : '(better)' ), 'Impact']}
-                />
-                <ReferenceLine y={0} stroke={T.textDim} strokeWidth={1} opacity={0.35} />
-                <Bar dataKey="val" radius={[4,4,0,0]}>
-                  {[prof.dapDelta, prof.mapDelta, prof.delta].map((v, i) => (
-                    <Cell key={i} fill={v >= 0 ? T.green : T.rose} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
-            {[
-              { label:'DAP application', val:regionDef.dapRate.toFixed(0)+' kg/ha', accent:T.amber,  sub:'Region avg · back-calc from model' },
-              { label:'MAP application', val:regionDef.mapRate.toFixed(0)+' kg/ha', accent:T.violet, sub:'Region avg · back-calc from model' },
-            ].map(k => (
-              <div key={k.label} style={{ padding:'10px 12px', background:T.bg, border:`1px solid ${k.accent}20`, borderRadius:8 }}>
-                <p style={{ color:T.textDim, fontSize:9, textTransform:'uppercase', letterSpacing:'0.08em', margin:'0 0 3px' }}>{k.label}</p>
-                <p style={{ color:k.accent, fontSize:15, fontWeight:800, fontFamily:"'DM Mono',monospace", margin:0 }}>{k.val}</p>
-                <p style={{ color:T.textFaint, fontSize:9, marginTop:3 }}>{k.sub}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ── HISTORICAL PRODUCTION COSTS ───────────────────────────────── */}
-      <div className="card">
-        <p style={{ color:T.textMuted, fontSize:10, textTransform:'uppercase', letterSpacing:'0.08em', fontWeight:700, marginBottom:3 }}>
-          Historical production costs — {regionKey} soybeans (USD/ha, 2025-constant BRL/USD)
-        </p>
-        <p style={{ color:T.textDim, fontSize:10, marginBottom:14 }}>Farm-level data 17/18 – 25/26. Nominal values deflated via real BRL/USD exchange rate rebased to 2025.</p>
-        <ResponsiveContainer width="100%" height={300}>
-          <ComposedChart data={histData} margin={{ top:8, right:16, bottom:8, left:8 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke={T.border} />
-            <XAxis dataKey="s" tick={{ fill:T.textMuted, fontSize:10 }} />
-            <YAxis tick={{ fill:T.textDim, fontSize:10 }} tickFormatter={v => '$'+Math.round(v)} />
-            <Tooltip
-              contentStyle={{ background:T.card, border:`1px solid ${T.border}`, borderRadius:8, fontSize:11 }}
-              formatter={(v, name) => ['$'+Math.round(v)+'/ha', name]}
-            />
-            <Legend wrapperStyle={{ fontSize:10 }} />
-            <ReferenceLine y={0} stroke={T.textDim} strokeDasharray="4 3" strokeOpacity={0.5} />
-            <Line type="monotone" dataKey="fert"   name="Fertilizers"   stroke={T.amber}  strokeWidth={2}   dot={{ r:3, fill:T.amber,  strokeWidth:0 }} />
-            <Line type="monotone" dataKey="agro"   name="Agrochemicals" stroke={T.rose}   strokeWidth={2}   dot={{ r:3, fill:T.rose,   strokeWidth:0 }} />
-            <Line type="monotone" dataKey="land"   name="Land Rental"   stroke={T.violet} strokeWidth={2}   dot={{ r:3, fill:T.violet, strokeWidth:0 }} />
-            <Line type="monotone" dataKey="seeds"  name="Seeds"         stroke={T.indigo} strokeWidth={1.5} dot={{ r:3, fill:T.indigo, strokeWidth:0 }} strokeDasharray="5 3" />
-            <Line type="monotone" dataKey="labor"  name="Labor"         stroke={T.slate}  strokeWidth={1.5} dot={{ r:3, fill:T.slate,  strokeWidth:0 }} strokeDasharray="5 3" />
-            <Area  type="monotone" dataKey="netInc" name="Net Income"    stroke={T.green}  fill={T.green+'18'} strokeWidth={2} dot={{ r:4, fill:T.green, stroke:T.card, strokeWidth:2 }} />
-          </ComposedChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* ── INSIGHT STRIP ─────────────────────────────────────────────── */}
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))', gap:10 }}>
-        {insights.map((it, i) => {
-          const border = { risk:T.rose, positive:T.green, neutral:T.amber };
-          const bg     = { risk:'#FFF5F5', positive:'#EDF6EF', neutral:'#FFFBF0' };
-          return (
-            <div key={i} style={{
-              padding:'13px 16px', background:bg[it.type]||T.panel,
-              border:`1px solid ${border[it.type]}20`,
-              borderLeft:`3px solid ${border[it.type]}`,
-              borderRadius:8
-            }}>
-              <p style={{ color:border[it.type], fontSize:10, textTransform:'uppercase', fontWeight:700, letterSpacing:'0.07em', marginBottom:5 }}>{it.label}</p>
-              <p style={{ color:T.textMid, fontSize:11.5, lineHeight:1.7, margin:0 }}>{it.text}</p>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// BRAZIL PAGE — full farmer economics engine
-// ═══════════════════════════════════════════════════════════════════════════
-function BrazilPage() {
-  const [regionId, setRegionId] = useState("cerrado");
-  const [cropId,   setCropId]   = useState("soybean");
-  const [sizeId,   setSizeId]   = useState("medium");
-  const [ccy,      setCcy]      = useState("BRL");
-  const [baseline, setBaseline] = useState(() => buildBrazilBaseline("cerrado", "soybean", "medium"));
-  const [scenarios, setScenarios] = useState([]);
-  const [activeTab, setActiveTab] = useState("pnl"); // pnl | fert | scenarios | insights
-
-  useEffect(() => { setBaseline(buildBrazilBaseline(regionId, cropId, sizeId)); }, [regionId, cropId, sizeId]);
-
-  const region = BRAZIL_REGIONS.find(r => r.id === regionId);
-  const crop   = BRAZIL_CROPS.find(c => c.id === cropId);
-  const size   = BRAZIL_FARM_SIZES.find(s => s.id === sizeId);
-  const pnl    = useMemo(() => computeBrazilPnL(baseline), [baseline]);
-  const nutrients = useMemo(() => computeNutrients(baseline.fertMix), [baseline.fertMix]);
-  const recNutrients = BRAZIL_ECON.crops[cropId].regions[regionId];
-
-  const updateMix   = (prod, kg) => setBaseline(b => ({ ...b, fertMix: { ...b.fertMix, [prod]: kg } }));
-  const updateOther = (k, v)     => setBaseline(b => ({ ...b, otherCosts: { ...b.otherCosts, [k]: v } }));
-  const updateField = (k, v)     => setBaseline(b => ({ ...b, [k]: v }));
-
-  const sensitivity = useMemo(() => {
-    const drivers = [
-      { key: "Crop price",      apply: x => ({ ...baseline, priceBRL: baseline.priceBRL * x }) },
-      { key: "Yield",           apply: x => ({ ...baseline, yieldT: baseline.yieldT * x }) },
-      { key: "Fertiliser cost", apply: x => ({ ...baseline, fertMix: Object.fromEntries(Object.entries(baseline.fertMix).map(([k, v]) => [k, v * x])) }) },
-      { key: "Other variable",  apply: x => ({ ...baseline, otherCosts: { ...baseline.otherCosts, seeds: baseline.otherCosts.seeds * x, agrochemicals: baseline.otherCosts.agrochemicals * x, fuelMachinery: baseline.otherCosts.fuelMachinery * x } }) },
-      { key: "Land rent",       apply: x => ({ ...baseline, otherCosts: { ...baseline.otherCosts, landRent: baseline.otherCosts.landRent * x } }) },
-    ];
-    const base = pnl.netIncome;
-    return drivers.map(d => { const lo = computeBrazilPnL(d.apply(0.8)).netIncome; const hi = computeBrazilPnL(d.apply(1.2)).netIncome; return { driver: d.key, low: lo - base, high: hi - base, absRange: Math.abs(hi - lo) }; }).sort((a, b) => b.absRange - a.absRange);
-  }, [baseline, pnl.netIncome]);
-
-  const saveScenario = () => { if (scenarios.length >= 4) return; setScenarios([...scenarios, { id: Date.now(), label: `${region.name.split(" ")[0]} · ${crop.name.split(" ")[0]} · ${size.label}`, baseline: JSON.parse(JSON.stringify(baseline)), pnl: { ...pnl }, farmHa: baseline.farmHa }]); };
-  const removeScenario = id => setScenarios(scenarios.filter(s => s.id !== id));
-
-  const fmt = v => ccy === "USD" ? "US$" + Math.round(v / FX_BRL_USD).toLocaleString() : "R$" + Math.round(v).toLocaleString();
-  const fmtK = v => (v >= 0 ? "+" : "") + fmt(v);
-  const CARET = "▾";
-
-  const insights = BRAZIL_INSIGHTS[cropId]?.[regionId] || [{ type: "neutral", icon: "📋", label: "Notes", text: "Strategic notes for this crop-region combination are being built. Use the P&L engine above to model the economics." }];
-
-  // Waterfall data
   const wfData = [
-    { name: "Revenue",       value: pnl.revenuePerHa, fill: T.green, type: "total" },
-    ...Object.entries(pnl.variableCosts).filter(([, v]) => v > 0).map(([n, v]) => ({ name: n, value: -v, fill: T.rose, type: "cost" })),
-    { name: "Contribution",  value: pnl.contributionMargin, fill: "#0ea5e9", type: "sub" },
-    ...Object.entries(pnl.fixedCosts).filter(([, v]) => v > 0).map(([n, v]) => ({ name: n, value: -v, fill: T.amber, type: "cost" })),
-    { name: "Net income",    value: pnl.netIncome, fill: pnl.netIncome >= 0 ? T.green : T.rose, type: "total" },
+    { name: 'Current GM', val: shock.beforeGM * fx, fill: shock.beforeGM >= 0 ? MCK.green : MCK.red },
+    { name: 'DAP Shock',  val: -shock.dapDelta * fx, fill: shock.dapDelta > 0 ? MCK.red : MCK.green },
+    { name: 'MAP Shock',  val: -shock.mapDelta * fx, fill: shock.mapDelta > 0 ? '#880000' : MCK.teal },
+    { name: 'Scenario GM', val: shock.afterGM * fx,  fill: shock.afterGM >= 0 ? MCK.teal : MCK.red },
   ];
-  // Running sum for waterfall base
-  let runningSum = 0;
-  const wfChart = wfData.map(d => {
-    if (d.type === "total" || d.type === "sub") { runningSum = Math.max(d.value, 0); return { ...d, base: 0, display: d.value }; }
-    const base = runningSum + d.value;
-    runningSum += d.value;
-    return { ...d, base, display: -d.value };
+
+  const inpS = (accent) => ({
+    width: 80, background: '#fff', border: `1px solid ${accent}`,
+    color: MCK.text, padding: '5px 8px',
+    fontFamily: "'DM Mono',monospace", fontSize: 13, outline: 'none',
   });
 
+  const WfTip = ({ active, payload, label }) => {
+    if (!active || !payload?.length) return null;
+    return (
+      <div style={{ background: '#fff', border: `1px solid ${MCK.line}`, padding: '10px 14px', fontSize: 12 }}>
+        <p style={{ color: MCK.text, fontWeight: 700, marginBottom: 4 }}>{label}</p>
+        <p style={{ color: payload[0].fill }}>{sym}{Math.abs(payload[0].value).toFixed(0)}/ha</p>
+      </div>
+    );
+  };
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-
-      {/* Hero banner */}
-      <div style={{ position: "relative", borderRadius: 14, overflow: "hidden", border: `1px solid ${T.border}`, background: T.panel }}>
-        <div style={{ position: "absolute", inset: 0 }}>
-          <img src="/brazil.jpg" alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.15, filter: "saturate(1.2)" }} onError={e => e.currentTarget.style.display = "none"} />
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg,rgba(247,249,247,0.96) 0%,rgba(247,249,247,0.75) 100%)" }} />
-        </div>
-        <div style={{ position: "relative", padding: "20px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 14 }}>
-          <div>
-            <p style={{ color: T.green, fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 700, marginBottom: 6 }}>Brazil · Farmer Economics Engine</p>
-            <h1 style={{ color: T.text, fontSize: 20, fontWeight: 700, letterSpacing: "-0.01em", margin: 0 }}>
-              Step inside a {size.label.toLowerCase()} growing {crop.name.toLowerCase()} in {region.name}.
-            </h1>
-            <p style={{ color: T.textMuted, fontSize: 12, marginTop: 6 }}>Edit any input below — yield, price, fertiliser mix, costs — and the P&L updates in real time.</p>
-          </div>
-          <Segmented value={ccy} onChange={setCcy} accent={T.green} options={[{ label: "R$ BRL", value: "BRL" }, { label: "US$", value: "USD" }]} />
-        </div>
-      </div>
-
-      {/* KPI strip */}
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-        {[
-          { label: "Revenue / ha",     value: fmt(pnl.revenuePerHa),       accent: T.green },
-          { label: "Net income / ha",  value: fmt(pnl.netIncome),           accent: pnl.netIncome >= 0 ? T.green : T.rose, sub: pnl.marginPct.toFixed(0) + "% margin" },
-          { label: "Farm net income",  value: fmt(pnl.farmNetIncome),       accent: pnl.farmNetIncome >= 0 ? T.green : T.rose, sub: Math.round(baseline.farmHa) + " ha" },
-          { label: "Fertiliser cost",  value: fmt(pnl.fertCostPerHa) + "/ha", accent: T.amber },
-          { label: "Break-even price", value: fmt(pnl.breakEvenPrice) + "/t", accent: "#0ea5e9", sub: "at " + baseline.yieldT.toFixed(1) + " t/ha" },
-        ].map((k, i) => <KPICard key={i} {...k} />)}
-      </div>
-
-      {/* Pickers */}
-      <div className="card">
-        <p style={{ color: T.textMuted, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700, marginBottom: 14 }}>Step 1 — Choose your farm context</p>
-        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          {/* Region */}
-          <div>
-            <p style={{ color: T.textDim, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>Region</p>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))", gap: 6 }}>
-              {BRAZIL_REGIONS.map(r => (<button key={r.id} onClick={() => setRegionId(r.id)} style={{ background: r.id === regionId ? r.color + "12" : T.panel, border: `1px solid ${r.id === regionId ? r.color : T.border}`, borderRadius: 8, padding: "10px 12px", cursor: "pointer", textAlign: "left", transition: "all 0.15s" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}><p style={{ color: r.id === regionId ? r.color : T.text, fontSize: 12.5, fontWeight: 700, margin: 0 }}>{r.name}</p><span style={{ color: r.color, fontSize: 10, fontFamily: "'DM Mono',monospace", fontWeight: 700 }}>{r.sharePct}%</span></div>
-                <p style={{ color: T.textDim, fontSize: 10, margin: 0, lineHeight: 1.4 }}>{r.states.split(" · ").slice(0, 2).join(", ")}</p>
-              </button>))}
-            </div>
-          </div>
-          {/* Crop */}
-          <div>
-            <p style={{ color: T.textDim, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>Crop</p>
-            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-              {BRAZIL_CROPS.map(c => (<button key={c.id} onClick={() => setCropId(c.id)} style={{ padding: "7px 14px", borderRadius: 7, background: c.id === cropId ? c.color + "18" : "transparent", border: `1px solid ${c.id === cropId ? c.color : T.border}`, color: c.id === cropId ? c.color : T.textMuted, fontSize: 12, fontWeight: c.id === cropId ? 700 : 400, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6 }}><span>{c.emoji}</span>{c.name}</button>))}
-            </div>
-          </div>
-          {/* Farm size */}
-          <div>
-            <p style={{ color: T.textDim, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>Farm size archetype</p>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 6 }}>
-              {BRAZIL_FARM_SIZES.map(s => (<button key={s.id} onClick={() => setSizeId(s.id)} style={{ background: s.id === sizeId ? s.color + "12" : T.panel, border: `1px solid ${s.id === sizeId ? s.color : T.border}`, borderRadius: 8, padding: "10px 12px", cursor: "pointer", textAlign: "left", transition: "all 0.15s" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}><span style={{ color: s.id === sizeId ? s.color : T.text, fontSize: 12, fontWeight: 700 }}>{s.label}</span><span style={{ color: s.color, fontSize: 10, fontFamily: "'DM Mono',monospace" }}>{s.range}</span></div>
-                <p style={{ color: T.textDim, fontSize: 10, margin: 0 }}>≈{s.avgHa.toLocaleString()} ha · {s.sharePct}% of farms · {s.landSharePct}% of land</p>
-              </button>))}
-            </div>
-          </div>
-          {/* Region context strip */}
-          <div style={{ padding: "12px 14px", background: T.bg, border: `1px solid ${region.color}25`, borderLeft: `3px solid ${region.color}`, borderRadius: 8 }}>
-            <p style={{ color: region.color, fontSize: 10, textTransform: "uppercase", fontWeight: 700, marginBottom: 6 }}>{region.name} · context</p>
-            <p style={{ color: T.text, fontSize: 12.5, lineHeight: 1.65, margin: "0 0 6px" }}>{region.blurb}</p>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 8 }}>
-              {[["Soil", region.soil], ["Climate", region.climate], ["Logistics", region.logistics]].map(([k, v]) => (<div key={k}><span style={{ color: T.textDim, fontSize: 10 }}>{k.toUpperCase()} · </span><span style={{ color: T.textMuted, fontSize: 11 }}>{v}</span></div>))}
-            </div>
-            <p style={{ color: T.textDim, fontSize: 10.5, marginTop: 8 }}><strong style={{ color: T.textMuted }}>{size.label} · </strong>{size.profile}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Yield, price, farm size */}
-      <div className="card">
-        <p style={{ color: T.textMuted, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700, marginBottom: 14 }}>Step 2 — Set the farmer's reality</p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 10 }}>
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <p style={{ color: MCK.dim, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 8 }}>FERTILIZER PRICE SHOCK · {region.toUpperCase()}</p>
+      <p style={{
+        color: shock.delta < 0 ? MCK.red : MCK.text,
+        fontSize: 18, fontWeight: 700, marginBottom: 28, letterSpacing: '-0.01em', lineHeight: 1.3,
+      }}>
+        Gross margin moves from {sym}{Math.abs(shock.beforeGM * fx).toFixed(0)}/ha to {sym}{Math.abs(shock.afterGM * fx).toFixed(0)}/ha
+        {shock.delta < 0 ? ` — a ${sym}${Math.abs(shock.delta * fx).toFixed(0)} erosion per hectare.` : ` — a ${sym}${Math.abs(shock.delta * fx).toFixed(0)} improvement per hectare.`}
+      </p>
+      <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr', gap: 48, flex: 1, minHeight: 0 }}>
+        <div>
+          <p style={{ color: MCK.dim, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 20 }}>Price inputs (USD/t)</p>
           {[
-            { label: "Yield", hint: "Reg. baseline " + BRAZIL_ECON.crops[cropId].regions[regionId].yield.toFixed(1) + " t/ha", child: <EditableNumber value={baseline.yieldT} step={0.1} min={0} max={500} onChange={v => updateField("yieldT", v)} suffix="t/ha" accent={crop.color} width={100} /> },
-            { label: "Farm-gate price", hint: "Baseline R$" + BRAZIL_ECON.crops[cropId].regions[regionId].price.toLocaleString() + "/t", child: <EditableNumber value={baseline.priceBRL} step={10} min={0} max={1000000} onChange={v => updateField("priceBRL", v)} suffix="R$/t" accent={crop.color} width={120} /> },
-            { label: "Farm size", hint: size.avgHa + " ha archetype default", child: <EditableNumber value={baseline.farmHa} step={10} min={1} max={100000} onChange={v => updateField("farmHa", v)} suffix="ha" accent={size.color} width={100} /> },
-            { label: "FX (R$/US$)", hint: "2024–25 reference", child: <span style={{ color: T.textMuted, fontFamily: "'DM Mono',monospace", fontSize: 13 }}>{FX_BRL_USD.toFixed(2)}</span> },
-          ].map((f, i) => (
-            <div key={i} style={{ background: T.bg, border: `1px solid ${T.border}`, borderRadius: 8, padding: "10px 12px" }}>
-              <p style={{ color: T.textDim, fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>{f.label}</p>
-              <div>{f.child}</div>
-              <p style={{ color: T.textFaint, fontSize: 10, marginTop: 6 }}>{f.hint}</p>
+            { label: 'DAP', curr: dapCurrent, setCurr: setDapCurrent, target: dapTarget, setTarget: setDapTarget, rate: regionDef.dapRate },
+            { label: 'MAP', curr: mapCurrent, setCurr: setMapCurrent, target: mapTarget, setTarget: setMapTarget, rate: regionDef.mapRate },
+          ].map(({ label, curr, setCurr, target, setTarget, rate }) => (
+            <div key={label} style={{ marginBottom: 24 }}>
+              <p style={{ color: MCK.mid, fontSize: 12, fontWeight: 600, marginBottom: 10 }}>{label}</p>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <div>
+                  <p style={{ color: MCK.dim, fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>Current</p>
+                  <input type="number" value={curr} min={100} max={3000} step={10} onChange={e => setCurr(+e.target.value)} style={inpS(MCK.line)} />
+                </div>
+                <span style={{ color: MCK.dim, fontSize: 14, paddingTop: 14 }}>→</span>
+                <div>
+                  <p style={{ color: MCK.red, fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>Scenario</p>
+                  <input type="number" value={target} min={100} max={3000} step={10} onChange={e => setTarget(+e.target.value)} style={inpS(MCK.red)} />
+                </div>
+              </div>
+              <p style={{ color: MCK.dim, fontSize: 10, marginTop: 5 }}>{rate.toFixed(0)} kg/ha applied</p>
             </div>
           ))}
         </div>
+        <div style={{ minHeight: 0 }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={wfData} margin={{ top: 8, right: 16, bottom: 8, left: 8 }} barCategoryGap="40%">
+              <CartesianGrid strokeDasharray="2 4" stroke={MCK.line} vertical={false} />
+              <XAxis dataKey="name" tick={{ fill: MCK.dim, fontSize: 11 }} axisLine={{ stroke: MCK.line }} tickLine={false} />
+              <YAxis tick={{ fill: MCK.dim, fontSize: 11 }} tickFormatter={v => sym + v.toFixed(0)} axisLine={false} tickLine={false} width={60} />
+              <Tooltip content={<WfTip />} />
+              <ReferenceLine y={0} stroke={MCK.line} strokeWidth={1.5} />
+              <Bar dataKey="val" radius={[2, 2, 0, 0]}>
+                {wfData.map((entry, i) => <Cell key={i} fill={entry.fill} />)}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
-
-      {/* SUB-TABS */}
-      <div style={{ display: "flex", gap: 0, background: T.card, border: `1px solid ${T.border}`, borderRadius: 10, padding: 4, width: "fit-content" }}>
-        {[["pnl", "P&L & Waterfall"], ["fert", "Fertiliser Mix"], ["scenarios", "Scenarios"], ["insights", "Strategic Insights"], ["profitability", "Profitability Model"]].map(([k, l]) => (
-          <button key={k} onClick={() => setActiveTab(k)} style={{ padding: "7px 16px", borderRadius: 7, border: "none", cursor: "pointer", background: activeTab === k ? T.green + "20" : "transparent", color: activeTab === k ? T.green : T.textMuted, fontSize: 12, fontWeight: activeTab === k ? 700 : 400, transition: "all 0.15s" }}>{l}</button>
-        ))}
-      </div>
-
-      {/* P&L TAB */}
-      {activeTab === "pnl" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          {/* Cost editor */}
-          <div className="card">
-            <p style={{ color: T.textMuted, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700, marginBottom: 12 }}>Step 3 — Edit the cost stack (R$/ha)</p>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-              {[
-                { title: "Variable costs", color: T.amber, items: [["seeds","Seeds"],["agrochemicals","Agrochemicals"],["fuelMachinery","Fuel & Machinery"],["labor","Labor"],["drying","Drying"],["freight","Freight to port"]] },
-                { title: "Fixed costs",    color: T.indigo, items: [["landRent","Land rent"],["financing","Financing"],["insurance","Insurance"],["admin","Admin & overhead"]] },
-              ].map(block => {
-                const total = block.items.reduce((s, [k]) => s + (baseline.otherCosts[k] || 0), 0);
-                return (
-                  <div key={block.title}>
-                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}><p style={{ color: block.color, fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, margin: 0 }}>{block.title}</p><p style={{ color: block.color, fontSize: 13, fontFamily: "'DM Mono',monospace", fontWeight: 700, margin: 0 }}>R$ {total.toLocaleString()} / ha</p></div>
-                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}><tbody>
-                      {block.items.map(([key, label]) => (
-                        <tr key={key} style={{ borderBottom: `1px solid ${T.borderSubtle}` }}>
-                          <td style={{ padding: "8px 4px", color: T.text, lineHeight: 1.3 }}>{label}</td>
-                          <td style={{ padding: "6px 4px", textAlign: "right", width: 130 }}><EditableNumber value={baseline.otherCosts[key] || 0} step={20} min={0} max={50000} onChange={v => updateOther(key, v)} suffix="R$" accent={block.color} width={90} /></td>
-                        </tr>
-                      ))}
-                    </tbody></table>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Waterfall + break-even */}
-          <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 14 }}>
-            <div className="card">
-              <p style={{ color: T.textMuted, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 700, marginBottom: 6 }}>P&L Waterfall — {ccy}/ha</p>
-              <ResponsiveContainer width="100%" height={320}>
-                <BarChart data={wfChart} margin={{ top: 8, right: 16, bottom: 60, left: 8 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={T.border} vertical={false} />
-                  <XAxis dataKey="name" tick={{ fill: T.textDim, fontSize: 9 }} angle={-30} textAnchor="end" height={60} interval={0} />
-                  <YAxis tick={{ fill: T.textDim, fontSize: 10 }} tickFormatter={v => v >= 1000 ? (v / 1000).toFixed(0) + "k" : v.toString()} />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Bar dataKey="base" stackId="a" fill="transparent" />
-                  <Bar dataKey="display" stackId="a" radius={[3, 3, 0, 0]}>{wfChart.map((d, i) => <Cell key={i} fill={d.fill} />)}</Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {/* Break-even */}
-              <div className="card">
-                <p style={{ color: T.textMuted, fontSize: 10, textTransform: "uppercase", fontWeight: 700, marginBottom: 8 }}>Break-even</p>
-                {[
-                  { label: "Break-even price", value: fmt(pnl.breakEvenPrice) + "/t", current: fmt(baseline.priceBRL) + "/t", margin: baseline.priceBRL > 0 ? ((baseline.priceBRL - pnl.breakEvenPrice) / baseline.priceBRL) * 100 : 0 },
-                  { label: "Break-even yield", value: pnl.breakEvenYield.toFixed(2) + " t/ha", current: baseline.yieldT.toFixed(2) + " t/ha", margin: baseline.yieldT > 0 ? ((baseline.yieldT - pnl.breakEvenYield) / baseline.yieldT) * 100 : 0 },
-                ].map(row => (
-                  <div key={row.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 12px", background: T.bg, border: `1px solid ${T.border}`, borderRadius: 7, marginBottom: 8 }}>
-                    <div><p style={{ color: T.textDim, fontSize: 10, margin: 0, textTransform: "uppercase" }}>{row.label}</p><p style={{ color: T.text, fontSize: 14, fontWeight: 700, fontFamily: "'DM Mono',monospace", margin: "2px 0 0" }}>{row.value}</p></div>
-                    <div style={{ textAlign: "right" }}><p style={{ color: T.textDim, fontSize: 10, margin: 0 }}>Current</p><p style={{ color: T.textMuted, fontSize: 12, fontFamily: "'DM Mono',monospace", margin: "2px 0 0" }}>{row.current}</p><p style={{ color: row.margin >= 0 ? T.green : T.rose, fontSize: 11, fontWeight: 700, margin: "3px 0 0", fontFamily: "'DM Mono',monospace" }}>{row.margin >= 0 ? "+" : ""}{row.margin.toFixed(0)}% buffer</p></div>
-                  </div>
-                ))}
-                <div style={{ padding: "10px 12px", background: pnl.netIncome >= 0 ? "#EDF6EF" : "#FFF5F5", border: `1px solid ${(pnl.netIncome >= 0 ? T.green : T.rose) + "30"}`, borderRadius: 7 }}>
-                  <p style={{ color: pnl.netIncome >= 0 ? T.green : T.rose, fontSize: 11, fontWeight: 700, margin: "0 0 4px", textTransform: "uppercase" }}>{pnl.netIncome >= 0 ? "Above break-even" : "Below break-even"}</p>
-                  <p style={{ color: T.textMuted, fontSize: 11, lineHeight: 1.6, margin: 0 }}>At {fmt(baseline.priceBRL)}/t and {baseline.yieldT.toFixed(2)} t/ha, the farmer earns <strong style={{ color: pnl.netIncome >= 0 ? T.green : T.rose }}>{fmt(pnl.netIncome)}/ha</strong> net.</p>
-                </div>
-              </div>
-              {/* Sensitivity tornado */}
-              <div className="card" style={{ flex: 1 }}>
-                <p style={{ color: T.textMuted, fontSize: 10, textTransform: "uppercase", fontWeight: 700, marginBottom: 6 }}>Sensitivity tornado (±20%)</p>
-                {sensitivity.map((d, i) => {
-                  const max = Math.max(...sensitivity.map(x => Math.max(Math.abs(x.low), Math.abs(x.high))));
-                  return (
-                    <div key={i} style={{ marginBottom: 7 }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}><span style={{ color: T.text, fontSize: 11, fontWeight: 600 }}>{d.driver}</span><span style={{ color: T.textDim, fontSize: 10, fontFamily: "'DM Mono',monospace" }}>Δ {fmt(d.absRange)}</span></div>
-                      <div style={{ position: "relative", height: 16, background: T.bg, borderRadius: 4, border: `1px solid ${T.borderSubtle}` }}>
-                        <div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1, background: T.textDim, opacity: 0.4 }} />
-                        {d.low < 0 && <div style={{ position: "absolute", right: "50%", top: 2, bottom: 2, width: `${(Math.abs(d.low) / max) * 50}%`, background: T.rose + "aa", borderRadius: "3px 0 0 3px" }} />}
-                        {d.high > 0 && <div style={{ position: "absolute", left: "50%", top: 2, bottom: 2, width: `${(Math.abs(d.high) / max) * 50}%`, background: T.green + "aa", borderRadius: "0 3px 3px 0" }} />}
-                      </div>
-                    </div>
-                  );
-                })}
-                <p style={{ color: T.textDim, fontSize: 10, marginTop: 8, lineHeight: 1.5 }}><span style={{ color: T.rose }}>■</span> Adverse (−20%) &nbsp;<span style={{ color: T.green }}>■</span> Favourable (+20%)</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* FERTILISER TAB */}
-      {activeTab === "fert" && (
-        <div className="card">
-          <p style={{ color: T.textMuted, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700, marginBottom: 14 }}>Fertiliser program (kg of product / ha)</p>
-          <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 16 }}>
-            <div>
-              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
-                <thead><tr style={{ borderBottom: `1px solid ${T.border}` }}>{[["Product", "left"], ["N-P-K", "left"], ["Rate", "right"], ["R$/t", "right"], ["Cost R$/ha", "right"]].map(([h, a]) => <th key={h} style={{ textAlign: a, padding: "6px 4px", color: T.textDim, fontSize: 10, fontWeight: 600 }}>{h}</th>)}</tr></thead>
-                <tbody>
-                  {Object.keys(BRAZIL_ECON.nutrientContent).map(prod => {
-                    const kg = baseline.fertMix[prod] || 0; const price = BRAZIL_ECON.fertilizerPrices[prod]; const cost = (kg * price) / 1000;
-                    const nc = BRAZIL_ECON.nutrientContent[prod];
-                    return (
-                      <tr key={prod} style={{ borderBottom: `1px solid ${T.borderSubtle}` }}>
-                        <td style={{ padding: "8px 4px", color: T.text, fontWeight: 600 }}>{prod}</td>
-                        <td style={{ padding: "8px 4px", color: T.textFaint, fontSize: 9, fontFamily: "'DM Mono',monospace" }}>{Math.round(nc.N * 100)}-{Math.round(nc.P2O5 * 100)}-{Math.round(nc.K2O * 100)}{nc.S > 0 ? "+S" : ""}</td>
-                        <td style={{ padding: "6px 4px", textAlign: "right" }}><EditableNumber value={kg} step={10} min={0} max={2000} onChange={v => updateMix(prod, v)} suffix="kg" width={80} accent={T.violet} /></td>
-                        <td style={{ padding: "6px 4px", textAlign: "right", color: T.textMuted, fontFamily: "'DM Mono',monospace" }}>{price.toLocaleString()}</td>
-                        <td style={{ padding: "6px 4px", textAlign: "right", color: kg > 0 ? T.text : T.textFaint, fontFamily: "'DM Mono',monospace", fontWeight: 600 }}>{Math.round(cost).toLocaleString()}</td>
-                      </tr>
-                    );
-                  })}
-                  <tr><td colSpan={4} style={{ padding: "10px 4px", textAlign: "right", color: T.textMuted, fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>Total fertiliser cost</td><td style={{ padding: "10px 4px", textAlign: "right", color: T.violet, fontFamily: "'DM Mono',monospace", fontWeight: 700, fontSize: 14 }}>R$ {pnl.fertCostPerHa.toLocaleString()}</td></tr>
-                </tbody>
-              </table>
-            </div>
-            <div>
-              <p style={{ color: T.textDim, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>Nutrient delivery vs Embrapa recommendation</p>
-              <ResponsiveContainer width="100%" height={220}>
-                <BarChart layout="vertical" data={[{ nutrient: "N", applied: nutrients.N, recommended: recNutrients.n }, { nutrient: "P₂O₅", applied: nutrients.P2O5, recommended: recNutrients.p }, { nutrient: "K₂O", applied: nutrients.K2O, recommended: recNutrients.k }, { nutrient: "S", applied: nutrients.S, recommended: 20 }]} margin={{ left: 30, right: 18 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={T.border} horizontal={false} />
-                  <XAxis type="number" tick={{ fill: T.textDim, fontSize: 10 }} />
-                  <YAxis type="category" dataKey="nutrient" tick={{ fill: T.textMuted, fontSize: 11, fontWeight: 700 }} width={45} />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Legend wrapperStyle={{ fontSize: 10 }} />
-                  <Bar dataKey="applied" name="Applied (kg/ha)" fill={T.green} radius={[0, 4, 4, 0]} />
-                  <Bar dataKey="recommended" name="Recommended" fill={T.amber} radius={[0, 4, 4, 0]} fillOpacity={0.55} />
-                </BarChart>
-              </ResponsiveContainer>
-              <p style={{ color: T.textFaint, fontSize: 10.5, marginTop: 6, lineHeight: 1.55 }}>Embrapa nutrient guidance. S target of 20 kg/ha is a typical deficiency-correction baseline; newly cleared frontier soils may require significantly more.</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* SCENARIOS TAB */}
-      {activeTab === "scenarios" && (
-        <div className="card">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
-            <div><p style={{ color: T.textMuted, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700, margin: 0 }}>Scenario comparison</p><p style={{ color: T.textDim, fontSize: 11, marginTop: 4 }}>Save up to 4 farmer profiles and benchmark them side-by-side.</p></div>
-            <button onClick={saveScenario} disabled={scenarios.length >= 4} style={{ padding: "6px 14px", borderRadius: 6, background: scenarios.length >= 4 ? T.bg : T.green + "22", border: `1px solid ${scenarios.length >= 4 ? T.border : T.green}`, color: scenarios.length >= 4 ? T.textFaint : T.green, cursor: scenarios.length >= 4 ? "default" : "pointer", fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase" }}>+ Save current</button>
-          </div>
-          {scenarios.length === 0 ? (
-            <div style={{ padding: "24px 16px", textAlign: "center", border: `1px dashed ${T.border}`, borderRadius: 8 }}>
-              <p style={{ color: T.textMuted, fontSize: 12, margin: "0 0 4px" }}>No scenarios saved yet.</p>
-              <p style={{ color: T.textDim, fontSize: 11, margin: 0 }}>Adjust the inputs above, save, then build a second scenario (different region, crop or fert mix) to see the delta.</p>
-            </div>
-          ) : (
-            <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
-                <thead><tr style={{ borderBottom: `1px solid ${T.border}` }}>{[["Scenario","left"],["Yield","right"],["Price","right"],["Revenue/ha","right"],["Fert/ha","right"],["Net income/ha","right"],["Farm NI","right"],["vs Live","right"],["","right"]].map(([h, a]) => <th key={h} style={{ textAlign: a, padding: "8px 10px", color: T.textDim, fontSize: 10, fontWeight: 600 }}>{h}</th>)}</tr></thead>
-                <tbody>
-                  <tr style={{ background: T.green + "08", borderBottom: `1px solid ${T.borderSubtle}` }}>
-                    <td style={{ padding: "10px", color: T.green, fontWeight: 700 }}>● Live</td>
-                    <td style={{ padding: "10px", textAlign: "right", color: T.textMuted, fontFamily: "'DM Mono',monospace" }}>—</td>
-                    <td style={{ padding: "10px", textAlign: "right", color: T.textMuted, fontFamily: "'DM Mono',monospace" }}>—</td>
-                    <td style={{ padding: "10px", textAlign: "right", color: T.text, fontFamily: "'DM Mono',monospace" }}>{fmt(pnl.revenuePerHa)}</td>
-                    <td style={{ padding: "10px", textAlign: "right", color: T.text, fontFamily: "'DM Mono',monospace" }}>{fmt(pnl.fertCostPerHa)}</td>
-                    <td style={{ padding: "10px", textAlign: "right", color: pnl.netIncome >= 0 ? T.green : T.rose, fontFamily: "'DM Mono',monospace", fontWeight: 700 }}>{fmt(pnl.netIncome)}</td>
-                    <td style={{ padding: "10px", textAlign: "right", color: pnl.farmNetIncome >= 0 ? T.green : T.rose, fontFamily: "'DM Mono',monospace", fontWeight: 700 }}>{fmt(pnl.farmNetIncome)}</td>
-                    <td style={{ padding: "10px", textAlign: "right", color: T.textFaint, fontFamily: "'DM Mono',monospace" }}>baseline</td>
-                    <td></td>
-                  </tr>
-                  {scenarios.map(s => { const delta = s.pnl.netIncome - pnl.netIncome; return (<tr key={s.id} style={{ borderBottom: `1px solid ${T.borderSubtle}` }}>
-                    <td style={{ padding: "10px", color: T.text }}>{s.label}</td>
-                    <td style={{ padding: "10px", textAlign: "right", color: T.textMuted, fontFamily: "'DM Mono',monospace" }}>{s.baseline.yieldT.toFixed(2)}</td>
-                    <td style={{ padding: "10px", textAlign: "right", color: T.textMuted, fontFamily: "'DM Mono',monospace" }}>{s.baseline.priceBRL.toLocaleString()}</td>
-                    <td style={{ padding: "10px", textAlign: "right", color: T.text, fontFamily: "'DM Mono',monospace" }}>{fmt(s.pnl.revenuePerHa)}</td>
-                    <td style={{ padding: "10px", textAlign: "right", color: T.text, fontFamily: "'DM Mono',monospace" }}>{fmt(s.pnl.fertCostPerHa)}</td>
-                    <td style={{ padding: "10px", textAlign: "right", color: s.pnl.netIncome >= 0 ? T.green : T.rose, fontFamily: "'DM Mono',monospace", fontWeight: 700 }}>{fmt(s.pnl.netIncome)}</td>
-                    <td style={{ padding: "10px", textAlign: "right", color: s.pnl.farmNetIncome >= 0 ? T.green : T.rose, fontFamily: "'DM Mono',monospace", fontWeight: 700 }}>{fmt(s.pnl.farmNetIncome)}</td>
-                    <td style={{ padding: "10px", textAlign: "right", color: delta >= 0 ? T.green : T.rose, fontFamily: "'DM Mono',monospace", fontWeight: 700 }}>{delta >= 0 ? "+" : ""}{fmt(delta)}</td>
-                    <td style={{ padding: "10px" }}><button onClick={() => removeScenario(s.id)} style={{ background: "transparent", border: `1px solid ${T.border}`, color: T.textDim, fontSize: 10, padding: "3px 8px", borderRadius: 4, cursor: "pointer" }}>×</button></td>
-                  </tr>); })}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* INSIGHTS TAB */}
-      {activeTab === "insights" && (
-        <div className="card">
-          <p style={{ color: T.textMuted, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700, marginBottom: 14 }}>Strategic context — what the CVA × OCP Brazil deep dive says about {crop.name.toLowerCase()} in {region.name}</p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: 10 }}>
-            {insights.map((it, i) => <InsightCard key={i} item={it} />)}
-          </div>
-        </div>
-      )}
-      {activeTab === "profitability" && <BrazilFarmerEconomicsSection />}
     </div>
   );
 }
+
+// ─── Slide 5 — So What ────────────────────────────────────────────────────
+function Slide5({ region, currency }) {
+  const baseline  = BRAZIL_PROF_BASELINE[region] || BRAZIL_PROF_BASELINE.National;
+  const hist      = BRAZIL_PROF_HISTORICAL[region] || BRAZIL_PROF_HISTORICAL.National;
+  const regionDef = BRAZIL_PROF_REGIONS.find(r => r.id === region) || BRAZIL_PROF_REGIONS[0];
+  const sym = currency === 'BRL' ? 'R$' : '$';
+  const fx  = currency === 'BRL' ? FX_BRL_USD : 1;
+
+  const fixed = baseline.seeds + baseline.fertilizers + baseline.agrochemicals +
+    baseline.labor + baseline.operations + baseline.maintenance +
+    baseline.depreciation + baseline.landRental + baseline.financialExpenses + baseline.other;
+  const netInc25   = baseline.revenue - fixed;
+  const profSeasons = hist.filter(d => d.netInc > 0).length;
+  const lossSeasons = hist.filter(d => d.netInc < 0).length;
+  const dapSpike300 = regionDef.dapRate * 300 / 1000;
+  const gmErosionPct = netInc25 > 0 ? Math.round(dapSpike300 / netInc25 * 100) : '—';
+  const worstLoss = Math.min(...hist.map(d => d.netInc));
+  const worstSeason = hist.find(d => d.netInc === worstLoss)?.s || '—';
+
+  const insights = [
+    {
+      label: 'Profitability remains structurally fragile',
+      color: MCK.blue,
+      text: `${region} soybean farmers posted positive net income in only ${profSeasons} of ${hist.length} seasons since 2017/18 — with ${lossSeasons} loss year${lossSeasons !== 1 ? 's' : ''}. The worst season (${worstSeason}) saw ${sym}${Math.round(Math.abs(worstLoss) * fx).toLocaleString()}/ha in losses. The structural margin is thin even at benchmark yields.`,
+    },
+    {
+      label: 'Fertilizer cost is the swing factor',
+      color: MCK.blue,
+      text: `A $300/t DAP spike alone erodes ${sym}${Math.round(dapSpike300 * fx).toLocaleString()}/ha of gross margin — equivalent to ${gmErosionPct}% of the 2025/26 net income baseline at current prices. MAP shock compounds the effect proportionally, making combined DAP+MAP scenarios the primary P&L risk.`,
+    },
+    {
+      label: 'Scale determines shock resilience',
+      color: MCK.teal,
+      text: `Large farms (>1,000 ha) absorb input price spikes through bulk procurement, direct import access, and logistics savings. Small and medium operations pay full CFR Brazil retail — the profitability gap between large and small farms widens sharply during price spikes.`,
+    },
+    {
+      label: 'The value-based selling window is open',
+      color: MCK.teal,
+      text: `With 2023/24 net margins at ${sym}${Math.round(Math.abs(hist[hist.length - 3]?.netInc || 0) * fx).toLocaleString()}/ha, farmers are acutely cost-focused entering 2025/26. OCP's differentiation must centre on total P efficiency and agronomic ROI — not list price alone — to sustain positioning through the cycle.`,
+    },
+  ];
+
+  return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <p style={{ color: MCK.dim, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 32 }}>SO WHAT · ANALYST CONCLUSIONS · {region.toUpperCase()}</p>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, flex: 1, minHeight: 0 }}>
+        {insights.map((ins, i) => (
+          <div key={i} style={{ borderTop: `2px solid ${ins.color}`, paddingTop: 20 }}>
+            <p style={{ color: MCK.text, fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>{ins.label}</p>
+            <p style={{ color: MCK.mid, fontSize: 13.5, lineHeight: 1.65, margin: 0 }}>{ins.text}</p>
+          </div>
+        ))}
+      </div>
+      <p style={{ color: MCK.dim, fontSize: 11, marginTop: 28, borderTop: `1px solid ${MCK.line}`, paddingTop: 14 }}>
+        Exhibit source: PhosStratOS · CVA × OCP Brazil Profitability Model · Soybeans · {region} · 2025/26 baseline
+      </p>
+    </div>
+  );
+}
+
+// ─── Brazil Deck ──────────────────────────────────────────────────────────
+function BrazilDeck({ region, currency }) {
+  const [slide, setSlide] = useState(0);
+  const TOTAL = 5;
+  const slides = [
+    <Slide1 />,
+    <Slide2 region={region} currency={currency} />,
+    <Slide3 region={region} currency={currency} />,
+    <Slide4 region={region} currency={currency} />,
+    <Slide5 region={region} currency={currency} />,
+  ];
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 50px - 48px)', background: '#FFFFFF', fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
+      <div style={{ flex: 1, overflow: 'hidden', padding: '40px 56px 24px' }}>
+        {slides[slide]}
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 56px', height: 56, borderTop: `1px solid ${MCK.line}`, background: MCK.bgOff, flexShrink: 0 }}>
+        <button
+          onClick={() => setSlide(s => Math.max(0, s - 1))}
+          disabled={slide === 0}
+          style={{ background: 'none', border: `1px solid ${slide === 0 ? MCK.line : MCK.text}`, color: slide === 0 ? MCK.dim : MCK.text, padding: '5px 18px', fontSize: 11, cursor: slide === 0 ? 'default' : 'pointer', letterSpacing: '0.1em', borderRadius: 0 }}
+        >← PREV</button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
+          {DECK_SLIDE_LABELS.map((label, i) => (
+            <button key={i} onClick={() => setSlide(i)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+              <div style={{ width: 7, height: 7, borderRadius: '50%', background: slide === i ? MCK.blue : MCK.line, transition: 'background 0.2s' }} />
+              <span style={{ color: slide === i ? MCK.blue : MCK.dim, fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: slide === i ? 700 : 400 }}>{label}</span>
+            </button>
+          ))}
+        </div>
+        <button
+          onClick={() => setSlide(s => Math.min(TOTAL - 1, s + 1))}
+          disabled={slide === TOTAL - 1}
+          style={{ background: slide === TOTAL - 1 ? 'none' : MCK.blue, border: `1px solid ${slide === TOTAL - 1 ? MCK.line : MCK.blue}`, color: slide === TOTAL - 1 ? MCK.dim : '#fff', padding: '5px 18px', fontSize: 11, cursor: slide === TOTAL - 1 ? 'default' : 'pointer', letterSpacing: '0.1em', borderRadius: 0 }}
+        >NEXT →</button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Brazil Page — top-level orchestrator ─────────────────────────────────
+function BrazilPage() {
+  const [cropSelected, setCropSelected] = useState(false);
+  const [cropId,    setCropId]    = useState('soybean');
+  const [regionKey, setRegionKey] = useState('National');
+  const [currency,  setCurrency]  = useState('USD');
+
+  if (!cropSelected) {
+    return (
+      <div style={{ margin: '-20px -28px', background: '#000' }}>
+        <BrazilCropLanding onSelect={id => { setCropId(id); setCropSelected(true); }} />
+      </div>
+    );
+  }
+  return (
+    <div style={{ margin: '-20px -28px', fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
+      <BrazilControlBar
+        crop={cropId} setCrop={setCropId}
+        region={regionKey} setRegion={setRegionKey}
+        currency={currency} setCurrency={setCurrency}
+      />
+      <BrazilDeck region={regionKey} currency={currency} />
+    </div>
+  );
+}
+
+
 
 
 // ═══════════════════════════════════════════════════════════════════════════
