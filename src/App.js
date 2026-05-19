@@ -1289,10 +1289,10 @@ function MathieuFarmPage() {
 // ═══════════════════════════════════════════════════════════════════════════
 
 const DECK_CROPS = [
-  { id: 'soybean', label: 'Soybeans', img: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=1200&q=80&fit=crop' },
+  { id: 'soybean', label: 'Soybeans', img: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Glycine_max_003.JPG' },
   { id: 'corn',    label: 'Corn',     img: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200&q=80&fit=crop' },
-  { id: 'cotton',  label: 'Cotton',   img: 'https://images.unsplash.com/photo-1595435742946-2b2d91f5c7c6?w=1200&q=80&fit=crop' },
-  { id: 'coffee',  label: 'Coffee',   img: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=1200&q=80&fit=crop' },
+  { id: 'cotton',  label: 'Cotton',   img: 'https://images.unsplash.com/photo-N_Cg-5EsXog?w=1200&q=80&fit=crop' },
+  { id: 'coffee',  label: 'Coffee',   img: 'https://images.unsplash.com/photo-F9Cb_QIe9GA?w=1200&q=80&fit=crop' },
 ];
 
 const DECK_SLIDE_LABELS = ['Brazil Context', 'Snapshot', 'Cost Breakdown', 'Fert. Shock', 'So What'];
