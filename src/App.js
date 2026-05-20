@@ -1304,8 +1304,8 @@ const FRANCE_WHEAT_25 = { revenue: 1494, fert: 364, otherVar: 419, fixedLand: 13
 const FRANCE_CROPS = [
   { id: 'wheat',     label: 'Soft Wheat', img: 'https://images.pexels.com/photos/326082/pexels-photo-326082.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',   hasData: true },
   { id: 'corn',      label: 'Corn',       img: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200&q=80&fit=crop',                                 hasData: false },
-  { id: 'barley',    label: 'Barley',     img: 'https://images.pexels.com/photos/1458644/pexels-photo-1458644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',  hasData: false },
-  { id: 'potato',    label: 'Potato',     img: 'https://images.pexels.com/photos/144248/pexels-photo-144248.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',   hasData: false },
+  { id: 'barley',    label: 'Barley',     img: 'https://images.pexels.com/photos/2448285/pexels-photo-2448285.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',  hasData: false },
+  { id: 'potato',    label: 'Potato',     img: 'https://images.pexels.com/photos/9798976/pexels-photo-9798976.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',  hasData: false },
   { id: 'sugarbeet', label: 'Sugar Beet', img: 'https://images.pexels.com/photos/2255801/pexels-photo-2255801.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2', hasData: false },
   { id: 'tomato',    label: 'Tomato',     img: 'https://images.pexels.com/photos/1327838/pexels-photo-1327838.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2', hasData: false },
 ];
