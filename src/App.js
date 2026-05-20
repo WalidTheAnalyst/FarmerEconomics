@@ -894,11 +894,11 @@ function MathieuIntroPage({ onEnterFarm }) {
 // ═══════════════════════════════════════════════════════════════════════════
 // MATHIEU FARM PAGE (core France P-separation simulator — verbatim)
 // ═══════════════════════════════════════════════════════════════════════════
-function MathieuFarmPage() {
+function MathieuFarmPage({ initialCrop }) {
   const [phase, setPhase] = useState("configure");
   const [farmSize, setFarmSize] = useState(120);
   const [simRegion, setSimRegion] = useState("(131) Champagne-Ardenne");
-  const [crop, setCrop] = useState("wheat");
+  const [crop, setCrop] = useState(initialCrop || "wheat");
   const [farmerAge, setFarmerAge] = useState(42);
   const [ownedPct, setOwnedPct] = useState(65);
   const [currentFerts, setCurrentFerts] = useState([]);
@@ -1301,6 +1301,15 @@ const FRANCE_WHEAT_HIST = [
 ];
 const FRANCE_WHEAT_25 = { revenue: 1494, fert: 364, otherVar: 419, fixedLand: 1367, grossMargin: 711, netResult: -656 };
 
+const FRANCE_CROPS = [
+  { id: 'wheat',     label: 'Soft Wheat', img: 'https://images.pexels.com/photos/326082/pexels-photo-326082.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',   hasData: true },
+  { id: 'corn',      label: 'Corn',       img: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200&q=80&fit=crop',                                 hasData: false },
+  { id: 'barley',    label: 'Barley',     img: 'https://images.pexels.com/photos/1458644/pexels-photo-1458644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',  hasData: false },
+  { id: 'potato',    label: 'Potato',     img: 'https://images.pexels.com/photos/144248/pexels-photo-144248.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',   hasData: false },
+  { id: 'sugarbeet', label: 'Sugar Beet', img: 'https://images.pexels.com/photos/2255801/pexels-photo-2255801.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2', hasData: false },
+  { id: 'tomato',    label: 'Tomato',     img: 'https://images.pexels.com/photos/1327838/pexels-photo-1327838.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2', hasData: false },
+];
+
 // ═══════════════════════════════════════════════════════════════════════════
 // SHARED LAYER SWITCHER
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1320,6 +1329,44 @@ function LayerSwitcher({ layer, setLayer }) {
           transition: 'all 0.15s',
         }}>{l.label}</button>
       ))}
+    </div>
+  );
+}
+
+function WIPPage({ cropLabel, country, onBack }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 'calc(100vh - 50px - 57px)', background: '#FFFFFF', fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
+      <div style={{ textAlign: 'center', maxWidth: 520 }}>
+        <div style={{ width: 64, height: 64, borderRadius: '50%', background: T.green + '12', border: `2px solid ${T.green}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 28px', fontSize: 28 }}>🌱</div>
+        <p style={{ color: T.textMuted, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: 16 }}>COMING SOON</p>
+        <h2 style={{ color: T.text, fontSize: 28, fontWeight: 700, letterSpacing: '-0.02em', marginBottom: 16 }}>{cropLabel}</h2>
+        <p style={{ color: T.textMid, fontSize: 14, lineHeight: 1.7, marginBottom: 32 }}>The {cropLabel.toLowerCase()} module for {country} is being built. The full cost of production and P doctrine economics will be available here — same structure, same depth, different crop.</p>
+        <button onClick={onBack} style={{ background: 'transparent', border: `1.5px solid ${T.green}`, color: T.green, padding: '10px 28px', borderRadius: 4, fontSize: 12, fontWeight: 700, cursor: 'pointer', letterSpacing: '0.1em', textTransform: 'uppercase' }}>← Choose another crop</button>
+      </div>
+    </div>
+  );
+}
+
+function FranceCropLanding({ onSelect }) {
+  const [hovered, setHovered] = useState(null);
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: 'calc(100vh - 50px)', background: T.bg }}>
+      <div style={{ textAlign: 'center', padding: '52px 0 36px' }}>
+        <p style={{ color: T.textMuted, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: 14 }}>France · Farmer Economics</p>
+        <h2 style={{ color: T.text, fontSize: 32, fontWeight: 700, letterSpacing: '-0.03em', margin: 0 }}>Choose your crop</h2>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridTemplateRows: 'repeat(2, 220px)', maxWidth: 960, width: '100%', margin: '0 auto', flex: 1 }}>
+        {FRANCE_CROPS.map(c => (
+          <div key={c.id} onClick={() => onSelect(c.id)} onMouseEnter={() => setHovered(c.id)} onMouseLeave={() => setHovered(null)}
+            style={{ position: 'relative', backgroundImage: `url(${c.img})`, backgroundSize: 'cover', backgroundPosition: 'center', cursor: 'pointer', overflow: 'hidden', backgroundColor: T.panel }}>
+            <div style={{ position: 'absolute', inset: 0, background: hovered === c.id ? 'rgba(0,0,0,0.52)' : 'rgba(0,0,0,0.3)', transition: 'background 0.25s' }} />
+            <div style={{ position: 'absolute', bottom: 24, left: 28 }}>
+              <p style={{ color: '#FFFFFF', fontSize: 22, fontWeight: 700, letterSpacing: '-0.02em', margin: 0, lineHeight: 1 }}>{c.label}</p>
+              {!c.hasData && hovered === c.id && <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: 10, marginTop: 5, letterSpacing: '0.1em', textTransform: 'uppercase' }}>Coming soon</p>}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -1373,53 +1420,108 @@ function FrCoS1() {
 }
 
 function FrCoS2() {
-  const latest = FRANCE_WHEAT_HIST[FRANCE_WHEAT_HIST.length - 1];
-  const prev   = FRANCE_WHEAT_HIST[FRANCE_WHEAT_HIST.length - 2];
-  const fcast  = FRANCE_WHEAT_25;
-  const fertPctRev = (latest.fert / latest.revenue * 100).toFixed(1);
-  const totalCost  = latest.fert + latest.otherVar + latest.fixedLand;
-  const yoy        = latest.netResult - prev.netResult;
-  const big = [
-    { label: 'Revenue / ha', value: '$' + latest.revenue.toLocaleString(), note: 'Soft wheat · 24/25 · USD/ha', neg: false },
-    { label: 'Net Result / ha', value: latest.netResult < 0 ? '($' + Math.abs(latest.netResult).toLocaleString() + ')' : '$' + latest.netResult.toLocaleString(), note: latest.netResult < 0 ? 'Loss after full cost accounting' : 'Positive net result', neg: latest.netResult < 0 },
-    { label: '25/26 Outlook', value: fcast.netResult < 0 ? '($' + Math.abs(fcast.netResult).toLocaleString() + ')' : '$' + fcast.netResult.toLocaleString(), note: 'Forecast · revenue recovery partially offset by rising fixed costs', neg: fcast.netResult < 0 },
+  const allYears = [
+    ...FRANCE_WHEAT_HIST,
+    { year: '25/26 ▸', revenue: FRANCE_WHEAT_25.revenue, fert: FRANCE_WHEAT_25.fert, otherVar: FRANCE_WHEAT_25.otherVar, fixedLand: FRANCE_WHEAT_25.fixedLand, grossMargin: FRANCE_WHEAT_25.grossMargin, netResult: FRANCE_WHEAT_25.netResult, isForecast: true },
   ];
-  const small = [
-    { label: 'Total Cost / ha', value: '$' + totalCost.toLocaleString(), note: 'Full cost incl. land & fixed' },
-    { label: 'Fertilizer Cost / ha', value: '$' + latest.fert.toLocaleString(), note: 'Down from $683 peak in 22/23' },
-    { label: 'Fertilizer % of Revenue', value: fertPctRev + '%', note: 'Key leverage ratio · range 14–40%' },
-    { label: 'Net vs Prior Season', value: (yoy >= 0 ? '+' : '') + '$' + Math.abs(yoy).toLocaleString(), note: yoy < 0 ? 'Decline vs 23/24' : 'Improvement vs 23/24', yoy },
+  const [selIdx, setSelIdx] = useState(FRANCE_WHEAT_HIST.length - 1);
+  const d = allYears[selIdx];
+  const prev = selIdx > 0 ? allYears[selIdx - 1] : null;
+  const fertPct = (d.fert / d.revenue * 100).toFixed(1);
+  const varPct  = (d.otherVar / d.revenue * 100).toFixed(1);
+
+  const fmt = (v) => v === null || v === undefined ? '' : (v < 0 ? '(' : '') + '$' + Math.abs(Math.round(v)).toLocaleString() + (v < 0 ? ')' : '');
+  const delta = (curr, prevVal) => {
+    if (prevVal === null || prevVal === undefined) return null;
+    const d = curr - prevVal;
+    return <span style={{ fontSize: 10, color: d >= 0 ? MCK.teal : MCK.red, marginLeft: 6, fontFamily: "'DM Mono',monospace" }}>{d >= 0 ? '+' : ''}${Math.round(Math.abs(d))}</span>;
+  };
+
+  const rows = [
+    { label: 'Revenue', val: d.revenue, prevVal: prev?.revenue, indent: 0, bold: true, color: MCK.text },
+    { label: 'Fertilizers', val: -d.fert, prevVal: prev ? -prev.fert : null, indent: 1, color: MCK.fert, tag: fertPct + '% of rev' },
+    { label: 'Other Variable', val: -d.otherVar, prevVal: prev ? -prev.otherVar : null, indent: 1, color: MCK.agro, tag: varPct + '% of rev' },
+    { divider: true },
+    { label: 'Gross Margin', val: d.grossMargin, prevVal: prev?.grossMargin, indent: 0, bold: true, color: d.grossMargin >= 0 ? MCK.teal : MCK.red },
+    { label: 'Fixed & Land', val: -d.fixedLand, prevVal: prev ? -prev.fixedLand : null, indent: 1, color: MCK.land },
+    { divider: true },
+    { label: 'Net Result', val: d.netResult, prevVal: prev?.netResult, indent: 0, bold: true, large: true, color: d.netResult >= 0 ? MCK.teal : MCK.red },
   ];
+
+  const trendData = allYears.map((yr, i) => ({ year: yr.year.replace(' ▸', ''), gm: yr.grossMargin, net: yr.netResult, sel: i === selIdx }));
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <p style={{ color: MCK.dim, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 24 }}>FARMER ECONOMICS — SNAPSHOT · FRANCE · SOFT WHEAT · 24/25</p>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', borderTop: `1px solid ${MCK.line}` }}>
-        {big.map((k, i) => (
-          <div key={i} style={{ padding: '24px 0', paddingRight: i < 2 ? 32 : 0, paddingLeft: i > 0 ? 32 : 0, borderRight: i < 2 ? `1px solid ${MCK.line}` : 'none' }}>
-            <p style={{ color: MCK.dim, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 10 }}>{k.label}</p>
-            <p style={{ color: k.neg ? MCK.red : MCK.text, fontSize: 44, fontWeight: 800, letterSpacing: '-0.04em', margin: 0, lineHeight: 1, fontFamily: "'DM Mono',monospace" }}>{k.value}</p>
-            <p style={{ color: k.neg ? MCK.red : MCK.dim, fontSize: 11, marginTop: 10 }}>{k.note}</p>
-          </div>
+      {/* Year pills */}
+      <div style={{ display: 'flex', gap: 4, marginBottom: 20, flexWrap: 'wrap', alignItems: 'center' }}>
+        <span style={{ color: MCK.dim, fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.12em', marginRight: 6 }}>Season</span>
+        {allYears.map((yr, i) => (
+          <button key={yr.year} onClick={() => setSelIdx(i)} style={{
+            padding: '4px 11px', borderRadius: 3, border: `1px solid ${selIdx === i ? MCK.blue : MCK.line}`,
+            background: selIdx === i ? MCK.blue : 'transparent',
+            color: selIdx === i ? '#fff' : yr.isForecast ? MCK.dim : MCK.mid,
+            fontSize: 11, cursor: 'pointer', fontFamily: "'DM Mono',monospace",
+            fontStyle: yr.isForecast ? 'italic' : 'normal', transition: 'all 0.15s',
+          }}>{yr.year}</button>
         ))}
+        <span style={{ color: MCK.dim, fontSize: 9, marginLeft: 4 }}>▸ forecast</span>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', borderTop: `1px solid ${MCK.line}`, marginTop: 4 }}>
-        {small.map((k, i) => (
-          <div key={i} style={{ padding: '16px 0', paddingRight: i < 3 ? 24 : 0, paddingLeft: i > 0 ? 24 : 0, borderRight: i < 3 ? `1px solid ${MCK.line}` : 'none' }}>
-            <p style={{ color: MCK.dim, fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 7 }}>{k.label}</p>
-            <p style={{ color: k.yoy !== undefined ? (k.yoy >= 0 ? MCK.teal : MCK.red) : MCK.mid, fontSize: 22, fontWeight: 700, letterSpacing: '-0.02em', margin: 0, fontFamily: "'DM Mono',monospace" }}>{k.value}</p>
-            <p style={{ color: MCK.dim, fontSize: 10, marginTop: 6 }}>{k.note}</p>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, flex: 1, minHeight: 0 }}>
+        {/* Left: P&L Statement */}
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <p style={{ color: MCK.dim, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 16 }}>P&L STATEMENT · SOFT WHEAT · {d.year} · USD/HA</p>
+          <div style={{ flex: 1 }}>
+            {rows.map((row, i) => {
+              if (row.divider) return <div key={i} style={{ height: 1, background: MCK.line, margin: '10px 0' }} />;
+              return (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: `${row.large ? 14 : 9}px 0`, paddingLeft: row.indent * 20, borderBottom: row.large ? `2px solid ${row.color}30` : 'none' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    {row.indent > 0 && <span style={{ color: MCK.line, fontSize: 12, lineHeight: 1 }}>└</span>}
+                    <span style={{ color: row.indent > 0 ? MCK.dim : MCK.text, fontSize: row.large ? 13 : 12, fontWeight: row.bold ? 700 : 400 }}>{row.label}</span>
+                    {row.tag && <span style={{ color: MCK.dim, fontSize: 9, background: MCK.bgOff, padding: '1px 6px', borderRadius: 3, border: `1px solid ${MCK.line}` }}>{row.tag}</span>}
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 0 }}>
+                    <span style={{ color: row.color, fontSize: row.large ? 24 : 13, fontWeight: row.bold ? 800 : 500, fontFamily: "'DM Mono',monospace" }}>{fmt(row.val)}</span>
+                    {prev && delta(row.val, row.prevVal)}
+                  </div>
+                </div>
+              );
+            })}
           </div>
-        ))}
+          <p style={{ color: MCK.dim, fontSize: 10, marginTop: 16, borderTop: `1px solid ${MCK.line}`, paddingTop: 10 }}>
+            Source: FADN France · 909 farms · USD/ha{d.isForecast ? ' · Forecast' : ''}
+          </p>
+        </div>
+
+        {/* Right: Trend chart */}
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <p style={{ color: MCK.dim, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 16 }}>TREND · GROSS MARGIN & NET RESULT · ALL SEASONS</p>
+          <div style={{ flex: 1, minHeight: 0 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <ComposedChart data={trendData} margin={{ top: 8, right: 8, bottom: 8, left: 8 }}>
+                <CartesianGrid strokeDasharray="2 4" stroke={MCK.line} vertical={false} />
+                <XAxis dataKey="year" tick={{ fill: MCK.dim, fontSize: 10 }} axisLine={{ stroke: MCK.line }} tickLine={false} />
+                <YAxis tick={{ fill: MCK.dim, fontSize: 10 }} tickFormatter={v => '$' + v} axisLine={false} tickLine={false} width={50} />
+                <Tooltip formatter={(v, n) => ['$' + Math.round(v).toLocaleString(), n]} />
+                <ReferenceLine y={0} stroke={MCK.line} strokeWidth={1.5} />
+                <Bar dataKey="gm" name="Gross Margin" stackId="a" radius={[2, 2, 0, 0]}>
+                  {trendData.map((_, i) => <Cell key={i} fill={MCK.blue} fillOpacity={i === selIdx ? 1 : 0.3} />)}
+                </Bar>
+                <Line type="monotone" dataKey="net" name="Net Result" stroke={MCK.red} strokeWidth={2} dot={({ cx, cy, index }) => <circle key={index} cx={cx} cy={cy} r={index === selIdx ? 5 : 3} fill={MCK.red} stroke="#fff" strokeWidth={index === selIdx ? 2 : 0} />} />
+              </ComposedChart>
+            </ResponsiveContainer>
+          </div>
+          <div style={{ borderTop: `2px solid ${MCK.blue}`, paddingTop: 12, marginTop: 12 }}>
+            <p style={{ color: MCK.dim, fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>KEY INSIGHT · {d.year}</p>
+            <p style={{ color: MCK.mid, fontSize: 12, lineHeight: 1.65, margin: 0 }}>
+              {d.netResult >= 0
+                ? `${d.year} is one of the rare profitable seasons — gross margin of $${d.grossMargin.toLocaleString()}/ha covered fixed costs, leaving $${d.netResult.toLocaleString()}/ha net.`
+                : `${d.year} shows a $${Math.abs(d.netResult).toLocaleString()}/ha net loss — full costs exceed revenue by ${((Math.abs(d.netResult) / d.revenue) * 100).toFixed(1)}%. Fixed costs of $${d.fixedLand.toLocaleString()}/ha are the dominant driver.`}
+            </p>
+          </div>
+        </div>
       </div>
-      <div style={{ borderTop: `2px solid ${MCK.blue}`, paddingTop: 16, marginTop: 'auto' }}>
-        <p style={{ color: MCK.dim, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>Key takeaway</p>
-        <p style={{ color: MCK.mid, fontSize: 12.5, lineHeight: 1.6, margin: 0 }}>
-          24/25 marks the worst net result since 2019 — revenue collapsed to $1,353/ha while fixed costs held at $1,335/ha, leaving no margin for error. The fertilizer bill retreated from the 2022 spike but structural cost pressure from land and depreciation is intensifying. The 25/26 outlook shows modest revenue recovery but the net loss narrows only slightly.
-        </p>
-      </div>
-      <p style={{ color: MCK.dim, fontSize: 10, marginTop: 12, borderTop: `1px solid ${MCK.line}`, paddingTop: 10 }}>
-        Source: FADN France · 909 farms · PhosStratOS CoP Engine · USD/ha
-      </p>
     </div>
   );
 }
@@ -1994,7 +2096,7 @@ function Slide5({ region, currency }) {
 }
 
 // ─── Brazil Deck ──────────────────────────────────────────────────────────
-function BrazilDeck({ region, currency }) {
+function BrazilDeck({ region, setRegion, currency, setCurrency, crop, setCrop }) {
   const [slide, setSlide] = useState(0);
   const TOTAL = 5;
   const slides = [
@@ -2005,16 +2107,16 @@ function BrazilDeck({ region, currency }) {
     <Slide5 region={region} currency={currency} />,
   ];
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 50px - 48px - 57px)', background: '#FFFFFF', fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 50px - 57px)', background: '#FFFFFF', fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
+      {slide > 0 && (
+        <BrazilControlBar crop={crop} setCrop={setCrop} region={region} setRegion={setRegion} currency={currency} setCurrency={setCurrency} />
+      )}
       <div style={{ flex: 1, overflow: 'hidden', padding: '40px 56px 24px' }}>
         {slides[slide]}
       </div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 56px', height: 56, borderTop: `1px solid ${MCK.line}`, background: MCK.bgOff, flexShrink: 0 }}>
-        <button
-          onClick={() => setSlide(s => Math.max(0, s - 1))}
-          disabled={slide === 0}
-          style={{ background: 'none', border: `1px solid ${slide === 0 ? MCK.line : MCK.text}`, color: slide === 0 ? MCK.dim : MCK.text, padding: '5px 18px', fontSize: 11, cursor: slide === 0 ? 'default' : 'pointer', letterSpacing: '0.1em', borderRadius: 0 }}
-        >← PREV</button>
+        <button onClick={() => setSlide(s => Math.max(0, s - 1))} disabled={slide === 0}
+          style={{ background: 'none', border: `1px solid ${slide === 0 ? MCK.line : MCK.text}`, color: slide === 0 ? MCK.dim : MCK.text, padding: '5px 18px', fontSize: 11, cursor: slide === 0 ? 'default' : 'pointer', letterSpacing: '0.1em', borderRadius: 0 }}>← PREV</button>
         <div style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
           {DECK_SLIDE_LABELS.map((label, i) => (
             <button key={i} onClick={() => setSlide(i)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
@@ -2023,11 +2125,8 @@ function BrazilDeck({ region, currency }) {
             </button>
           ))}
         </div>
-        <button
-          onClick={() => setSlide(s => Math.min(TOTAL - 1, s + 1))}
-          disabled={slide === TOTAL - 1}
-          style={{ background: slide === TOTAL - 1 ? 'none' : T.green, border: `1px solid ${slide === TOTAL - 1 ? MCK.line : T.green}`, color: slide === TOTAL - 1 ? MCK.dim : '#fff', padding: '5px 18px', fontSize: 11, cursor: slide === TOTAL - 1 ? 'default' : 'pointer', letterSpacing: '0.1em', borderRadius: 0 }}
-        >NEXT →</button>
+        <button onClick={() => setSlide(s => Math.min(TOTAL - 1, s + 1))} disabled={slide === TOTAL - 1}
+          style={{ background: slide === TOTAL - 1 ? 'none' : T.green, border: `1px solid ${slide === TOTAL - 1 ? MCK.line : T.green}`, color: slide === TOTAL - 1 ? MCK.dim : '#fff', padding: '5px 18px', fontSize: 11, cursor: slide === TOTAL - 1 ? 'default' : 'pointer', letterSpacing: '0.1em', borderRadius: 0 }}>NEXT →</button>
       </div>
     </div>
   );
@@ -2058,15 +2157,19 @@ function BrazilPDocSlide1() {
 
 const BRAZIL_PDOC_LABELS = ['P Doctrine Context', 'Price Sensitivity'];
 
-function BrazilPDoctrineDeck({ region, currency }) {
+function BrazilPDoctrineDeck({ region, setRegion, currency, setCurrency, crop, setCrop }) {
   const [slide, setSlide] = useState(0);
   const TOTAL = 2;
   const slides = [<BrazilPDocSlide1 />, <Slide4 region={region} currency={currency} />];
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 50px - 48px - 57px)', background: '#FFFFFF', fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 50px - 57px)', background: '#FFFFFF', fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
+      {slide > 0 && (
+        <BrazilControlBar crop={crop} setCrop={setCrop} region={region} setRegion={setRegion} currency={currency} setCurrency={setCurrency} />
+      )}
       <div style={{ flex: 1, overflow: 'hidden', padding: '40px 56px 24px' }}>{slides[slide]}</div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 56px', height: 56, borderTop: `1px solid ${MCK.line}`, background: MCK.bgOff, flexShrink: 0 }}>
-        <button onClick={() => setSlide(s => Math.max(0, s - 1))} disabled={slide === 0} style={{ background: 'none', border: `1px solid ${slide === 0 ? MCK.line : MCK.text}`, color: slide === 0 ? MCK.dim : MCK.text, padding: '5px 18px', fontSize: 11, cursor: slide === 0 ? 'default' : 'pointer', letterSpacing: '0.1em', borderRadius: 0 }}>← PREV</button>
+        <button onClick={() => setSlide(s => Math.max(0, s - 1))} disabled={slide === 0}
+          style={{ background: 'none', border: `1px solid ${slide === 0 ? MCK.line : MCK.text}`, color: slide === 0 ? MCK.dim : MCK.text, padding: '5px 18px', fontSize: 11, cursor: slide === 0 ? 'default' : 'pointer', letterSpacing: '0.1em', borderRadius: 0 }}>← PREV</button>
         <div style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
           {BRAZIL_PDOC_LABELS.map((label, i) => (
             <button key={i} onClick={() => setSlide(i)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
@@ -2075,7 +2178,8 @@ function BrazilPDoctrineDeck({ region, currency }) {
             </button>
           ))}
         </div>
-        <button onClick={() => setSlide(s => Math.min(TOTAL - 1, s + 1))} disabled={slide === TOTAL - 1} style={{ background: slide === TOTAL - 1 ? 'none' : T.green, border: `1px solid ${slide === TOTAL - 1 ? MCK.line : T.green}`, color: slide === TOTAL - 1 ? MCK.dim : '#fff', padding: '5px 18px', fontSize: 11, cursor: slide === TOTAL - 1 ? 'default' : 'pointer', letterSpacing: '0.1em', borderRadius: 0 }}>NEXT →</button>
+        <button onClick={() => setSlide(s => Math.min(TOTAL - 1, s + 1))} disabled={slide === TOTAL - 1}
+          style={{ background: slide === TOTAL - 1 ? 'none' : T.green, border: `1px solid ${slide === TOTAL - 1 ? MCK.line : T.green}`, color: slide === TOTAL - 1 ? MCK.dim : '#fff', padding: '5px 18px', fontSize: 11, cursor: slide === TOTAL - 1 ? 'default' : 'pointer', letterSpacing: '0.1em', borderRadius: 0 }}>NEXT →</button>
       </div>
     </div>
   );
@@ -2096,21 +2200,26 @@ function BrazilPage() {
       </div>
     );
   }
+
+  if (cropId !== 'soybean') {
+    const cropDef = DECK_CROPS.find(c => c.id === cropId) || DECK_CROPS[0];
+    return (
+      <div style={{ margin: '-20px -28px' }}>
+        <WIPPage cropLabel={cropDef.label} country="Brazil" onBack={() => setCropSelected(false)} />
+      </div>
+    );
+  }
+
   return (
     <div style={{ margin: '-20px -28px', fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
-      <BrazilControlBar
-        crop={cropId} setCrop={setCropId}
-        region={regionKey} setRegion={setRegionKey}
-        currency={currency} setCurrency={setCurrency}
-      />
       <div style={{ background: T.bg, borderBottom: `1px solid ${T.border}`, padding: '12px 56px', display: 'flex', alignItems: 'center', gap: 16 }}>
-        <LayerSwitcher layer={layer} setLayer={setLayer} />
+        <LayerSwitcher layer={layer} setLayer={l => { setLayer(l); }} />
         <span style={{ color: T.textMuted, fontSize: 11 }}>
           {layer === 'cop' ? 'Cost of production — context, snapshot, cost breakdown, profitability' : 'P Doctrine Economics — phosphate price sensitivity and separation strategy'}
         </span>
       </div>
-      {layer === 'cop'  && <BrazilDeck region={regionKey} currency={currency} />}
-      {layer === 'pdoc' && <BrazilPDoctrineDeck region={regionKey} currency={currency} />}
+      {layer === 'cop'  && <BrazilDeck region={regionKey} setRegion={setRegionKey} currency={currency} setCurrency={setCurrency} crop={cropId} setCrop={setCropId} />}
+      {layer === 'pdoc' && <BrazilPDoctrineDeck region={regionKey} setRegion={setRegionKey} currency={currency} setCurrency={setCurrency} crop={cropId} setCrop={setCropId} />}
     </div>
   );
 }
@@ -2122,8 +2231,21 @@ function BrazilPage() {
 // FRANCE PAGE (two-layer) + ROOT APP
 // ═══════════════════════════════════════════════════════════════════════════
 function FrancePage() {
+  const [cropSelected, setCropSelected] = useState(false);
+  const [cropId, setCropId] = useState('wheat');
   const [layer, setLayer] = useState('cop');
   const [mathieuPhase, setMathieuPhase] = useState('value');
+
+  if (!cropSelected) {
+    return (
+      <div style={{ margin: '-20px -28px', background: '#000' }}>
+        <FranceCropLanding onSelect={id => { setCropId(id); setCropSelected(true); }} />
+      </div>
+    );
+  }
+
+  const cropDef = FRANCE_CROPS.find(c => c.id === cropId) || FRANCE_CROPS[0];
+
   return (
     <div style={{ margin: '-20px -28px', display: 'flex', flexDirection: 'column' }}>
       <div style={{ background: T.bg, borderBottom: `1px solid ${T.border}`, padding: '12px 56px', display: 'flex', alignItems: 'center', gap: 16 }}>
@@ -2131,8 +2253,13 @@ function FrancePage() {
         <span style={{ color: T.textMuted, fontSize: 11 }}>
           {layer === 'cop' ? 'Cost of production — revenue, full cost breakdown, historical evolution' : 'P Doctrine Economics — phosphate separation strategy and farm-level P&L'}
         </span>
+        <button onClick={() => setCropSelected(false)} style={{ marginLeft: 'auto', background: 'transparent', border: `1px solid ${T.border}`, color: T.textMuted, padding: '4px 14px', borderRadius: 4, fontSize: 11, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
+          {cropDef.label}
+        </button>
       </div>
-      {layer === 'cop' && <FranceCoPDeck />}
+      {layer === 'cop' && cropDef.hasData && <FranceCoPDeck />}
+      {layer === 'cop' && !cropDef.hasData && <WIPPage cropLabel={cropDef.label} country="France" onBack={() => setCropSelected(false)} />}
       {layer === 'pdoc' && (
         <div style={{ padding: '20px 28px 60px' }}>
           {mathieuPhase === 'value' && <QuantitativeEngineValuePage onContinue={() => setMathieuPhase('intro')} />}
@@ -2147,7 +2274,7 @@ function FrancePage() {
                 <SectionBadge label="P Doctrine Engine" color={T.green} />
                 <span style={{ color: T.text, fontSize: 14, fontWeight: 700 }}>Mathieu's Farm Simulation</span>
               </div>
-              <MathieuFarmPage />
+              <MathieuFarmPage initialCrop={cropId} />
             </>
           )}
         </div>
