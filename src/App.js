@@ -517,15 +517,15 @@ function LandingPage({ onEnter }) {
       <div style={{ position: "absolute", width: 340, height: 340, borderRadius: "50%", border: "1px solid rgba(45,184,75,0.05)", top: "50%", left: "50%", transform: "translate(-50%,-50%)", animation: "lOrbit 20s linear infinite reverse", pointerEvents: "none" }} />
       <div style={{ position: "absolute", width: 500, height: 500, borderRadius: "50%", background: "radial-gradient(circle,rgba(45,184,75,0.06) 0%,transparent 70%)", top: "50%", left: "50%", transform: "translate(-50%,-50%)", pointerEvents: "none" }} />
       <div style={{ position: "absolute", top: 32, left: 40, display: "flex", alignItems: "center", gap: 12, opacity: vis ? 1 : 0, transition: "opacity 0.8s ease" }}>
-        <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg,#2DB84B,#1A8A34)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 12, color: "#FFFFFF", fontFamily: "'DM Mono',monospace", boxShadow: "0 0 16px #2DB84B30" }}>GMO</div>
+        <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg,#2DB84B,#1A8A34)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 12, color: "#FFFFFF", fontFamily: "'DM Mono',monospace", boxShadow: "0 0 16px #2DB84B30" }}>SMO</div>
         <span style={{ color: "rgba(15,36,21,0.3)", fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase" }}>OCP Nutricrops · Phosphorus Intelligence</span>
       </div>
       <div style={{ textAlign: "center", maxWidth: 720, padding: "0 32px", zIndex: 10 }}>
         <div style={{ opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(12px)", transition: "opacity 0.9s ease,transform 0.9s ease", marginBottom: 24 }}>
-          <span style={{ background: "rgba(45,184,75,0.1)", border: "1px solid rgba(45,184,75,0.2)", borderRadius: 20, padding: "5px 16px", color: "rgba(45,184,75,0.9)", fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase" }}>GMO · OCP Nutricrops</span>
+          <span style={{ background: "rgba(45,184,75,0.1)", border: "1px solid rgba(45,184,75,0.2)", borderRadius: 20, padding: "5px 16px", color: "rgba(45,184,75,0.9)", fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase" }}>SMO · OCP Nutricrops</span>
         </div>
         <h1 style={{ opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(20px)", transition: "opacity 0.9s ease,transform 0.9s ease", fontSize: "clamp(26px,4vw,46px)", fontWeight: 300, color: "rgba(15,36,21,0.92)", lineHeight: 1.28, marginBottom: 32, letterSpacing: "-0.02em" }}>
-          PhosStrat is GMO's quantitative<br />
+          PhosStrat is SMO's quantitative<br />
           <span style={{ fontWeight: 700, color: T.text }}>platform to better understand</span><br />
           <span style={{ color: T.green, fontWeight: 600 }}>the farmer.</span>
         </h1>
@@ -539,9 +539,6 @@ function LandingPage({ onEnter }) {
           onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = "rgba(45,184,75,0.5)"; e.currentTarget.style.color = "rgba(45,184,75,0.9)"; }}>
           Enter Platform →
         </button>
-      </div>
-      <div style={{ position: "absolute", bottom: 32, left: "50%", transform: "translateX(-50%)", opacity: btn ? 0.4 : 0, transition: "opacity 0.8s ease", fontSize: 11, color: "rgba(15,36,21,0.35)", letterSpacing: "0.1em", textTransform: "uppercase", display: "flex", gap: 28 }}>
-        <span>France · FADN 909 farms</span><span>·</span><span>Brazil · Embrapa / Conab / Cepea</span><span>·</span><span>OCP Field Intelligence</span>
       </div>
     </div>
   );
@@ -566,7 +563,7 @@ function CountrySelector({ onSelect }) {
       <style>{`@keyframes cFadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}} .cc{transition:all 0.2s ease;} .cc:hover{transform:translateY(-4px)!important;}`}</style>
       <div style={{ position: "absolute", inset: 0, backgroundImage: `linear-gradient(rgba(45,184,75,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(45,184,75,0.025) 1px,transparent 1px)`, backgroundSize: "60px 60px", pointerEvents: "none" }} />
       <div style={{ position: "absolute", top: 28, left: 36, display: "flex", alignItems: "center", gap: 10 }}>
-        <div style={{ width: 32, height: 32, borderRadius: 8, background: "linear-gradient(135deg,#2DB84B,#1A8A34)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 11, color: "#0F2415", fontFamily: "'DM Mono',monospace" }}>GMO</div>
+        <div style={{ width: 32, height: 32, borderRadius: 8, background: "linear-gradient(135deg,#2DB84B,#1A8A34)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 11, color: "#0F2415", fontFamily: "'DM Mono',monospace" }}>SMO</div>
         <span style={{ color: "rgba(15,36,21,0.3)", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase" }}>PhosStratOS · OCP Nutricrops</span>
       </div>
       <div style={{ textAlign: "center", marginBottom: 48, animation: "cFadeUp 0.6s ease both" }}>
@@ -878,7 +875,7 @@ function MathieuIntroPage({ onEnterFarm }) {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 28, paddingLeft: 48 }}>
           <div style={{ opacity: phase >= 1 ? 1 : 0, transform: phase >= 1 ? "none" : "translateY(20px)", transition: "opacity 0.9s ease,transform 0.9s ease" }}>
-            <p style={{ color: T.textMuted, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.2em", fontWeight: 600, margin: "0 0 14px" }}>GMO Business Unit · OCP Nutricrops</p>
+            <p style={{ color: T.textMuted, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.2em", fontWeight: 600, margin: "0 0 14px" }}>SMO Business Unit · OCP Nutricrops</p>
             <h1 style={{ color: T.text, fontSize: "clamp(28px,3.5vw,44px)", fontWeight: 300, letterSpacing: "-0.03em", lineHeight: 1.15, margin: 0 }}>This is <span style={{ fontWeight: 800 }}>Mathieu.</span></h1>
           </div>
           {phase >= 2 && (<div style={{ display: "flex", flexDirection: "column", gap: 16 }}>{[{ text: "He farms soft wheat in northern France, on land he partly owns and partly rents.", delay: "0s" }, { text: "Every autumn, he commits capital to a fertilizer program before he knows what the season will bring. Every spring, he watches those costs compound while revenue stays months away.", delay: "0.3s" }, { text: "The question is whether a different phosphorus strategy would put more money in his pocket at harvest.", delay: "0.6s", accent: true }].map((line, i) => (<p key={i} style={{ color: line.accent ? T.textMid : T.textMuted, fontSize: line.accent ? 16 : 14, fontWeight: line.accent ? 600 : 400, lineHeight: 1.75, margin: 0, animation: `lineReveal 0.6s ${line.delay} ease both`, opacity: 0, fontStyle: line.accent ? "italic" : "normal" }}>{line.text}</p>))}</div>)}
@@ -1290,14 +1287,258 @@ function MathieuFarmPage() {
 
 
 // ═══════════════════════════════════════════════════════════════════════════
+// FRANCE WHEAT HISTORICAL DATA (FADN · USD/Ha · 2017/18–2024/25)
+// ═══════════════════════════════════════════════════════════════════════════
+const FRANCE_WHEAT_HIST = [
+  { year: '17/18', revenue: 1320, fert: 186, otherVar: 349, fixedLand: 1076, grossMargin: 785, netResult: -291 },
+  { year: '18/19', revenue: 1419, fert: 235, otherVar: 416, fixedLand: 1222, grossMargin: 768, netResult: -454 },
+  { year: '19/20', revenue: 1338, fert: 244, otherVar: 395, fixedLand: 1184, grossMargin: 699, netResult: -485 },
+  { year: '20/21', revenue: 1798, fert: 254, otherVar: 385, fixedLand: 1237, grossMargin: 1159, netResult: -78 },
+  { year: '21/22', revenue: 2298, fert: 349, otherVar: 415, fixedLand: 1315, grossMargin: 1534, netResult: 219 },
+  { year: '22/23', revenue: 1726, fert: 683, otherVar: 482, fixedLand: 1213, grossMargin: 561, netResult: -652 },
+  { year: '23/24', revenue: 1643, fert: 367, otherVar: 470, fixedLand: 1305, grossMargin: 806, netResult: -499 },
+  { year: '24/25', revenue: 1353, fert: 310, otherVar: 424, fixedLand: 1335, grossMargin: 619, netResult: -716 },
+];
+const FRANCE_WHEAT_25 = { revenue: 1494, fert: 364, otherVar: 419, fixedLand: 1367, grossMargin: 711, netResult: -656 };
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SHARED LAYER SWITCHER
+// ═══════════════════════════════════════════════════════════════════════════
+function LayerSwitcher({ layer, setLayer }) {
+  const layers = [
+    { key: 'cop',  label: 'Cost of Production' },
+    { key: 'pdoc', label: 'P Doctrine Economics' },
+  ];
+  return (
+    <div style={{ display: 'flex', gap: 0, background: T.panel, border: `1px solid ${T.border}`, borderRadius: 8, padding: 3, width: 'fit-content' }}>
+      {layers.map(l => (
+        <button key={l.key} onClick={() => setLayer(l.key)} style={{
+          padding: '7px 22px', borderRadius: 6, border: 'none', cursor: 'pointer',
+          background: layer === l.key ? T.green : 'transparent',
+          color: layer === l.key ? '#fff' : T.textMuted,
+          fontSize: 12, fontWeight: layer === l.key ? 700 : 400,
+          transition: 'all 0.15s',
+        }}>{l.label}</button>
+      ))}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// FRANCE CoP SLIDES
+// ═══════════════════════════════════════════════════════════════════════════
+function FrCoS1() {
+  const facts = [
+    { stat: '26.3M ha', desc: "France is Europe's largest agricultural producer, with 26 million hectares of farmland — nearly half the country's total land area. Soft wheat alone covers 4.5M ha, making it the single largest arable crop." },
+    { stat: '909 farms', desc: 'The quantitative engine is calibrated on 909 real FADN farms, observed annually 2014–2023 across seven production regions — cereal and mixed crop systems, stratified by size, tenure and region.' },
+    { stat: '7.2 t/ha', desc: 'Average soft wheat yield over 2017–2024, with significant annual variance — drought years (2019/20: 6.7 t/ha) versus favorable seasons (2018/19: 7.7 t/ha). Yield is the dominant P&L swing factor.' },
+    { stat: '$150–680', desc: 'Per-hectare fertilizer spend for winter wheat across the data window. During the 2022/23 energy shock, fertilizer surpassed $680/ha — a structural break that reshaped French farm economics and P application rates.' },
+  ];
+  const implications = [
+    'France has run negative net farm income on soft wheat in 7 of the last 8 seasons under full cost accounting. Revenue covers variable costs in all seasons — but fixed costs (land rent, depreciation) persistently overwhelm the gross margin.',
+    'The 2022/23 fertilizer spike was not merely a price event — it compressed P₂O₅ applications across all segments, creating a multi-year soil depletion trajectory that OCP products are positioned to reverse on agronomic grounds.',
+    "French cereal farms are large by European standards (120–350 ha average), making per-hectare economics directly relevant to procurement decisions. A $10/ha improvement in P efficiency compounds to $1,200–3,500 per farm per season.",
+  ];
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0, height: '100%' }}>
+      <div style={{ paddingRight: 48, borderRight: `1px solid ${MCK.line}` }}>
+        <p style={{ color: MCK.dim, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 32 }}>FRANCE — MARKET CONTEXT · SOFT WHEAT</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 26 }}>
+          {facts.map((f, i) => (
+            <div key={i} style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: 20, alignItems: 'start' }}>
+              <p style={{ color: MCK.blue, fontSize: 26, fontWeight: 800, letterSpacing: '-0.03em', margin: 0, lineHeight: 1 }}>{f.stat}</p>
+              <p style={{ color: MCK.mid, fontSize: 12.5, lineHeight: 1.6, margin: 0 }}>{f.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div style={{ paddingLeft: 48, display: 'flex', flexDirection: 'column' }}>
+        <p style={{ color: MCK.dim, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 32 }}>STRATEGIC IMPLICATIONS</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 26, flex: 1 }}>
+          {implications.map((text, i) => (
+            <div key={i} style={{ display: 'flex', gap: 16 }}>
+              <div style={{ width: 3, minHeight: 20, flexShrink: 0, background: MCK.blue, marginTop: 3 }} />
+              <p style={{ color: MCK.text, fontSize: 13.5, lineHeight: 1.65, margin: 0 }}>{text}</p>
+            </div>
+          ))}
+        </div>
+        <div style={{ borderTop: `1px solid ${MCK.line}`, paddingTop: 16, marginTop: 24 }}>
+          <p style={{ color: MCK.dim, fontSize: 11, lineHeight: 1.6, margin: 0 }}>
+            France occupies a unique position in OCP's European book: large, commercially sophisticated farms that run detailed cost accounting, respond to agronomic evidence, and are structurally dependent on imported phosphate. The engine models what a $1/kg P₂O₅ change does to real farm income.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function FrCoS2() {
+  const latest = FRANCE_WHEAT_HIST[FRANCE_WHEAT_HIST.length - 1];
+  const prev   = FRANCE_WHEAT_HIST[FRANCE_WHEAT_HIST.length - 2];
+  const fcast  = FRANCE_WHEAT_25;
+  const fertPctRev = (latest.fert / latest.revenue * 100).toFixed(1);
+  const totalCost  = latest.fert + latest.otherVar + latest.fixedLand;
+  const yoy        = latest.netResult - prev.netResult;
+  const big = [
+    { label: 'Revenue / ha', value: '$' + latest.revenue.toLocaleString(), note: 'Soft wheat · 24/25 · USD/ha', neg: false },
+    { label: 'Net Result / ha', value: latest.netResult < 0 ? '($' + Math.abs(latest.netResult).toLocaleString() + ')' : '$' + latest.netResult.toLocaleString(), note: latest.netResult < 0 ? 'Loss after full cost accounting' : 'Positive net result', neg: latest.netResult < 0 },
+    { label: '25/26 Outlook', value: fcast.netResult < 0 ? '($' + Math.abs(fcast.netResult).toLocaleString() + ')' : '$' + fcast.netResult.toLocaleString(), note: 'Forecast · revenue recovery partially offset by rising fixed costs', neg: fcast.netResult < 0 },
+  ];
+  const small = [
+    { label: 'Total Cost / ha', value: '$' + totalCost.toLocaleString(), note: 'Full cost incl. land & fixed' },
+    { label: 'Fertilizer Cost / ha', value: '$' + latest.fert.toLocaleString(), note: 'Down from $683 peak in 22/23' },
+    { label: 'Fertilizer % of Revenue', value: fertPctRev + '%', note: 'Key leverage ratio · range 14–40%' },
+    { label: 'Net vs Prior Season', value: (yoy >= 0 ? '+' : '') + '$' + Math.abs(yoy).toLocaleString(), note: yoy < 0 ? 'Decline vs 23/24' : 'Improvement vs 23/24', yoy },
+  ];
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <p style={{ color: MCK.dim, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 24 }}>FARMER ECONOMICS — SNAPSHOT · FRANCE · SOFT WHEAT · 24/25</p>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', borderTop: `1px solid ${MCK.line}` }}>
+        {big.map((k, i) => (
+          <div key={i} style={{ padding: '24px 0', paddingRight: i < 2 ? 32 : 0, paddingLeft: i > 0 ? 32 : 0, borderRight: i < 2 ? `1px solid ${MCK.line}` : 'none' }}>
+            <p style={{ color: MCK.dim, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 10 }}>{k.label}</p>
+            <p style={{ color: k.neg ? MCK.red : MCK.text, fontSize: 44, fontWeight: 800, letterSpacing: '-0.04em', margin: 0, lineHeight: 1, fontFamily: "'DM Mono',monospace" }}>{k.value}</p>
+            <p style={{ color: k.neg ? MCK.red : MCK.dim, fontSize: 11, marginTop: 10 }}>{k.note}</p>
+          </div>
+        ))}
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', borderTop: `1px solid ${MCK.line}`, marginTop: 4 }}>
+        {small.map((k, i) => (
+          <div key={i} style={{ padding: '16px 0', paddingRight: i < 3 ? 24 : 0, paddingLeft: i > 0 ? 24 : 0, borderRight: i < 3 ? `1px solid ${MCK.line}` : 'none' }}>
+            <p style={{ color: MCK.dim, fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 7 }}>{k.label}</p>
+            <p style={{ color: k.yoy !== undefined ? (k.yoy >= 0 ? MCK.teal : MCK.red) : MCK.mid, fontSize: 22, fontWeight: 700, letterSpacing: '-0.02em', margin: 0, fontFamily: "'DM Mono',monospace" }}>{k.value}</p>
+            <p style={{ color: MCK.dim, fontSize: 10, marginTop: 6 }}>{k.note}</p>
+          </div>
+        ))}
+      </div>
+      <div style={{ borderTop: `2px solid ${MCK.blue}`, paddingTop: 16, marginTop: 'auto' }}>
+        <p style={{ color: MCK.dim, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>Key takeaway</p>
+        <p style={{ color: MCK.mid, fontSize: 12.5, lineHeight: 1.6, margin: 0 }}>
+          24/25 marks the worst net result since 2019 — revenue collapsed to $1,353/ha while fixed costs held at $1,335/ha, leaving no margin for error. The fertilizer bill retreated from the 2022 spike but structural cost pressure from land and depreciation is intensifying. The 25/26 outlook shows modest revenue recovery but the net loss narrows only slightly.
+        </p>
+      </div>
+      <p style={{ color: MCK.dim, fontSize: 10, marginTop: 12, borderTop: `1px solid ${MCK.line}`, paddingTop: 10 }}>
+        Source: FADN France · 909 farms · PhosStratOS CoP Engine · USD/ha
+      </p>
+    </div>
+  );
+}
+
+function FrCoS3() {
+  const chartData = FRANCE_WHEAT_HIST.map(d => ({
+    season: d.year,
+    Fertilizers: d.fert,
+    'Other Variable': d.otherVar,
+    'Fixed & Land': d.fixedLand,
+    _revenue: d.revenue,
+    _netResult: d.netResult,
+  }));
+  const COLORS = { Fertilizers: MCK.fert, 'Other Variable': MCK.agro, 'Fixed & Land': MCK.land };
+  const FR3Tip = ({ active, payload, label }) => {
+    if (!active || !payload?.length) return null;
+    const row = chartData.find(d => d.season === label);
+    return (
+      <div style={{ background: '#fff', border: `1px solid ${MCK.line}`, padding: '12px 16px', fontSize: 12 }}>
+        <p style={{ fontWeight: 700, marginBottom: 8, color: MCK.text }}>{label}</p>
+        {payload.filter(p => COLORS[p.dataKey]).map((p, i) => (
+          <p key={i} style={{ color: p.fill, margin: '2px 0' }}>{p.dataKey}: <strong>${p.value.toFixed(0)}</strong></p>
+        ))}
+        {row && <p style={{ color: MCK.blue, margin: '4px 0' }}>Revenue: <strong>${row._revenue.toFixed(0)}</strong></p>}
+        {row && <p style={{ color: row._netResult >= 0 ? MCK.green : MCK.red, marginTop: 6, fontWeight: 700, borderTop: `1px solid ${MCK.line}`, paddingTop: 6 }}>Net Result: ${row._netResult.toFixed(0)}</p>}
+      </div>
+    );
+  };
+  return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <p style={{ color: MCK.dim, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 6 }}>PRODUCTION COST STRUCTURE · FRANCE · SOFT WHEAT · USD/HA</p>
+      <p style={{ color: MCK.mid, fontSize: 13, marginBottom: 8 }}>Stacked cost per hectare by season, 17/18 – 24/25 — three major categories + revenue line</p>
+      <p style={{ color: MCK.dim, fontSize: 11.5, lineHeight: 1.55, marginBottom: 16, borderLeft: `3px solid ${MCK.blue}`, paddingLeft: 12 }}>
+        Fertilizer peaked at $683/ha in 22/23 — a 3.7× increase from the 2017 baseline — briefly pushing the fertilizer share of revenue above 40%. The correction since has been meaningful but costs remain $120–150/ha above pre-2021 norms. Fixed and land costs have risen in every season, compounding the squeeze on net margins.
+      </p>
+      <div style={{ flex: 1, minHeight: 0 }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <ComposedChart data={chartData} margin={{ top: 8, right: 16, bottom: 8, left: 8 }} barCategoryGap="38%">
+            <CartesianGrid strokeDasharray="2 4" stroke={MCK.line} vertical={false} />
+            <XAxis dataKey="season" tick={{ fill: MCK.dim, fontSize: 11 }} axisLine={{ stroke: MCK.line }} tickLine={false} />
+            <YAxis tick={{ fill: MCK.dim, fontSize: 11 }} tickFormatter={v => '$' + v} axisLine={false} tickLine={false} width={54} />
+            <Tooltip content={<FR3Tip />} />
+            <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 11, color: MCK.dim, paddingTop: 8 }} />
+            {Object.entries(COLORS).map(([k, c], idx, arr) => (
+              <Bar key={k} dataKey={k} stackId="cost" fill={c} radius={idx === arr.length - 1 ? [2, 2, 0, 0] : [0, 0, 0, 0]} />
+            ))}
+            <Line type="monotone" dataKey="_revenue" name="Revenue" stroke={MCK.blue} strokeWidth={2.5} dot={{ r: 3, fill: MCK.blue }} strokeDasharray="6 3" />
+          </ComposedChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}
+
+function FrCoS4() {
+  const profSeasons = FRANCE_WHEAT_HIST.filter(d => d.netResult > 0).length;
+  const lossSeasons = FRANCE_WHEAT_HIST.filter(d => d.netResult < 0).length;
+  const worstLoss   = Math.min(...FRANCE_WHEAT_HIST.map(d => d.netResult));
+  const worstSeason = FRANCE_WHEAT_HIST.find(d => d.netResult === worstLoss)?.year || '—';
+  const fertPeak    = Math.max(...FRANCE_WHEAT_HIST.map(d => d.fert));
+  const fertPeakSeason = FRANCE_WHEAT_HIST.find(d => d.fert === fertPeak)?.year || '—';
+  const insights = [
+    { label: 'Negative net income is the structural norm', color: MCK.blue, text: `French soft wheat farms have recorded positive net income in only ${profSeasons} of ${FRANCE_WHEAT_HIST.length} seasons since 2017 under full cost accounting — with ${lossSeasons} loss years. The worst season (${worstSeason}) saw a $${Math.abs(worstLoss).toLocaleString()}/ha net loss. Variable costs are covered; fixed costs rarely are.` },
+    { label: 'Fertilizer is the dominant variable cost lever', color: MCK.blue, text: `Fertilizer peaked at $${fertPeak}/ha in ${fertPeakSeason} — exceeding the gross margin in that same season. A $100/t increase in phosphate product prices translates directly to approximately $10–12/ha fertilizer cost increase for a typical 120-ha wheat farmer. Separation strategy has measurable P&L implications.` },
+    { label: 'Fixed costs outrun revenue growth', color: MCK.teal, text: 'Land rental and depreciation have risen in nearly every season, reaching $1,335/ha in 24/25. Revenue is volatile and cyclical; fixed costs are not. The long-run trajectory narrows the window in which variable cost management — including fertilizer strategy — can preserve farm viability.' },
+    { label: 'The P doctrine selling window is structural, not cyclical', color: MCK.teal, text: "With fertilizer costs $120–150/ha above pre-2021 norms and margins under sustained pressure, French farmers are acutely receptive to input efficiency arguments. OCP's positioning must centre on per-kilogram P₂O₅ agronomic ROI to earn premium positioning through the cycle." },
+  ];
+  return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <p style={{ color: MCK.dim, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 32 }}>SO WHAT · ANALYST CONCLUSIONS · FRANCE · SOFT WHEAT</p>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, flex: 1, minHeight: 0 }}>
+        {insights.map((ins, i) => (
+          <div key={i} style={{ borderTop: `2px solid ${ins.color}`, paddingTop: 20 }}>
+            <p style={{ color: MCK.text, fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>{ins.label}</p>
+            <p style={{ color: MCK.mid, fontSize: 13.5, lineHeight: 1.65, margin: 0 }}>{ins.text}</p>
+          </div>
+        ))}
+      </div>
+      <p style={{ color: MCK.dim, fontSize: 11, marginTop: 28, borderTop: `1px solid ${MCK.line}`, paddingTop: 14 }}>
+        Exhibit source: PhosStratOS · FADN France · 909 farms · Soft Wheat · 2017/18 – 2024/25
+      </p>
+    </div>
+  );
+}
+
+const FRANCE_CoP_LABELS = ['France Context', 'Snapshot', 'Cost Breakdown', 'So What'];
+
+function FranceCoPDeck() {
+  const [slide, setSlide] = useState(0);
+  const TOTAL = 4;
+  const slides = [<FrCoS1 />, <FrCoS2 />, <FrCoS3 />, <FrCoS4 />];
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 50px - 57px)', background: '#FFFFFF', fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
+      <div style={{ flex: 1, overflow: 'hidden', padding: '40px 56px 24px' }}>{slides[slide]}</div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 56px', height: 56, borderTop: `1px solid ${MCK.line}`, background: MCK.bgOff, flexShrink: 0 }}>
+        <button onClick={() => setSlide(s => Math.max(0, s - 1))} disabled={slide === 0} style={{ background: 'none', border: `1px solid ${slide === 0 ? MCK.line : MCK.text}`, color: slide === 0 ? MCK.dim : MCK.text, padding: '5px 18px', fontSize: 11, cursor: slide === 0 ? 'default' : 'pointer', letterSpacing: '0.1em', borderRadius: 0 }}>← PREV</button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
+          {FRANCE_CoP_LABELS.map((label, i) => (
+            <button key={i} onClick={() => setSlide(i)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+              <div style={{ width: 7, height: 7, borderRadius: '50%', background: slide === i ? MCK.blue : MCK.line, transition: 'background 0.2s' }} />
+              <span style={{ color: slide === i ? MCK.blue : MCK.dim, fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: slide === i ? 700 : 400 }}>{label}</span>
+            </button>
+          ))}
+        </div>
+        <button onClick={() => setSlide(s => Math.min(TOTAL - 1, s + 1))} disabled={slide === TOTAL - 1} style={{ background: slide === TOTAL - 1 ? 'none' : T.green, border: `1px solid ${slide === TOTAL - 1 ? MCK.line : T.green}`, color: slide === TOTAL - 1 ? MCK.dim : '#fff', padding: '5px 18px', fontSize: 11, cursor: slide === TOTAL - 1 ? 'default' : 'pointer', letterSpacing: '0.1em', borderRadius: 0 }}>NEXT →</button>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
 // BRAZIL DECK — McKinsey-style strategic phosphate research tool
 // ═══════════════════════════════════════════════════════════════════════════
 
 const DECK_CROPS = [
   { id: 'soybean', label: 'Soybeans', img: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Glycine_max_003.JPG' },
   { id: 'corn',    label: 'Corn',     img: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200&q=80&fit=crop' },
-  { id: 'cotton',  label: 'Cotton',   img: 'https://images.unsplash.com/photo-N_Cg-5EsXog?w=1200&q=80&fit=crop' },
-  { id: 'coffee',  label: 'Coffee',   img: 'https://images.unsplash.com/photo-F9Cb_QIe9GA?w=1200&q=80&fit=crop' },
+  { id: 'cotton',  label: 'Cotton',   img: 'https://images.pexels.com/photos/32796552/pexels-photo-32796552.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2' },
+  { id: 'coffee',  label: 'Coffee',   img: 'https://images.pexels.com/photos/796609/pexels-photo-796609.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2' },
 ];
 
 const DECK_SLIDE_LABELS = ['Brazil Context', 'Snapshot', 'Cost Breakdown', 'Fert. Shock', 'So What'];
@@ -1764,7 +2005,7 @@ function BrazilDeck({ region, currency }) {
     <Slide5 region={region} currency={currency} />,
   ];
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 50px - 48px)', background: '#FFFFFF', fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 50px - 48px - 57px)', background: '#FFFFFF', fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
       <div style={{ flex: 1, overflow: 'hidden', padding: '40px 56px 24px' }}>
         {slides[slide]}
       </div>
@@ -1792,12 +2033,61 @@ function BrazilDeck({ region, currency }) {
   );
 }
 
+// ─── Brazil P Doctrine Layer ──────────────────────────────────────────────
+function BrazilPDocSlide1() {
+  const points = [
+    { title: 'What is the P Doctrine?', text: "The P Doctrine is the thesis that separating phosphorus inputs from compound fertilizer programs — applying TSP, MAP or DAP independently rather than as NPK blends — makes the financial outcome of every phosphorus kilogram auditable and optimisable." },
+    { title: 'Why it matters in Brazil', text: "Brazil applies 8–12 million tonnes of P₂O₅ annually. The gap between the cheapest blend and the optimised P strategy is typically $18–35/ha. At 40 million soybean hectares, that is a $720M–$1.4B annual efficiency pool sitting inside current farming practice." },
+    { title: 'How to use this layer', text: "Use the Price Sensitivity slide to model how DAP and MAP price scenarios affect gross margin at farm level. Enter current and scenario prices to see the exact per-hectare impact — this is the P Doctrine in financial form." },
+    { title: "OCP's positioning", text: "OCP's differentiated phosphate products (TSP, granular MAP, reactive rock) can beat compound blends on both P efficiency and cost-per-unit-of-nutrient when separation is modelled correctly. The sensitivity tool shows the breakeven at which separation wins on each cost scenario." },
+  ];
+  return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <p style={{ color: MCK.dim, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 32 }}>P DOCTRINE ECONOMICS · BRAZIL · FRAMEWORK</p>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, flex: 1, minHeight: 0 }}>
+        {points.map((p, i) => (
+          <div key={i} style={{ borderTop: `2px solid ${i < 2 ? MCK.blue : MCK.teal}`, paddingTop: 20 }}>
+            <p style={{ color: MCK.text, fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>{p.title}</p>
+            <p style={{ color: MCK.mid, fontSize: 13.5, lineHeight: 1.65, margin: 0 }}>{p.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const BRAZIL_PDOC_LABELS = ['P Doctrine Context', 'Price Sensitivity'];
+
+function BrazilPDoctrineDeck({ region, currency }) {
+  const [slide, setSlide] = useState(0);
+  const TOTAL = 2;
+  const slides = [<BrazilPDocSlide1 />, <Slide4 region={region} currency={currency} />];
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 50px - 48px - 57px)', background: '#FFFFFF', fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
+      <div style={{ flex: 1, overflow: 'hidden', padding: '40px 56px 24px' }}>{slides[slide]}</div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 56px', height: 56, borderTop: `1px solid ${MCK.line}`, background: MCK.bgOff, flexShrink: 0 }}>
+        <button onClick={() => setSlide(s => Math.max(0, s - 1))} disabled={slide === 0} style={{ background: 'none', border: `1px solid ${slide === 0 ? MCK.line : MCK.text}`, color: slide === 0 ? MCK.dim : MCK.text, padding: '5px 18px', fontSize: 11, cursor: slide === 0 ? 'default' : 'pointer', letterSpacing: '0.1em', borderRadius: 0 }}>← PREV</button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
+          {BRAZIL_PDOC_LABELS.map((label, i) => (
+            <button key={i} onClick={() => setSlide(i)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+              <div style={{ width: 7, height: 7, borderRadius: '50%', background: slide === i ? MCK.blue : MCK.line, transition: 'background 0.2s' }} />
+              <span style={{ color: slide === i ? MCK.blue : MCK.dim, fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: slide === i ? 700 : 400 }}>{label}</span>
+            </button>
+          ))}
+        </div>
+        <button onClick={() => setSlide(s => Math.min(TOTAL - 1, s + 1))} disabled={slide === TOTAL - 1} style={{ background: slide === TOTAL - 1 ? 'none' : T.green, border: `1px solid ${slide === TOTAL - 1 ? MCK.line : T.green}`, color: slide === TOTAL - 1 ? MCK.dim : '#fff', padding: '5px 18px', fontSize: 11, cursor: slide === TOTAL - 1 ? 'default' : 'pointer', letterSpacing: '0.1em', borderRadius: 0 }}>NEXT →</button>
+      </div>
+    </div>
+  );
+}
+
 // ─── Brazil Page — top-level orchestrator ─────────────────────────────────
 function BrazilPage() {
   const [cropSelected, setCropSelected] = useState(false);
   const [cropId,    setCropId]    = useState('soybean');
   const [regionKey, setRegionKey] = useState('National');
   const [currency,  setCurrency]  = useState('USD');
+  const [layer, setLayer] = useState('cop');
 
   if (!cropSelected) {
     return (
@@ -1813,7 +2103,14 @@ function BrazilPage() {
         region={regionKey} setRegion={setRegionKey}
         currency={currency} setCurrency={setCurrency}
       />
-      <BrazilDeck region={regionKey} currency={currency} />
+      <div style={{ background: T.bg, borderBottom: `1px solid ${T.border}`, padding: '12px 56px', display: 'flex', alignItems: 'center', gap: 16 }}>
+        <LayerSwitcher layer={layer} setLayer={setLayer} />
+        <span style={{ color: T.textMuted, fontSize: 11 }}>
+          {layer === 'cop' ? 'Cost of production — context, snapshot, cost breakdown, profitability' : 'P Doctrine Economics — phosphate price sensitivity and separation strategy'}
+        </span>
+      </div>
+      {layer === 'cop'  && <BrazilDeck region={regionKey} currency={currency} />}
+      {layer === 'pdoc' && <BrazilPDoctrineDeck region={regionKey} currency={currency} />}
     </div>
   );
 }
@@ -1822,46 +2119,39 @@ function BrazilPage() {
 
 
 // ═══════════════════════════════════════════════════════════════════════════
-// FRANCE HUB + ROOT APP
+// FRANCE PAGE (two-layer) + ROOT APP
 // ═══════════════════════════════════════════════════════════════════════════
-function FranceHub() {
-  const [section, setSection] = useState("engine");
-  const [mathieuPhase, setMathieuPhase] = useState("value");
-
-  const tabs = [
-    { key: "engine",     label: "Quantitative Engine", short: "Engine" },
-    { key: "regions",    label: "Regional Analysis",   short: "Regions" },
-    { key: "archetypes", label: "Farmer Archetypes",   short: "Archetypes" },
-  ];
-
+function FrancePage() {
+  const [layer, setLayer] = useState('cop');
+  const [mathieuPhase, setMathieuPhase] = useState('value');
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
-      <div style={{ background: T.bg, borderBottom: `1px solid ${T.border}`, padding: "0 20px", display: "flex", alignItems: "center", gap: 4, overflowX: "auto" }}>
-        {tabs.map(t => (<button key={t.key} onClick={() => { setSection(t.key); if (t.key === "engine") setMathieuPhase("value"); }} style={{ padding: "8px 14px", background: "transparent", border: "none", borderBottom: section === t.key ? `2px solid ${T.green}` : "2px solid transparent", color: section === t.key ? T.green : T.textMuted, fontSize: 12, fontWeight: section === t.key ? 600 : 400, cursor: "pointer", whiteSpace: "nowrap" }}>{t.short}</button>))}
+    <div style={{ margin: '-20px -28px', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ background: T.bg, borderBottom: `1px solid ${T.border}`, padding: '12px 56px', display: 'flex', alignItems: 'center', gap: 16 }}>
+        <LayerSwitcher layer={layer} setLayer={l => { setLayer(l); if (l === 'pdoc') setMathieuPhase('value'); }} />
+        <span style={{ color: T.textMuted, fontSize: 11 }}>
+          {layer === 'cop' ? 'Cost of production — revenue, full cost breakdown, historical evolution' : 'P Doctrine Economics — phosphate separation strategy and farm-level P&L'}
+        </span>
       </div>
-      <div style={{ padding: "20px 0 0" }}>
-        {section === "regions"    && <RegionalPage />}
-        {section === "archetypes" && <FarmerArchetypesPage />}
-        {section === "engine" && (
-          <>
-            {mathieuPhase === "value" && (<QuantitativeEngineValuePage onContinue={() => setMathieuPhase("intro")} />)}
-            {mathieuPhase === "intro" && (<MathieuIntroPage onEnterFarm={() => { setMathieuPhase("farm"); setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 50); }} />)}
-            {mathieuPhase === "farm" && (
-              <>
-                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
-                  <button onClick={() => setMathieuPhase("intro")} style={{ display: "flex", alignItems: "center", gap: 6, background: "transparent", border: "none", color: T.textMuted, fontSize: 12, cursor: "pointer", padding: 0 }}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>Back to Mathieu
-                  </button>
-                  <div style={{ width: 1, height: 14, background: T.border }} />
-                  <SectionBadge label="Quantitative Engine" color={T.green} />
-                  <span style={{ color: T.text, fontSize: 14, fontWeight: 700 }}>Mathieu's Farm Simulation</span>
-                </div>
-                <MathieuFarmPage />
-              </>
-            )}
-          </>
-        )}
-      </div>
+      {layer === 'cop' && <FranceCoPDeck />}
+      {layer === 'pdoc' && (
+        <div style={{ padding: '20px 28px 60px' }}>
+          {mathieuPhase === 'value' && <QuantitativeEngineValuePage onContinue={() => setMathieuPhase('intro')} />}
+          {mathieuPhase === 'intro' && <MathieuIntroPage onEnterFarm={() => { setMathieuPhase('farm'); setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50); }} />}
+          {mathieuPhase === 'farm' && (
+            <>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+                <button onClick={() => setMathieuPhase('intro')} style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'transparent', border: 'none', color: T.textMuted, fontSize: 12, cursor: 'pointer', padding: 0 }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>Back to Mathieu
+                </button>
+                <div style={{ width: 1, height: 14, background: T.border }} />
+                <SectionBadge label="P Doctrine Engine" color={T.green} />
+                <span style={{ color: T.text, fontSize: 14, fontWeight: 700 }}>Mathieu's Farm Simulation</span>
+              </div>
+              <MathieuFarmPage />
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -1891,7 +2181,7 @@ export default function App() {
       {/* HEADER */}
       <div style={{ borderBottom: `1px solid ${T.border}`, padding: "0 20px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 50, background: T.card, position: "sticky", top: 0, zIndex: 100 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }} onClick={() => setPage("landing")}>
-          <div style={{ width: 32, height: 32, borderRadius: 8, background: "linear-gradient(135deg,#2DB84B,#1A8A34)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 11, color: "#FFFFFF", fontFamily: "'DM Mono',monospace", boxShadow: "0 0 10px #2DB84B30", flexShrink: 0 }}>GMO</div>
+          <div style={{ width: 32, height: 32, borderRadius: 8, background: "linear-gradient(135deg,#2DB84B,#1A8A34)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 11, color: "#FFFFFF", fontFamily: "'DM Mono',monospace", boxShadow: "0 0 10px #2DB84B30", flexShrink: 0 }}>SMO</div>
           <div>
             <span style={{ fontWeight: 800, fontSize: 14, letterSpacing: "-0.03em", color: T.text }}>PhosStratOS</span>
             <span style={{ color: T.textMuted, fontSize: 11, marginLeft: 8 }}>Farmer Economics</span>
@@ -1910,7 +2200,7 @@ export default function App() {
 
       {/* CONTENT */}
       <div style={{ padding: "20px 28px 60px", maxWidth: 1400, margin: "0 auto" }}>
-        {country === "France" && <FranceHub />}
+        {country === "France" && <FrancePage />}
         {country === "Brazil" && <BrazilPage />}
       </div>
     </div>
