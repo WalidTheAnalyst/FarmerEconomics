@@ -504,11 +504,171 @@ function computeBrazilPnL(state) {
 // ═══════════════════════════════════════════════════════════════════════════
 // LANDING PAGE (original — unchanged)
 // ═══════════════════════════════════════════════════════════════════════════
+function UnderstandPage({ onEnter, onBack }) {
+  const [gridVis, setGridVis] = useState(false);
+  const [cardsVis, setCardsVis] = useState([false, false, false, false, false]);
+  const [typed, setTyped] = useState(['', '', '', '', '']);
+  const [glow, setGlow] = useState(false);
+  const [btnVis, setBtnVis] = useState(false);
+
+  const pillars = [
+    {
+      num: '01', name: 'The Snapshot', sub: 'Farm P&L',
+      desc: 'One farmer, one crop, one season. The baseline income statement — revenue, every cost category, gross margin, net result per hectare. No hypotheticals. This is what farming actually costs and what it actually earns.',
+      from: { opacity: 0, transform: 'translateY(-32px)' },
+    },
+    {
+      num: '02', name: 'The Trajectory', sub: 'Balance Sheet',
+      desc: 'Same farmer, but across time. Debt accumulation, working capital erosion, asset depreciation across a 3–5 year cycle. A farmer who looks viable this season may be structurally failing over the full cycle.',
+      from: { opacity: 0, transform: 'translateX(32px)' },
+    },
+    {
+      num: '03', name: 'The Shock', sub: 'Scenario Engine',
+      desc: 'Same farmer, same profile — but the rules change. Fertilizer up 30%, crop price down, yield drops. The P&L responds in real time. This is where you find exactly how much pain the farmer absorbs before the economics break.',
+      from: { opacity: 0, transform: 'translateY(32px)' },
+    },
+    {
+      num: '04', name: 'The Lens', sub: 'Crop × Region',
+      desc: 'Now you change the farm itself. The same methodology applied across different crops and geographies — holding method constant, moving the subject. This is where you find where OCP\'s argument lands strongest and where it does not.',
+      from: { opacity: 0, transform: 'translateX(-32px)' },
+    },
+    {
+      num: '05', name: 'The Decision', sub: 'P Doctrine',
+      desc: 'The product layer. Given this farmer\'s real cost structure, which phosphate source — TSP, MAP, NPS, NPK — delivers the best net return per hectare? The only module where the fertilizer product itself is the variable being tested.',
+      from: { opacity: 0, transform: 'translateY(-32px)' },
+    },
+  ];
+
+  useEffect(() => {
+    const timers = [];
+    timers.push(setTimeout(() => setGridVis(true), 80));
+    pillars.forEach((p, pi) => {
+      timers.push(setTimeout(() => {
+        setCardsVis(prev => { const n = [...prev]; n[pi] = true; return n; });
+      }, 600 + pi * 120));
+      const chars = p.name.split('');
+      chars.forEach((_, ci) => {
+        timers.push(setTimeout(() => {
+          setTyped(prev => { const n = [...prev]; n[pi] = p.name.slice(0, ci + 1); return n; });
+        }, 800 + pi * 120 + ci * 32));
+      });
+    });
+    const lastTyped = 800 + 4 * 120 + pillars[4].name.length * 32;
+    timers.push(setTimeout(() => setGlow(true),  lastTyped + 60));
+    timers.push(setTimeout(() => setGlow(false), lastTyped + 700));
+    timers.push(setTimeout(() => setBtnVis(true), lastTyped + 400));
+    return () => timers.forEach(clearTimeout);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const cardStyle = (i) => ({
+    background: T.card,
+    border: `1px solid ${glow ? T.green + '60' : T.border}`,
+    borderTop: `2px solid ${T.green}`,
+    borderRadius: 12,
+    padding: '24px 22px',
+    flex: 1,
+    minWidth: 0,
+    opacity: cardsVis[i] ? 1 : 0,
+    transform: cardsVis[i] ? 'none' : pillars[i].from.transform,
+    transition: `opacity 0.5s ease, transform 0.5s ease, box-shadow 0.4s ease, border-color 0.4s ease`,
+    boxShadow: glow ? `0 0 28px ${T.green}25` : 'none',
+  });
+
+  return (
+    <div style={{ minHeight: '100vh', background: T.bg, fontFamily: "'DM Sans','Segoe UI',sans-serif", display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
+      <style>{`
+        @keyframes drawH { from { stroke-dashoffset: 1200 } to { stroke-dashoffset: 0 } }
+        @keyframes drawV { from { stroke-dashoffset: 900 } to { stroke-dashoffset: 0 } }
+        @keyframes upFade { from { opacity:0; transform:translateY(16px) } to { opacity:1; transform:none } }
+        @keyframes cursorBlink { 0%,100%{opacity:1} 50%{opacity:0} }
+      `}</style>
+
+      {/* Blueprint grid SVG */}
+      <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', opacity: gridVis ? 1 : 0, transition: 'opacity 0.4s ease' }} xmlns="http://www.w3.org/2000/svg">
+        {[15, 30, 45, 55, 70, 85].map((pct, i) => (
+          <line key={`h${i}`} x1="0" y1={`${pct}%`} x2="100%" y2={`${pct}%`}
+            stroke={T.green} strokeOpacity="0.04" strokeWidth="1"
+            strokeDasharray="1200" strokeDashoffset={gridVis ? 0 : 1200}
+            style={{ animation: gridVis ? `drawH ${0.7 + i * 0.08}s ${i * 0.06}s ease forwards` : 'none' }} />
+        ))}
+        {[10, 25, 40, 60, 75, 90].map((pct, i) => (
+          <line key={`v${i}`} x1={`${pct}%`} y1="0" x2={`${pct}%`} y2="100%"
+            stroke={T.green} strokeOpacity="0.04" strokeWidth="1"
+            strokeDasharray="900" strokeDashoffset={gridVis ? 0 : 900}
+            style={{ animation: gridVis ? `drawV ${0.6 + i * 0.07}s ${0.1 + i * 0.05}s ease forwards` : 'none' }} />
+        ))}
+        {/* accent traces */}
+        <line x1="0" y1="50%" x2="100%" y2="50%" stroke={T.green} strokeOpacity="0.07" strokeWidth="1.5"
+          strokeDasharray="1200" style={{ animation: gridVis ? 'drawH 1s 0.2s ease forwards' : 'none', strokeDashoffset: gridVis ? 0 : 1200 }} />
+      </svg>
+
+      {/* Back button */}
+      <div style={{ position: 'absolute', top: 28, left: 36, opacity: gridVis ? 1 : 0, transition: 'opacity 0.6s ease 0.3s' }}>
+        <button onClick={onBack} style={{ background: 'transparent', border: 'none', color: T.textMuted, fontSize: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, letterSpacing: '0.08em', textTransform: 'uppercase', padding: 0 }}>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
+          Back
+        </button>
+      </div>
+
+      {/* Header */}
+      <div style={{ textAlign: 'center', padding: '72px 32px 48px', zIndex: 10, opacity: gridVis ? 1 : 0, transition: 'opacity 0.8s ease 0.2s' }}>
+        <p style={{ color: T.green, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.22em', fontWeight: 700, marginBottom: 16 }}>PhosStratOS · Platform Architecture</p>
+        <h1 style={{ color: T.text, fontSize: 'clamp(22px,3vw,36px)', fontWeight: 300, letterSpacing: '-0.03em', lineHeight: 1.3, margin: '0 auto 16px', maxWidth: 680 }}>
+          PhosStrat exists to convert OCP's upstream<br />
+          <span style={{ fontWeight: 800 }}>phosphate strength into downstream farmer preference.</span>
+        </h1>
+        <p style={{ color: T.textMuted, fontSize: 14, lineHeight: 1.8, maxWidth: 560, margin: '0 auto' }}>
+          It does this through five interconnected dimensions — each one a distinct lens on the farmer's financial reality.
+        </p>
+      </div>
+
+      {/* 5 pillars */}
+      <div style={{ display: 'flex', gap: 16, padding: '0 48px', flex: 1, zIndex: 10, alignItems: 'stretch', maxWidth: 1360, width: '100%', margin: '0 auto' }}>
+        {pillars.map((p, i) => (
+          <div key={i} style={cardStyle(i)}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+              <span style={{ color: T.green, fontSize: 10, fontFamily: "'DM Mono',monospace", fontWeight: 700, letterSpacing: '0.12em', opacity: cardsVis[i] ? 1 : 0, transition: 'opacity 0.3s ease 0.2s' }}>{p.num}</span>
+              <div style={{ flex: 1, height: 1, background: T.border }} />
+              <span style={{ color: T.textMuted, fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.1em', opacity: cardsVis[i] ? 1 : 0, transition: 'opacity 0.3s ease 0.4s' }}>{p.sub}</span>
+            </div>
+            <p style={{ color: T.text, fontSize: 15, fontWeight: 700, letterSpacing: '-0.01em', marginBottom: 12, minHeight: 22, fontFamily: "'DM Mono',monospace" }}>
+              {typed[i]}
+              <span style={{ animation: typed[i].length < p.name.length ? 'cursorBlink 0.7s infinite' : 'none', opacity: typed[i].length < p.name.length ? 1 : 0, color: T.green }}>|</span>
+            </p>
+            <p style={{ color: T.textMid, fontSize: 12.5, lineHeight: 1.75, margin: 0, opacity: cardsVis[i] ? 1 : 0, transition: 'opacity 0.6s ease 0.5s' }}>{p.desc}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* CTA */}
+      <div style={{ textAlign: 'center', padding: '40px 32px 56px', zIndex: 10, opacity: btnVis ? 1 : 0, transform: btnVis ? 'none' : 'translateY(12px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>
+        <button onClick={onEnter}
+          style={{ background: T.green, border: 'none', color: '#fff', padding: '14px 44px', borderRadius: 4, fontSize: 13, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer', boxShadow: `0 0 32px ${T.green}40`, transition: 'all 0.2s' }}
+          onMouseEnter={e => { e.currentTarget.style.background = T.greenDk; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = T.green; e.currentTarget.style.transform = 'none'; }}>
+          Enter Platform →
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function LandingPage({ onEnter }) {
   const [vis, setVis] = useState(false);
   const [sub, setSub] = useState(false);
   const [btn, setBtn] = useState(false);
+  const [showUnderstand, setShowUnderstand] = useState(false);
+  const [btnShrink, setBtnShrink] = useState(false);
+
   useEffect(() => { setTimeout(() => setVis(true), 300); setTimeout(() => setSub(true), 1100); setTimeout(() => setBtn(true), 1900); }, []);
+
+  const handleUnderstand = () => {
+    setBtnShrink(true);
+    setTimeout(() => setShowUnderstand(true), 380);
+  };
+
+  if (showUnderstand) return <UnderstandPage onEnter={onEnter} onBack={() => { setShowUnderstand(false); setBtnShrink(false); }} />;
+
   return (
     <div style={{ minHeight: "100vh", background: T.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans','Segoe UI',sans-serif", position: "relative", overflow: "hidden" }}>
       <style>{`@keyframes lFadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}} @keyframes lOrbit{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}`}</style>
@@ -533,12 +693,20 @@ function LandingPage({ onEnter }) {
         <p style={{ opacity: sub ? 1 : 0, transform: sub ? "none" : "translateY(10px)", transition: "opacity 0.8s ease,transform 0.8s ease", fontSize: 15, color: "rgba(15,36,21,0.45)", fontWeight: 300, lineHeight: 1.8, marginBottom: 48 }}>
           Farmer economics · P separation · Crop-level P&L · Regional intelligence
         </p>
-        <button onClick={onEnter}
-          style={{ opacity: btn ? 1 : 0, transform: btn ? "none" : "translateY(8px)", transition: "opacity 0.6s ease,transform 0.6s ease,background 0.2s,border-color 0.2s", background: "transparent", border: "1px solid rgba(45,184,75,0.5)", color: "rgba(45,184,75,0.9)", padding: "13px 40px", borderRadius: 4, fontSize: 13, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer" }}
-          onMouseEnter={e => { e.currentTarget.style.background = "rgba(45,184,75,0.1)"; e.currentTarget.style.borderColor = "rgba(45,184,75,0.9)"; e.currentTarget.style.color = "#fff"; }}
-          onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = "rgba(45,184,75,0.5)"; e.currentTarget.style.color = "rgba(45,184,75,0.9)"; }}>
-          Enter Platform →
-        </button>
+        <div style={{ opacity: btn ? 1 : 0, transform: btnShrink ? 'scale(0.95)' : btn ? 'none' : 'translateY(8px)', transition: 'opacity 0.6s ease, transform 0.35s ease', display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <button onClick={onEnter}
+            style={{ background: "transparent", border: "1px solid rgba(45,184,75,0.5)", color: "rgba(45,184,75,0.9)", padding: "13px 40px", borderRadius: 4, fontSize: 13, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer", transition: 'all 0.2s' }}
+            onMouseEnter={e => { e.currentTarget.style.background = "rgba(45,184,75,0.1)"; e.currentTarget.style.borderColor = "rgba(45,184,75,0.9)"; }}
+            onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = "rgba(45,184,75,0.5)"; }}>
+            Enter Platform →
+          </button>
+          <button onClick={handleUnderstand}
+            style={{ background: "transparent", border: "1px solid rgba(15,36,21,0.15)", color: "rgba(15,36,21,0.45)", padding: "13px 40px", borderRadius: 4, fontSize: 13, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer", transition: 'all 0.2s' }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(15,36,21,0.35)"; e.currentTarget.style.color = "rgba(15,36,21,0.7)"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(15,36,21,0.15)"; e.currentTarget.style.color = "rgba(15,36,21,0.45)"; }}>
+            Understand PhosStrat
+          </button>
+        </div>
       </div>
     </div>
   );
