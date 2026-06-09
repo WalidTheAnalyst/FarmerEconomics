@@ -502,117 +502,212 @@ function computeBrazilPnL(state) {
 
 
 // ═══════════════════════════════════════════════════════════════════════════
-// LANDING PAGE (original — unchanged)
+// MISSION PAGE — interactive circular pillar explorer
 // ═══════════════════════════════════════════════════════════════════════════
-function UnderstandPage({ onEnter, onBack }) {
+function MissionPage({ onContinue }) {
   const [vis, setVis] = useState(false);
-  const [pillarsVis, setPillarsVis] = useState([false, false, false, false, false]);
-  const [btnVis, setBtnVis] = useState(false);
+  const [bubblesVis, setBubblesVis] = useState([false, false, false, false, false]);
+  const [selected, setSelected] = useState(null);
 
   const DARK = '#0C1A10';
-  const LIGHT = '#F0F6F1';
-  const DIM = 'rgba(240,246,241,0.45)';
-  const LINE = 'rgba(240,246,241,0.08)';
+  const LINE = 'rgba(240,246,241,0.07)';
+  const PANEL_W = 400;
 
   const pillars = [
-    { num: '01', name: 'The Snapshot', sub: 'Farm P&L', desc: 'One farmer, one crop, one season. Revenue, every cost category, gross margin, net result per hectare. No hypotheticals. This is what farming actually costs and what it actually earns.' },
-    { num: '02', name: 'The Trajectory', sub: 'Balance Sheet', desc: 'Same farmer, across time. Debt accumulation, working capital erosion, asset depreciation across a 3 to 5 year cycle. A farmer who looks viable this season may be structurally failing over the full cycle.' },
-    { num: '03', name: 'The Shock', sub: 'Scenario Engine', desc: 'Same farmer, same profile — but the rules change. Fertilizer up 30%, crop price down, yield drops. The P&L responds in real time. This is where you find exactly how much pain the farmer absorbs before the economics break.' },
-    { num: '04', name: 'The Lens', sub: 'Crop × Region', desc: 'Now you change the farm itself. Same methodology applied across different crops and geographies — holding method constant, moving the subject. This is where you find where OCP\'s argument lands strongest and where it does not.' },
-    { num: '05', name: 'The Decision', sub: 'P Doctrine', desc: 'The product layer. Given this farmer\'s real cost structure, which phosphate source — TSP, MAP, NPS, NPK — delivers the best net return per hectare? The only module where the fertilizer product itself is the variable being tested.' },
+    {
+      num: '01', name: 'The Snapshot', sub: 'Farm P&L', color: '#4ECDC4',
+      what: 'A full income statement for one farmer, one crop, one season. Revenue, every cost line, gross margin, net result per hectare.',
+      questions: ['What does fertilizer actually cost as a share of total variable costs?', 'At what yield does this farm break even?', 'Where exactly does phosphate spend sit in the full cost structure?'],
+      why: 'Most phosphate conversations skip the full picture. This module anchors everything else in real farm economics.',
+    },
+    {
+      num: '02', name: 'The Trajectory', sub: 'Balance Sheet', color: '#FFD93D',
+      what: 'The same farm, across 3 to 5 seasons. Debt levels, working capital, asset depreciation. Viability over time, not just this year.',
+      questions: ['At what debt-to-income ratio does a farmer stop buying inputs?', 'Which regions are most exposed when a harvest disappoints?', 'How does working capital evolve across a commodity cycle?'],
+      why: 'A farm can look fine in year one and be structurally failing by year three. This module shows that arc.',
+    },
+    {
+      num: '03', name: 'The Shock', sub: 'Scenario Engine', color: '#FF6B6B',
+      what: 'Same farmer, same profile — but the rules change. Fertilizer up 30%, crop price down, yield drops. The P&L responds in real time.',
+      questions: ['What happens to net margin if fertilizer prices rise 20%?', 'At what crop price does phosphate spend become the first cut?', 'Which cost combination pushes a farmer below breakeven?'],
+      why: 'This is where you find how much pain the farmer can absorb before the economics of buying premium inputs break down.',
+    },
+    {
+      num: '04', name: 'The Lens', sub: 'Crop × Region', color: '#A78BFA',
+      what: 'Same methodology, applied across different crops and geographies. The farm changes. The method stays constant.',
+      questions: ['Does NPS outperform TSP in Brazilian soy but underperform in French wheat?', 'How much does a €10/t freight difference shift the ROI calculus?', "Where does OCP's argument land strongest and where does it need reinforcing?"],
+      why: "Context determines whether a product wins. This module shows exactly where OCP's case is strongest.",
+    },
+    {
+      num: '05', name: 'The Decision', sub: 'P Doctrine', color: '#2DB84B',
+      what: "Given this farmer's real cost structure, which phosphate source — TSP, MAP, NPS, NPK — delivers the best net return per hectare?",
+      questions: ['Which P source delivers the best net return per hectare?', 'Does TSP or NPS perform better on sandy versus clay soils?', 'What yield uplift is needed to justify a higher-cost source?'],
+      why: 'The only module where the fertilizer product itself is the variable. This is the commercial output of everything that came before.',
+    },
   ];
 
+  // Pentagon: 5 nodes placed at 72° intervals, starting from top (-90°)
+  const R = 150;
+  const CX = 220;
+  const CY = 210;
+  const pos = (i) => {
+    const rad = ((-90 + i * 72) * Math.PI) / 180;
+    return { x: CX + R * Math.cos(rad), y: CY + R * Math.sin(rad) };
+  };
+
   useEffect(() => {
-    const timers = [];
-    timers.push(setTimeout(() => setVis(true), 60));
-    pillars.forEach((_, i) => {
-      timers.push(setTimeout(() => {
-        setPillarsVis(prev => { const n = [...prev]; n[i] = true; return n; });
-      }, 350 + i * 140));
-    });
-    timers.push(setTimeout(() => setBtnVis(true), 350 + 5 * 140 + 100));
-    return () => timers.forEach(clearTimeout);
+    const t = [];
+    t.push(setTimeout(() => setVis(true), 60));
+    for (let i = 0; i < 5; i++) {
+      t.push(setTimeout(() => setBubblesVis(prev => { const n = [...prev]; n[i] = true; return n; }), 300 + i * 110));
+    }
+    return () => t.forEach(clearTimeout);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const handleSelect = (i) => setSelected(prev => prev === i ? null : i);
+  const sel = selected !== null ? pillars[selected] : null;
+
   return (
-    <div style={{ minHeight: '100vh', background: DARK, fontFamily: "'DM Sans','Segoe UI',sans-serif", color: LIGHT, display: 'flex', flexDirection: 'column' }}>
+    <div style={{ height: '100vh', background: DARK, fontFamily: "'DM Sans','Segoe UI',sans-serif", display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
 
-      {/* Top nav bar */}
-      <div style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '20px 56px', borderBottom: `1px solid ${LINE}`,
-        opacity: vis ? 1 : 0, transition: 'opacity 0.5s ease',
-      }}>
-        <button onClick={onBack} style={{
-          background: 'transparent', border: `1px solid ${LINE}`, color: DIM,
-          padding: '8px 20px', borderRadius: 3, fontSize: 11, fontWeight: 600,
-          letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer',
-          display: 'flex', alignItems: 'center', gap: 8, transition: 'all 0.2s',
-        }}
-          onMouseEnter={e => { e.currentTarget.style.borderColor = `${T.green}80`; e.currentTarget.style.color = T.green; }}
-          onMouseLeave={e => { e.currentTarget.style.borderColor = LINE; e.currentTarget.style.color = DIM; }}>
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
-          Back
+      {/* Nav */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 48px', borderBottom: `1px solid ${LINE}`, flexShrink: 0, opacity: vis ? 1 : 0, transition: 'opacity 0.5s' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ width: 28, height: 28, borderRadius: 7, background: 'linear-gradient(135deg,#2DB84B,#1A8A34)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 9, color: '#fff', fontFamily: "'DM Mono',monospace" }}>SMO</div>
+          <span style={{ color: 'rgba(240,246,241,0.25)', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase' }}>PhosStratOS</span>
+        </div>
+        <button onClick={onContinue} style={{ background: 'transparent', border: '1px solid rgba(45,184,75,0.25)', color: 'rgba(45,184,75,0.6)', padding: '7px 18px', borderRadius: 3, fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.2s' }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(45,184,75,0.7)'; e.currentTarget.style.color = '#2DB84B'; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(45,184,75,0.25)'; e.currentTarget.style.color = 'rgba(45,184,75,0.6)'; }}>
+          Skip →
         </button>
-        <span style={{ color: DIM, fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase' }}>PhosStratOS · Platform Architecture</span>
       </div>
 
-      {/* Hero */}
-      <div style={{
-        padding: '80px 56px 64px', maxWidth: 860,
-        opacity: vis ? 1 : 0, transform: vis ? 'none' : 'translateY(16px)',
-        transition: 'opacity 0.7s ease 0.1s, transform 0.7s ease 0.1s',
-      }}>
-        <p style={{ color: T.green, fontSize: 10, letterSpacing: '0.24em', textTransform: 'uppercase', fontWeight: 700, marginBottom: 28 }}>The Mission</p>
-        <h1 style={{ fontSize: 'clamp(26px,3.2vw,46px)', fontWeight: 300, lineHeight: 1.22, letterSpacing: '-0.03em', margin: '0 0 28px', color: LIGHT }}>
-          PhosStrat exists to convert OCP's upstream
-          <span style={{ fontWeight: 800, color: '#ffffff', display: 'block' }}>phosphate strength into downstream farmer preference.</span>
-        </h1>
-        <p style={{ color: DIM, fontSize: 15, lineHeight: 1.85, margin: 0, maxWidth: 600 }}>
-          It does this through five interconnected dimensions. Each one is a distinct lens on the farmer's financial reality. Each one answers a question that none of the others can.
-        </p>
-      </div>
+      {/* Body: circle + panel */}
+      <div style={{ flex: 1, display: 'flex', overflow: 'hidden', minHeight: 0 }}>
 
-      {/* Divider */}
-      <div style={{ height: 1, background: LINE, margin: '0 56px', opacity: vis ? 1 : 0, transition: 'opacity 0.5s ease 0.3s' }} />
+        {/* Left: circle area */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px 32px', minWidth: 0 }}>
 
-      {/* Pillars — vertical list */}
-      <div style={{ padding: '0 56px', flex: 1 }}>
-        {pillars.map((p, i) => (
-          <div key={i} style={{
-            display: 'grid', gridTemplateColumns: '80px 1fr', gap: '0 48px',
-            padding: '44px 0', borderBottom: `1px solid ${LINE}`,
-            opacity: pillarsVis[i] ? 1 : 0,
-            transform: pillarsVis[i] ? 'none' : 'translateY(18px)',
-            transition: 'opacity 0.5s ease, transform 0.5s ease',
-          }}>
-            <div style={{ paddingTop: 4 }}>
-              <span style={{ color: T.green, fontSize: 32, fontFamily: "'DM Mono',monospace", fontWeight: 700, lineHeight: 1, display: 'block' }}>{p.num}</span>
-            </div>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: 18, marginBottom: 14, flexWrap: 'wrap' }}>
-                <h2 style={{ fontSize: 'clamp(18px,1.8vw,24px)', fontWeight: 700, letterSpacing: '-0.02em', margin: 0, color: '#ffffff' }}>{p.name}</h2>
-                <span style={{ color: T.green, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.18em', fontWeight: 600 }}>{p.sub}</span>
-              </div>
-              <p style={{ color: DIM, fontSize: 14, lineHeight: 1.85, margin: 0, maxWidth: 660 }}>{p.desc}</p>
-            </div>
+          {/* Headline */}
+          <div style={{ textAlign: 'center', marginBottom: 36, opacity: vis ? 1 : 0, transition: 'opacity 0.7s 0.1s' }}>
+            <p style={{ color: '#2DB84B', fontSize: 9, letterSpacing: '0.26em', textTransform: 'uppercase', fontWeight: 700, marginBottom: 10 }}>The Farmer Economics Engine</p>
+            <h1 style={{ fontSize: 'clamp(18px,2vw,28px)', fontWeight: 300, color: '#F0F6F1', letterSpacing: '-0.02em', lineHeight: 1.3, margin: 0 }}>
+              Five dimensions.<br />
+              <span style={{ fontWeight: 800, color: '#fff' }}>One complete picture.</span>
+            </h1>
           </div>
-        ))}
+
+          {/* Circle */}
+          <div style={{ position: 'relative', width: 440, height: 420, flexShrink: 0 }}>
+            <svg width="440" height="420" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+              {/* dashed orbit ring */}
+              <circle cx={CX} cy={CY} r={R + 28} fill="none" stroke={LINE} strokeWidth="1" strokeDasharray="3 7" />
+              {/* connector lines */}
+              {pillars.map((p, i) => {
+                const { x, y } = pos(i);
+                return <line key={i} x1={CX} y1={CY} x2={x} y2={y}
+                  stroke={selected === i ? p.color + '50' : LINE}
+                  strokeWidth={selected === i ? 1.5 : 1}
+                  style={{ transition: 'stroke 0.3s, stroke-width 0.3s' }} />;
+              })}
+            </svg>
+
+            {/* Center hub */}
+            <div style={{
+              position: 'absolute', left: CX - 38, top: CY - 38,
+              width: 76, height: 76, borderRadius: '50%',
+              background: '#111f16',
+              border: `1px solid ${sel ? sel.color + '45' : 'rgba(45,184,75,0.2)'}`,
+              display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+              boxShadow: sel ? `0 0 28px ${sel.color}20` : 'none',
+              transition: 'border-color 0.4s, box-shadow 0.4s',
+              zIndex: 5,
+            }}>
+              <span style={{ color: '#2DB84B', fontSize: 8, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 700, lineHeight: 1 }}>Phos</span>
+              <span style={{ color: '#fff', fontSize: 10, fontWeight: 800, letterSpacing: '-0.01em', lineHeight: 1.4 }}>Strat</span>
+            </div>
+
+            {/* Pillar bubbles */}
+            {pillars.map((p, i) => {
+              const { x, y } = pos(i);
+              const isSel = selected === i;
+              return (
+                <div key={i} onClick={() => handleSelect(i)} style={{
+                  position: 'absolute',
+                  left: x - 48, top: y - 48,
+                  width: 96, height: 96,
+                  borderRadius: '50%',
+                  background: isSel ? `radial-gradient(circle at 35% 35%, ${p.color}28, ${p.color}0a)` : 'rgba(18,32,22,0.95)',
+                  border: `${isSel ? 2 : 1}px solid ${isSel ? p.color : p.color + '38'}`,
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2,
+                  cursor: 'pointer', zIndex: 10,
+                  opacity: bubblesVis[i] ? 1 : 0,
+                  transform: bubblesVis[i] ? (isSel ? 'scale(1.1)' : 'scale(1)') : 'scale(0.6)',
+                  transition: 'opacity 0.4s ease, transform 0.3s ease, border-color 0.25s, background 0.25s, box-shadow 0.25s',
+                  boxShadow: isSel ? `0 0 20px ${p.color}50, 0 0 48px ${p.color}18` : 'none',
+                }}
+                  onMouseEnter={e => { if (!isSel) { e.currentTarget.style.borderColor = p.color + '75'; e.currentTarget.style.transform = 'scale(1.06)'; } }}
+                  onMouseLeave={e => { if (!isSel) { e.currentTarget.style.borderColor = p.color + '38'; e.currentTarget.style.transform = 'scale(1)'; } }}>
+                  <span style={{ color: p.color, fontSize: 8, fontFamily: "'DM Mono',monospace", fontWeight: 700, letterSpacing: '0.1em' }}>{p.num}</span>
+                  <span style={{ color: isSel ? '#fff' : 'rgba(240,246,241,0.8)', fontSize: 10, fontWeight: 700, textAlign: 'center', lineHeight: 1.2, padding: '0 6px' }}>{p.name}</span>
+                  <span style={{ color: p.color, fontSize: 7.5, textTransform: 'uppercase', letterSpacing: '0.1em', opacity: 0.8 }}>{p.sub}</span>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Hint */}
+          <p style={{ color: 'rgba(240,246,241,0.2)', fontSize: 11, marginTop: 20, letterSpacing: '0.04em', textAlign: 'center', opacity: vis ? 1 : 0, transition: 'opacity 0.6s 0.6s' }}>
+            {selected === null ? 'Click a pillar to explore it' : 'Click another pillar or continue below'}
+          </p>
+        </div>
+
+        {/* Right: sliding info panel */}
+        <div style={{
+          width: selected !== null ? PANEL_W : 0,
+          flexShrink: 0,
+          overflow: 'hidden',
+          borderLeft: `1px solid ${selected !== null ? LINE : 'transparent'}`,
+          transition: 'width 0.38s cubic-bezier(0.4,0,0.2,1), border-color 0.3s',
+          background: '#0A1A0E',
+        }}>
+          {sel && (
+            <div style={{ width: PANEL_W, height: '100%', overflowY: 'auto', padding: '44px 40px', boxSizing: 'border-box' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 24 }}>
+                <span style={{ color: sel.color, fontSize: 10, fontFamily: "'DM Mono',monospace", fontWeight: 700, letterSpacing: '0.12em' }}>{sel.num}</span>
+                <div style={{ flex: 1, height: 1, background: sel.color + '28' }} />
+                <span style={{ color: sel.color, fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.16em', fontWeight: 600 }}>{sel.sub}</span>
+              </div>
+              <h2 style={{ color: '#fff', fontSize: 24, fontWeight: 700, letterSpacing: '-0.02em', marginBottom: 16, lineHeight: 1.2 }}>{sel.name}</h2>
+              <p style={{ color: 'rgba(240,246,241,0.65)', fontSize: 14, lineHeight: 1.85, marginBottom: 28 }}>{sel.what}</p>
+              <div style={{ marginBottom: 24 }}>
+                <p style={{ color: sel.color, fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.2em', fontWeight: 700, marginBottom: 14 }}>Questions it answers</p>
+                {sel.questions.map((q, qi) => (
+                  <div key={qi} style={{ display: 'flex', gap: 10, marginBottom: 11, alignItems: 'flex-start' }}>
+                    <span style={{ color: sel.color, fontSize: 12, marginTop: 3, flexShrink: 0 }}>→</span>
+                    <p style={{ color: 'rgba(240,246,241,0.55)', fontSize: 13, lineHeight: 1.7, margin: 0 }}>{q}</p>
+                  </div>
+                ))}
+              </div>
+              <div style={{ borderTop: `1px solid ${sel.color}18`, paddingTop: 20 }}>
+                <p style={{ color: 'rgba(240,246,241,0.35)', fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.18em', fontWeight: 600, marginBottom: 10 }}>Why it matters</p>
+                <p style={{ color: 'rgba(240,246,241,0.5)', fontSize: 13, lineHeight: 1.75, margin: 0 }}>{sel.why}</p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* CTA */}
-      <div style={{
-        padding: '56px 56px', display: 'flex', alignItems: 'center', gap: 32,
-        opacity: btnVis ? 1 : 0, transform: btnVis ? 'none' : 'translateY(12px)',
-        transition: 'opacity 0.5s ease, transform 0.5s ease',
-      }}>
-        <button onClick={onEnter}
-          style={{ background: T.green, border: 'none', color: '#fff', padding: '14px 48px', borderRadius: 3, fontSize: 12, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.2s' }}
-          onMouseEnter={e => { e.currentTarget.style.background = '#ffffff'; e.currentTarget.style.color = DARK; }}
-          onMouseLeave={e => { e.currentTarget.style.background = T.green; e.currentTarget.style.color = '#fff'; }}>
+      {/* Bottom bar */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 48px', borderTop: `1px solid ${LINE}`, flexShrink: 0, opacity: vis ? 1 : 0, transition: 'opacity 0.5s 0.4s' }}>
+        <span style={{ color: 'rgba(240,246,241,0.2)', fontSize: 11 }}>Five modules. One methodology.</span>
+        <button onClick={onContinue}
+          style={{ background: '#2DB84B', border: 'none', color: '#fff', padding: '11px 40px', borderRadius: 3, fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.2s' }}
+          onMouseEnter={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = DARK; }}
+          onMouseLeave={e => { e.currentTarget.style.background = '#2DB84B'; e.currentTarget.style.color = '#fff'; }}>
           Enter Platform →
         </button>
-        <span style={{ color: DIM, fontSize: 12 }}>Five modules. One methodology. Built for the field.</span>
       </div>
     </div>
   );
@@ -622,17 +717,8 @@ function LandingPage({ onEnter }) {
   const [vis, setVis] = useState(false);
   const [sub, setSub] = useState(false);
   const [btn, setBtn] = useState(false);
-  const [showUnderstand, setShowUnderstand] = useState(false);
-  const [btnShrink, setBtnShrink] = useState(false);
 
   useEffect(() => { setTimeout(() => setVis(true), 300); setTimeout(() => setSub(true), 1100); setTimeout(() => setBtn(true), 1900); }, []);
-
-  const handleUnderstand = () => {
-    setBtnShrink(true);
-    setTimeout(() => setShowUnderstand(true), 380);
-  };
-
-  if (showUnderstand) return <UnderstandPage onEnter={onEnter} onBack={() => { setShowUnderstand(false); setBtnShrink(false); }} />;
 
   return (
     <div style={{ minHeight: "100vh", background: T.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans','Segoe UI',sans-serif", position: "relative", overflow: "hidden" }}>
@@ -658,18 +744,12 @@ function LandingPage({ onEnter }) {
         <p style={{ opacity: sub ? 1 : 0, transform: sub ? "none" : "translateY(10px)", transition: "opacity 0.8s ease,transform 0.8s ease", fontSize: 15, color: "rgba(15,36,21,0.45)", fontWeight: 300, lineHeight: 1.8, marginBottom: 48 }}>
           Farmer economics · P separation · Crop-level P&L · Regional intelligence
         </p>
-        <div style={{ opacity: btn ? 1 : 0, transform: btnShrink ? 'scale(0.95)' : btn ? 'none' : 'translateY(8px)', transition: 'opacity 0.6s ease, transform 0.35s ease', display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
+        <div style={{ opacity: btn ? 1 : 0, transform: btn ? 'none' : 'translateY(8px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>
           <button onClick={onEnter}
-            style={{ background: "transparent", border: "1px solid rgba(45,184,75,0.5)", color: "rgba(45,184,75,0.9)", padding: "13px 40px", borderRadius: 4, fontSize: 13, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer", transition: 'all 0.2s' }}
-            onMouseEnter={e => { e.currentTarget.style.background = "rgba(45,184,75,0.1)"; e.currentTarget.style.borderColor = "rgba(45,184,75,0.9)"; }}
-            onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = "rgba(45,184,75,0.5)"; }}>
+            style={{ background: "#2DB84B", border: "none", color: "#fff", padding: "14px 52px", borderRadius: 4, fontSize: 13, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", cursor: "pointer", transition: 'all 0.2s', boxShadow: '0 0 32px rgba(45,184,75,0.3)' }}
+            onMouseEnter={e => { e.currentTarget.style.background = T.greenDk; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 24px rgba(45,184,75,0.4)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = '#2DB84B'; e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 0 32px rgba(45,184,75,0.3)'; }}>
             Enter Platform →
-          </button>
-          <button onClick={handleUnderstand}
-            style={{ background: "transparent", border: "1px solid rgba(15,36,21,0.15)", color: "rgba(15,36,21,0.45)", padding: "13px 40px", borderRadius: 4, fontSize: 13, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer", transition: 'all 0.2s' }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(15,36,21,0.35)"; e.currentTarget.style.color = "rgba(15,36,21,0.7)"; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(15,36,21,0.15)"; e.currentTarget.style.color = "rgba(15,36,21,0.45)"; }}>
-            Understand PhosStrat
           </button>
         </div>
       </div>
@@ -2417,10 +2497,11 @@ function FrancePage() {
 }
 
 export default function App() {
-  const [page, setPage] = useState("landing"); // landing | country | app
+  const [page, setPage] = useState("landing"); // landing | mission | country | app
   const [country, setCountry] = useState(null);
 
-  if (page === "landing") return <LandingPage onEnter={() => setPage("country")} />;
+  if (page === "landing") return <LandingPage onEnter={() => setPage("mission")} />;
+  if (page === "mission") return <MissionPage onContinue={() => setPage("country")} />;
   if (page === "country") return <CountrySelector onSelect={c => { setCountry(c); setPage("app"); }} />;
 
   return (
