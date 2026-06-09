@@ -505,149 +505,114 @@ function computeBrazilPnL(state) {
 // LANDING PAGE (original — unchanged)
 // ═══════════════════════════════════════════════════════════════════════════
 function UnderstandPage({ onEnter, onBack }) {
-  const [gridVis, setGridVis] = useState(false);
-  const [cardsVis, setCardsVis] = useState([false, false, false, false, false]);
-  const [typed, setTyped] = useState(['', '', '', '', '']);
-  const [glow, setGlow] = useState(false);
+  const [vis, setVis] = useState(false);
+  const [pillarsVis, setPillarsVis] = useState([false, false, false, false, false]);
   const [btnVis, setBtnVis] = useState(false);
 
+  const DARK = '#0C1A10';
+  const LIGHT = '#F0F6F1';
+  const DIM = 'rgba(240,246,241,0.45)';
+  const LINE = 'rgba(240,246,241,0.08)';
+
   const pillars = [
-    {
-      num: '01', name: 'The Snapshot', sub: 'Farm P&L',
-      desc: 'One farmer, one crop, one season. The baseline income statement — revenue, every cost category, gross margin, net result per hectare. No hypotheticals. This is what farming actually costs and what it actually earns.',
-      from: { opacity: 0, transform: 'translateY(-32px)' },
-    },
-    {
-      num: '02', name: 'The Trajectory', sub: 'Balance Sheet',
-      desc: 'Same farmer, but across time. Debt accumulation, working capital erosion, asset depreciation across a 3–5 year cycle. A farmer who looks viable this season may be structurally failing over the full cycle.',
-      from: { opacity: 0, transform: 'translateX(32px)' },
-    },
-    {
-      num: '03', name: 'The Shock', sub: 'Scenario Engine',
-      desc: 'Same farmer, same profile — but the rules change. Fertilizer up 30%, crop price down, yield drops. The P&L responds in real time. This is where you find exactly how much pain the farmer absorbs before the economics break.',
-      from: { opacity: 0, transform: 'translateY(32px)' },
-    },
-    {
-      num: '04', name: 'The Lens', sub: 'Crop × Region',
-      desc: 'Now you change the farm itself. The same methodology applied across different crops and geographies — holding method constant, moving the subject. This is where you find where OCP\'s argument lands strongest and where it does not.',
-      from: { opacity: 0, transform: 'translateX(-32px)' },
-    },
-    {
-      num: '05', name: 'The Decision', sub: 'P Doctrine',
-      desc: 'The product layer. Given this farmer\'s real cost structure, which phosphate source — TSP, MAP, NPS, NPK — delivers the best net return per hectare? The only module where the fertilizer product itself is the variable being tested.',
-      from: { opacity: 0, transform: 'translateY(-32px)' },
-    },
+    { num: '01', name: 'The Snapshot', sub: 'Farm P&L', desc: 'One farmer, one crop, one season. Revenue, every cost category, gross margin, net result per hectare. No hypotheticals. This is what farming actually costs and what it actually earns.' },
+    { num: '02', name: 'The Trajectory', sub: 'Balance Sheet', desc: 'Same farmer, across time. Debt accumulation, working capital erosion, asset depreciation across a 3 to 5 year cycle. A farmer who looks viable this season may be structurally failing over the full cycle.' },
+    { num: '03', name: 'The Shock', sub: 'Scenario Engine', desc: 'Same farmer, same profile — but the rules change. Fertilizer up 30%, crop price down, yield drops. The P&L responds in real time. This is where you find exactly how much pain the farmer absorbs before the economics break.' },
+    { num: '04', name: 'The Lens', sub: 'Crop × Region', desc: 'Now you change the farm itself. Same methodology applied across different crops and geographies — holding method constant, moving the subject. This is where you find where OCP\'s argument lands strongest and where it does not.' },
+    { num: '05', name: 'The Decision', sub: 'P Doctrine', desc: 'The product layer. Given this farmer\'s real cost structure, which phosphate source — TSP, MAP, NPS, NPK — delivers the best net return per hectare? The only module where the fertilizer product itself is the variable being tested.' },
   ];
 
   useEffect(() => {
     const timers = [];
-    timers.push(setTimeout(() => setGridVis(true), 80));
-    pillars.forEach((p, pi) => {
+    timers.push(setTimeout(() => setVis(true), 60));
+    pillars.forEach((_, i) => {
       timers.push(setTimeout(() => {
-        setCardsVis(prev => { const n = [...prev]; n[pi] = true; return n; });
-      }, 600 + pi * 120));
-      const chars = p.name.split('');
-      chars.forEach((_, ci) => {
-        timers.push(setTimeout(() => {
-          setTyped(prev => { const n = [...prev]; n[pi] = p.name.slice(0, ci + 1); return n; });
-        }, 800 + pi * 120 + ci * 32));
-      });
+        setPillarsVis(prev => { const n = [...prev]; n[i] = true; return n; });
+      }, 350 + i * 140));
     });
-    const lastTyped = 800 + 4 * 120 + pillars[4].name.length * 32;
-    timers.push(setTimeout(() => setGlow(true),  lastTyped + 60));
-    timers.push(setTimeout(() => setGlow(false), lastTyped + 700));
-    timers.push(setTimeout(() => setBtnVis(true), lastTyped + 400));
+    timers.push(setTimeout(() => setBtnVis(true), 350 + 5 * 140 + 100));
     return () => timers.forEach(clearTimeout);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const cardStyle = (i) => ({
-    background: T.card,
-    border: `1px solid ${glow ? T.green + '60' : T.border}`,
-    borderTop: `2px solid ${T.green}`,
-    borderRadius: 12,
-    padding: '24px 22px',
-    flex: 1,
-    minWidth: 0,
-    opacity: cardsVis[i] ? 1 : 0,
-    transform: cardsVis[i] ? 'none' : pillars[i].from.transform,
-    transition: `opacity 0.5s ease, transform 0.5s ease, box-shadow 0.4s ease, border-color 0.4s ease`,
-    boxShadow: glow ? `0 0 28px ${T.green}25` : 'none',
-  });
-
   return (
-    <div style={{ minHeight: '100vh', background: T.bg, fontFamily: "'DM Sans','Segoe UI',sans-serif", display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
-      <style>{`
-        @keyframes drawH { from { stroke-dashoffset: 1200 } to { stroke-dashoffset: 0 } }
-        @keyframes drawV { from { stroke-dashoffset: 900 } to { stroke-dashoffset: 0 } }
-        @keyframes upFade { from { opacity:0; transform:translateY(16px) } to { opacity:1; transform:none } }
-        @keyframes cursorBlink { 0%,100%{opacity:1} 50%{opacity:0} }
-      `}</style>
+    <div style={{ minHeight: '100vh', background: DARK, fontFamily: "'DM Sans','Segoe UI',sans-serif", color: LIGHT, display: 'flex', flexDirection: 'column' }}>
 
-      {/* Blueprint grid SVG */}
-      <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', opacity: gridVis ? 1 : 0, transition: 'opacity 0.4s ease' }} xmlns="http://www.w3.org/2000/svg">
-        {[15, 30, 45, 55, 70, 85].map((pct, i) => (
-          <line key={`h${i}`} x1="0" y1={`${pct}%`} x2="100%" y2={`${pct}%`}
-            stroke={T.green} strokeOpacity="0.04" strokeWidth="1"
-            strokeDasharray="1200" strokeDashoffset={gridVis ? 0 : 1200}
-            style={{ animation: gridVis ? `drawH ${0.7 + i * 0.08}s ${i * 0.06}s ease forwards` : 'none' }} />
-        ))}
-        {[10, 25, 40, 60, 75, 90].map((pct, i) => (
-          <line key={`v${i}`} x1={`${pct}%`} y1="0" x2={`${pct}%`} y2="100%"
-            stroke={T.green} strokeOpacity="0.04" strokeWidth="1"
-            strokeDasharray="900" strokeDashoffset={gridVis ? 0 : 900}
-            style={{ animation: gridVis ? `drawV ${0.6 + i * 0.07}s ${0.1 + i * 0.05}s ease forwards` : 'none' }} />
-        ))}
-        {/* accent traces */}
-        <line x1="0" y1="50%" x2="100%" y2="50%" stroke={T.green} strokeOpacity="0.07" strokeWidth="1.5"
-          strokeDasharray="1200" style={{ animation: gridVis ? 'drawH 1s 0.2s ease forwards' : 'none', strokeDashoffset: gridVis ? 0 : 1200 }} />
-      </svg>
-
-      {/* Back button */}
-      <div style={{ position: 'absolute', top: 28, left: 36, opacity: gridVis ? 1 : 0, transition: 'opacity 0.6s ease 0.3s' }}>
-        <button onClick={onBack} style={{ background: 'transparent', border: 'none', color: T.textMuted, fontSize: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, letterSpacing: '0.08em', textTransform: 'uppercase', padding: 0 }}>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
+      {/* Top nav bar */}
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '20px 56px', borderBottom: `1px solid ${LINE}`,
+        opacity: vis ? 1 : 0, transition: 'opacity 0.5s ease',
+      }}>
+        <button onClick={onBack} style={{
+          background: 'transparent', border: `1px solid ${LINE}`, color: DIM,
+          padding: '8px 20px', borderRadius: 3, fontSize: 11, fontWeight: 600,
+          letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer',
+          display: 'flex', alignItems: 'center', gap: 8, transition: 'all 0.2s',
+        }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = `${T.green}80`; e.currentTarget.style.color = T.green; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = LINE; e.currentTarget.style.color = DIM; }}>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
           Back
         </button>
+        <span style={{ color: DIM, fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase' }}>PhosStratOS · Platform Architecture</span>
       </div>
 
-      {/* Header */}
-      <div style={{ textAlign: 'center', padding: '72px 32px 48px', zIndex: 10, opacity: gridVis ? 1 : 0, transition: 'opacity 0.8s ease 0.2s' }}>
-        <p style={{ color: T.green, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.22em', fontWeight: 700, marginBottom: 16 }}>PhosStratOS · Platform Architecture</p>
-        <h1 style={{ color: T.text, fontSize: 'clamp(22px,3vw,36px)', fontWeight: 300, letterSpacing: '-0.03em', lineHeight: 1.3, margin: '0 auto 16px', maxWidth: 680 }}>
-          PhosStrat exists to convert OCP's upstream<br />
-          <span style={{ fontWeight: 800 }}>phosphate strength into downstream farmer preference.</span>
+      {/* Hero */}
+      <div style={{
+        padding: '80px 56px 64px', maxWidth: 860,
+        opacity: vis ? 1 : 0, transform: vis ? 'none' : 'translateY(16px)',
+        transition: 'opacity 0.7s ease 0.1s, transform 0.7s ease 0.1s',
+      }}>
+        <p style={{ color: T.green, fontSize: 10, letterSpacing: '0.24em', textTransform: 'uppercase', fontWeight: 700, marginBottom: 28 }}>The Mission</p>
+        <h1 style={{ fontSize: 'clamp(26px,3.2vw,46px)', fontWeight: 300, lineHeight: 1.22, letterSpacing: '-0.03em', margin: '0 0 28px', color: LIGHT }}>
+          PhosStrat exists to convert OCP's upstream
+          <span style={{ fontWeight: 800, color: '#ffffff', display: 'block' }}>phosphate strength into downstream farmer preference.</span>
         </h1>
-        <p style={{ color: T.textMuted, fontSize: 14, lineHeight: 1.8, maxWidth: 560, margin: '0 auto' }}>
-          It does this through five interconnected dimensions — each one a distinct lens on the farmer's financial reality.
+        <p style={{ color: DIM, fontSize: 15, lineHeight: 1.85, margin: 0, maxWidth: 600 }}>
+          It does this through five interconnected dimensions. Each one is a distinct lens on the farmer's financial reality. Each one answers a question that none of the others can.
         </p>
       </div>
 
-      {/* 5 pillars */}
-      <div style={{ display: 'flex', gap: 16, padding: '0 48px', flex: 1, zIndex: 10, alignItems: 'stretch', maxWidth: 1360, width: '100%', margin: '0 auto' }}>
+      {/* Divider */}
+      <div style={{ height: 1, background: LINE, margin: '0 56px', opacity: vis ? 1 : 0, transition: 'opacity 0.5s ease 0.3s' }} />
+
+      {/* Pillars — vertical list */}
+      <div style={{ padding: '0 56px', flex: 1 }}>
         {pillars.map((p, i) => (
-          <div key={i} style={cardStyle(i)}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-              <span style={{ color: T.green, fontSize: 10, fontFamily: "'DM Mono',monospace", fontWeight: 700, letterSpacing: '0.12em', opacity: cardsVis[i] ? 1 : 0, transition: 'opacity 0.3s ease 0.2s' }}>{p.num}</span>
-              <div style={{ flex: 1, height: 1, background: T.border }} />
-              <span style={{ color: T.textMuted, fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.1em', opacity: cardsVis[i] ? 1 : 0, transition: 'opacity 0.3s ease 0.4s' }}>{p.sub}</span>
+          <div key={i} style={{
+            display: 'grid', gridTemplateColumns: '80px 1fr', gap: '0 48px',
+            padding: '44px 0', borderBottom: `1px solid ${LINE}`,
+            opacity: pillarsVis[i] ? 1 : 0,
+            transform: pillarsVis[i] ? 'none' : 'translateY(18px)',
+            transition: 'opacity 0.5s ease, transform 0.5s ease',
+          }}>
+            <div style={{ paddingTop: 4 }}>
+              <span style={{ color: T.green, fontSize: 32, fontFamily: "'DM Mono',monospace", fontWeight: 700, lineHeight: 1, display: 'block' }}>{p.num}</span>
             </div>
-            <p style={{ color: T.text, fontSize: 15, fontWeight: 700, letterSpacing: '-0.01em', marginBottom: 12, minHeight: 22, fontFamily: "'DM Mono',monospace" }}>
-              {typed[i]}
-              <span style={{ animation: typed[i].length < p.name.length ? 'cursorBlink 0.7s infinite' : 'none', opacity: typed[i].length < p.name.length ? 1 : 0, color: T.green }}>|</span>
-            </p>
-            <p style={{ color: T.textMid, fontSize: 12.5, lineHeight: 1.75, margin: 0, opacity: cardsVis[i] ? 1 : 0, transition: 'opacity 0.6s ease 0.5s' }}>{p.desc}</p>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 18, marginBottom: 14, flexWrap: 'wrap' }}>
+                <h2 style={{ fontSize: 'clamp(18px,1.8vw,24px)', fontWeight: 700, letterSpacing: '-0.02em', margin: 0, color: '#ffffff' }}>{p.name}</h2>
+                <span style={{ color: T.green, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.18em', fontWeight: 600 }}>{p.sub}</span>
+              </div>
+              <p style={{ color: DIM, fontSize: 14, lineHeight: 1.85, margin: 0, maxWidth: 660 }}>{p.desc}</p>
+            </div>
           </div>
         ))}
       </div>
 
       {/* CTA */}
-      <div style={{ textAlign: 'center', padding: '40px 32px 56px', zIndex: 10, opacity: btnVis ? 1 : 0, transform: btnVis ? 'none' : 'translateY(12px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>
+      <div style={{
+        padding: '56px 56px', display: 'flex', alignItems: 'center', gap: 32,
+        opacity: btnVis ? 1 : 0, transform: btnVis ? 'none' : 'translateY(12px)',
+        transition: 'opacity 0.5s ease, transform 0.5s ease',
+      }}>
         <button onClick={onEnter}
-          style={{ background: T.green, border: 'none', color: '#fff', padding: '14px 44px', borderRadius: 4, fontSize: 13, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer', boxShadow: `0 0 32px ${T.green}40`, transition: 'all 0.2s' }}
-          onMouseEnter={e => { e.currentTarget.style.background = T.greenDk; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-          onMouseLeave={e => { e.currentTarget.style.background = T.green; e.currentTarget.style.transform = 'none'; }}>
+          style={{ background: T.green, border: 'none', color: '#fff', padding: '14px 48px', borderRadius: 3, fontSize: 12, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.2s' }}
+          onMouseEnter={e => { e.currentTarget.style.background = '#ffffff'; e.currentTarget.style.color = DARK; }}
+          onMouseLeave={e => { e.currentTarget.style.background = T.green; e.currentTarget.style.color = '#fff'; }}>
           Enter Platform →
         </button>
+        <span style={{ color: DIM, fontSize: 12 }}>Five modules. One methodology. Built for the field.</span>
       </div>
     </div>
   );
