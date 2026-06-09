@@ -504,52 +504,47 @@ function computeBrazilPnL(state) {
 // ═══════════════════════════════════════════════════════════════════════════
 // MISSION PAGE — interactive circular pillar explorer
 // ═══════════════════════════════════════════════════════════════════════════
-function MissionPage({ onContinue }) {
+function MissionPage({ onContinue, onBack, onHome }) {
   const [vis, setVis] = useState(false);
   const [bubblesVis, setBubblesVis] = useState([false, false, false, false, false]);
   const [selected, setSelected] = useState(null);
 
-  const DARK = '#0C1A10';
-  const LINE = 'rgba(240,246,241,0.07)';
-  const PANEL_W = 400;
-
   const pillars = [
     {
-      num: '01', name: 'The Snapshot', sub: 'Farm P&L', color: '#4ECDC4',
+      num: '01', short: 'Farm P&L', label: 'Farm-level P&L modeling', name: 'The Snapshot', color: '#0DB39E',
       what: 'A full income statement for one farmer, one crop, one season. Revenue, every cost line, gross margin, net result per hectare.',
       questions: ['What does fertilizer actually cost as a share of total variable costs?', 'At what yield does this farm break even?', 'Where exactly does phosphate spend sit in the full cost structure?'],
       why: 'Most phosphate conversations skip the full picture. This module anchors everything else in real farm economics.',
     },
     {
-      num: '02', name: 'The Trajectory', sub: 'Balance Sheet', color: '#FFD93D',
+      num: '02', short: 'Balance Sheet', label: 'Balance sheet evolution', name: 'The Trajectory', color: '#D97706',
       what: 'The same farm, across 3 to 5 seasons. Debt levels, working capital, asset depreciation. Viability over time, not just this year.',
       questions: ['At what debt-to-income ratio does a farmer stop buying inputs?', 'Which regions are most exposed when a harvest disappoints?', 'How does working capital evolve across a commodity cycle?'],
       why: 'A farm can look fine in year one and be structurally failing by year three. This module shows that arc.',
     },
     {
-      num: '03', name: 'The Shock', sub: 'Scenario Engine', color: '#FF6B6B',
-      what: 'Same farmer, same profile — but the rules change. Fertilizer up 30%, crop price down, yield drops. The P&L responds in real time.',
+      num: '03', short: 'Scenarios', label: 'Scenario-based modeling', name: 'The Shock', color: '#DC2626',
+      what: 'Same farmer, same profile. But the rules change. Fertilizer up 30%, crop price down, yield drops. The P&L responds in real time.',
       questions: ['What happens to net margin if fertilizer prices rise 20%?', 'At what crop price does phosphate spend become the first cut?', 'Which cost combination pushes a farmer below breakeven?'],
       why: 'This is where you find how much pain the farmer can absorb before the economics of buying premium inputs break down.',
     },
     {
-      num: '04', name: 'The Lens', sub: 'Crop × Region', color: '#A78BFA',
+      num: '04', short: 'Crop × Region', label: 'Crop × region granularity', name: 'The Lens', color: '#7C3AED',
       what: 'Same methodology, applied across different crops and geographies. The farm changes. The method stays constant.',
-      questions: ['Does NPS outperform TSP in Brazilian soy but underperform in French wheat?', 'How much does a €10/t freight difference shift the ROI calculus?', "Where does OCP's argument land strongest and where does it need reinforcing?"],
-      why: "Context determines whether a product wins. This module shows exactly where OCP's case is strongest.",
+      questions: ["Does NPS outperform TSP in Brazilian soy but underperform in French wheat?", 'How much does a €10/t freight difference shift the ROI calculus?', "Where does OCP's argument land strongest?"],
+      why: "Context determines whether a product wins. This module shows exactly where OCP's case is strongest and where it needs reinforcing.",
     },
     {
-      num: '05', name: 'The Decision', sub: 'P Doctrine', color: '#2DB84B',
-      what: "Given this farmer's real cost structure, which phosphate source — TSP, MAP, NPS, NPK — delivers the best net return per hectare?",
+      num: '05', short: 'P Doctrine', label: 'P-Doctrine field analysis', name: 'The Decision', color: '#2DB84B',
+      what: "Given this farmer's real cost structure, which phosphate source delivers the best net return per hectare? TSP, MAP, NPS, NPK tested head to head.",
       questions: ['Which P source delivers the best net return per hectare?', 'Does TSP or NPS perform better on sandy versus clay soils?', 'What yield uplift is needed to justify a higher-cost source?'],
       why: 'The only module where the fertilizer product itself is the variable. This is the commercial output of everything that came before.',
     },
   ];
 
-  // Pentagon: 5 nodes placed at 72° intervals, starting from top (-90°)
-  const R = 150;
-  const CX = 220;
-  const CY = 210;
+  const R = 165;
+  const CX = 240;
+  const CY = 240;
   const pos = (i) => {
     const rad = ((-90 + i * 72) * Math.PI) / 180;
     return { x: CX + R * Math.cos(rad), y: CY + R * Math.sin(rad) };
@@ -559,7 +554,7 @@ function MissionPage({ onContinue }) {
     const t = [];
     t.push(setTimeout(() => setVis(true), 60));
     for (let i = 0; i < 5; i++) {
-      t.push(setTimeout(() => setBubblesVis(prev => { const n = [...prev]; n[i] = true; return n; }), 300 + i * 110));
+      t.push(setTimeout(() => setBubblesVis(prev => { const n = [...prev]; n[i] = true; return n; }), 250 + i * 100));
     }
     return () => t.forEach(clearTimeout);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -568,131 +563,157 @@ function MissionPage({ onContinue }) {
   const sel = selected !== null ? pillars[selected] : null;
 
   return (
-    <div style={{ height: '100vh', background: DARK, fontFamily: "'DM Sans','Segoe UI',sans-serif", display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+    <div style={{ height: '100vh', background: T.bg, fontFamily: "'DM Sans','Segoe UI',sans-serif", display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <style>{`
+        @keyframes hubPulse {
+          0%,100% { box-shadow: 0 0 0 6px rgba(45,184,75,0.13), 0 0 0 14px rgba(45,184,75,0.05); }
+          50%     { box-shadow: 0 0 0 12px rgba(45,184,75,0.18), 0 0 0 26px rgba(45,184,75,0.06); }
+        }
+        @keyframes spinSlow    { to { transform: rotate(360deg); } }
+        @keyframes spinSlowRev { to { transform: rotate(-360deg); } }
+      `}</style>
 
       {/* Nav */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 48px', borderBottom: `1px solid ${LINE}`, flexShrink: 0, opacity: vis ? 1 : 0, transition: 'opacity 0.5s' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ width: 28, height: 28, borderRadius: 7, background: 'linear-gradient(135deg,#2DB84B,#1A8A34)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 9, color: '#fff', fontFamily: "'DM Mono',monospace" }}>SMO</div>
-          <span style={{ color: 'rgba(240,246,241,0.25)', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase' }}>PhosStratOS</span>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 32px', height: 52, borderBottom: `1px solid ${T.border}`, flexShrink: 0, background: T.card, opacity: vis ? 1 : 0, transition: 'opacity 0.5s' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <button onClick={onBack} style={{ display: 'flex', alignItems: 'center', gap: 5, background: 'transparent', border: `1px solid ${T.border}`, color: T.textMuted, padding: '6px 14px', borderRadius: 6, fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', cursor: 'pointer', transition: 'all 0.15s' }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = T.green; e.currentTarget.style.color = T.green; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = T.border; e.currentTarget.style.color = T.textMuted; }}>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
+            Back
+          </button>
+          <button onClick={onHome} title="Home" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent', border: `1px solid ${T.border}`, color: T.textMuted, width: 32, height: 32, borderRadius: 6, cursor: 'pointer', transition: 'all 0.15s' }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = T.green; e.currentTarget.style.color = T.green; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = T.border; e.currentTarget.style.color = T.textMuted; }}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+          </button>
         </div>
-        <button onClick={onContinue} style={{ background: 'transparent', border: '1px solid rgba(45,184,75,0.25)', color: 'rgba(45,184,75,0.6)', padding: '7px 18px', borderRadius: 3, fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.2s' }}
-          onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(45,184,75,0.7)'; e.currentTarget.style.color = '#2DB84B'; }}
-          onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(45,184,75,0.25)'; e.currentTarget.style.color = 'rgba(45,184,75,0.6)'; }}>
-          Skip →
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ width: 26, height: 26, borderRadius: 6, background: 'linear-gradient(135deg,#2DB84B,#1A8A34)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 9, color: '#fff', fontFamily: "'DM Mono',monospace" }}>SMO</div>
+          <span style={{ color: T.textMuted, fontSize: 10, letterSpacing: '0.16em', textTransform: 'uppercase' }}>PhosStratOS</span>
+        </div>
+        <button onClick={onContinue} style={{ background: T.green, border: 'none', color: '#fff', padding: '8px 22px', borderRadius: 6, fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.15s' }}
+          onMouseEnter={e => { e.currentTarget.style.background = T.greenDk; }}
+          onMouseLeave={e => { e.currentTarget.style.background = T.green; }}>
+          Enter Platform →
         </button>
       </div>
 
       {/* Body: circle + panel */}
       <div style={{ flex: 1, display: 'flex', overflow: 'hidden', minHeight: 0 }}>
 
-        {/* Left: circle area */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px 32px', minWidth: 0 }}>
-
-          {/* Headline */}
-          <div style={{ textAlign: 'center', marginBottom: 36, opacity: vis ? 1 : 0, transition: 'opacity 0.7s 0.1s' }}>
-            <p style={{ color: '#2DB84B', fontSize: 9, letterSpacing: '0.26em', textTransform: 'uppercase', fontWeight: 700, marginBottom: 10 }}>The Farmer Economics Engine</p>
-            <h1 style={{ fontSize: 'clamp(18px,2vw,28px)', fontWeight: 300, color: '#F0F6F1', letterSpacing: '-0.02em', lineHeight: 1.3, margin: 0 }}>
-              Five dimensions.<br />
-              <span style={{ fontWeight: 800, color: '#fff' }}>One complete picture.</span>
+        {/* Circle area */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '16px 24px', minWidth: 0 }}>
+          <div style={{ textAlign: 'center', marginBottom: 24, opacity: vis ? 1 : 0, transition: 'opacity 0.7s 0.1s' }}>
+            <p style={{ color: T.green, fontSize: 9, letterSpacing: '0.26em', textTransform: 'uppercase', fontWeight: 700, marginBottom: 8 }}>The Farmer Economics Engine</p>
+            <h1 style={{ fontSize: 'clamp(18px,1.8vw,26px)', fontWeight: 300, color: T.text, letterSpacing: '-0.02em', lineHeight: 1.3, margin: 0 }}>
+              Five dimensions. <span style={{ fontWeight: 800 }}>One complete picture.</span>
             </h1>
           </div>
 
           {/* Circle */}
-          <div style={{ position: 'relative', width: 440, height: 420, flexShrink: 0 }}>
-            <svg width="440" height="420" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-              {/* dashed orbit ring */}
-              <circle cx={CX} cy={CY} r={R + 28} fill="none" stroke={LINE} strokeWidth="1" strokeDasharray="3 7" />
-              {/* connector lines */}
+          <div style={{ position: 'relative', width: 480, height: 480, flexShrink: 0 }}>
+            {/* Spinning outer rings */}
+            <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', animation: 'spinSlow 80s linear infinite', transformOrigin: '240px 240px' }}>
+              <svg width="480" height="480"><circle cx="240" cy="240" r="218" fill="none" stroke={T.green} strokeOpacity="0.12" strokeWidth="1.5" strokeDasharray="4 10" /></svg>
+            </div>
+            <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', animation: 'spinSlowRev 55s linear infinite', transformOrigin: '240px 240px' }}>
+              <svg width="480" height="480"><circle cx="240" cy="240" r="200" fill="none" stroke={T.green} strokeOpacity="0.08" strokeWidth="1" strokeDasharray="2 8" /></svg>
+            </div>
+
+            {/* Static SVG: rings + connectors */}
+            <svg width="480" height="480" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+              <circle cx={CX} cy={CY} r={R + 4} fill="none" stroke={T.green} strokeOpacity="0.22" strokeWidth="2" />
+              <circle cx={CX} cy={CY} r={R - 26} fill="none" stroke={T.green} strokeOpacity="0.07" strokeWidth="1" />
               {pillars.map((p, i) => {
                 const { x, y } = pos(i);
                 return <line key={i} x1={CX} y1={CY} x2={x} y2={y}
-                  stroke={selected === i ? p.color + '50' : LINE}
-                  strokeWidth={selected === i ? 1.5 : 1}
+                  stroke={selected === i ? p.color : `rgba(45,184,75,0.14)`}
+                  strokeWidth={selected === i ? 2 : 1}
                   style={{ transition: 'stroke 0.3s, stroke-width 0.3s' }} />;
               })}
             </svg>
 
             {/* Center hub */}
             <div style={{
-              position: 'absolute', left: CX - 38, top: CY - 38,
-              width: 76, height: 76, borderRadius: '50%',
-              background: '#111f16',
-              border: `1px solid ${sel ? sel.color + '45' : 'rgba(45,184,75,0.2)'}`,
+              position: 'absolute', left: CX - 42, top: CY - 42, width: 84, height: 84, borderRadius: '50%',
+              background: `linear-gradient(135deg, ${T.green}, ${T.greenDk})`,
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-              boxShadow: sel ? `0 0 28px ${sel.color}20` : 'none',
-              transition: 'border-color 0.4s, box-shadow 0.4s',
-              zIndex: 5,
+              animation: 'hubPulse 3.2s ease-in-out infinite', zIndex: 5,
             }}>
-              <span style={{ color: '#2DB84B', fontSize: 8, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 700, lineHeight: 1 }}>Phos</span>
-              <span style={{ color: '#fff', fontSize: 10, fontWeight: 800, letterSpacing: '-0.01em', lineHeight: 1.4 }}>Strat</span>
+              <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: 7.5, letterSpacing: '0.16em', textTransform: 'uppercase', fontWeight: 700 }}>Phos</span>
+              <span style={{ color: '#fff', fontSize: 12, fontWeight: 800 }}>Strat</span>
             </div>
 
-            {/* Pillar bubbles */}
+            {/* Bubbles */}
             {pillars.map((p, i) => {
               const { x, y } = pos(i);
               const isSel = selected === i;
               return (
                 <div key={i} onClick={() => handleSelect(i)} style={{
-                  position: 'absolute',
-                  left: x - 48, top: y - 48,
-                  width: 96, height: 96,
+                  position: 'absolute', left: x - 54, top: y - 54, width: 108, height: 108,
                   borderRadius: '50%',
-                  background: isSel ? `radial-gradient(circle at 35% 35%, ${p.color}28, ${p.color}0a)` : 'rgba(18,32,22,0.95)',
-                  border: `${isSel ? 2 : 1}px solid ${isSel ? p.color : p.color + '38'}`,
+                  background: isSel ? p.color + '14' : T.card,
+                  border: `${isSel ? 2 : 1.5}px solid ${isSel ? p.color : p.color + '50'}`,
                   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2,
                   cursor: 'pointer', zIndex: 10,
                   opacity: bubblesVis[i] ? 1 : 0,
-                  transform: bubblesVis[i] ? (isSel ? 'scale(1.1)' : 'scale(1)') : 'scale(0.6)',
-                  transition: 'opacity 0.4s ease, transform 0.3s ease, border-color 0.25s, background 0.25s, box-shadow 0.25s',
-                  boxShadow: isSel ? `0 0 20px ${p.color}50, 0 0 48px ${p.color}18` : 'none',
+                  transform: bubblesVis[i] ? (isSel ? 'scale(1.1)' : 'scale(1)') : 'scale(0.5)',
+                  transition: 'opacity 0.4s ease, transform 0.3s ease, border-color 0.2s, background 0.2s, box-shadow 0.2s',
+                  boxShadow: isSel ? `0 4px 20px ${p.color}40` : '0 2px 8px rgba(0,0,0,0.06)',
                 }}
-                  onMouseEnter={e => { if (!isSel) { e.currentTarget.style.borderColor = p.color + '75'; e.currentTarget.style.transform = 'scale(1.06)'; } }}
-                  onMouseLeave={e => { if (!isSel) { e.currentTarget.style.borderColor = p.color + '38'; e.currentTarget.style.transform = 'scale(1)'; } }}>
+                  onMouseEnter={e => { if (!isSel) { e.currentTarget.style.borderColor = p.color; e.currentTarget.style.transform = 'scale(1.07)'; e.currentTarget.style.boxShadow = `0 4px 16px ${p.color}30`; } }}
+                  onMouseLeave={e => { if (!isSel) { e.currentTarget.style.borderColor = p.color + '50'; e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.06)'; } }}>
                   <span style={{ color: p.color, fontSize: 8, fontFamily: "'DM Mono',monospace", fontWeight: 700, letterSpacing: '0.1em' }}>{p.num}</span>
-                  <span style={{ color: isSel ? '#fff' : 'rgba(240,246,241,0.8)', fontSize: 10, fontWeight: 700, textAlign: 'center', lineHeight: 1.2, padding: '0 6px' }}>{p.name}</span>
-                  <span style={{ color: p.color, fontSize: 7.5, textTransform: 'uppercase', letterSpacing: '0.1em', opacity: 0.8 }}>{p.sub}</span>
+                  <span style={{ color: isSel ? T.text : T.textMid, fontSize: 10, fontWeight: 700, textAlign: 'center', lineHeight: 1.2, padding: '0 7px' }}>{p.short}</span>
+                  <span style={{ color: p.color, fontSize: 7.5, fontWeight: 500, letterSpacing: '0.02em', opacity: 0.8 }}>{p.name}</span>
                 </div>
               );
             })}
           </div>
 
-          {/* Hint */}
-          <p style={{ color: 'rgba(240,246,241,0.2)', fontSize: 11, marginTop: 20, letterSpacing: '0.04em', textAlign: 'center', opacity: vis ? 1 : 0, transition: 'opacity 0.6s 0.6s' }}>
-            {selected === null ? 'Click a pillar to explore it' : 'Click another pillar or continue below'}
+          <p style={{ color: T.textMuted, fontSize: 11, marginTop: 14, textAlign: 'center', opacity: vis ? 1 : 0, transition: 'opacity 0.5s 0.7s' }}>
+            {selected === null ? 'Click a pillar to explore it' : 'Click another pillar or continue to the platform'}
           </p>
         </div>
 
-        {/* Right: sliding info panel */}
+        {/* Sliding info panel */}
         <div style={{
-          width: selected !== null ? PANEL_W : 0,
-          flexShrink: 0,
-          overflow: 'hidden',
-          borderLeft: `1px solid ${selected !== null ? LINE : 'transparent'}`,
-          transition: 'width 0.38s cubic-bezier(0.4,0,0.2,1), border-color 0.3s',
-          background: '#0A1A0E',
+          width: selected !== null ? 420 : 0, flexShrink: 0, overflow: 'hidden',
+          borderLeft: `1px solid ${selected !== null ? T.border : 'transparent'}`,
+          transition: 'width 0.35s cubic-bezier(0.4,0,0.2,1), border-color 0.3s',
+          background: T.card,
         }}>
           {sel && (
-            <div style={{ width: PANEL_W, height: '100%', overflowY: 'auto', padding: '44px 40px', boxSizing: 'border-box' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 24 }}>
-                <span style={{ color: sel.color, fontSize: 10, fontFamily: "'DM Mono',monospace", fontWeight: 700, letterSpacing: '0.12em' }}>{sel.num}</span>
-                <div style={{ flex: 1, height: 1, background: sel.color + '28' }} />
-                <span style={{ color: sel.color, fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.16em', fontWeight: 600 }}>{sel.sub}</span>
+            <div style={{ width: 420, height: '100%', overflowY: 'auto', padding: '32px 32px', boxSizing: 'border-box' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 20 }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                    <span style={{ color: sel.color, fontSize: 10, fontFamily: "'DM Mono',monospace", fontWeight: 700, letterSpacing: '0.14em' }}>{sel.num}</span>
+                    <span style={{ background: sel.color + '14', color: sel.color, fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.16em', fontWeight: 700, padding: '3px 9px', borderRadius: 3 }}>{sel.name}</span>
+                  </div>
+                  <h2 style={{ color: T.text, fontSize: 19, fontWeight: 700, letterSpacing: '-0.02em', lineHeight: 1.25, margin: 0 }}>{sel.label}</h2>
+                </div>
+                <button onClick={() => setSelected(null)} title="Close" style={{ flexShrink: 0, marginLeft: 12, marginTop: 2, background: 'transparent', border: `1px solid ${T.border}`, color: T.textMuted, width: 28, height: 28, borderRadius: 6, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = T.green; e.currentTarget.style.color = T.green; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = T.border; e.currentTarget.style.color = T.textMuted; }}>
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                </button>
               </div>
-              <h2 style={{ color: '#fff', fontSize: 24, fontWeight: 700, letterSpacing: '-0.02em', marginBottom: 16, lineHeight: 1.2 }}>{sel.name}</h2>
-              <p style={{ color: 'rgba(240,246,241,0.65)', fontSize: 14, lineHeight: 1.85, marginBottom: 28 }}>{sel.what}</p>
-              <div style={{ marginBottom: 24 }}>
-                <p style={{ color: sel.color, fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.2em', fontWeight: 700, marginBottom: 14 }}>Questions it answers</p>
+              <div style={{ height: 2, background: sel.color + '22', borderRadius: 1, marginBottom: 18 }} />
+              <p style={{ color: T.textMid, fontSize: 13.5, lineHeight: 1.85, marginBottom: 24 }}>{sel.what}</p>
+              <div style={{ marginBottom: 22 }}>
+                <p style={{ color: sel.color, fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.2em', fontWeight: 700, marginBottom: 12 }}>Questions it answers</p>
                 {sel.questions.map((q, qi) => (
-                  <div key={qi} style={{ display: 'flex', gap: 10, marginBottom: 11, alignItems: 'flex-start' }}>
-                    <span style={{ color: sel.color, fontSize: 12, marginTop: 3, flexShrink: 0 }}>→</span>
-                    <p style={{ color: 'rgba(240,246,241,0.55)', fontSize: 13, lineHeight: 1.7, margin: 0 }}>{q}</p>
+                  <div key={qi} style={{ display: 'flex', gap: 10, marginBottom: 10, alignItems: 'flex-start' }}>
+                    <span style={{ color: sel.color, fontSize: 11, marginTop: 3, flexShrink: 0 }}>→</span>
+                    <p style={{ color: T.textMid, fontSize: 13, lineHeight: 1.7, margin: 0 }}>{q}</p>
                   </div>
                 ))}
               </div>
-              <div style={{ borderTop: `1px solid ${sel.color}18`, paddingTop: 20 }}>
-                <p style={{ color: 'rgba(240,246,241,0.35)', fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.18em', fontWeight: 600, marginBottom: 10 }}>Why it matters</p>
-                <p style={{ color: 'rgba(240,246,241,0.5)', fontSize: 13, lineHeight: 1.75, margin: 0 }}>{sel.why}</p>
+              <div style={{ background: T.bg, borderRadius: 8, padding: '14px 16px', borderLeft: `3px solid ${sel.color}` }}>
+                <p style={{ color: T.textMuted, fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.18em', fontWeight: 600, marginBottom: 8 }}>Why it matters</p>
+                <p style={{ color: T.textMid, fontSize: 13, lineHeight: 1.75, margin: 0 }}>{sel.why}</p>
               </div>
             </div>
           )}
@@ -700,19 +721,18 @@ function MissionPage({ onContinue }) {
       </div>
 
       {/* Bottom bar */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 48px', borderTop: `1px solid ${LINE}`, flexShrink: 0, opacity: vis ? 1 : 0, transition: 'opacity 0.5s 0.4s' }}>
-        <span style={{ color: 'rgba(240,246,241,0.2)', fontSize: 11 }}>Five modules. One methodology.</span>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 32px', height: 50, borderTop: `1px solid ${T.border}`, flexShrink: 0, background: T.card, opacity: vis ? 1 : 0, transition: 'opacity 0.5s 0.4s' }}>
+        <span style={{ color: T.textMuted, fontSize: 11 }}>Five modules. One methodology.</span>
         <button onClick={onContinue}
-          style={{ background: '#2DB84B', border: 'none', color: '#fff', padding: '11px 40px', borderRadius: 3, fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.2s' }}
-          onMouseEnter={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = DARK; }}
-          onMouseLeave={e => { e.currentTarget.style.background = '#2DB84B'; e.currentTarget.style.color = '#fff'; }}>
+          style={{ background: T.green, border: 'none', color: '#fff', padding: '9px 32px', borderRadius: 6, fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.15s' }}
+          onMouseEnter={e => { e.currentTarget.style.background = T.greenDk; }}
+          onMouseLeave={e => { e.currentTarget.style.background = T.green; }}>
           Enter Platform →
         </button>
       </div>
     </div>
   );
 }
-
 function LandingPage({ onEnter }) {
   const [vis, setVis] = useState(false);
   const [sub, setSub] = useState(false);
@@ -760,7 +780,7 @@ function LandingPage({ onEnter }) {
 // ═══════════════════════════════════════════════════════════════════════════
 // COUNTRY SELECTOR
 // ═══════════════════════════════════════════════════════════════════════════
-function CountrySelector({ onSelect }) {
+function CountrySelector({ onSelect, onBack, onHome }) {
   const [hov, setHov] = useState(null);
   const countries = [
     { code: "France", flag: "🇫🇷", label: "France", subtitle: "Cereal heartland", accent: T.green, available: true, badge: "Quant Engine", desc: "Mathieu farms soft wheat in northern France. The model runs 909 FADN farms through a P-separation cost engine covering barley, rapeseed and corn across seven production regions with full balance sheet and five-season trajectory.", engine: "FADN France · 909 farms · R²=0.993", img: "/france.jpg", fallbackColors: ["#0055A4", "#FFFFFF", "#EF4135"] },
@@ -772,13 +792,32 @@ function CountrySelector({ onSelect }) {
     { code: "Canada", flag: "🇨🇦", label: "Canada", subtitle: "Prairie export corridor", accent: "#D80621", available: false, badge: "Quant Engine", desc: "Canola, spring wheat, lentils and peas across the three prairie provinces. Canadian farmers are among the most commercially sophisticated in OCP's portfolio and run tight per-bushel economics tied directly to futures markets.", engine: "Statistics Canada · AAFC · Farm Credit Canada", img: "https://flagcdn.com/w1280/ca.png", fallbackColors: ["#D80621", "#FFFFFF", "#D80621"] },
   ];
   return (
-    <div style={{ minHeight: "100vh", background: T.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans','Segoe UI',sans-serif", padding: "40px 24px", position: "relative" }}>
+    <div style={{ minHeight: "100vh", background: T.bg, display: "flex", flexDirection: "column", fontFamily: "'DM Sans','Segoe UI',sans-serif", position: "relative" }}>
       <style>{`@keyframes cFadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}} .cc{transition:all 0.2s ease;} .cc:hover{transform:translateY(-4px)!important;}`}</style>
       <div style={{ position: "absolute", inset: 0, backgroundImage: `linear-gradient(rgba(45,184,75,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(45,184,75,0.025) 1px,transparent 1px)`, backgroundSize: "60px 60px", pointerEvents: "none" }} />
-      <div style={{ position: "absolute", top: 28, left: 36, display: "flex", alignItems: "center", gap: 10 }}>
-        <div style={{ width: 32, height: 32, borderRadius: 8, background: "linear-gradient(135deg,#2DB84B,#1A8A34)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 11, color: "#0F2415", fontFamily: "'DM Mono',monospace" }}>SMO</div>
-        <span style={{ color: "rgba(15,36,21,0.3)", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase" }}>PhosStratOS · OCP Nutricrops</span>
+      {/* Nav bar */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 32px", height: 52, borderBottom: `1px solid ${T.border}`, background: T.card, flexShrink: 0, position: "relative", zIndex: 10 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <button onClick={onBack} style={{ display: "flex", alignItems: "center", gap: 5, background: "transparent", border: `1px solid ${T.border}`, color: T.textMuted, padding: "6px 14px", borderRadius: 6, fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", cursor: "pointer", transition: "all 0.15s" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = T.green; e.currentTarget.style.color = T.green; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = T.border; e.currentTarget.style.color = T.textMuted; }}>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
+            Back
+          </button>
+          <button onClick={onHome} title="Home" style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", border: `1px solid ${T.border}`, color: T.textMuted, width: 32, height: 32, borderRadius: 6, cursor: "pointer", transition: "all 0.15s" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = T.green; e.currentTarget.style.color = T.green; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = T.border; e.currentTarget.style.color = T.textMuted; }}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+          </button>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ width: 28, height: 28, borderRadius: 7, background: "linear-gradient(135deg,#2DB84B,#1A8A34)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 9, color: "#fff", fontFamily: "'DM Mono',monospace" }}>SMO</div>
+          <span style={{ color: "rgba(15,36,21,0.3)", fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase" }}>PhosStratOS · OCP Nutricrops</span>
+        </div>
+        <div style={{ width: 120 }} />
       </div>
+      {/* Centered content */}
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 24px" }}>
       <div style={{ textAlign: "center", marginBottom: 48, animation: "cFadeUp 0.6s ease both" }}>
         <p style={{ color: T.green, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.2em", fontWeight: 700, marginBottom: 14 }}>Farmer Economics Engine</p>
         <h1 style={{ color: T.text, fontSize: "clamp(18px,2.8vw,32px)", fontWeight: 300, letterSpacing: "-0.02em", lineHeight: 1.4, margin: 0 }}>
@@ -811,6 +850,7 @@ function CountrySelector({ onSelect }) {
             </div>
           </div>
         ))}
+      </div>
       </div>
     </div>
   );
@@ -2497,12 +2537,18 @@ function FrancePage() {
 }
 
 export default function App() {
-  const [page, setPage] = useState("landing"); // landing | mission | country | app
-  const [country, setCountry] = useState(null);
+  const [page, setPage] = useState(() => { try { return localStorage.getItem('phos_page') || 'landing'; } catch { return 'landing'; } });
+  const [country, setCountry] = useState(() => { try { return localStorage.getItem('phos_country') || null; } catch { return null; } });
 
-  if (page === "landing") return <LandingPage onEnter={() => setPage("mission")} />;
-  if (page === "mission") return <MissionPage onContinue={() => setPage("country")} />;
-  if (page === "country") return <CountrySelector onSelect={c => { setCountry(c); setPage("app"); }} />;
+  const go = (p, c) => {
+    setPage(p);
+    try { localStorage.setItem('phos_page', p); } catch {}
+    if (c !== undefined) { setCountry(c); try { if (c) localStorage.setItem('phos_country', c); } catch {} }
+  };
+
+  if (page === "landing") return <LandingPage onEnter={() => go("mission")} />;
+  if (page === "mission") return <MissionPage onContinue={() => go("country")} onBack={() => go("landing")} onHome={() => go("landing")} />;
+  if (page === "country") return <CountrySelector onSelect={c => go("app", c)} onBack={() => go("mission")} onHome={() => go("landing")} />;
 
   return (
     <div style={{ minHeight: "100vh", background: T.bg, color: T.textMid, fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
@@ -2521,21 +2567,31 @@ export default function App() {
 
       {/* HEADER */}
       <div style={{ borderBottom: `1px solid ${T.border}`, padding: "0 20px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 50, background: T.card, position: "sticky", top: 0, zIndex: 100 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }} onClick={() => setPage("landing")}>
-          <div style={{ width: 32, height: 32, borderRadius: 8, background: "linear-gradient(135deg,#2DB84B,#1A8A34)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 11, color: "#FFFFFF", fontFamily: "'DM Mono',monospace", boxShadow: "0 0 10px #2DB84B30", flexShrink: 0 }}>SMO</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <button onClick={() => go("country")} title="Back to countries" style={{ display: "flex", alignItems: "center", gap: 4, background: "transparent", border: `1px solid ${T.border}`, color: T.textMuted, padding: "5px 11px", borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "all 0.15s" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = T.green; e.currentTarget.style.color = T.green; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = T.border; e.currentTarget.style.color = T.textMuted; }}>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
+          </button>
+          <button onClick={() => go("landing")} title="Home" style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", border: `1px solid ${T.border}`, color: T.textMuted, width: 30, height: 30, borderRadius: 6, cursor: "pointer", transition: "all 0.15s" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = T.green; e.currentTarget.style.color = T.green; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = T.border; e.currentTarget.style.color = T.textMuted; }}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+          </button>
+          <div style={{ width: 1, height: 20, background: T.border, margin: "0 4px" }} />
+          <div style={{ width: 30, height: 30, borderRadius: 8, background: "linear-gradient(135deg,#2DB84B,#1A8A34)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 10, color: "#FFFFFF", fontFamily: "'DM Mono',monospace", flexShrink: 0 }}>SMO</div>
           <div>
-            <span style={{ fontWeight: 800, fontSize: 14, letterSpacing: "-0.03em", color: T.text }}>PhosStratOS</span>
-            <span style={{ color: T.textMuted, fontSize: 11, marginLeft: 8 }}>Farmer Economics</span>
+            <span style={{ fontWeight: 800, fontSize: 13, letterSpacing: "-0.03em", color: T.text }}>PhosStratOS</span>
+            <span style={{ color: T.textMuted, fontSize: 11, marginLeft: 7 }}>Farmer Economics</span>
           </div>
         </div>
         <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
           {[["France", "🇫🇷"], ["Brazil", "🇧🇷"]].map(([name, flag]) => (
-            <button key={name} onClick={() => setCountry(name)}
+            <button key={name} onClick={() => go("app", name)}
               style={{ padding: "5px 12px", borderRadius: 6, background: country === name ? T.green + "20" : "transparent", border: `1px solid ${country === name ? T.green : T.border}`, color: country === name ? T.green : T.textMuted, fontSize: 12, fontWeight: country === name ? 700 : 400, cursor: "pointer", display: "flex", alignItems: "center", gap: 5, transition: "all 0.15s" }}>
               <span>{flag}</span>{name}
             </button>
           ))}
-          <button onClick={() => setPage("country")} style={{ padding: "5px 10px", background: "transparent", border: `1px solid ${T.border}`, color: T.textDim, borderRadius: 6, fontSize: 10, cursor: "pointer", letterSpacing: "0.08em", textTransform: "uppercase" }}>Change country</button>
         </div>
       </div>
 
