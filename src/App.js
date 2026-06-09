@@ -1301,6 +1301,15 @@ const FRANCE_WHEAT_HIST = [
 ];
 const FRANCE_WHEAT_25 = { revenue: 1494, fert: 364, otherVar: 419, fixedLand: 1367, grossMargin: 711, netResult: -656 };
 
+const FRANCE_CROPS = [
+  { id: 'wheat',     label: 'Soft Wheat', img: 'https://images.pexels.com/photos/326082/pexels-photo-326082.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',   hasData: true },
+  { id: 'corn',      label: 'Corn',       img: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200&q=80&fit=crop',                                 hasData: false },
+  { id: 'barley',    label: 'Barley',     img: 'https://images.pexels.com/photos/1458644/pexels-photo-1458644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',  hasData: false },
+  { id: 'potato',    label: 'Potato',     img: 'https://images.pexels.com/photos/144248/pexels-photo-144248.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',   hasData: false },
+  { id: 'sugarbeet', label: 'Sugar Beet', img: 'https://images.pexels.com/photos/2255801/pexels-photo-2255801.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2', hasData: false },
+  { id: 'tomato',    label: 'Tomato',     img: 'https://images.pexels.com/photos/1327838/pexels-photo-1327838.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2', hasData: false },
+];
+
 // ═══════════════════════════════════════════════════════════════════════════
 // SHARED LAYER SWITCHER
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1320,6 +1329,44 @@ function LayerSwitcher({ layer, setLayer }) {
           transition: 'all 0.15s',
         }}>{l.label}</button>
       ))}
+    </div>
+  );
+}
+
+function WIPPage({ cropLabel, country, onBack }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 'calc(100vh - 50px - 57px)', background: '#FFFFFF', fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
+      <div style={{ textAlign: 'center', maxWidth: 520 }}>
+        <div style={{ width: 64, height: 64, borderRadius: '50%', background: T.green + '12', border: `2px solid ${T.green}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 28px', fontSize: 28 }}>🌱</div>
+        <p style={{ color: T.textMuted, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: 16 }}>COMING SOON</p>
+        <h2 style={{ color: T.text, fontSize: 28, fontWeight: 700, letterSpacing: '-0.02em', marginBottom: 16 }}>{cropLabel}</h2>
+        <p style={{ color: T.textMid, fontSize: 14, lineHeight: 1.7, marginBottom: 32 }}>The {cropLabel.toLowerCase()} module for {country} is being built. The full cost of production and P doctrine economics will be available here — same structure, same depth, different crop.</p>
+        <button onClick={onBack} style={{ background: 'transparent', border: `1.5px solid ${T.green}`, color: T.green, padding: '10px 28px', borderRadius: 4, fontSize: 12, fontWeight: 700, cursor: 'pointer', letterSpacing: '0.1em', textTransform: 'uppercase' }}>← Choose another crop</button>
+      </div>
+    </div>
+  );
+}
+
+function FranceCropLanding({ onSelect }) {
+  const [hovered, setHovered] = useState(null);
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: 'calc(100vh - 50px)', background: T.bg }}>
+      <div style={{ textAlign: 'center', padding: '52px 0 36px' }}>
+        <p style={{ color: T.textMuted, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: 14 }}>France · Farmer Economics</p>
+        <h2 style={{ color: T.text, fontSize: 32, fontWeight: 700, letterSpacing: '-0.03em', margin: 0 }}>Choose your crop</h2>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridTemplateRows: 'repeat(2, 220px)', maxWidth: 960, width: '100%', margin: '0 auto', flex: 1 }}>
+        {FRANCE_CROPS.map(c => (
+          <div key={c.id} onClick={() => onSelect(c.id)} onMouseEnter={() => setHovered(c.id)} onMouseLeave={() => setHovered(null)}
+            style={{ position: 'relative', backgroundImage: `url(${c.img})`, backgroundSize: 'cover', backgroundPosition: 'center', cursor: 'pointer', overflow: 'hidden', backgroundColor: T.panel }}>
+            <div style={{ position: 'absolute', inset: 0, background: hovered === c.id ? 'rgba(0,0,0,0.52)' : 'rgba(0,0,0,0.3)', transition: 'background 0.25s' }} />
+            <div style={{ position: 'absolute', bottom: 24, left: 28 }}>
+              <p style={{ color: '#FFFFFF', fontSize: 22, fontWeight: 700, letterSpacing: '-0.02em', margin: 0, lineHeight: 1 }}>{c.label}</p>
+              {!c.hasData && hovered === c.id && <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: 10, marginTop: 5, letterSpacing: '0.1em', textTransform: 'uppercase' }}>Coming soon</p>}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
